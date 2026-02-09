@@ -4,7 +4,7 @@ export function About() {
       <div className="mx-auto max-w-4xl">
         <div className="mx-auto max-w-2xl text-center">
           <h2 className="text-balance text-3xl font-bold tracking-tight text-foreground md:text-5xl">
-            Not another generic coach
+            Not just another generic coach
           </h2>
           <p className="mt-6 text-pretty text-lg leading-relaxed text-muted-foreground">
             Traditional presentation coaching gives you surface-level advice: speak slower, make eye
