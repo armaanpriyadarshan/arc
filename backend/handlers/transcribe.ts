@@ -6,6 +6,9 @@ import { transcribeRequestSchema } from '@/backend/validation'
 import { checkRateLimit, getClientIp } from '@/backend/rate-limit'
 import { RATE_LIMITS } from '@/backend/rate-limit-config'
 import { downloadToTmp, processFileForWhisper, cleanupTempFiles } from '@/backend/audio'
+import type { ChunkInfo } from '@/backend/audio'
+import { computeDeliveryAnalytics } from '@/backend/delivery-analytics'
+import type { TimestampedWord } from '@/lib/delivery-analytics'
 
 export async function handleTranscribe(request: NextRequest) {
   const ip = getClientIp(request)
@@ -37,47 +40,68 @@ export async function handleTranscribe(request: NextRequest) {
     const inputPath = await downloadToTmp(blobUrl, fileName)
 
     // Process file: extract audio, compress, split if needed
-    const { chunkPaths, allTempPaths } = await processFileForWhisper(inputPath)
+    const { chunks, allTempPaths } = await processFileForWhisper(inputPath)
     tempPaths = allTempPaths
 
     // Transcribe chunks in parallel (capped at 3 concurrent requests)
     const client = openai()
     const MAX_CONCURRENCY = 3
 
+    interface ChunkResult {
+      text: string
+      words: TimestampedWord[]
+    }
+
     async function transcribeWithConcurrencyLimit(
-      paths: string[],
+      chunkInfos: ChunkInfo[],
       limit: number
-    ): Promise<string[]> {
-      const results: string[] = new Array(paths.length)
+    ): Promise<ChunkResult[]> {
+      const results: ChunkResult[] = new Array(chunkInfos.length)
       let nextIndex = 0
 
       async function worker() {
-        while (nextIndex < paths.length) {
+        while (nextIndex < chunkInfos.length) {
           const i = nextIndex++
-          const fileStream = fs.createReadStream(paths[i])
+          const chunk = chunkInfos[i]
+          const fileStream = fs.createReadStream(chunk.path)
           const transcription = await client.audio.transcriptions.create({
-            model: 'gpt-4o-mini-transcribe',
+            model: 'whisper-1',
             file: fileStream,
+            response_format: 'verbose_json',
+            timestamp_granularities: ['word'],
           })
-          results[i] = transcription.text
+
+          // Cast to verbose response type for word timestamps
+          const verbose = transcription as unknown as {
+            text: string
+            words?: { word: string; start: number; end: number }[]
+          }
+
+          const words: TimestampedWord[] = (verbose.words ?? []).map((w) => ({
+            word: w.word,
+            start: w.start + chunk.offsetSeconds,
+            end: w.end + chunk.offsetSeconds,
+          }))
+
+          results[i] = { text: verbose.text, words }
         }
       }
 
       const workers = Array.from(
-        { length: Math.min(limit, paths.length) },
+        { length: Math.min(limit, chunkInfos.length) },
         () => worker()
       )
       await Promise.all(workers)
       return results
     }
 
-    const transcriptParts = await transcribeWithConcurrencyLimit(
-      chunkPaths,
-      MAX_CONCURRENCY
-    )
-    const transcript = transcriptParts.join(' ')
+    const chunkResults = await transcribeWithConcurrencyLimit(chunks, MAX_CONCURRENCY)
+    const transcript = chunkResults.map((r) => r.text).join(' ')
+    const allWords = chunkResults.flatMap((r) => r.words)
 
-    return NextResponse.json({ transcript })
+    const analytics = computeDeliveryAnalytics(allWords)
+
+    return NextResponse.json({ transcript, analytics })
   } catch (error: unknown) {
     console.error('Transcription error:', error)
 

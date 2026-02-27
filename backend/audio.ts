@@ -9,7 +9,12 @@ import crypto from 'crypto'
 ffmpeg.setFfmpegPath(ffmpegInstaller.path)
 
 const WHISPER_MAX_SIZE = 25 * 1024 * 1024 // 25MB
-const MAX_CHUNK_DURATION = 1400 // seconds — gpt-4o-mini-transcribe limit is 1500s
+const MAX_CHUNK_DURATION = 1400 // seconds — Whisper API limit is 1500s
+
+export interface ChunkInfo {
+  path: string
+  offsetSeconds: number
+}
 
 /** Formats Whisper accepts natively — no FFmpeg conversion needed */
 const WHISPER_NATIVE_FORMATS = new Set([
@@ -79,7 +84,7 @@ async function getAudioDuration(filePath: string): Promise<number> {
 export async function splitAudioIfNeeded(
   filePath: string,
   maxSizeBytes: number = WHISPER_MAX_SIZE
-): Promise<string[]> {
+): Promise<ChunkInfo[]> {
   const stat = statSync(filePath)
   const estimatedDuration = await getAudioDuration(filePath)
 
@@ -88,17 +93,17 @@ export async function splitAudioIfNeeded(
   const numChunks = Math.max(sizeChunks, durationChunks)
 
   if (numChunks <= 1) {
-    return [filePath]
+    return [{ path: filePath, offsetSeconds: 0 }]
   }
 
   const chunkDuration = Math.floor(estimatedDuration / numChunks)
 
-  const chunkPaths: string[] = []
+  const chunks: ChunkInfo[] = []
 
   for (let i = 0; i < numChunks; i++) {
     const startTime = i * chunkDuration
     const chunkPath = tempPath(`-chunk${i}.mp3`)
-    chunkPaths.push(chunkPath)
+    chunks.push({ path: chunkPath, offsetSeconds: startTime })
 
     await new Promise<void>((resolve, reject) => {
       let cmd = ffmpeg(filePath)
@@ -121,7 +126,7 @@ export async function splitAudioIfNeeded(
     })
   }
 
-  return chunkPaths
+  return chunks
 }
 
 /**
@@ -184,7 +189,7 @@ export async function cleanupTempFiles(paths: string[]): Promise<void> {
  * @param inputPath - Path to the file already on disk
  */
 export async function processFileForWhisper(inputPath: string): Promise<{
-  chunkPaths: string[]
+  chunks: ChunkInfo[]
   allTempPaths: string[]
 }> {
   const ext = path.extname(inputPath).toLowerCase()
@@ -193,7 +198,7 @@ export async function processFileForWhisper(inputPath: string): Promise<{
   // Small files in a Whisper-native format can skip FFmpeg entirely
   if (stat.size <= WHISPER_MAX_SIZE && WHISPER_NATIVE_FORMATS.has(ext)) {
     console.log(`[processFileForWhisper] Skipping FFmpeg — native format (${ext}, ${(stat.size / 1024 / 1024).toFixed(1)}MB)`)
-    return { chunkPaths: [inputPath], allTempPaths: [inputPath] }
+    return { chunks: [{ path: inputPath, offsetSeconds: 0 }], allTempPaths: [inputPath] }
   }
 
   // Verify the file actually contains audio before attempting extraction
@@ -208,14 +213,14 @@ export async function processFileForWhisper(inputPath: string): Promise<{
 
   await extractAndCompressAudio(inputPath, compressedPath)
 
-  const chunkPaths = await splitAudioIfNeeded(compressedPath)
+  const chunks = await splitAudioIfNeeded(compressedPath)
 
   // If chunks were created (different from compressedPath), track them too
-  for (const cp of chunkPaths) {
-    if (cp !== compressedPath) {
-      allTempPaths.push(cp)
+  for (const c of chunks) {
+    if (c.path !== compressedPath) {
+      allTempPaths.push(c.path)
     }
   }
 
-  return { chunkPaths, allTempPaths }
+  return { chunks, allTempPaths }
 }

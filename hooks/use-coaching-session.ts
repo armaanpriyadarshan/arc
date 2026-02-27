@@ -47,7 +47,7 @@ export function useCoachingSession(authToken?: string | null) {
     messagesRef, setMessages, setError: setErrorSafe, authTokenRef,
   })
   const {
-    transcript, transcriptRef, isCompressing, isTranscribing,
+    transcript, transcriptRef, deliveryAnalytics, isCompressing, isTranscribing,
     abortInFlight, resetTranscription,
   } = transcriptionHook
 
@@ -167,7 +167,7 @@ export function useCoachingSession(authToken?: string | null) {
   const uploadFile = useCallback(
     async (file: File) => {
       await transcriptionHook.uploadFile(file, {
-        onTranscriptReady: async (updatedMessages, newTranscript) => {
+        onTranscriptReady: async (updatedMessages, newTranscript, _analytics) => {
           if (stageRef.current === 'present') {
             await streamChatResponse(updatedMessages, newTranscript)
           } else {
@@ -198,6 +198,7 @@ export function useCoachingSession(authToken?: string | null) {
   return {
     messages,
     transcript,
+    deliveryAnalytics,
     researchContext,
     researchMeta,
     researchSearchTerms,

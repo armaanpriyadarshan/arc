@@ -7,6 +7,7 @@ import { shouldExtractClientSide, extractAudioClientSide } from '@/lib/client-au
 import { buildAuthHeaders } from '@/lib/api-utils'
 import type { Message, Attachment } from '@/hooks/use-message-context'
 import { generateId } from '@/hooks/use-message-context'
+import type { DeliveryAnalytics } from '@/lib/delivery-analytics'
 
 interface UseTranscriptionDeps {
   messagesRef: React.RefObject<Message[]>
@@ -23,6 +24,10 @@ export function useTranscription(deps: UseTranscriptionDeps) {
   const transcriptRef = useRef<string | null>(null)
   transcriptRef.current = transcript
 
+  const [deliveryAnalytics, setDeliveryAnalytics] = useState<DeliveryAnalytics | null>(null)
+  const deliveryAnalyticsRef = useRef<DeliveryAnalytics | null>(null)
+  deliveryAnalyticsRef.current = deliveryAnalytics
+
   const abortControllerRef = useRef<AbortController | null>(null)
 
   function abortInFlight() {
@@ -36,7 +41,7 @@ export function useTranscription(deps: UseTranscriptionDeps) {
     async (
       file: File,
       callbacks: {
-        onTranscriptReady: (messages: Message[], transcript: string) => Promise<void>
+        onTranscriptReady: (messages: Message[], transcript: string, analytics: DeliveryAnalytics | null) => Promise<void>
       }
     ) => {
       const validation = validateFile({
@@ -113,6 +118,11 @@ export function useTranscription(deps: UseTranscriptionDeps) {
 
         const data = await response.json()
         const newTranscript = data.transcript as string
+        const newAnalytics = (data.analytics as DeliveryAnalytics) ?? null
+
+        // Store delivery analytics (latest transcription wins)
+        deliveryAnalyticsRef.current = newAnalytics
+        setDeliveryAnalytics(newAnalytics)
 
         // Append to existing transcript (multiple recordings in presentation mode)
         const combined = transcriptRef.current
@@ -130,7 +140,7 @@ export function useTranscription(deps: UseTranscriptionDeps) {
         messagesRef.current = updatedWithTranscript
         setMessages(updatedWithTranscript)
 
-        await callbacks.onTranscriptReady(updatedWithTranscript, combined)
+        await callbacks.onTranscriptReady(updatedWithTranscript, combined, newAnalytics)
       } catch (err: unknown) {
         setIsCompressing(false)
         if (
@@ -153,6 +163,7 @@ export function useTranscription(deps: UseTranscriptionDeps) {
   const resetTranscription = useCallback(() => {
     abortInFlight()
     setTranscript(null)
+    setDeliveryAnalytics(null)
     setIsCompressing(false)
     setIsTranscribing(false)
   }, [])
@@ -160,6 +171,8 @@ export function useTranscription(deps: UseTranscriptionDeps) {
   return {
     transcript,
     transcriptRef,
+    deliveryAnalytics,
+    deliveryAnalyticsRef,
     isCompressing,
     isTranscribing,
     uploadFile,

@@ -129,24 +129,28 @@ describe('splitAudioIfNeeded', () => {
     vi.clearAllMocks()
   })
 
-  it('returns original path when file is small enough', async () => {
+  it('returns ChunkInfo with original path and offsetSeconds: 0 when file is small enough', async () => {
     vi.mocked(statSync).mockReturnValue({ size: 1024 } as ReturnType<typeof statSync>)
     mockFfprobe({ streams: [{ codec_type: 'audio' }], format: { duration: 60 } })
 
     const result = await splitAudioIfNeeded('/tmp/small.mp3')
-    expect(result).toEqual(['/tmp/small.mp3'])
+    expect(result).toEqual([{ path: '/tmp/small.mp3', offsetSeconds: 0 }])
   })
 
-  it('splits file when it exceeds max size', async () => {
+  it('splits file when it exceeds max size and returns ChunkInfo with offsets', async () => {
     // 60MB file, exceeds 25MB limit → ceil(60/25) = 3 chunks
     vi.mocked(statSync).mockReturnValue({ size: 60 * 1024 * 1024 } as ReturnType<typeof statSync>)
     mockFfprobe({ streams: [{ codec_type: 'audio' }], format: { duration: 600 } })
 
     const result = await splitAudioIfNeeded('/tmp/large.mp3')
     expect(result).toHaveLength(3)
-    for (const p of result) {
-      expect(p).toContain('chunk')
+    for (const chunk of result) {
+      expect(chunk.path).toContain('chunk')
+      expect(typeof chunk.offsetSeconds).toBe('number')
     }
+    expect(result[0].offsetSeconds).toBe(0)
+    expect(result[1].offsetSeconds).toBe(200) // floor(600/3) = 200
+    expect(result[2].offsetSeconds).toBe(400)
   })
 
   it('splits file based on duration if that produces more chunks', async () => {
@@ -157,6 +161,7 @@ describe('splitAudioIfNeeded', () => {
 
     const result = await splitAudioIfNeeded('/tmp/long.mp3')
     expect(result).toHaveLength(3)
+    expect(result[0].offsetSeconds).toBe(0)
   })
 })
 
@@ -170,7 +175,7 @@ describe('processFileForWhisper', () => {
     vi.mocked(statSync).mockReturnValue({ size: 10 * 1024 * 1024 } as ReturnType<typeof statSync>)
 
     const result = await processFileForWhisper('/tmp/small.mp3')
-    expect(result.chunkPaths).toEqual(['/tmp/small.mp3'])
+    expect(result.chunks).toEqual([{ path: '/tmp/small.mp3', offsetSeconds: 0 }])
     expect(result.allTempPaths).toEqual(['/tmp/small.mp3'])
     // FFmpeg constructor should NOT have been called
     expect(ffmpeg).not.toHaveBeenCalled()
@@ -180,7 +185,7 @@ describe('processFileForWhisper', () => {
     vi.mocked(statSync).mockReturnValue({ size: 5 * 1024 * 1024 } as ReturnType<typeof statSync>)
 
     const result = await processFileForWhisper('/tmp/recording.wav')
-    expect(result.chunkPaths).toEqual(['/tmp/recording.wav'])
+    expect(result.chunks).toEqual([{ path: '/tmp/recording.wav', offsetSeconds: 0 }])
     expect(ffmpeg).not.toHaveBeenCalled()
   })
 
@@ -215,7 +220,8 @@ describe('processFileForWhisper', () => {
 
     const result = await processFileForWhisper('/tmp/large.mp3')
     expect(ffmpeg).toHaveBeenCalled()
-    expect(result.chunkPaths.length).toBeGreaterThanOrEqual(1)
+    expect(result.chunks.length).toBeGreaterThanOrEqual(1)
+    expect(result.chunks[0].offsetSeconds).toBe(0)
     expect(result.allTempPaths.length).toBeGreaterThanOrEqual(2)
   })
 })

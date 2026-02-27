@@ -15,6 +15,7 @@ import {
 import { db } from "@/lib/firebase"
 import { buildAuthHeaders } from "@/lib/api-utils"
 import type { SlideFeedback, DeckFeedback } from "@/backend/slides"
+import type { DeliveryAnalytics } from "@/lib/delivery-analytics"
 
 /* ── Slide review data (structured) ── */
 
@@ -110,6 +111,7 @@ export interface SessionDocument {
   audiencePulse: { text: string; emotion: string }[]
   slideReview: SlideReviewData | { raw: string } | null
   researchContext: string | null
+  deliveryAnalytics: DeliveryAnalytics | null
   scores: SessionScores | SessionScoresV2 | null
 }
 

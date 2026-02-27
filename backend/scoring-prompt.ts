@@ -25,6 +25,10 @@ export function buildScoringPrompt(input: z.infer<typeof feedbackScoreRequestSch
     parts.push(`\nSlide deck review:\n${input.slideContext}`)
   }
 
+  if (input.deliveryAnalyticsSummary) {
+    parts.push(`\nDelivery analytics (measured from audio):\n${input.deliveryAnalyticsSummary}`)
+  }
+
   const conversationSummary = input.messages
     .filter((m) => m.content.trim())
     .map((m) => `[${m.role}]: ${m.content}`)
@@ -54,6 +58,8 @@ If the presentation is incomplete:
 
 STEP 1 — FEEDBACK LETTER
 Write a feedback letter (3-5 paragraphs) as Vera speaking directly to the presenter. Written in first person, in character as the audience. Include what landed, what didn't, and naturally weave in one strong point and one area for improvement. Paragraph form — no headers, no bullet points, no markdown formatting. Just honest, direct prose like you're talking to them afterward. If the presentation was incomplete, say so directly — it would be dishonest not to.
+
+If delivery analytics are provided, naturally weave specific delivery observations into your feedback letter (speaking pace, filler word habits, strategic pauses). Interpret the numbers — don't just list them. For example, "You rushed through the market size section at 180 WPM" or "Your frequent use of 'um' (8 times per minute) suggested you were uncertain about the technical details."
 
 STEP 2 — DYNAMIC RUBRIC
 Generate 4-6 rubric criteria that are SPECIFIC to this audience and goal. Do NOT use generic categories like "clarity" or "engagement". Instead, choose criteria that reflect what THIS audience actually cares about.

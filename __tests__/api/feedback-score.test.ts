@@ -132,4 +132,16 @@ describe('handleFeedbackScore', () => {
     expect(prompt).toContain('Hello everyone...')
     expect(prompt).toContain('The audience prefers...')
   })
+
+  it('accepts deliveryAnalyticsSummary in request body', async () => {
+    const body = {
+      ...VALID_BODY,
+      deliveryAnalyticsSummary: 'Speaking pace: 145 WPM average',
+    }
+    const res = await handleFeedbackScore(createRequest(body))
+    expect(res.status).toBe(200)
+    const prompt = mockCreate.mock.calls[0][0].messages[0].content
+    expect(prompt).toContain('Speaking pace: 145 WPM average')
+    expect(prompt).toContain('Delivery analytics')
+  })
 })

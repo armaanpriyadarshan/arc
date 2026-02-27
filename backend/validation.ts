@@ -189,6 +189,7 @@ export const feedbackScoreRequestSchema = z.object({
     .max(200),
   researchContext: z.string().max(20_000).optional(),
   slideContext: z.string().max(30_000).optional(),
+  deliveryAnalyticsSummary: z.string().max(5_000).optional(),
 })
 
 export function sanitizeInput(text: string): string {

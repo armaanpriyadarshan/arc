@@ -19,6 +19,7 @@ import { RubricDetail } from "@/components/feedback/rubric-detail"
 import { FollowUpChat } from "@/components/feedback/follow-up-chat"
 import { useFollowUpChat } from "@/hooks/use-follow-up-chat"
 import { SlideReviewSection } from "@/components/feedback/slide-review-section"
+import { DeliveryAnalyticsSection } from "@/components/feedback/delivery-analytics-section"
 
 const SCORE_POLL_INTERVAL = 3000
 const SCORE_POLL_MAX_ATTEMPTS = 20
@@ -123,6 +124,7 @@ export default function FeedbackPage({ params }: { params: Promise<{ sessionId: 
         setup: session.setup,
         transcript: session.transcript,
         date: session.createdAt?.toDate?.() ?? new Date(),
+        analytics: session.deliveryAnalytics ?? null,
       })
     } catch (err) {
       console.error("[feedback] PDF generation failed:", err)
@@ -280,6 +282,11 @@ export default function FeedbackPage({ params }: { params: Promise<{ sessionId: 
           ) : (
             /* Loading state while scores generate */
             <ScoresLoadingState />
+          )}
+
+          {/* Delivery analytics (collapsible) */}
+          {session.deliveryAnalytics && (
+            <DeliveryAnalyticsSection analytics={session.deliveryAnalytics} />
           )}
 
           {/* Slide deck review (collapsible) */}

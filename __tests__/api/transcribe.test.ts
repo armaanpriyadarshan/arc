@@ -1,6 +1,15 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 
-const mockTranscriptionCreate = vi.fn().mockResolvedValue({ text: 'This is the transcribed text.' })
+const mockTranscriptionCreate = vi.fn().mockResolvedValue({
+  text: 'This is the transcribed text.',
+  words: [
+    { word: 'This', start: 0, end: 0.3 },
+    { word: 'is', start: 0.4, end: 0.5 },
+    { word: 'the', start: 0.6, end: 0.7 },
+    { word: 'transcribed', start: 0.8, end: 1.2 },
+    { word: 'text.', start: 1.3, end: 1.6 },
+  ],
+})
 
 vi.mock('@/backend/openai', () => ({
   openai: vi.fn(() => ({
@@ -15,7 +24,7 @@ vi.mock('@/backend/openai', () => ({
 vi.mock('@/backend/audio', () => ({
   downloadToTmp: vi.fn().mockResolvedValue('/tmp/vera-test-input.mp4'),
   processFileForWhisper: vi.fn().mockResolvedValue({
-    chunkPaths: ['/tmp/vera-test-chunk0.mp3'],
+    chunks: [{ path: '/tmp/vera-test-chunk0.mp3', offsetSeconds: 0 }],
     allTempPaths: ['/tmp/vera-test-input.mp4', '/tmp/vera-test-compressed.mp3', '/tmp/vera-test-chunk0.mp3'],
   }),
   cleanupTempFiles: vi.fn().mockResolvedValue(undefined),
@@ -55,10 +64,19 @@ describe('POST /api/transcribe', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     vi.mocked(checkRateLimit).mockReturnValue({ allowed: true })
-    mockTranscriptionCreate.mockResolvedValue({ text: 'This is the transcribed text.' })
+    mockTranscriptionCreate.mockResolvedValue({
+      text: 'This is the transcribed text.',
+      words: [
+        { word: 'This', start: 0, end: 0.3 },
+        { word: 'is', start: 0.4, end: 0.5 },
+        { word: 'the', start: 0.6, end: 0.7 },
+        { word: 'transcribed', start: 0.8, end: 1.2 },
+        { word: 'text.', start: 1.3, end: 1.6 },
+      ],
+    })
     vi.mocked(downloadToTmp).mockResolvedValue('/tmp/vera-test-input.mp4')
     vi.mocked(processFileForWhisper).mockResolvedValue({
-      chunkPaths: ['/tmp/vera-test-chunk0.mp3'],
+      chunks: [{ path: '/tmp/vera-test-chunk0.mp3', offsetSeconds: 0 }],
       allTempPaths: ['/tmp/vera-test-input.mp4', '/tmp/vera-test-compressed.mp3'],
     })
   })
@@ -92,7 +110,7 @@ describe('POST /api/transcribe', () => {
     expect(body.error).toContain('Too many requests')
   })
 
-  it('returns transcript on successful transcription', async () => {
+  it('returns transcript and analytics on successful transcription', async () => {
     const request = createRequest({
       blobUrl: 'https://example.vercel-storage.com/presentation.mp4',
       fileName: 'presentation.mp4',
@@ -103,9 +121,28 @@ describe('POST /api/transcribe', () => {
 
     const body = await response.json()
     expect(body.transcript).toBe('This is the transcribed text.')
+    expect(body.analytics).toBeDefined()
+    expect(body.analytics.words).toHaveLength(5)
     expect(downloadToTmp).toHaveBeenCalledWith(
       'https://example.vercel-storage.com/presentation.mp4',
       'presentation.mp4'
+    )
+  })
+
+  it('passes whisper-1 model with verbose_json and timestamp_granularities', async () => {
+    const request = createRequest({
+      blobUrl: 'https://example.vercel-storage.com/test.mp4',
+      fileName: 'test.mp4',
+    })
+
+    await POST(request)
+
+    expect(mockTranscriptionCreate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        model: 'whisper-1',
+        response_format: 'verbose_json',
+        timestamp_granularities: ['word'],
+      })
     )
   })
 
@@ -194,14 +231,23 @@ describe('POST /api/transcribe', () => {
     expect(body.error).toContain('does not contain an audio track')
   })
 
-  it('joins multiple chunk transcripts with space', async () => {
+  it('joins multiple chunk transcripts with space and merges words with offset', async () => {
     vi.mocked(processFileForWhisper).mockResolvedValue({
-      chunkPaths: ['/tmp/chunk0.mp3', '/tmp/chunk1.mp3'],
+      chunks: [
+        { path: '/tmp/chunk0.mp3', offsetSeconds: 0 },
+        { path: '/tmp/chunk1.mp3', offsetSeconds: 200 },
+      ],
       allTempPaths: ['/tmp/input.mp4', '/tmp/chunk0.mp3', '/tmp/chunk1.mp3'],
     })
     mockTranscriptionCreate
-      .mockResolvedValueOnce({ text: 'Part one.' })
-      .mockResolvedValueOnce({ text: 'Part two.' })
+      .mockResolvedValueOnce({
+        text: 'Part one.',
+        words: [{ word: 'Part', start: 0, end: 0.3 }, { word: 'one.', start: 0.4, end: 0.7 }],
+      })
+      .mockResolvedValueOnce({
+        text: 'Part two.',
+        words: [{ word: 'Part', start: 0, end: 0.3 }, { word: 'two.', start: 0.4, end: 0.7 }],
+      })
 
     const request = createRequest({
       blobUrl: 'https://example.vercel-storage.com/long.mp4',
@@ -212,5 +258,9 @@ describe('POST /api/transcribe', () => {
     expect(response.status).toBe(200)
     const body = await response.json()
     expect(body.transcript).toBe('Part one. Part two.')
+    // Second chunk's words should have offset applied
+    expect(body.analytics.words).toHaveLength(4)
+    expect(body.analytics.words[2].start).toBeCloseTo(200)
+    expect(body.analytics.words[3].start).toBeCloseTo(200.4)
   })
 })
