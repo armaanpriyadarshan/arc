@@ -124,4 +124,133 @@ describe('formatAnalyticsSummary', () => {
     expect(summary).toContain('Significant pauses (>1.5s): 0')
     expect(summary).not.toContain('Longest pause')
   })
+
+  it('includes energy/volume section when energy windows present', () => {
+    const summary = formatAnalyticsSummary(makeAnalytics({
+      energyWindows: [
+        { startTime: 0, endTime: 30, rmsDb: -20 },
+        { startTime: 30, endTime: 60, rmsDb: -15 },
+      ],
+      averageEnergyDb: -17.5,
+      energyVariation: 3.5,
+      peakEnergyDb: -15,
+    }))
+    expect(summary).toContain('Volume:')
+    expect(summary).toContain('-17.5 dB RMS average')
+    expect(summary).toContain('Volume variation:')
+    expect(summary).toContain('3.5 dB std dev')
+    expect(summary).toContain('Peak volume: -15 dB')
+    expect(summary).toContain('Loudest section:')
+    expect(summary).toContain('Quietest section:')
+  })
+
+  it('omits energy section when no energy windows', () => {
+    const summary = formatAnalyticsSummary(makeAnalytics({
+      energyWindows: [],
+      averageEnergyDb: 0,
+      energyVariation: 0,
+      peakEnergyDb: 0,
+    }))
+    expect(summary).not.toContain('Volume:')
+  })
+
+  it('includes delivery observations for high filler density', () => {
+    const summary = formatAnalyticsSummary(makeAnalytics({
+      fillersPerMinute: 5,
+      totalFillerCount: 25,
+    }))
+    expect(summary).toContain('Delivery observations:')
+    expect(summary).toContain('filler word density')
+  })
+
+  it('includes delivery observation for flat energy', () => {
+    const summary = formatAnalyticsSummary(makeAnalytics({
+      energyWindows: [
+        { startTime: 0, endTime: 30, rmsDb: -20 },
+        { startTime: 30, endTime: 60, rmsDb: -20.5 },
+      ],
+      energyVariation: 1.0,
+    }))
+    expect(summary).toContain('Volume is very flat')
+  })
+
+  it('includes delivery observation for no fillers', () => {
+    const summary = formatAnalyticsSummary(makeAnalytics({
+      fillerInstances: [],
+      fillerSummary: [],
+      totalFillerCount: 0,
+      fillersPerMinute: 0,
+    }))
+    expect(summary).toContain('No filler words detected')
+  })
+
+  it('includes delivery observation for uniform pace', () => {
+    const summary = formatAnalyticsSummary(makeAnalytics({
+      paceVariation: 5,
+    }))
+    expect(summary).toContain('very uniform')
+  })
+
+  it('includes pitch section when pitch windows are present', () => {
+    const summary = formatAnalyticsSummary(makeAnalytics({
+      pitchWindows: [
+        { startTime: 0, endTime: 30, medianF0Hz: 180, medianF0Semitones: 89.2, f0RangeSemitones: 3.5, f0StddevSemitones: 1.2, voicedFrameRatio: 0.85 },
+        { startTime: 30, endTime: 60, medianF0Hz: 220, medianF0Semitones: 92.0, f0RangeSemitones: 4.0, f0StddevSemitones: 1.5, voicedFrameRatio: 0.9 },
+      ],
+      averagePitchHz: 200,
+      averagePitchSemitones: 90.6,
+      pitchRangeSemitones: 2.8,
+      pitchVariationSemitones: 1.4,
+      overallVoicedRatio: 0.88,
+    }))
+    expect(summary).toContain('Pitch: 200 Hz average')
+    expect(summary).toContain('Pitch range:')
+    expect(summary).toContain('Pitch variation:')
+    expect(summary).toContain('Highest pitch section: 220 Hz')
+    expect(summary).toContain('Lowest pitch section: 180 Hz')
+  })
+
+  it('omits pitch section when no pitch data', () => {
+    const summary = formatAnalyticsSummary(makeAnalytics({
+      pitchWindows: [],
+      averagePitchHz: 0,
+      averagePitchSemitones: 0,
+      pitchRangeSemitones: 0,
+      pitchVariationSemitones: 0,
+      overallVoicedRatio: 0,
+    }))
+    expect(summary).not.toContain('Pitch:')
+    expect(summary).not.toContain('Pitch range:')
+  })
+
+  it('includes monotone observation for flat pitch', () => {
+    const summary = formatAnalyticsSummary(makeAnalytics({
+      pitchWindows: [
+        { startTime: 0, endTime: 30, medianF0Hz: 180, medianF0Semitones: 89.2, f0RangeSemitones: 1.0, f0StddevSemitones: 0.5, voicedFrameRatio: 0.85 },
+        { startTime: 30, endTime: 60, medianF0Hz: 181, medianF0Semitones: 89.3, f0RangeSemitones: 0.8, f0StddevSemitones: 0.4, voicedFrameRatio: 0.9 },
+      ],
+      averagePitchHz: 180.5,
+      averagePitchSemitones: 89.25,
+      pitchRangeSemitones: 0.1,
+      pitchVariationSemitones: 0.05,
+      overallVoicedRatio: 0.88,
+    }))
+    expect(summary).toContain('monotone')
+  })
+
+  it('includes upspeak observation for rising pitch', () => {
+    const summary = formatAnalyticsSummary(makeAnalytics({
+      pitchWindows: [
+        { startTime: 0, endTime: 30, medianF0Hz: 150, medianF0Semitones: 86.0, f0RangeSemitones: 3.0, f0StddevSemitones: 1.0, voicedFrameRatio: 0.85 },
+        { startTime: 30, endTime: 60, medianF0Hz: 160, medianF0Semitones: 87.0, f0RangeSemitones: 3.0, f0StddevSemitones: 1.0, voicedFrameRatio: 0.85 },
+        { startTime: 60, endTime: 90, medianF0Hz: 200, medianF0Semitones: 90.5, f0RangeSemitones: 3.0, f0StddevSemitones: 1.0, voicedFrameRatio: 0.85 },
+      ],
+      averagePitchHz: 170,
+      averagePitchSemitones: 87.8,
+      pitchRangeSemitones: 4.5,
+      pitchVariationSemitones: 1.9,
+      overallVoicedRatio: 0.85,
+    }))
+    expect(summary).toContain('Pitch rises toward the end')
+  })
 })

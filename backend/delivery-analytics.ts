@@ -5,6 +5,8 @@ import type {
   PauseInstance,
   PaceWindow,
   ContentSegment,
+  EnergyWindow,
+  PitchWindow,
   DeliveryAnalytics,
 } from '@/lib/delivery-analytics'
 
@@ -56,6 +58,16 @@ export function emptyAnalytics(): DeliveryAnalytics {
     averagePauseDuration: 0,
     longestPause: null,
     contentSegments: [],
+    energyWindows: [],
+    averageEnergyDb: 0,
+    energyVariation: 0,
+    peakEnergyDb: 0,
+    pitchWindows: [],
+    averagePitchHz: 0,
+    averagePitchSemitones: 0,
+    pitchRangeSemitones: 0,
+    pitchVariationSemitones: 0,
+    overallVoicedRatio: 0,
   }
 }
 
@@ -200,7 +212,11 @@ export function computeContentSegments(words: TimestampedWord[], totalDuration: 
 
 // ── Main Entry Point ──
 
-export function computeDeliveryAnalytics(words: TimestampedWord[]): DeliveryAnalytics {
+export function computeDeliveryAnalytics(
+  words: TimestampedWord[],
+  energyWindows: EnergyWindow[] = [],
+  pitchWindows: PitchWindow[] = []
+): DeliveryAnalytics {
   if (words.length === 0) return emptyAnalytics()
 
   const totalDurationSeconds = words[words.length - 1].end - words[0].start
@@ -242,6 +258,32 @@ export function computeDeliveryAnalytics(words: TimestampedWord[]): DeliveryAnal
 
   const contentSegments = computeContentSegments(words, totalDurationSeconds)
 
+  // Energy
+  const dbValues = energyWindows.map((w) => w.rmsDb)
+  const averageEnergyDb = dbValues.length > 0
+    ? Math.round((dbValues.reduce((a, b) => a + b, 0) / dbValues.length) * 10) / 10
+    : 0
+  const energyVariationVal = stddev(dbValues)
+  const peakEnergyDb = dbValues.length > 0 ? Math.max(...dbValues) : 0
+
+  // Pitch
+  const voicedPitchWindows = pitchWindows.filter((w) => w.voicedFrameRatio > 0)
+  const averagePitchHz = voicedPitchWindows.length > 0
+    ? Math.round((voicedPitchWindows.reduce((s, w) => s + w.medianF0Hz, 0) / voicedPitchWindows.length) * 10) / 10
+    : 0
+  const averagePitchSemitones = voicedPitchWindows.length > 0
+    ? Math.round((voicedPitchWindows.reduce((s, w) => s + w.medianF0Semitones, 0) / voicedPitchWindows.length) * 10) / 10
+    : 0
+  const allWindowSemitones = voicedPitchWindows.map((w) => w.medianF0Semitones)
+  const pitchRangeSemitones = allWindowSemitones.length > 1
+    ? Math.round((Math.max(...allWindowSemitones) - Math.min(...allWindowSemitones)) * 10) / 10
+    : 0
+  const pitchVariationSemitones = Math.round(stddev(allWindowSemitones) * 10) / 10
+  const totalVoicedFrames = pitchWindows.reduce((s, w) => s + w.voicedFrameRatio, 0)
+  const overallVoicedRatio = pitchWindows.length > 0
+    ? Math.round((totalVoicedFrames / pitchWindows.length) * 100) / 100
+    : 0
+
   return {
     words,
     totalDurationSeconds,
@@ -257,5 +299,15 @@ export function computeDeliveryAnalytics(words: TimestampedWord[]): DeliveryAnal
     averagePauseDuration,
     longestPause,
     contentSegments,
+    energyWindows,
+    averageEnergyDb,
+    energyVariation: Math.round(energyVariationVal * 10) / 10,
+    peakEnergyDb,
+    pitchWindows,
+    averagePitchHz,
+    averagePitchSemitones,
+    pitchRangeSemitones,
+    pitchVariationSemitones,
+    overallVoicedRatio,
   }
 }

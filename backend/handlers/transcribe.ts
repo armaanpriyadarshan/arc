@@ -5,7 +5,7 @@ import { openai } from '@/backend/openai'
 import { transcribeRequestSchema } from '@/backend/validation'
 import { checkRateLimit, getClientIp } from '@/backend/rate-limit'
 import { RATE_LIMITS } from '@/backend/rate-limit-config'
-import { downloadToTmp, processFileForWhisper, cleanupTempFiles } from '@/backend/audio'
+import { downloadToTmp, processFileForWhisper, cleanupTempFiles, analyzeAudio } from '@/backend/audio'
 import type { ChunkInfo } from '@/backend/audio'
 import { computeDeliveryAnalytics } from '@/backend/delivery-analytics'
 import type { TimestampedWord } from '@/lib/delivery-analytics'
@@ -40,10 +40,10 @@ export async function handleTranscribe(request: NextRequest) {
     const inputPath = await downloadToTmp(blobUrl, fileName)
 
     // Process file: extract audio, compress, split if needed
-    const { chunks, allTempPaths } = await processFileForWhisper(inputPath)
+    const { chunks, allTempPaths, analysisPath } = await processFileForWhisper(inputPath)
     tempPaths = allTempPaths
 
-    // Transcribe chunks in parallel (capped at 3 concurrent requests)
+    // Transcribe chunks and analyze energy in parallel
     const client = openai()
     const MAX_CONCURRENCY = 3
 
@@ -95,11 +95,18 @@ export async function handleTranscribe(request: NextRequest) {
       return results
     }
 
-    const chunkResults = await transcribeWithConcurrencyLimit(chunks, MAX_CONCURRENCY)
+    const [chunkResults, audioAnalysis] = await Promise.all([
+      transcribeWithConcurrencyLimit(chunks, MAX_CONCURRENCY),
+      analyzeAudio(analysisPath).catch((err) => {
+        console.warn('[transcribe] Audio analysis failed, continuing without:', err)
+        return { energyWindows: [], pitchWindows: [] } as Awaited<ReturnType<typeof analyzeAudio>>
+      }),
+    ])
+
     const transcript = chunkResults.map((r) => r.text).join(' ')
     const allWords = chunkResults.flatMap((r) => r.words)
 
-    const analytics = computeDeliveryAnalytics(allWords)
+    const analytics = computeDeliveryAnalytics(allWords, audioAnalysis.energyWindows, audioAnalysis.pitchWindows)
 
     return NextResponse.json({ transcript, analytics })
   } catch (error: unknown) {

@@ -20,6 +20,16 @@ describe('emptyAnalytics', () => {
     expect(a.totalDurationSeconds).toBe(0)
     expect(a.averageWpm).toBe(0)
     expect(a.longestPause).toBeNull()
+    expect(a.energyWindows).toEqual([])
+    expect(a.averageEnergyDb).toBe(0)
+    expect(a.energyVariation).toBe(0)
+    expect(a.peakEnergyDb).toBe(0)
+    expect(a.pitchWindows).toEqual([])
+    expect(a.averagePitchHz).toBe(0)
+    expect(a.averagePitchSemitones).toBe(0)
+    expect(a.pitchRangeSemitones).toBe(0)
+    expect(a.pitchVariationSemitones).toBe(0)
+    expect(a.overallVoicedRatio).toBe(0)
   })
 })
 
@@ -286,5 +296,65 @@ describe('computeDeliveryAnalytics', () => {
     const result = computeDeliveryAnalytics(words)
     expect(result.averageWpm).toBe(0)
     expect(result.words).toEqual(words)
+  })
+
+  it('integrates energy windows when provided', () => {
+    const words = [word('hello', 0, 0.5), word('world', 0.6, 1.0)]
+    const energy = [
+      { startTime: 0, endTime: 0.5, rmsDb: -20 },
+      { startTime: 0.5, endTime: 1.0, rmsDb: -15 },
+    ]
+    const result = computeDeliveryAnalytics(words, energy)
+    expect(result.energyWindows).toHaveLength(2)
+    expect(result.averageEnergyDb).toBeCloseTo(-17.5, 0)
+    expect(result.peakEnergyDb).toBe(-15)
+    expect(result.energyVariation).toBeGreaterThan(0)
+  })
+
+  it('handles empty energy windows gracefully', () => {
+    const words = [word('hello', 0, 0.5), word('world', 0.6, 1.0)]
+    const result = computeDeliveryAnalytics(words, [])
+    expect(result.energyWindows).toEqual([])
+    expect(result.averageEnergyDb).toBe(0)
+    expect(result.peakEnergyDb).toBe(0)
+  })
+
+  it('integrates pitch windows when provided', () => {
+    const words = [word('hello', 0, 0.5), word('world', 0.6, 1.0)]
+    const pitch = [
+      { startTime: 0, endTime: 0.5, medianF0Hz: 180, medianF0Semitones: 89.2, f0RangeSemitones: 3.5, f0StddevSemitones: 1.2, voicedFrameRatio: 0.85 },
+      { startTime: 0.5, endTime: 1.0, medianF0Hz: 220, medianF0Semitones: 92.0, f0RangeSemitones: 4.0, f0StddevSemitones: 1.5, voicedFrameRatio: 0.9 },
+    ]
+    const result = computeDeliveryAnalytics(words, [], pitch)
+    expect(result.pitchWindows).toHaveLength(2)
+    expect(result.averagePitchHz).toBe(200)
+    expect(result.averagePitchSemitones).toBe(90.6)
+    expect(result.pitchRangeSemitones).toBe(2.8)
+    expect(result.pitchVariationSemitones).toBeGreaterThan(0)
+    expect(result.overallVoicedRatio).toBeGreaterThan(0)
+  })
+
+  it('handles empty pitch windows gracefully', () => {
+    const words = [word('hello', 0, 0.5), word('world', 0.6, 1.0)]
+    const result = computeDeliveryAnalytics(words, [], [])
+    expect(result.pitchWindows).toEqual([])
+    expect(result.averagePitchHz).toBe(0)
+    expect(result.pitchRangeSemitones).toBe(0)
+  })
+
+  it('excludes unvoiced windows from pitch averaging', () => {
+    const words = [word('hello', 0, 0.5), word('world', 0.6, 1.0)]
+    const pitch = [
+      { startTime: 0, endTime: 0.5, medianF0Hz: 200, medianF0Semitones: 91.0, f0RangeSemitones: 3.0, f0StddevSemitones: 1.0, voicedFrameRatio: 0.8 },
+      { startTime: 0.5, endTime: 1.0, medianF0Hz: 0, medianF0Semitones: 0, f0RangeSemitones: 0, f0StddevSemitones: 0, voicedFrameRatio: 0 },
+    ]
+    const result = computeDeliveryAnalytics(words, [], pitch)
+    // Only the voiced window should be used for averages
+    expect(result.averagePitchHz).toBe(200)
+    expect(result.averagePitchSemitones).toBe(91.0)
+    // Range is 0 because there's only one voiced window
+    expect(result.pitchRangeSemitones).toBe(0)
+    // Overall voiced ratio = (0.8 + 0) / 2 = 0.4
+    expect(result.overallVoicedRatio).toBe(0.4)
   })
 })

@@ -41,6 +41,22 @@ export interface ContentSegment {
   topicLabel: string
 }
 
+export interface EnergyWindow {
+  startTime: number
+  endTime: number
+  rmsDb: number
+}
+
+export interface PitchWindow {
+  startTime: number
+  endTime: number
+  medianF0Hz: number
+  medianF0Semitones: number
+  f0RangeSemitones: number
+  f0StddevSemitones: number
+  voicedFrameRatio: number
+}
+
 export interface DeliveryAnalytics {
   words: TimestampedWord[]
   totalDurationSeconds: number
@@ -60,4 +76,16 @@ export interface DeliveryAnalytics {
   longestPause: PauseInstance | null
 
   contentSegments: ContentSegment[]
+
+  energyWindows: EnergyWindow[]
+  averageEnergyDb: number
+  energyVariation: number
+  peakEnergyDb: number
+
+  pitchWindows: PitchWindow[]
+  averagePitchHz: number
+  averagePitchSemitones: number
+  pitchRangeSemitones: number
+  pitchVariationSemitones: number
+  overallVoicedRatio: number
 }

@@ -26,8 +26,10 @@ vi.mock('@/backend/audio', () => ({
   processFileForWhisper: vi.fn().mockResolvedValue({
     chunks: [{ path: '/tmp/vera-test-chunk0.mp3', offsetSeconds: 0 }],
     allTempPaths: ['/tmp/vera-test-input.mp4', '/tmp/vera-test-compressed.mp3', '/tmp/vera-test-chunk0.mp3'],
+    analysisPath: '/tmp/vera-test-compressed.mp3',
   }),
   cleanupTempFiles: vi.fn().mockResolvedValue(undefined),
+  analyzeAudio: vi.fn().mockResolvedValue({ energyWindows: [], pitchWindows: [] }),
 }))
 
 vi.mock('@/backend/rate-limit', () => ({
@@ -49,7 +51,7 @@ vi.mock('fs', () => ({
 import { POST } from '@/app/api/transcribe/route'
 import { NextRequest } from 'next/server'
 import { checkRateLimit } from '@/backend/rate-limit'
-import { downloadToTmp, processFileForWhisper } from '@/backend/audio'
+import { downloadToTmp, processFileForWhisper, analyzeAudio } from '@/backend/audio'
 import { del } from '@vercel/blob'
 
 function createRequest(body?: Record<string, unknown>): NextRequest {
@@ -78,7 +80,9 @@ describe('POST /api/transcribe', () => {
     vi.mocked(processFileForWhisper).mockResolvedValue({
       chunks: [{ path: '/tmp/vera-test-chunk0.mp3', offsetSeconds: 0 }],
       allTempPaths: ['/tmp/vera-test-input.mp4', '/tmp/vera-test-compressed.mp3'],
+      analysisPath: '/tmp/vera-test-compressed.mp3',
     })
+    vi.mocked(analyzeAudio).mockResolvedValue({ energyWindows: [], pitchWindows: [] })
   })
 
   it('returns 400 when body is invalid', async () => {
@@ -238,6 +242,7 @@ describe('POST /api/transcribe', () => {
         { path: '/tmp/chunk1.mp3', offsetSeconds: 200 },
       ],
       allTempPaths: ['/tmp/input.mp4', '/tmp/chunk0.mp3', '/tmp/chunk1.mp3'],
+      analysisPath: '/tmp/input.mp4',
     })
     mockTranscriptionCreate
       .mockResolvedValueOnce({
