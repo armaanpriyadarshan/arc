@@ -111,6 +111,7 @@ export interface SessionDocument {
   slideReview: SlideReviewData | { raw: string } | null
   researchContext: string | null
   scores: SessionScores | SessionScoresV2 | null
+  deliveryAnalyticsSummary?: string | null
 }
 
 export interface SessionSummary {

@@ -18,11 +18,9 @@ import { RubricRadar } from "@/components/feedback/rubric-radar"
 import { RubricDetail } from "@/components/feedback/rubric-detail"
 import { FollowUpChat } from "@/components/feedback/follow-up-chat"
 import { useFollowUpChat } from "@/hooks/use-follow-up-chat"
+import { useFeedbackStream } from "@/hooks/use-feedback-stream"
 import { SlideReviewSection } from "@/components/feedback/slide-review-section"
 import { detectPersonaMeta } from "@/lib/persona-detection"
-
-const SCORE_POLL_INTERVAL = 3000
-const SCORE_POLL_MAX_ATTEMPTS = 20
 
 export default function FeedbackPage({ params }: { params: Promise<{ sessionId: string }> }) {
   const { sessionId } = use(params)
@@ -33,7 +31,9 @@ export default function FeedbackPage({ params }: { params: Promise<{ sessionId: 
   const [isLoading, setIsLoading] = useState(true)
   const [authToken, setAuthToken] = useState<string | null>(null)
   const [isGeneratingPdf, setIsGeneratingPdf] = useState(false)
-  const pollCount = useRef(0)
+  const streamStarted = useRef(false)
+
+  const feedbackStream = useFeedbackStream()
 
   // Get auth token for follow-up chat
   useEffect(() => {
@@ -71,31 +71,34 @@ export default function FeedbackPage({ params }: { params: Promise<{ sessionId: 
     load()
   }, [sessionId, user])
 
-  // Poll for scores if missing
+  // Initiate SSE stream when session loads with no scores
   useEffect(() => {
-    if (!session || session.scores) return
-    if (!user) return
+    if (!session || session.scores || !authToken || streamStarted.current) return
+    streamStarted.current = true
 
-    const interval = setInterval(async () => {
-      pollCount.current++
-      if (pollCount.current > SCORE_POLL_MAX_ATTEMPTS) {
-        clearInterval(interval)
-        return
-      }
+    const slideContext = session.slideReview && "raw" in session.slideReview
+      ? (session.slideReview as { raw: string }).raw
+      : undefined
 
-      try {
-        const updated = await getSession(sessionId, user.uid)
-        if (updated?.scores) {
-          setSession(updated)
-          clearInterval(interval)
-        }
-      } catch {
-        // silently retry
-      }
-    }, SCORE_POLL_INTERVAL)
+    feedbackStream.startStream({
+      authToken,
+      sessionId,
+      transcript: session.transcript ?? undefined,
+      setup: session.setup,
+      messages: session.messages
+        .filter((m) => m.content?.trim())
+        .map((m) => ({ role: m.role, content: m.content })),
+      researchContext: session.researchContext ?? undefined,
+      slideContext,
+      deliveryAnalyticsSummary: session.deliveryAnalyticsSummary ?? undefined,
+    })
+  }, [session, authToken, sessionId]) // eslint-disable-line react-hooks/exhaustive-deps
 
-    return () => clearInterval(interval)
-  }, [session, sessionId, user])
+  // When streaming scores arrive, merge them into local session state
+  useEffect(() => {
+    if (!feedbackStream.scores || !session) return
+    setSession((prev) => prev ? { ...prev, scores: feedbackStream.scores } : prev)
+  }, [feedbackStream.scores]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Follow-up chat hook
   const followUp = useFollowUpChat({
@@ -166,6 +169,10 @@ export default function FeedbackPage({ params }: { params: Promise<{ sessionId: 
   const headerAudience = v2Scores?.refinedAudience ?? (hasScores ? session.setup.audience : null)
   const headerGoal = v2Scores?.refinedGoal ?? (hasScores ? session.setup.goal : null)
   const personaMeta = detectPersonaMeta(headerAudience ?? session.setup.audience)
+
+  // Streaming state: show letter progressively while scores are still generating
+  const isStreamingLetter = feedbackStream.isStreaming && feedbackStream.letterText.length > 0
+  const hasStreamedScores = !!feedbackStream.scores
 
   return (
     <div className="relative min-h-screen bg-background pb-24">
@@ -260,11 +267,10 @@ export default function FeedbackPage({ params }: { params: Promise<{ sessionId: 
         {/* ── Content ── */}
         <div className="mt-12 space-y-12">
           {isV2 && v2Scores ? (
+            /* Full scores available (from Firestore or stream complete) */
             <>
-              {/* Feedback Letter */}
               <FeedbackLetter letter={v2Scores.feedbackLetter} />
 
-              {/* Rubric Section */}
               <motion.section
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -281,6 +287,22 @@ export default function FeedbackPage({ params }: { params: Promise<{ sessionId: 
                   />
                 </div>
               </motion.section>
+            </>
+          ) : isStreamingLetter || (hasStreamedScores && !scores) ? (
+            /* Letter streaming in, scores not yet merged */
+            <>
+              <FeedbackLetter
+                letter={feedbackStream.letterText}
+                isStreaming={feedbackStream.isStreaming}
+              />
+
+              {/* Rubric skeleton while scores stream */}
+              <div className="space-y-4">
+                <div className="h-48 animate-pulse rounded-xl bg-muted/40" />
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="h-20 animate-pulse rounded-xl bg-muted/40" />
+                ))}
+              </div>
             </>
           ) : scores ? (
             /* V1 backward compat: render last assistant message as markdown */

@@ -17,6 +17,17 @@ vi.mock('@/backend/auth', () => ({
   requireAuth: vi.fn().mockResolvedValue({ uid: 'user123', email: 'test@test.com' }),
 }))
 
+const mockUpdate = vi.fn().mockResolvedValue(undefined)
+vi.mock('@/backend/firebase-admin', () => ({
+  db: vi.fn(() => ({
+    collection: vi.fn(() => ({
+      doc: vi.fn(() => ({
+        update: mockUpdate,
+      })),
+    })),
+  })),
+}))
+
 import { handleFeedbackScore } from '@/backend/handlers/feedback-score'
 import { requireAuth } from '@/backend/auth'
 
@@ -42,19 +53,56 @@ const VALID_BODY = {
 }
 
 const MOCK_SCORES = {
-  overall: 78,
-  delivery: 80,
-  content: 75,
-  engagement: 79,
+  feedbackLetter: 'Great presentation.',
+  rubric: [{ name: 'Clarity', score: 80, summary: 'Good', evidence: [] }],
+  strongestMoment: { quote: 'test', why: 'good' },
+  areaToImprove: { issue: 'pacing', suggestion: 'slow down' },
+  refinedTitle: 'My Pitch',
+  refinedAudience: 'VCs',
+  refinedGoal: 'Get funded',
+}
+
+/** Create an async iterable that yields OpenAI-style stream chunks for a JSON string. */
+function createMockStream(jsonStr: string) {
+  // Split into small chunks to simulate streaming
+  const chunks: string[] = []
+  for (let i = 0; i < jsonStr.length; i += 10) {
+    chunks.push(jsonStr.slice(i, i + 10))
+  }
+
+  return {
+    [Symbol.asyncIterator]: async function* () {
+      for (const chunk of chunks) {
+        yield { choices: [{ delta: { content: chunk } }] }
+      }
+    },
+  }
+}
+
+/** Parse SSE response body into an array of parsed events. */
+async function parseSSEResponse(res: Response): Promise<{ type: string; [key: string]: unknown }[]> {
+  const text = await res.text()
+  const events: { type: string; [key: string]: unknown }[] = []
+
+  for (const line of text.split('\n\n')) {
+    if (!line.startsWith('data: ')) continue
+    const data = line.slice(6).trim()
+    if (data === '[DONE]') continue
+    try {
+      events.push(JSON.parse(data))
+    } catch {
+      // skip
+    }
+  }
+
+  return events
 }
 
 describe('handleFeedbackScore', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     vi.mocked(requireAuth).mockResolvedValue({ uid: 'user123', email: 'test@test.com' })
-    mockCreate.mockResolvedValue({
-      choices: [{ message: { content: JSON.stringify(MOCK_SCORES) } }],
-    })
+    mockCreate.mockResolvedValue(createMockStream(JSON.stringify(MOCK_SCORES)))
   })
 
   it('returns 401 when not authenticated', async () => {
@@ -78,12 +126,25 @@ describe('handleFeedbackScore', () => {
     expect(res.status).toBe(400)
   })
 
-  it('returns scores on successful request', async () => {
+  it('streams letter chunks and scores on successful request', async () => {
     const res = await handleFeedbackScore(createRequest(VALID_BODY))
     expect(res.status).toBe(200)
-    const data = await res.json()
-    expect(data.sessionId).toBe('sess-1')
-    expect(data.scores).toEqual(MOCK_SCORES)
+    expect(res.headers.get('Content-Type')).toBe('text/event-stream')
+
+    const events = await parseSSEResponse(res)
+
+    // Should have letter_chunk events
+    const letterChunks = events.filter((e) => e.type === 'letter_chunk')
+    expect(letterChunks.length).toBeGreaterThan(0)
+
+    // Concatenated letter chunks should equal the full letter
+    const fullLetter = letterChunks.map((e) => e.content).join('')
+    expect(fullLetter).toBe(MOCK_SCORES.feedbackLetter)
+
+    // Should have a scores event
+    const scoresEvent = events.find((e) => e.type === 'scores')
+    expect(scoresEvent).toBeDefined()
+    expect(scoresEvent!.scores).toEqual(MOCK_SCORES)
   })
 
   it('passes correct model parameters to OpenAI', async () => {
@@ -94,22 +155,18 @@ describe('handleFeedbackScore', () => {
     expect(callArgs.temperature).toBe(0.3)
     expect(callArgs.max_tokens).toBe(5000)
     expect(callArgs.response_format).toEqual({ type: 'json_object' })
+    expect(callArgs.stream).toBe(true)
   })
 
-  it('returns 500 when model returns empty content', async () => {
-    mockCreate.mockResolvedValue({
-      choices: [{ message: { content: null } }],
-    })
+  it('writes scores to Firestore after stream completes', async () => {
     const res = await handleFeedbackScore(createRequest(VALID_BODY))
-    expect(res.status).toBe(500)
-    const data = await res.json()
-    expect(data.error).toMatch(/no response/i)
-  })
+    // Consume the stream to trigger the Firestore write
+    await res.text()
 
-  it('returns 500 when model returns no choices', async () => {
-    mockCreate.mockResolvedValue({ choices: [] })
-    const res = await handleFeedbackScore(createRequest(VALID_BODY))
-    expect(res.status).toBe(500)
+    // Wait a tick for the fire-and-forget Firestore write
+    await new Promise((r) => setTimeout(r, 50))
+
+    expect(mockUpdate).toHaveBeenCalledWith({ scores: MOCK_SCORES })
   })
 
   it('returns 500 when OpenAI throws', async () => {
@@ -143,5 +200,19 @@ describe('handleFeedbackScore', () => {
     const prompt = mockCreate.mock.calls[0][0].messages[0].content
     expect(prompt).toContain('Speaking pace: 145 WPM average')
     expect(prompt).toContain('Delivery analytics')
+  })
+
+  it('emits error event when stream produces invalid JSON', async () => {
+    mockCreate.mockResolvedValue({
+      [Symbol.asyncIterator]: async function* () {
+        yield { choices: [{ delta: { content: 'not valid json {{{' } }] }
+      },
+    })
+    const res = await handleFeedbackScore(createRequest(VALID_BODY))
+    expect(res.status).toBe(200) // SSE always returns 200
+
+    const events = await parseSSEResponse(res)
+    const errorEvent = events.find((e) => e.type === 'error')
+    expect(errorEvent).toBeDefined()
   })
 })

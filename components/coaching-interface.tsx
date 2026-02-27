@@ -9,7 +9,7 @@ import { toast } from "sonner"
 
 import { useAuth } from "@/contexts/auth-context"
 import { buildAuthHeaders } from "@/lib/api-utils"
-import { saveSession, updateSessionScores, type SessionScores, type SessionScoresV2 } from "@/lib/sessions"
+import { saveSession, type SessionScores, type SessionScoresV2 } from "@/lib/sessions"
 import { useCoachingSession } from "@/hooks/use-coaching-session"
 import { formatAnalyticsSummary } from "@/lib/format-delivery-analytics"
 import { useRecorder } from "@/hooks/use-recorder"
@@ -261,6 +261,7 @@ export function CoachingInterface({ authToken }: CoachingInterfaceProps) {
       slideReview: slideReviewPayload,
       researchContext: researchContext ?? null,
       scores: null as SessionScores | SessionScoresV2 | null,
+      deliveryAnalyticsSummary: deliveryAnalytics ? formatAnalyticsSummary(deliveryAnalytics) : null,
     }
 
     let sessionId: string
@@ -276,29 +277,6 @@ export function CoachingInterface({ authToken }: CoachingInterfaceProps) {
     }
 
     router.push(`/feedback/${sessionId}`)
-
-    user.getIdToken().then((token) => {
-      fetch("/api/feedback-score", {
-        method: "POST",
-        headers: buildAuthHeaders(token),
-        body: JSON.stringify({
-          sessionId,
-          transcript: transcript ?? undefined,
-          setup,
-          messages: strippedMessages,
-          researchContext: researchContext ?? undefined,
-          slideContext: slideContext ?? undefined,
-          deliveryAnalyticsSummary: deliveryAnalytics ? formatAnalyticsSummary(deliveryAnalytics) : undefined,
-        }),
-      })
-        .then(async (res) => {
-          if (res.ok) {
-            const { scores } = await res.json()
-            await updateSessionScores(sessionId, scores as SessionScoresV2)
-          }
-        })
-        .catch((err) => console.warn("[feedback-score] Scoring failed:", err))
-    })
   }
 
   // When feedback completes (stage → followup), save and navigate
