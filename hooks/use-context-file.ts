@@ -13,6 +13,7 @@ export interface ContextFileInfo {
 
 export function useContextFile(authToken?: string | null) {
   const [contextFile, setContextFile] = useState<ContextFileInfo | null>(null)
+  const [contextBlobUrl, setContextBlobUrl] = useState<string | null>(null)
   const [extractedText, setExtractedText] = useState<string | null>(null)
   const [isExtracting, setIsExtracting] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -40,6 +41,7 @@ export function useContextFile(authToken?: string | null) {
         access: 'public',
         handleUploadUrl: '/api/upload',
       })
+      setContextBlobUrl(blob.url)
 
       // Call extract-context API
       const response = await fetch('/api/extract-context', {
@@ -70,6 +72,7 @@ export function useContextFile(authToken?: string | null) {
 
   const removeContextFile = useCallback(() => {
     setContextFile(null)
+    setContextBlobUrl(null)
     setExtractedText(null)
     setError(null)
     setIsExtracting(false)
@@ -77,6 +80,7 @@ export function useContextFile(authToken?: string | null) {
 
   return {
     contextFile,
+    contextBlobUrl,
     extractedText,
     isExtracting,
     error,

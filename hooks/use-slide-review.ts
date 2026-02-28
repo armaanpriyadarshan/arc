@@ -45,7 +45,7 @@ export interface UseSlideReviewReturn {
   isAnalyzing: boolean
   blobUrl: string | null
   fileName: string | null
-  uploadAndAnalyze: (file: File, audienceContext?: string, reviewKey?: string) => Promise<void>
+  uploadAndAnalyze: (file: File, audienceContext?: string, reviewKey?: string, existingBlobUrl?: string) => Promise<void>
   reanalyze: (audienceContext: string) => Promise<void>
   openPanel: () => void
   closePanel: () => void
@@ -284,7 +284,7 @@ export function useSlideReview(authToken?: string | null): UseSlideReviewReturn 
   )
 
   const uploadAndAnalyze = useCallback(
-    async (file: File, audienceContext?: string, reviewKey?: string) => {
+    async (file: File, audienceContext?: string, reviewKey?: string, existingBlobUrl?: string) => {
       const validation = validateSlideFile({
         name: file.name,
         type: file.type,
@@ -312,21 +312,29 @@ export function useSlideReview(authToken?: string | null): UseSlideReviewReturn 
       setPanelOpen(true)
 
       try {
-        setProgress({ step: 'uploading', slidesCompleted: 0, slidesTotal: 0 })
+        let resolvedBlobUrl: string
 
-        const blob = await upload(file.name, file, {
-          access: 'public',
-          handleUploadUrl: '/api/upload',
-        })
+        if (existingBlobUrl) {
+          // Reuse an already-uploaded blob (e.g. same file attached as context)
+          resolvedBlobUrl = existingBlobUrl
+          setProgress({ step: 'downloading', slidesCompleted: 0, slidesTotal: 0 })
+        } else {
+          setProgress({ step: 'uploading', slidesCompleted: 0, slidesTotal: 0 })
+          const blob = await upload(file.name, file, {
+            access: 'public',
+            handleUploadUrl: '/api/upload',
+          })
+          resolvedBlobUrl = blob.url
+          sessionBlobUrlsRef.current.add(resolvedBlobUrl)
+        }
 
-        storedBlobUrlRef.current = blob.url
+        storedBlobUrlRef.current = resolvedBlobUrl
         storedFileNameRef.current = file.name
-        setBlobUrl(blob.url)
+        setBlobUrl(resolvedBlobUrl)
         setFileName(file.name)
-        sessionBlobUrlsRef.current.add(blob.url)
 
         const thumbnailPromise = import('@/lib/pdf-thumbnails')
-          .then(({ renderPdfThumbnails }) => renderPdfThumbnails(blob.url))
+          .then(({ renderPdfThumbnails }) => renderPdfThumbnails(resolvedBlobUrl))
           .catch(() => ({} as Record<number, string>))
 
         thumbnailPromise.then((t) => {
@@ -346,7 +354,7 @@ export function useSlideReview(authToken?: string | null): UseSlideReviewReturn 
           }
         })
 
-        await runAnalysis(blob.url, file.name, audienceContext, reviewKey)
+        await runAnalysis(resolvedBlobUrl, file.name, audienceContext, reviewKey)
 
         // Ensure thumbnails are in the snapshot (handles the race where
         // thumbnails resolved before the snapshot was created)

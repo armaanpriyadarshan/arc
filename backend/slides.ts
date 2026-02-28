@@ -28,7 +28,7 @@ export interface DeckFeedback {
   topPriorities: string[]
 }
 
-export const MAX_SLIDES = 30
+export const MAX_SLIDES = 40
 
 export function slidesTempPath(ext: string): string {
   return tempPath(ext, 'vera-slides')

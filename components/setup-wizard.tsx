@@ -59,6 +59,8 @@ export const SetupWizard = React.memo(function SetupWizard({
   const [showAdditional, setShowAdditional] = useState(false)
   const [setupPhase, setSetupPhase] = useState<"fields" | "researching" | "review" | "mode-select" | "uploading">("fields")
   const contextFileInputRef = useRef<HTMLInputElement>(null)
+  const additionalTextareaRef = useRef<HTMLTextAreaElement>(null)
+  const filePickerOpenRef = useRef(false)
 
   /* ── Example cycling ── */
   const [exampleIndex, setExampleIndex] = useState(0)
@@ -106,6 +108,19 @@ export const SetupWizard = React.memo(function SetupWizard({
       requestAnimationFrame(() => { hasMeasuredRef.current = true })
     })
   }, [measureWidths])
+
+  // When the file picker dialog closes, window regains focus — re-focus the textarea
+  // and clear the flag so blur works normally again
+  useEffect(() => {
+    if (!showAdditional) return
+    const onWindowFocus = () => {
+      if (!filePickerOpenRef.current) return
+      filePickerOpenRef.current = false
+      additionalTextareaRef.current?.focus()
+    }
+    window.addEventListener('focus', onWindowFocus)
+    return () => window.removeEventListener('focus', onWindowFocus)
+  }, [showAdditional])
 
   /* ── Research snippet cycling ── */
   const [researchSnippetIndex, setResearchSnippetIndex] = useState(0)
@@ -385,6 +400,7 @@ export const SetupWizard = React.memo(function SetupWizard({
                         {setupAdditional || "Anything else Vera should know..."}
                       </span>
                       <textarea
+                        ref={additionalTextareaRef}
                         autoFocus
                         rows={1}
                         value={setupAdditional}
@@ -395,7 +411,7 @@ export const SetupWizard = React.memo(function SetupWizard({
                           el.style.height = `${el.scrollHeight}px`
                         }}
                         onKeyDown={handleSetupKeyDown}
-                        onBlur={() => { if (!setupAdditional.trim()) setShowAdditional(false) }}
+                        onBlur={() => { if (!filePickerOpenRef.current && !setupAdditional.trim() && !contextFile) setShowAdditional(false) }}
                         placeholder="Anything else Vera should know..."
                         className="w-full resize-none overflow-hidden bg-transparent text-center font-display text-sm text-foreground caret-primary placeholder:text-muted-foreground/40 focus:outline-none"
                         style={{ minHeight: "1.5rem" }}
@@ -417,7 +433,8 @@ export const SetupWizard = React.memo(function SetupWizard({
                   {!contextFile ? (
                     <button
                       type="button"
-                      onClick={() => contextFileInputRef.current?.click()}
+                      onMouseDown={(e) => e.preventDefault()}
+                      onClick={() => { filePickerOpenRef.current = true; contextFileInputRef.current?.click() }}
                       className="flex items-center gap-1 text-xs text-muted-foreground/40 transition-colors hover:text-muted-foreground/70"
                     >
                       <Paperclip className="h-3 w-3" />
@@ -434,6 +451,7 @@ export const SetupWizard = React.memo(function SetupWizard({
                       {onContextFileRemove && (
                         <button
                           type="button"
+                          onMouseDown={(e) => e.preventDefault()}
                           onClick={onContextFileRemove}
                           className="ml-0.5 rounded-full p-0.5 transition-colors hover:bg-muted"
                         >
@@ -447,6 +465,7 @@ export const SetupWizard = React.memo(function SetupWizard({
                     type="file"
                     accept=".pdf,.txt,.docx,audio/*"
                     onChange={(e) => {
+                      filePickerOpenRef.current = false
                       const file = e.target.files?.[0]
                       if (file) onContextFileUpload(file)
                       if (contextFileInputRef.current) contextFileInputRef.current.value = ""

@@ -18,7 +18,7 @@ async function getPdfJs(): Promise<typeof PdfJsLib> {
 
 export async function renderPdfThumbnails(
   pdfUrl: string,
-  maxPages = 30
+  maxPages = 40
 ): Promise<Record<number, string>> {
   const pdfjs = await getPdfJs()
   const loadingTask = pdfjs.getDocument({ url: pdfUrl })

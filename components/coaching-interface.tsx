@@ -414,7 +414,15 @@ export function CoachingInterface({ authToken }: CoachingInterfaceProps) {
     if (ctx?.audience) parts.push(`Audience: ${ctx.audience}`)
     if (ctx?.goal) parts.push(`Goal: ${ctx.goal}`)
     const audienceContext = parts.length > 0 ? parts.join(". ") : undefined
-    slideReview.uploadAndAnalyze(file, audienceContext)
+
+    // Reuse the blob URL if the same file was already uploaded as context
+    const cf = contextFileHook.contextFile
+    const existingBlobUrl =
+      cf && cf.name === file.name && cf.size === file.size
+        ? contextFileHook.contextBlobUrl ?? undefined
+        : undefined
+
+    slideReview.uploadAndAnalyze(file, audienceContext, undefined, existingBlobUrl)
   }
 
   function handlePresentationFinish() {
