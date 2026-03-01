@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
-import { User, Mail, CreditCard, LogOut, Lock } from "lucide-react"
+import { User, Mail, CreditCard, LogOut, Lock, ArrowLeft } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { useAuth } from "@/contexts/auth-context"
@@ -130,6 +130,15 @@ export default function AccountPage() {
       </div>
 
       <div className="mx-auto max-w-2xl">
+        {/* Back button */}
+        <a
+          href="/"
+          className="mb-6 inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Back
+        </a>
+
         {/* Header */}
         <div className="mb-8 text-center">
           <a
