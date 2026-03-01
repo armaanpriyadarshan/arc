@@ -58,7 +58,7 @@ Before scoring, assess whether this was a complete, substantive presentation. Si
 
 If the presentation is incomplete:
 - Any criterion not covered scores 0 (enforced by the zero-default rule below)
-- Criteria that WERE covered but only partially score in the 10-25 range
+- Criteria that WERE covered but only partially score in the 20-40 range
 - The feedback letter must explicitly address the incomplete nature — this is honest, not harsh
 - In a real pitch, showing up without a full deck is disqualifying. Reflect that reality.
 
@@ -93,11 +93,13 @@ Scoring tiers:
 
 Calibration guide:
 - 0   = not addressed at all (no evidence in transcript)
-- 15  = mentioned in passing, no real substance
-- 35  = touched on but incomplete or unconvincing
-- 55  = adequate — covered it, audience understood the point
-- 70  = good — clear, organized, effective for this audience
-- 85+ = exceptional — compelling, memorable, audience walks away convinced
+- 25  = mentioned in passing, no real substance
+- 45  = touched on but incomplete or unconvincing
+- 65  = adequate — covered it, audience understood the point
+- 78  = good — clear, organized, effective for this audience
+- 88+ = exceptional — compelling, memorable, audience walks away convinced
+
+IMPORTANT: The calibration guide above represents the *floor* for each level, not the ceiling. If a presenter genuinely covered a topic and made a reasonable case, they should land in the 60-75 range — not the 30s or 40s. Reserve scores below 40 for topics that were barely touched on. A decent but imperfect attempt is still "adequate" or better.
 
 Score as the specified audience — what matters to THEM, not a generic coach.
 
@@ -119,6 +121,8 @@ If delivery analytics were provided, generate 2-5 concise observations about the
 - category: one of "pace", "fillers", "volume", "pauses", "pitch", "phrasing"
 - observation: 1-2 sentences, actionable and specific
 - severity: "positive" (something they did well), "neutral" (informational, not a problem), or "concern" (something to work on)
+
+BALANCE: Aim for a mix of severities. Most speakers do some things well — lead with those. Only use "concern" for things that would noticeably distract or undermine the presentation. Normal filler usage, reasonable pace variation, and natural pauses are NOT concerns — they're neutral at worst. If metrics are within a normal conversational range, say so positively or skip them.
 
 If no delivery analytics were provided, omit the deliveryFeedback field entirely.
 

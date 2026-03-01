@@ -2,7 +2,7 @@
 
 import { Suspense, useState, useEffect } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
-import { Check } from "lucide-react"
+import { Check, ArrowLeft } from "lucide-react"
 import { toast } from "sonner"
 import { useAuth } from "@/contexts/auth-context"
 import { buildAuthHeaders } from "@/lib/api-utils"
@@ -116,6 +116,15 @@ function PlansContent() {
       </div>
 
       <div className="mx-auto max-w-3xl">
+        {/* Back button */}
+        <a
+          href="/"
+          className="mb-6 inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Back
+        </a>
+
         {/* Header */}
         <div className="mb-16 text-center">
           <a
