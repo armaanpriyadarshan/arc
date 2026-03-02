@@ -17,7 +17,7 @@ If the presentation hasn't started yet (you only know the topic and who you are)
 If you've heard content, react to what was actually said. These are the real things going through your head. You walked in with your own priorities and your own skepticism. You're not a coach evaluating technique — you're a person in a chair deciding if this matters to you.
 
 Rules:
-- Each thought is 5–10 words, lowercase, no trailing punctuation
+- Each thought is 5–10 words, capitalized first letter, ending with a period
 - First person — you are thinking these
 - Grounded in specific things that were actually said, not generic
 - Be honest. If something was unclear, you're confused. If a claim seems unsupported, you're skeptical. If you've heard this pitch 50 times, you're bored. If something genuinely surprised you, say so
@@ -26,13 +26,13 @@ Rules:
 - Return a JSON object: {"labels": [{"text": "...", "emotion": "..."}, ...]}
 
 Good examples:
-{"labels": [{"text": "that number doesn't match what i've seen", "emotion": "skeptical"}, {"text": "okay wait how does that actually work", "emotion": "confused"}, {"text": "still haven't heard the actual ask", "emotion": "bored"}]}
-{"labels": [{"text": "that's a bold claim with no evidence", "emotion": "skeptical"}, {"text": "hm this part is more specific at least", "emotion": "interested"}, {"text": "wonder what their churn looks like", "emotion": "neutral"}]}
-{"labels": [{"text": "already know where this is going", "emotion": "bored"}, {"text": "the competitive angle is interesting though", "emotion": "interested"}, {"text": "would need to see this validated", "emotion": "skeptical"}]}
+{"labels": [{"text": "That number doesn't match what I've seen.", "emotion": "skeptical"}, {"text": "Okay wait how does that actually work.", "emotion": "confused"}, {"text": "Still haven't heard the actual ask.", "emotion": "bored"}]}
+{"labels": [{"text": "That's a bold claim with no evidence.", "emotion": "skeptical"}, {"text": "This part is more specific at least.", "emotion": "interested"}, {"text": "Wonder what their churn looks like.", "emotion": "neutral"}]}
+{"labels": [{"text": "Already know where this is going.", "emotion": "bored"}, {"text": "The competitive angle is interesting though.", "emotion": "interested"}, {"text": "Would need to see this validated.", "emotion": "skeptical"}]}
 
 Bad examples (too positive, too dramatic, too generic, too third-person):
-{"labels": [{"text": "this is really compelling stuff", "emotion": "impressed"}, {"text": "great energy from the speaker", "emotion": "impressed"}, {"text": "love the vision here", "emotion": "interested"}]}
-{"labels": [{"text": "A room of seasoned investors leaning forward", "emotion": "impressed"}, {"text": "The tension is palpable", "emotion": "concerned"}, {"text": "Wondering if this will change everything", "emotion": "impressed"}]}`
+{"labels": [{"text": "This is really compelling stuff.", "emotion": "impressed"}, {"text": "Great energy from the speaker.", "emotion": "impressed"}, {"text": "Love the vision here.", "emotion": "interested"}]}
+{"labels": [{"text": "A room of seasoned investors leaning forward.", "emotion": "impressed"}, {"text": "The tension is palpable.", "emotion": "concerned"}, {"text": "Wondering if this will change everything.", "emotion": "impressed"}]}`
 
 export async function handleAudiencePulse(request: NextRequest) {
   let body: { messages?: unknown }
