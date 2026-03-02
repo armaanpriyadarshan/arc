@@ -100,10 +100,12 @@ describe('buildScoringPrompt', () => {
     expect(prompt).toContain('STEP 3 — SCORING')
     expect(prompt).toContain('STEP 4 — HIGHLIGHTS')
     expect(prompt).toContain('STEP 5 — REFINED METADATA')
+    expect(prompt).toContain('STEP 7 — KEY ACTION ITEMS')
     expect(prompt).toContain('"feedbackLetter"')
     expect(prompt).toContain('"rubric"')
     expect(prompt).toContain('"strongestMoment"')
     expect(prompt).toContain('"refinedTitle"')
+    expect(prompt).toContain('"actionItems"')
   })
 
   it('places rules before scoring instructions', () => {

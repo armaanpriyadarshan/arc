@@ -96,6 +96,7 @@ export interface SessionScoresV2 {
   refinedAudience?: string    // AI-polished audience description
   refinedGoal?: string        // AI-polished goal description
   deliveryFeedback?: DeliveryObservation[]  // speech & delivery observations
+  actionItems?: { title: string; description: string }[]  // 3 forward-looking action items
 }
 
 /** Type guard: V2 scores have a `feedbackLetter` property. */

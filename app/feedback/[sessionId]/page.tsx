@@ -14,7 +14,7 @@ import {
   type SessionScoresV2,
 } from "@/lib/sessions"
 import { FeedbackLetter } from "@/components/feedback/feedback-letter"
-import { RubricRadar } from "@/components/feedback/rubric-radar"
+import { ActionItems } from "@/components/feedback/action-items"
 import { RubricDetail } from "@/components/feedback/rubric-detail"
 import { FollowUpChat } from "@/components/feedback/follow-up-chat"
 import { useFollowUpChat } from "@/hooks/use-follow-up-chat"
@@ -277,9 +277,7 @@ export default function FeedbackPage({ params }: { params: Promise<{ sessionId: 
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.45, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
               >
-                <div className="rounded-xl border border-border/60 bg-card p-5">
-                  <RubricRadar rubric={v2Scores.rubric} />
-                </div>
+                <ActionItems items={v2Scores.actionItems ?? []} />
                 <div className="mt-4">
                   <RubricDetail
                     rubric={v2Scores.rubric}

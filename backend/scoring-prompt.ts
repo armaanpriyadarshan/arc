@@ -126,6 +126,13 @@ BALANCE: Aim for a mix of severities. Most speakers do some things well — lead
 
 If no delivery analytics were provided, omit the deliveryFeedback field entirely.
 
+STEP 7 — KEY ACTION ITEMS
+Generate exactly 3 concrete, forward-looking action items for the presenter. These are NOT summaries of what went wrong — they are specific things to DO differently next time. Each action item has:
+- title: A short imperative phrase (e.g. "Lead with the market opportunity", "Quantify your traction metrics")
+- description: 1-2 sentences explaining what to do and why it matters for this audience
+
+These should be distinct from strongestMoment and areaToImprove. Think of them as a prioritized to-do list for the presenter's next rehearsal.
+
 Respond with valid JSON matching this exact schema:
 {
   "feedbackLetter": "<string — 3-5 paragraphs, no markdown, plain prose>",
@@ -153,6 +160,12 @@ Respond with valid JSON matching this exact schema:
       "category": "<pace | fillers | volume | pauses | pitch | phrasing>",
       "observation": "<1-2 sentence actionable note>",
       "severity": "<positive | neutral | concern>"
+    }
+  ],
+  "actionItems": [
+    {
+      "title": "<short imperative phrase>",
+      "description": "<1-2 sentences: what to do and why>"
     }
   ]
 }`)

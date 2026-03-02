@@ -5,6 +5,7 @@ import { PdfHeaderSection } from "./sections/pdf-header"
 import { PdfFeedbackLetter } from "./sections/pdf-feedback-letter"
 import { PdfRubric } from "./sections/pdf-rubric"
 import { PdfHighlights } from "./sections/pdf-highlights"
+import { PdfActionItems } from "./sections/pdf-action-items"
 import { PdfTranscript } from "./sections/pdf-transcript"
 import { PdfDeliveryFeedback } from "./sections/pdf-delivery-feedback"
 
@@ -45,7 +46,12 @@ export function PdfReport({ scores, setup, transcript, date }: PdfReportProps) {
           areaToImprove={scores.areaToImprove}
         />
 
-        {/* Rubric radar + cards */}
+        {/* Action items */}
+        {scores.actionItems && scores.actionItems.length > 0 && (
+          <PdfActionItems items={scores.actionItems} />
+        )}
+
+        {/* Rubric cards */}
         <PdfRubric rubric={scores.rubric} />
 
         {/* Delivery feedback */}

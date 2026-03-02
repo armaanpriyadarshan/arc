@@ -153,7 +153,7 @@ describe('handleFeedbackScore', () => {
     const callArgs = mockCreate.mock.calls[0][0]
     expect(callArgs.model).toBe('gpt-4o')
     expect(callArgs.temperature).toBe(0.3)
-    expect(callArgs.max_tokens).toBe(5000)
+    expect(callArgs.max_tokens).toBe(5500)
     expect(callArgs.response_format).toEqual({ type: 'json_object' })
     expect(callArgs.stream).toBe(true)
   })

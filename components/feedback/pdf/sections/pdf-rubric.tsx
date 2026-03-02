@@ -1,6 +1,5 @@
 import { View, Text, StyleSheet } from "@react-pdf/renderer"
 import type { RubricCriterion } from "@/lib/sessions"
-import { PdfRadarChart } from "../radar-chart"
 import { colors, fonts, fontSize, getScoringTier } from "../theme"
 
 const styles = StyleSheet.create({
@@ -13,10 +12,6 @@ const styles = StyleSheet.create({
     fontWeight: 600,
     color: colors.text,
     marginBottom: 12,
-  },
-  chartContainer: {
-    alignItems: "center",
-    marginBottom: 16,
   },
   card: {
     borderWidth: 1,
@@ -83,13 +78,6 @@ export function PdfRubric({ rubric }: PdfRubricProps) {
   return (
     <View style={styles.container}>
       <Text style={styles.sectionTitle}>Scoring Rubric</Text>
-
-      {/* Radar chart */}
-      <View style={styles.chartContainer}>
-        <PdfRadarChart
-          criteria={rubric.map((c) => ({ name: c.name, score: c.score }))}
-        />
-      </View>
 
       {/* Criterion cards */}
       {rubric.map((c) => {
