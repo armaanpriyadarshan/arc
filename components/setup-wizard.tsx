@@ -522,7 +522,7 @@ export const SetupWizard = React.memo(function SetupWizard({
                       >
                         {researchSnippet
                           ? `Searching "${researchSnippet}"`
-                          : "Figuring out what to look up..."}
+                          : "Researching..."}
                       </motion.p>
                     </AnimatePresence>
                   </div>

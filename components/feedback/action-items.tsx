@@ -14,8 +14,11 @@ export function ActionItems({ items }: ActionItemsProps) {
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.45, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-      className="rounded-xl border border-border/60 bg-card"
     >
+      <p className="mb-3 text-xs font-semibold uppercase tracking-[0.15em] text-muted-foreground">
+        Action Items
+      </p>
+      <div className="rounded-xl border border-border/60 bg-card">
       {items.map((item, i) => (
         <div
           key={i}
@@ -32,6 +35,7 @@ export function ActionItems({ items }: ActionItemsProps) {
           </div>
         </div>
       ))}
+      </div>
     </motion.div>
   )
 }
