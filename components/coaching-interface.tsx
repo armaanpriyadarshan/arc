@@ -259,7 +259,21 @@ export function CoachingInterface({ authToken }: CoachingInterfaceProps) {
         .filter((m) => m.content?.trim())
         .map((m) => ({ role: m.role, content: m.content }))
 
-    const effectiveTranscript = rtOverride?.transcript ?? transcript
+    // Build labeled transcript: realtime already has labels, segment mode needs them
+    const presenterLabel = user.displayName || 'Presenter'
+    let effectiveTranscript: string | null
+    if (rtOverride?.transcript) {
+      effectiveTranscript = rtOverride.transcript
+    } else if (transcript) {
+      // Build interleaved transcript with speaker labels from messages
+      const labeled = strippedMessages
+        .filter((m) => m.content?.trim())
+        .map((m) => `[${m.role === 'user' ? presenterLabel : 'Vera'}]: ${m.content}`)
+        .join('\n\n')
+      effectiveTranscript = labeled || transcript
+    } else {
+      effectiveTranscript = null
+    }
 
     const slideReviewPayload = slideReview.deckSummary
       ? {
@@ -345,18 +359,11 @@ export function CoachingInterface({ authToken }: CoachingInterfaceProps) {
     prevTranscribingRef.current = isTranscribing
   }, [isTranscribing, presentationMode]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Fetch pulse labels when Vera finishes speaking in realtime mode
-  const prevRealtimeEntriesLen = useRef(0)
+  // Fetch pulse labels when Vera's audio actually finishes playing in realtime mode
   useEffect(() => {
-    if (!realtimeMode) return
+    if (!realtimeMode || realtimeSession.audioDoneCount === 0) return
     const entries = realtimeSession.transcriptEntries
-    if (entries.length <= prevRealtimeEntriesLen.current) {
-      prevRealtimeEntriesLen.current = entries.length
-      return
-    }
-    prevRealtimeEntriesLen.current = entries.length
-    const last = entries[entries.length - 1]
-    if (last.role !== 'assistant') return
+    if (entries.length === 0) return
 
     const recent = entries.slice(-4).map(e => ({
       role: e.role === 'user' ? 'user' as const : 'assistant' as const,
@@ -365,7 +372,7 @@ export function CoachingInterface({ authToken }: CoachingInterfaceProps) {
     fetchPulseLabels(recent)
     setSatisfiedWindow(true)
     setTimeout(() => setSatisfiedWindow(false), 3000)
-  }, [realtimeMode, realtimeSession.transcriptEntries]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [realtimeMode, realtimeSession.audioDoneCount]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (slideReview.deckSummary && slideReview.slideFeedbacks.length > 0) {

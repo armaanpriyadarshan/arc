@@ -99,7 +99,7 @@ describe('handleRealtimeToken', () => {
     // Verify request body — GA API uses session wrapper with nested audio config
     const fetchCall = vi.mocked(fetch).mock.calls[0]
     const requestBody = JSON.parse(fetchCall[1]!.body as string)
-    expect(requestBody.session.model).toBe('gpt-realtime')
+    expect(requestBody.session.model).toBe('gpt-4o-realtime-preview')
     expect(requestBody.session.instructions).toBe('mock-instructions')
     expect(requestBody.session.audio.input.transcription).toEqual({ model: 'whisper-1' })
     expect(requestBody.session.audio.input.turn_detection).toEqual({

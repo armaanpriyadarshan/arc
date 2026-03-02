@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef, use } from "react"
 import { useRouter } from "next/navigation"
-import { ArrowLeft, Loader2, ChevronDown, FileText, Download, Users } from "lucide-react"
+import { ArrowLeft, Loader2, ChevronDown, FileText, Download } from "lucide-react"
 import { motion } from "framer-motion"
 import ReactMarkdown from "react-markdown"
 import { useAuth } from "@/contexts/auth-context"
@@ -21,7 +21,6 @@ import { useFollowUpChat } from "@/hooks/use-follow-up-chat"
 import { useFeedbackStream } from "@/hooks/use-feedback-stream"
 import { SlideReviewSection } from "@/components/feedback/slide-review-section"
 import { DeliveryFeedback } from "@/components/feedback/delivery-feedback"
-import { detectPersonaMeta } from "@/lib/persona-detection"
 
 export default function FeedbackPage({ params }: { params: Promise<{ sessionId: string }> }) {
   const { sessionId } = use(params)
@@ -170,8 +169,6 @@ export default function FeedbackPage({ params }: { params: Promise<{ sessionId: 
   const headerTitle = v2Scores?.refinedTitle ?? titleCase(session.setup.topic)
   const headerAudience = v2Scores?.refinedAudience ?? titleCase(session.setup.audience)
   const headerGoal = v2Scores?.refinedGoal ?? titleCase(session.setup.goal)
-  const personaMeta = detectPersonaMeta(headerAudience ?? session.setup.audience)
-
   // Streaming state: show letter progressively while scores are still generating
   const isStreamingLetter = feedbackStream.isStreaming && feedbackStream.letterText.length > 0
   const hasStreamedScores = !!feedbackStream.scores
@@ -256,12 +253,6 @@ export default function FeedbackPage({ params }: { params: Promise<{ sessionId: 
               <span className="rounded-full bg-muted px-3 py-1 text-xs text-muted-foreground">
                 {date.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
               </span>
-              {personaMeta && (
-                <span className="inline-flex items-center gap-1 rounded-full bg-muted px-3 py-1 text-xs text-muted-foreground">
-                  <Users className="h-3 w-3" />
-                  {personaMeta.label}
-                </span>
-              )}
             </div>
           </motion.div>
         </header>
@@ -458,9 +449,21 @@ function TranscriptSection({ transcript }: { transcript: string }) {
       </button>
       {open && (
         <div className="mt-2 max-h-96 overflow-y-auto rounded-xl border border-border/60 bg-card px-5 py-4">
-          <p className="whitespace-pre-wrap text-sm leading-relaxed text-foreground/60">
-            {transcript}
-          </p>
+          <div className="space-y-3 text-sm leading-relaxed text-foreground/60">
+            {transcript.split('\n\n').map((block, i) => {
+              const labelMatch = block.match(/^\[(.+?)\]:\s*/)
+              if (labelMatch) {
+                return (
+                  <p key={i}>
+                    <span className="font-semibold text-foreground/80">{labelMatch[1]}</span>
+                    <span className="text-foreground/40">{': '}</span>
+                    {block.slice(labelMatch[0].length)}
+                  </p>
+                )
+              }
+              return <p key={i}>{block}</p>
+            })}
+          </div>
         </div>
       )}
     </motion.section>

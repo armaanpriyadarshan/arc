@@ -17,7 +17,11 @@ class MockRTCPeerConnection {
   ontrack: ((ev: { streams: MediaStream[] }) => void) | null = null
   onconnectionstatechange: (() => void) | null = null
   connectionState = 'new'
+  iceGatheringState = 'complete'
+  localDescription = { sdp: 'mock-sdp-offer', type: 'offer' }
 
+  addEventListener = vi.fn()
+  removeEventListener = vi.fn()
   addTrack = vi.fn()
   createDataChannel = vi.fn().mockImplementation(() => {
     const dc = {
@@ -55,6 +59,11 @@ class MockAudioContext {
   createAnalyser = vi.fn().mockReturnValue({
     fftSize: 0,
     smoothingTimeConstant: 0,
+    frequencyBinCount: 4,
+    getByteFrequencyData: vi.fn().mockImplementation((arr: Uint8Array) => {
+      // Return silence by default
+      arr.fill(0)
+    }),
   })
   close = vi.fn().mockResolvedValue(undefined)
 }
@@ -103,6 +112,7 @@ describe('useRealtimeSession', () => {
     expect(result.current.currentCaption).toBe('')
     expect(result.current.elapsed).toBe(0)
     expect(result.current.error).toBeNull()
+    expect(result.current.audioDoneCount).toBe(0)
   })
 
   it('transitions from idle to connecting to connected', async () => {
@@ -203,9 +213,17 @@ describe('useRealtimeSession', () => {
     })
     expect(result.current.voiceState).toBe('vera-speaking')
 
-    // Response done → back to listening
+    // Response done → stays vera-speaking, caption stays until user speaks again
     act(() => {
       dc.onmessage?.({ data: JSON.stringify({ type: 'response.done' }) })
+    })
+    // Voice state stays vera-speaking until user starts speaking
+    expect(result.current.voiceState).toBe('vera-speaking')
+    expect(result.current.audioDoneCount).toBe(1)
+
+    // User starts speaking → clears to listening
+    act(() => {
+      dc.onmessage?.({ data: JSON.stringify({ type: 'input_audio_buffer.speech_started' }) })
     })
     expect(result.current.voiceState).toBe('listening')
   })
@@ -275,7 +293,7 @@ describe('useRealtimeSession', () => {
     expect(result.current.fullTranscript).toContain('[Vera]: Great start!')
   })
 
-  it('accumulates captions from audio transcript deltas (beta event names)', async () => {
+  it('accumulates captions and keeps them visible until audio drains', async () => {
     const { result } = renderHook(() => useRealtimeSession())
 
     await act(async () => {
@@ -300,13 +318,27 @@ describe('useRealtimeSession', () => {
 
     expect(result.current.currentCaption).toBe('Hello world')
 
-    // Done event clears caption
+    // Done event keeps caption visible (audio still playing)
     act(() => {
       dc.onmessage?.({
         data: JSON.stringify({ type: 'response.audio_transcript.done', transcript: 'Hello world' }),
       })
     })
 
+    expect(result.current.currentCaption).toBe('Hello world')
+
+    // response.done triggers drain poll
+    act(() => {
+      dc.onmessage?.({ data: JSON.stringify({ type: 'response.done' }) })
+    })
+
+    // Caption stays visible until user speaks again
+    expect(result.current.currentCaption).toBe('Hello world')
+
+    // User starts speaking → caption clears
+    act(() => {
+      dc.onmessage?.({ data: JSON.stringify({ type: 'input_audio_buffer.speech_started' }) })
+    })
     expect(result.current.currentCaption).toBe('')
   })
 
@@ -335,17 +367,29 @@ describe('useRealtimeSession', () => {
 
     expect(result.current.currentCaption).toBe('Hi there')
 
-    // GA done event adds transcript entry and clears caption
+    // GA done event adds transcript entry but keeps caption
     act(() => {
       dc.onmessage?.({
         data: JSON.stringify({ type: 'response.output_audio_transcript.done', transcript: 'Hi there' }),
       })
     })
 
-    expect(result.current.currentCaption).toBe('')
+    expect(result.current.currentCaption).toBe('Hi there')
     expect(result.current.transcriptEntries).toHaveLength(1)
     expect(result.current.transcriptEntries[0].role).toBe('assistant')
     expect(result.current.transcriptEntries[0].text).toBe('Hi there')
+
+    // Caption stays visible after response.done (audio still playing)
+    act(() => {
+      dc.onmessage?.({ data: JSON.stringify({ type: 'response.done' }) })
+    })
+    expect(result.current.currentCaption).toBe('Hi there')
+
+    // User starts speaking → caption clears
+    act(() => {
+      dc.onmessage?.({ data: JSON.stringify({ type: 'input_audio_buffer.speech_started' }) })
+    })
+    expect(result.current.currentCaption).toBe('')
   })
 
   it('cleans up on disconnect', async () => {

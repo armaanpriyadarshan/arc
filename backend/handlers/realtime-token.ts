@@ -55,7 +55,7 @@ export async function handleRealtimeToken(request: NextRequest) {
       body: JSON.stringify({
         session: {
           type: 'realtime',
-          model: 'gpt-realtime',
+          model: 'gpt-4o-realtime-preview',
           instructions,
           audio: {
             input: {

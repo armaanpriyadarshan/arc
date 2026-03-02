@@ -31,6 +31,8 @@ export interface UseRealtimeSessionReturn {
   elapsed: number
   outputAnalyserNode: AnalyserNode | null
   error: string | null
+  /** Increments each time Vera's audio actually finishes playing (not just generating) */
+  audioDoneCount: number
   connect: (
     setupContext: SetupContext | null,
     researchContext: string | null,
@@ -48,6 +50,7 @@ export function useRealtimeSession(presenterName?: string): UseRealtimeSessionRe
   const [voiceState, setVoiceState] = useState<RealtimeVoiceState>('idle')
   const [transcriptEntries, setTranscriptEntries] = useState<TranscriptEntry[]>([])
   const [currentCaption, setCurrentCaption] = useState('')
+  const [audioDoneCount, setAudioDoneCount] = useState(0)
   const [elapsed, setElapsed] = useState(0)
   const [outputAnalyserNode, setOutputAnalyserNode] = useState<AnalyserNode | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -113,10 +116,16 @@ export function useRealtimeSession(presenterName?: string): UseRealtimeSessionRe
   useEffect(() => () => cleanup(), [cleanup])
 
   // Data channel event handler — uses stable React setters so safe in closure
+  //
+  // Caption strategy: data channel events arrive BEFORE audio finishes playing
+  // (WebRTC jitter buffer). Instead of trying to detect audio silence (unreliable),
+  // we keep the caption visible until the user starts speaking again. The VAD
+  // `speech_started` event naturally fires at the right time.
   function handleDataChannelEvent(event: { type: string; [key: string]: unknown }) {
     switch (event.type) {
-      // VAD detected user started speaking
+      // VAD detected user started speaking — clear previous caption
       case 'input_audio_buffer.speech_started':
+        setCurrentCaption('')
         setVoiceState('listening')
         break
 
@@ -134,7 +143,7 @@ export function useRealtimeSession(presenterName?: string): UseRealtimeSessionRe
         }
         break
 
-      // Live caption of Vera's speech (GA: output_audio_transcript, beta: audio_transcript)
+      // Live caption of Vera's speech
       case 'response.output_audio_transcript.delta':
       case 'response.audio_transcript.delta': {
         const delta = (event as { delta?: string }).delta ?? ''
@@ -142,7 +151,7 @@ export function useRealtimeSession(presenterName?: string): UseRealtimeSessionRe
         break
       }
 
-      // Vera finished one response message (GA: output_audio_transcript, beta: audio_transcript)
+      // Vera finished generating one response — add to transcript, keep caption visible
       case 'response.output_audio_transcript.done':
       case 'response.audio_transcript.done': {
         const transcript = (event as { transcript?: string }).transcript ?? ''
@@ -152,7 +161,6 @@ export function useRealtimeSession(presenterName?: string): UseRealtimeSessionRe
             { role: 'assistant', text: transcript, timestamp: Date.now() },
           ])
         }
-        setCurrentCaption('')
         break
       }
 
@@ -168,10 +176,10 @@ export function useRealtimeSession(presenterName?: string): UseRealtimeSessionRe
         break
       }
 
-      // Entire response finished — back to user's turn
+      // Entire response finished generating — keep vera-speaking & caption until user speaks
       case 'response.done':
         veraSpeakingRef.current = false
-        setVoiceState('listening')
+        setAudioDoneCount(c => c + 1)
         break
 
       case 'error': {
@@ -277,18 +285,34 @@ export function useRealtimeSession(presenterName?: string): UseRealtimeSessionRe
         }
       }
 
-      // 5. SDP offer
+      // 5. SDP offer — wait for ICE gathering to complete
       const offer = await pc.createOffer()
       await pc.setLocalDescription(offer)
 
-      // 6. Exchange SDP with OpenAI — GA endpoint: POST /v1/realtime/calls
+      await new Promise<void>((resolve) => {
+        if (pc.iceGatheringState === 'complete') return resolve()
+        const check = () => {
+          if (pc.iceGatheringState === 'complete') {
+            pc.removeEventListener('icegatheringstatechange', check)
+            resolve()
+          }
+        }
+        pc.addEventListener('icegatheringstatechange', check)
+        // Safety timeout — proceed after 3s even if gathering hasn't completed
+        setTimeout(() => {
+          pc.removeEventListener('icegatheringstatechange', check)
+          resolve()
+        }, 3000)
+      })
+
+      // 6. Exchange SDP with OpenAI — POST /v1/realtime/calls
       const sdpRes = await fetch('https://api.openai.com/v1/realtime/calls', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/sdp',
         },
-        body: offer.sdp,
+        body: pc.localDescription!.sdp,
       })
 
       if (!sdpRes.ok) {
@@ -345,6 +369,7 @@ export function useRealtimeSession(presenterName?: string): UseRealtimeSessionRe
     elapsed,
     outputAnalyserNode,
     error,
+    audioDoneCount,
     connect,
     disconnect,
     fullTranscript,
