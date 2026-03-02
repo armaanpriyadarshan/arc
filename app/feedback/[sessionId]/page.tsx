@@ -165,10 +165,9 @@ export default function FeedbackPage({ params }: { params: Promise<{ sessionId: 
 
   // Show refined AI values when available, raw values for old sessions that have
   // scores but lack refined fields, and null (skeleton) while scores are still loading.
-  const hasScores = !!scores
-  const headerTitle = v2Scores?.refinedTitle ?? (hasScores ? session.setup.topic : null)
-  const headerAudience = v2Scores?.refinedAudience ?? (hasScores ? session.setup.audience : null)
-  const headerGoal = v2Scores?.refinedGoal ?? (hasScores ? session.setup.goal : null)
+  const headerTitle = v2Scores?.refinedTitle ?? session.setup.topic
+  const headerAudience = v2Scores?.refinedAudience ?? session.setup.audience
+  const headerGoal = v2Scores?.refinedGoal ?? session.setup.goal
   const personaMeta = detectPersonaMeta(headerAudience ?? session.setup.audience)
 
   // Streaming state: show letter progressively while scores are still generating
@@ -294,16 +293,38 @@ export default function FeedbackPage({ params }: { params: Promise<{ sessionId: 
           ) : isStreamingLetter || (hasStreamedScores && !scores) ? (
             /* Letter streaming in, scores not yet merged */
             <>
-              <FeedbackLetter
-                letter={feedbackStream.letterText}
-                isStreaming={feedbackStream.isStreaming}
-              />
+              <FeedbackLetter letter={feedbackStream.letterText} />
 
-              {/* Rubric skeleton while scores stream */}
+              {/* Shaped skeletons matching ActionItems + RubricDetail */}
               <div className="space-y-4">
-                <div className="h-48 animate-pulse rounded-xl bg-muted/40" />
+                {/* Action items skeleton */}
+                <div>
+                  <div className="mb-3 h-3.5 w-24 animate-pulse rounded bg-muted/40" />
+                  <div className="rounded-xl border border-border/60 bg-card">
+                    {[1, 2, 3].map((i) => (
+                      <div
+                        key={i}
+                        className={`flex gap-4 px-5 py-4 ${i > 1 ? "border-t border-border/40" : ""}`}
+                      >
+                        <div className="h-6 w-6 shrink-0 animate-pulse rounded-full bg-muted/40" />
+                        <div className="flex-1 space-y-2">
+                          <div className="h-3.5 w-2/5 animate-pulse rounded bg-muted/40" />
+                          <div className="h-3 w-4/5 animate-pulse rounded bg-muted/40" />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Rubric criterion card skeletons */}
                 {[1, 2, 3].map((i) => (
-                  <div key={i} className="h-20 animate-pulse rounded-xl bg-muted/40" />
+                  <div key={i} className="rounded-xl border border-border/60 bg-card px-5 py-4">
+                    <div className="flex items-center gap-3">
+                      <div className="h-3.5 flex-1 animate-pulse rounded bg-muted/40" />
+                      <div className="h-5 w-16 animate-pulse rounded-full bg-muted/40" />
+                      <div className="h-3.5 w-6 animate-pulse rounded bg-muted/40" />
+                    </div>
+                  </div>
                 ))}
               </div>
             </>
