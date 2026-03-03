@@ -80,9 +80,7 @@ export const SetupWizard = React.memo(function SetupWizard({
   const topicSizerRef = useRef<HTMLSpanElement>(null)
   const audienceSizerRef = useRef<HTMLSpanElement>(null)
   const goalSizerRef = useRef<HTMLSpanElement>(null)
-  const additionalSizerRef = useRef<HTMLSpanElement>(null)
   const [blankWidths, setBlankWidths] = useState({ topic: 0, audience: 0, goal: 0 })
-  const [additionalLineWidth, setAdditionalLineWidth] = useState(0)
   const hasMeasuredRef = useRef(false)
 
   const measureWidths = useCallback(() => {
@@ -96,11 +94,6 @@ export const SetupWizard = React.memo(function SetupWizard({
   useLayoutEffect(() => {
     measureWidths()
   }, [setupTopic, setupAudience, setupGoal, sizerIndex, measureWidths])
-
-  useLayoutEffect(() => {
-    const w = additionalSizerRef.current?.offsetWidth ?? 0
-    setAdditionalLineWidth(Math.min(w, 320))
-  }, [setupAdditional, showAdditional])
 
   useEffect(() => {
     document.fonts.ready.then(() => {
@@ -261,7 +254,7 @@ export const SetupWizard = React.memo(function SetupWizard({
         </div>
       </div>
 
-      <div className="flex w-full max-w-2xl flex-col items-center overflow-hidden">
+      <div className="flex w-full max-w-2xl flex-col items-center" style={{ overflowX: "clip" }}>
         <AnimatePresence mode="wait">
           {setupPhase === "fields" && (
             <motion.div
@@ -382,29 +375,19 @@ export const SetupWizard = React.memo(function SetupWizard({
 
               {/* Optional additional context */}
               <FadeIn delay={0.15}>
-                <div className="mt-6 flex justify-center">
-                  {!showAdditional ? (
-                    <button
-                      type="button"
-                      onClick={() => setShowAdditional(true)}
-                      className="font-display text-xs text-muted-foreground/50 transition-colors duration-300 hover:text-muted-foreground"
-                    >
-                      + Add more context
-                    </button>
-                  ) : (
-                    <div className="relative pb-1 text-center" style={{ width: 320, maxWidth: "90vw" }}>
-                      {/* hidden sizer to measure text width */}
-                      <span
-                        ref={additionalSizerRef}
-                        className="invisible absolute whitespace-nowrap px-1 font-display text-sm"
-                        aria-hidden="true"
-                      >
-                        {setupAdditional || "Anything else Vera should know..."}
-                      </span>
+                <div className="relative mt-6 flex justify-center">
+                  <button
+                    type="button"
+                    onClick={() => setShowAdditional(true)}
+                    className={`font-display text-xs text-muted-foreground/50 transition-colors duration-300 hover:text-muted-foreground ${showAdditional ? "invisible" : ""}`}
+                  >
+                    + Add more context
+                  </button>
+                  {showAdditional && (
+                    <div className="absolute top-0 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2" style={{ width: 280, maxWidth: "90vw" }}>
                       <textarea
                         ref={additionalTextareaRef}
                         autoFocus
-                        rows={1}
                         value={setupAdditional}
                         onChange={(e) => {
                           setSetupAdditional(e.target.value)
@@ -415,68 +398,60 @@ export const SetupWizard = React.memo(function SetupWizard({
                         onKeyDown={handleSetupKeyDown}
                         onBlur={() => { if (!filePickerOpenRef.current && !setupAdditional.trim() && !contextFile) setShowAdditional(false) }}
                         placeholder="Anything else Vera should know..."
-                        className="w-full resize-none overflow-hidden bg-transparent text-center font-display text-sm text-foreground caret-primary placeholder:text-muted-foreground/40 focus:outline-none"
-                        style={{ minHeight: "1.5rem" }}
+                        style={{ minHeight: "4.5rem" }}
+                        className="w-full resize-none overflow-hidden rounded-lg border border-border/50 bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground/40 focus:border-primary/40 focus:outline-none focus:ring-1 focus:ring-primary/20 transition-colors"
                       />
-                      <motion.span
-                        className="absolute bottom-0 left-1/2 h-[2px] -translate-x-1/2 rounded-full bg-primary/30"
-                        initial={false}
-                        animate={{ width: additionalLineWidth > 0 ? additionalLineWidth + 20 : 0 }}
-                        transition={{ duration: 0.35, ease: "easeInOut" }}
-                      />
+                      {onContextFileUpload && (
+                        <>
+                          {!contextFile ? (
+                            <button
+                              type="button"
+                              onMouseDown={(e) => e.preventDefault()}
+                              onClick={() => { filePickerOpenRef.current = true; contextFileInputRef.current?.click() }}
+                              className="flex items-center gap-1 text-xs text-muted-foreground/40 transition-colors hover:text-muted-foreground/70"
+                            >
+                              <Paperclip className="h-3 w-3" />
+                              Attach a file
+                            </button>
+                          ) : (
+                            <div className="flex items-center gap-1.5 rounded-full border border-border/50 bg-muted/30 px-3 py-1 text-xs text-muted-foreground">
+                              {isExtractingContext ? (
+                                <Loader2 className="h-3 w-3 animate-spin" />
+                              ) : (
+                                <FileText className="h-3 w-3" />
+                              )}
+                              <span className="max-w-[150px] truncate">{contextFile.name}</span>
+                              {onContextFileRemove && (
+                                <button
+                                  type="button"
+                                  onMouseDown={(e) => e.preventDefault()}
+                                  onClick={onContextFileRemove}
+                                  className="ml-0.5 rounded-full p-0.5 transition-colors hover:bg-muted"
+                                >
+                                  <X className="h-2.5 w-2.5" />
+                                </button>
+                              )}
+                            </div>
+                          )}
+                          <input
+                            ref={contextFileInputRef}
+                            type="file"
+                            accept=".pdf,.txt,.docx,audio/*"
+                            onChange={(e) => {
+                              filePickerOpenRef.current = false
+                              const file = e.target.files?.[0]
+                              if (file) onContextFileUpload(file)
+                              if (contextFileInputRef.current) contextFileInputRef.current.value = ""
+                            }}
+                            className="hidden"
+                            aria-label="Attach reference file"
+                          />
+                        </>
+                      )}
                     </div>
                   )}
                 </div>
               </FadeIn>
-
-              {/* Attach file — visible when additional context is expanded */}
-              {showAdditional && onContextFileUpload && (
-                <div className="mt-3 flex flex-col items-center gap-2">
-                  {!contextFile ? (
-                    <button
-                      type="button"
-                      onMouseDown={(e) => e.preventDefault()}
-                      onClick={() => { filePickerOpenRef.current = true; contextFileInputRef.current?.click() }}
-                      className="flex items-center gap-1 text-xs text-muted-foreground/40 transition-colors hover:text-muted-foreground/70"
-                    >
-                      <Paperclip className="h-3 w-3" />
-                      Attach a file
-                    </button>
-                  ) : (
-                    <div className="flex items-center gap-1.5 rounded-full border border-border/50 bg-muted/30 px-3 py-1 text-xs text-muted-foreground">
-                      {isExtractingContext ? (
-                        <Loader2 className="h-3 w-3 animate-spin" />
-                      ) : (
-                        <FileText className="h-3 w-3" />
-                      )}
-                      <span className="max-w-[150px] truncate">{contextFile.name}</span>
-                      {onContextFileRemove && (
-                        <button
-                          type="button"
-                          onMouseDown={(e) => e.preventDefault()}
-                          onClick={onContextFileRemove}
-                          className="ml-0.5 rounded-full p-0.5 transition-colors hover:bg-muted"
-                        >
-                          <X className="h-2.5 w-2.5" />
-                        </button>
-                      )}
-                    </div>
-                  )}
-                  <input
-                    ref={contextFileInputRef}
-                    type="file"
-                    accept=".pdf,.txt,.docx,audio/*"
-                    onChange={(e) => {
-                      filePickerOpenRef.current = false
-                      const file = e.target.files?.[0]
-                      if (file) onContextFileUpload(file)
-                      if (contextFileInputRef.current) contextFileInputRef.current.value = ""
-                    }}
-                    className="hidden"
-                    aria-label="Attach reference file"
-                  />
-                </div>
-              )}
 
               {/* Ready button */}
               <FadeIn delay={0.2}>
