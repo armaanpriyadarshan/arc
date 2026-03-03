@@ -17,7 +17,7 @@ function ChatContent() {
   const [historyOpen, setHistoryOpen] = useState(false)
   const searchParams = useSearchParams()
   const getAuthToken = useCallback(async () => {
-    if (!user) throw new Error("Not authenticated")
+    if (!user) return null
     return user.getIdToken()
   }, [user])
 
@@ -92,32 +92,36 @@ function ChatContent() {
 
   return (
     <div className="flex h-screen flex-col">
-      <ChatNavbar plan={plan} />
+      <ChatNavbar plan={plan} isAuthenticated={!!user} />
       <div className="relative flex min-h-0 flex-1 flex-col">
-        <SessionHistorySidebar
-          open={historyOpen}
-          onClose={() => setHistoryOpen(false)}
-          sessions={sessions}
-          loading={sessionsLoading}
-          error={sessionsError}
-          onDelete={handleDeleteSession}
-        />
+        {user && (
+          <SessionHistorySidebar
+            open={historyOpen}
+            onClose={() => setHistoryOpen(false)}
+            sessions={sessions}
+            loading={sessionsLoading}
+            error={sessionsError}
+            onDelete={handleDeleteSession}
+          />
+        )}
         <CoachingInterface authToken={idToken} />
       </div>
-      {/* Floating history button — bottom left */}
-      <button
-        type="button"
-        onClick={handleHistoryToggle}
-        className={`fixed bottom-6 left-6 z-30 flex h-10 w-10 items-center justify-center rounded-full border shadow-lg backdrop-blur-sm transition-all active:scale-[0.98] ${
-          historyOpen
-            ? "border-primary/20 bg-primary/[0.03] text-foreground"
-            : "border-border/40 bg-background/90 text-muted-foreground/50 hover:border-primary/20 hover:bg-primary/[0.03] hover:text-primary/70"
-        }`}
-        aria-label="Session history"
-        aria-pressed={historyOpen}
-      >
-        <Clock className="h-4 w-4" />
-      </button>
+      {/* Floating history button — bottom left, only for logged-in users */}
+      {user && (
+        <button
+          type="button"
+          onClick={handleHistoryToggle}
+          className={`fixed bottom-6 left-6 z-30 flex h-10 w-10 items-center justify-center rounded-full border shadow-lg backdrop-blur-sm transition-all active:scale-[0.98] ${
+            historyOpen
+              ? "border-primary/20 bg-primary/[0.03] text-foreground"
+              : "border-border/40 bg-background/90 text-muted-foreground/50 hover:border-primary/20 hover:bg-primary/[0.03] hover:text-primary/70"
+          }`}
+          aria-label="Session history"
+          aria-pressed={historyOpen}
+        >
+          <Clock className="h-4 w-4" />
+        </button>
+      )}
     </div>
   )
 }

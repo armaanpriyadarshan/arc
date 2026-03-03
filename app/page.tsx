@@ -56,7 +56,10 @@ export default function Page() {
             isTranscribing={false}
             onResearchStart={() => router.push("/chat")}
             onModeSelect={() => router.push("/chat")}
-            onReady={() => router.push("/chat")}
+            onReady={(fields) => {
+              sessionStorage.setItem("vera_setup_fields", JSON.stringify(fields))
+              router.push("/chat")
+            }}
           />
         </div>
       </div>

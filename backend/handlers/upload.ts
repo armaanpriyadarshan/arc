@@ -5,7 +5,7 @@ import { RATE_LIMITS } from '@/backend/rate-limit-config'
 
 export async function handleUploadRoute(request: NextRequest) {
   const ip = getClientIp(request)
-  if (!checkRateLimit(ip, RATE_LIMITS.upload.limit, RATE_LIMITS.upload.windowMs).allowed) {
+  if (!checkRateLimit('upload:' + ip, RATE_LIMITS.upload.limit, RATE_LIMITS.upload.windowMs).allowed) {
     return NextResponse.json(
       { error: 'Too many requests. Please wait before uploading again.' },
       { status: 429 }

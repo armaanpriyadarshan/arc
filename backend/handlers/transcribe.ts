@@ -12,7 +12,7 @@ import type { TimestampedWord } from '@/lib/delivery-analytics'
 
 export async function handleTranscribe(request: NextRequest) {
   const ip = getClientIp(request)
-  if (!checkRateLimit(ip, RATE_LIMITS.transcribe.limit, RATE_LIMITS.transcribe.windowMs).allowed) {
+  if (!checkRateLimit('transcribe:' + ip, RATE_LIMITS.transcribe.limit, RATE_LIMITS.transcribe.windowMs).allowed) {
     return NextResponse.json(
       { error: 'Too many requests. Please wait before uploading again.' },
       { status: 429 }

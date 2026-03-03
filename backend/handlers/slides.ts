@@ -30,7 +30,7 @@ export async function handleSlidesAnalyze(request: NextRequest) {
   }
 
   const ip = getClientIp(request)
-  if (!checkRateLimit(ip, RATE_LIMITS.slidesAnalyze.limit, RATE_LIMITS.slidesAnalyze.windowMs).allowed) {
+  if (!checkRateLimit('slides:' + ip, RATE_LIMITS.slidesAnalyze.limit, RATE_LIMITS.slidesAnalyze.windowMs).allowed) {
     return NextResponse.json(
       { error: 'Too many requests. Please wait a moment.' },
       { status: 429 }

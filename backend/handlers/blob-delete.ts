@@ -6,7 +6,7 @@ import { RATE_LIMITS } from '@/backend/rate-limit-config'
 
 export async function handleBlobDelete(request: NextRequest) {
   const ip = getClientIp(request)
-  if (!checkRateLimit(ip, RATE_LIMITS.blobDelete.limit, RATE_LIMITS.blobDelete.windowMs).allowed) {
+  if (!checkRateLimit('blob-delete:' + ip, RATE_LIMITS.blobDelete.limit, RATE_LIMITS.blobDelete.windowMs).allowed) {
     return NextResponse.json(
       { error: 'Too many requests. Please wait before trying again.' },
       { status: 429 }

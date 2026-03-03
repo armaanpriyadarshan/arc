@@ -9,7 +9,7 @@ export async function handleResearch(request: NextRequest) {
   const ip = getClientIp(request)
 
   // Tight rate limit — research is expensive (web search + multiple model calls)
-  if (!checkRateLimit(ip, RATE_LIMITS.research.limit, RATE_LIMITS.research.windowMs).allowed) {
+  if (!checkRateLimit('research:' + ip, RATE_LIMITS.research.limit, RATE_LIMITS.research.windowMs).allowed) {
     return NextResponse.json(
       { error: 'Too many research requests. Please wait.' },
       { status: 429 }
@@ -39,8 +39,14 @@ export async function handleResearch(request: NextRequest) {
   const stream = new ReadableStream({
     async start(controller) {
       const encoder = new TextEncoder()
+      let closed = false
       function send(event: string, data: Record<string, unknown>) {
-        controller.enqueue(encoder.encode(`data: ${JSON.stringify({ event, ...data })}\n\n`))
+        if (closed) return
+        try {
+          controller.enqueue(encoder.encode(`data: ${JSON.stringify({ event, ...data })}\n\n`))
+        } catch {
+          closed = true // client disconnected
+        }
       }
 
       try {
@@ -63,7 +69,7 @@ export async function handleResearch(request: NextRequest) {
         console.error('Research pipeline error:', error)
         send('error', { error: 'Research failed. Coaching will proceed without enrichment.' })
       } finally {
-        controller.close()
+        if (!closed) try { controller.close() } catch { /* already closed */ }
       }
     },
   })

@@ -9,7 +9,8 @@ import { toast } from "sonner"
 
 import { useAuth } from "@/contexts/auth-context"
 import { buildAuthHeaders } from "@/lib/api-utils"
-import { saveSession, type SessionScores, type SessionScoresV2 } from "@/lib/sessions"
+import { saveSession, updateSessionScores, type SessionScores, type SessionScoresV2 } from "@/lib/sessions"
+import { TrialFeedbackView, type TrialFeedbackData } from "@/components/trial-feedback-view"
 import { useCoachingSession } from "@/hooks/use-coaching-session"
 import { formatAnalyticsSummary } from "@/lib/format-delivery-analytics"
 import { useRecorder } from "@/hooks/use-recorder"
@@ -90,6 +91,7 @@ export function CoachingInterface({ authToken }: CoachingInterfaceProps) {
   const [presentationMode, setPresentationMode] = useState(false)
   const [realtimeMode, setRealtimeMode] = useState(false)
   const [navigatingToFeedback, setNavigatingToFeedback] = useState(false)
+  const [trialFeedback, setTrialFeedback] = useState<TrialFeedbackData | null>(null)
   const [satisfiedWindow, setSatisfiedWindow] = useState(false)
   const sessionSaveTriggered = useRef(false)
   const presentationCommittedRef = useRef(false)
@@ -228,13 +230,6 @@ export function CoachingInterface({ authToken }: CoachingInterfaceProps) {
     sessionSaveTriggered.current = true
     setNavigatingToFeedback(true)
 
-    if (!user) {
-      toast.error("You must be logged in to save a session")
-      sessionSaveTriggered.current = false
-      setNavigatingToFeedback(false)
-      return
-    }
-
     const savedCtx = savedSetupRef.current.context
     const topic = chatSetupContext?.topic || savedCtx?.topic || "Untitled presentation"
     const audience = chatSetupContext?.audience || savedCtx?.audience || "General audience"
@@ -259,13 +254,12 @@ export function CoachingInterface({ authToken }: CoachingInterfaceProps) {
         .filter((m) => m.content?.trim())
         .map((m) => ({ role: m.role, content: m.content }))
 
-    // Build labeled transcript: realtime already has labels, segment mode needs them
-    const presenterLabel = user.displayName || 'Presenter'
+    // Build labeled transcript
+    const presenterLabel = user?.displayName || 'Presenter'
     let effectiveTranscript: string | null
     if (rtOverride?.transcript) {
       effectiveTranscript = rtOverride.transcript
     } else if (transcript) {
-      // Build interleaved transcript with speaker labels from messages
       const labeled = strippedMessages
         .filter((m) => m.content?.trim())
         .map((m) => `[${m.role === 'user' ? presenterLabel : 'Vera'}]: ${m.content}`)
@@ -287,6 +281,24 @@ export function CoachingInterface({ authToken }: CoachingInterfaceProps) {
 
     if (slideReview.blobUrl) slideReview.markBlobPersisted(slideReview.blobUrl)
 
+    // ── Unauthenticated: show feedback inline ──
+    if (!user) {
+      setTrialFeedback({
+        setup,
+        transcript: effectiveTranscript,
+        messages: strippedMessages,
+        researchContext: researchContext ?? null,
+        slideContext: slideReviewPayload && "raw" in slideReviewPayload
+          ? (slideReviewPayload as { raw: string }).raw
+          : null,
+        slideReview: slideReviewPayload,
+        deliveryAnalyticsSummary: deliveryAnalytics ? formatAnalyticsSummary(deliveryAnalytics) : null,
+      })
+      setNavigatingToFeedback(false)
+      return
+    }
+
+    // ── Authenticated: save to Firestore ──
     const sessionPayload = {
       userId: user.uid,
       setup,
@@ -337,7 +349,7 @@ export function CoachingInterface({ authToken }: CoachingInterfaceProps) {
     })
   }
 
-  // When feedback completes (stage → followup), save and navigate
+  // When feedback completes (stage → followup), save and navigate (authenticated only)
   useEffect(() => {
     if (stage === "followup" && !sessionSaveTriggered.current) {
       saveAndNavigateToFeedback()
@@ -528,6 +540,10 @@ export function CoachingInterface({ authToken }: CoachingInterfaceProps) {
   }
 
   /* ── Render ── */
+
+  if (trialFeedback) {
+    return <TrialFeedbackView data={trialFeedback} />
+  }
 
   return (
     <div className="relative flex flex-1 overflow-hidden bg-background">

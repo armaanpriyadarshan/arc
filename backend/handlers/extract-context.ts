@@ -96,7 +96,7 @@ async function extractFromAudio(tmpPath: string): Promise<string> {
 
 export async function handleExtractContext(request: NextRequest) {
   const ip = getClientIp(request)
-  if (!checkRateLimit(ip, RATE_LIMITS.contextExtract.limit, RATE_LIMITS.contextExtract.windowMs).allowed) {
+  if (!checkRateLimit('context:' + ip, RATE_LIMITS.contextExtract.limit, RATE_LIMITS.contextExtract.windowMs).allowed) {
     return NextResponse.json(
       { error: 'Too many requests. Please wait before extracting another file.' },
       { status: 429 }

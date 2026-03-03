@@ -13,7 +13,7 @@ interface FeedbackStreamState {
 }
 
 interface StartStreamOptions {
-  authToken: string
+  authToken?: string | null
   sessionId: string
   transcript?: string
   setup: {

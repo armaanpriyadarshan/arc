@@ -29,7 +29,7 @@ interface SetupWizardProps {
   onResearchStart: (audience: string, opts?: { topic?: string; goal?: string; additionalContext?: string }) => void
   onModeSelect: (mode: "present" | "upload-recording" | "practice-live", setupContext: SetupContext | null, contextMessage: string | null) => void
   /** If provided, called instead of the normal submit flow (e.g. to redirect unauthenticated users). */
-  onReady?: () => void
+  onReady?: (fields: { topic: string; audience: string; goal: string; additional: string }) => void
   contextFile?: ContextFileInfo | null
   isExtractingContext?: boolean
   contextFileError?: string | null
@@ -52,12 +52,20 @@ export const SetupWizard = React.memo(function SetupWizard({
   onContextFileUpload,
   onContextFileRemove,
 }: SetupWizardProps) {
+  /* ── Synchronous sessionStorage handoff (landing page → /chat) ── */
+  // Check existence synchronously to set the right initial phase (no flicker).
+  // Data is consumed in the useEffect below — NOT here — so remounts are safe.
+  const [hasHandoffData] = useState(() => {
+    if (typeof window === "undefined" || onReady) return false
+    try { return !!sessionStorage.getItem("vera_setup_fields") } catch { return false }
+  })
+
   const [setupTopic, setSetupTopic] = useState("")
   const [setupAudience, setSetupAudience] = useState("")
   const [setupGoal, setSetupGoal] = useState("")
   const [setupAdditional, setSetupAdditional] = useState("")
   const [showAdditional, setShowAdditional] = useState(false)
-  const [setupPhase, setSetupPhase] = useState<"fields" | "researching" | "review" | "mode-select" | "uploading">("fields")
+  const [setupPhase, setSetupPhase] = useState<"fields" | "researching" | "review" | "mode-select" | "uploading">(hasHandoffData ? "researching" : "fields")
   const contextFileInputRef = useRef<HTMLInputElement>(null)
   const additionalTextareaRef = useRef<HTMLTextAreaElement>(null)
   const filePickerOpenRef = useRef(false)
@@ -132,8 +140,12 @@ export const SetupWizard = React.memo(function SetupWizard({
   }, [researchSearchTerms])
 
   /* ── Phase transitions ── */
+  const prevIsResearchingRef = useRef(isResearching)
   useEffect(() => {
-    if (setupPhase === "researching" && !isResearching) {
+    // Only transition when research finishes (was running, now stopped)
+    const wasResearching = prevIsResearchingRef.current
+    prevIsResearchingRef.current = isResearching
+    if (setupPhase === "researching" && wasResearching && !isResearching) {
       if (researchMeta) {
         setSetupPhase("review")
       } else {
@@ -180,6 +192,29 @@ export const SetupWizard = React.memo(function SetupWizard({
     return () => { window.removeEventListener("keyup", handleKeyUp); window.removeEventListener("keydown", handleKeyDown) }
   }, [setupPhase]) // eslint-disable-line react-hooks/exhaustive-deps
 
+  /* ── Fire research for sessionStorage handoff ── */
+  const handoffFiredRef = useRef(false)
+  useEffect(() => {
+    if (!hasHandoffData || handoffFiredRef.current) return
+    const raw = sessionStorage.getItem("vera_setup_fields")
+    if (!raw) { setSetupPhase("fields"); return }
+    sessionStorage.removeItem("vera_setup_fields")
+    handoffFiredRef.current = true
+    try {
+      const f = JSON.parse(raw) as { topic?: string; audience?: string; goal?: string; additional?: string }
+      if (!f.topic || !f.audience || !f.goal) { setSetupPhase("fields"); return }
+      setSetupTopic(f.topic)
+      setSetupAudience(f.audience)
+      setSetupGoal(f.goal)
+      setSetupAdditional(f.additional ?? "")
+      onResearchStart(f.audience, {
+        topic: f.topic || undefined,
+        goal: f.goal || undefined,
+        additionalContext: f.additional || undefined,
+      })
+    } catch { setSetupPhase("fields") }
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
   /* ── Helpers ── */
   const hasSetupContent = !!(setupTopic.trim() && setupAudience.trim() && setupGoal.trim())
 
@@ -208,7 +243,7 @@ export const SetupWizard = React.memo(function SetupWizard({
 
   function handleSetupSubmit() {
     if (!hasSetupContent) return
-    if (onReady) { onReady(); return }
+    if (onReady) { onReady({ topic: setupTopic.trim(), audience: setupAudience.trim(), goal: setupGoal.trim(), additional: setupAdditional.trim() }); return }
     const audience = setupAudience.trim()
     if (audience) {
       setSetupPhase("researching")

@@ -9,7 +9,7 @@ import { SSE_HEADERS } from '@/backend/request-utils'
 
 export async function handleChat(request: NextRequest) {
   const ip = getClientIp(request)
-  if (!checkRateLimit(ip, RATE_LIMITS.chatIp.limit, RATE_LIMITS.chatIp.windowMs).allowed) {
+  if (!checkRateLimit('chat:' + ip, RATE_LIMITS.chatIp.limit, RATE_LIMITS.chatIp.windowMs).allowed) {
     return NextResponse.json(
       { error: 'Too many requests. Please wait a moment.' },
       { status: 429 }
