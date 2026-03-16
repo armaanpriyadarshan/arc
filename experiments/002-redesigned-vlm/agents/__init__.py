@@ -1,5 +1,5 @@
-from .vlm_explorer import VLMExplorerAgent
+from .agent import CompositionalAgent
 
 AGENTS = {
-    "vlm_explorer": VLMExplorerAgent,
+    "explorer": CompositionalAgent,
 }

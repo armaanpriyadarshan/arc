@@ -18,7 +18,7 @@ from agents import AGENTS
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("-g", "--game", default="ls20")
-    parser.add_argument("-a", "--agent", default="vlm_explorer", choices=AGENTS.keys())
+    parser.add_argument("-a", "--agent", default="explorer", choices=AGENTS.keys())
     args = parser.parse_args()
 
     log_file = os.path.join(os.path.dirname(__file__), "experiment.log")

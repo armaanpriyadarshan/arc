@@ -1,18 +1,23 @@
-"""Experiment 002: VLM-based agent with visual reasoning
+"""Experiment 002: Three-Model Agent (Eyes + Brain + Hands)
 
-Complete redesign from experiment 001 which scored 0/7.
-001 failed because code-only perception couldn't identify the player,
-background, or movement directions.
+Complete redesign from experiment 001 (0/7 levels).
 
-New approach: Let a VLM SEE the game as images.
-- Phase 1: VLM analyzes initial frame + diffs from 4 test actions to understand the game
-- Phase 2: VLM-guided action loop with visual diff feedback after every action
-- Self-correction: when stuck (no progress for N actions), VLM re-analyzes the full situation
+Architecture:
+  Eyes (gpt-4o): per-action visual observation, multi-turn conversation
+  Brain (o4-mini): periodic strategic reasoning, hypothesis journal
+  Hands (gpt-4o-mini): per-action executor, text-only, reads plan
+  Tracker: code-only spatial tracking from diffs, zero API calls
 
-No hardcoded game knowledge. The VLM discovers everything visually.
+Reasoning annotations are readable English text in the ARC replay.
 """
 
-AGENT = "vlm_explorer"
+AGENT = "explorer"
 GAME = "ls20"
 MAX_ACTIONS = 200
-MODEL = "gpt-4o"  # need vision capability
+
+EYES_MODEL = "gpt-4o"
+BRAIN_MODEL = "o4-mini"
+HANDS_MODEL = "gpt-4o-mini"
+
+BRAIN_INTERVAL = 15  # brain called every N actions
+DISCOVERY_BUDGET = 8
