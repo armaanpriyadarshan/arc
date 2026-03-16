@@ -26,7 +26,7 @@ PALETTE = [
     (0xA3, 0x56, 0xD6),  # 15 Purple
 ]
 
-SCALE = 4
+SCALE = 12  # 64px * 12 = 768px — large enough for VLM to see movement
 
 
 def grid_to_image(grid: list[list[int]]) -> Image.Image:
@@ -44,20 +44,21 @@ def make_side_by_side(before_grid: list[list[int]], after_grid: list[list[int]],
     """Create a side-by-side comparison image with labels."""
     img_a = grid_to_image(before_grid)
     img_b = grid_to_image(after_grid)
-    gap = 20
+    gap = 30
+    label_h = 40
     total_w = img_a.width + gap + img_b.width
-    total_h = img_a.height + 25  # room for labels
+    total_h = img_a.height + label_h
     canvas = Image.new("RGB", (total_w, total_h), (40, 40, 40))
-    canvas.paste(img_a, (0, 25))
-    canvas.paste(img_b, (img_a.width + gap, 25))
+    canvas.paste(img_a, (0, label_h))
+    canvas.paste(img_b, (img_a.width + gap, label_h))
 
     draw = ImageDraw.Draw(canvas)
     try:
-        font = ImageFont.load_default(size=16)
+        font = ImageFont.load_default(size=24)
     except TypeError:
         font = ImageFont.load_default()
-    draw.text((img_a.width // 2 - 30, 4), label_before, fill=(255, 255, 255), font=font)
-    draw.text((img_a.width + gap + img_b.width // 2 - 20, 4), label_after, fill=(255, 255, 255), font=font)
+    draw.text((img_a.width // 2 - 40, 8), label_before, fill=(255, 255, 255), font=font)
+    draw.text((img_a.width + gap + img_b.width // 2 - 30, 8), label_after, fill=(255, 255, 255), font=font)
 
     return canvas
 

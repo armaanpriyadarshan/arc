@@ -43,14 +43,17 @@ class SkillLibrary:
     def get(self, name: str) -> Skill | None:
         return self.skills.get(name)
 
-    def expand(self, plan: list[str]) -> list[str]:
+    def expand(self, plan: list) -> list[str]:
         """Expand skill references in a plan to raw actions.
 
         If a plan item is a skill name, replace it with the skill's actions.
         Otherwise keep it as-is (it's a raw action).
+        Filters out non-string items (model sometimes returns dicts/ints).
         """
         expanded = []
         for item in plan:
+            if not isinstance(item, str):
+                continue
             if item in self.skills:
                 expanded.extend(self.skills[item].actions)
             else:

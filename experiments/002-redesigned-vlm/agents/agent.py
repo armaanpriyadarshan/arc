@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 
 
 class CompositionalAgent:
-    MAX_ACTIONS = 200
+    MAX_ACTIONS = 100
 
     def __init__(self, game_id: str) -> None:
         from arc_agi import Arcade
