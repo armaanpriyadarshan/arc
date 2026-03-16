@@ -1,13 +1,13 @@
 """Unified planner — one loop, model decides what to do.
 
-No hardcoded phases. Each cycle:
-1. Model sees: current frame image + accumulated knowledge + recent action results
-2. Model outputs: a plan (action sequence) + reasoning + any new knowledge
-3. Agent executes the plan
-4. On events (score change, death, large change, plan done), cycle back to 1
-
-The model controls its own learning — it can explore, test hypotheses,
-or execute strategies. It decides when to shift between these modes.
+Changes from prior iteration (based on log analysis):
+1. Abort stuck plans (3 consecutive similar outcomes)
+2. Show before/after/diff images so model sees what its plan DID
+3. Track and surface plan failures so model doesn't repeat them
+4. Record skill outcomes (success/failure tracking)
+5. Smarter fallback (systematic probe, not random cycling)
+6. Re-describe scene on large changes
+7. Split think into analyze + plan (two calls per cycle)
 """
 
 import json
@@ -17,10 +17,10 @@ from typing import Callable
 from arcengine import FrameData, GameAction, GameState
 
 from .memory import GameKnowledge, Hypothesis, Primitive, Rule, Transition
-from .models import ModelRouter, REASONING_MODEL
+from .models import ModelRouter, REASONING_MODEL, VISION_MODEL
 from .perception import DiffAnalyzer, SceneDescriber
 from .skills import SkillLibrary
-from .vision import grid_to_b64, image_block, text_block
+from .vision import grid_to_b64, side_by_side_b64, image_block, text_block
 
 logger = logging.getLogger(__name__)
 
@@ -35,27 +35,15 @@ AGENT_CONTEXT = (
     "You must discover what the game wants you to do by observing how the grid changes in response to your inputs."
 )
 
-# Universal ARC-AGI-3 input mappings (API-level, not game-specific)
 INPUT_MAP = {
-    "ACTION1": "up",
-    "ACTION2": "down",
-    "ACTION3": "left",
-    "ACTION4": "right",
-    "ACTION5": "action (enter/spacebar)",
-    "ACTION6": "click (x,y)",
-    "ACTION7": "undo",
+    "ACTION1": "up", "ACTION2": "down", "ACTION3": "left", "ACTION4": "right",
+    "ACTION5": "action (enter/spacebar)", "ACTION6": "click (x,y)", "ACTION7": "undo",
 }
 
 
 class Planner:
-    def __init__(
-        self,
-        knowledge: GameKnowledge,
-        router: ModelRouter,
-        differ: DiffAnalyzer,
-        scene: SceneDescriber,
-        skills: SkillLibrary,
-    ) -> None:
+    def __init__(self, knowledge: GameKnowledge, router: ModelRouter,
+                 differ: DiffAnalyzer, scene: SceneDescriber, skills: SkillLibrary) -> None:
         self.k = knowledge
         self.router = router
         self.differ = differ
@@ -65,29 +53,24 @@ class Planner:
         self.total_deaths = 0
         self.highest_score = 0
         self._scene_described = False
+        self._last_plan_grid: list[list[int]] | None = None  # frame at start of last plan
+        self.failed_plans: list[dict] = []  # Change 3: track failures
 
     def setup_primitives(self, frame: FrameData) -> None:
-        """Register available actions with known API-level input mappings."""
         available = frame.available_actions or [1, 2, 3, 4]
         self.k.available_actions = available
-
         for i in range(1, 8):
             name = f"ACTION{i}"
-            direction = INPUT_MAP.get(name, "unknown")
             self.k.primitives[name] = Primitive(
-                action=name,
-                is_available=(i in available),
-                direction=direction,
+                action=name, is_available=(i in available),
+                direction=INPUT_MAP.get(name, "unknown"),
                 confidence=1.0 if i in available else 0.0,
             )
-
-        # Create basic movement skills
         for name, p in self.k.primitives.items():
             if p.is_available and p.direction in ("up", "down", "left", "right"):
                 self.skills.add(f"move_{p.direction}", [name], description=f"Single {p.direction} step")
 
     def run(self, frame: FrameData, step: StepFn, budget: int) -> FrameData:
-        """Main loop. Model decides what to do each cycle."""
         logger.info("=== PLAYING ===")
 
         while self.action_counter < budget:
@@ -103,26 +86,31 @@ class Planner:
                 self.action_counter += 1
                 continue
 
-            # Dedup before thinking
             self.k.dedup_hypotheses()
             self.k.dedup_rules()
 
-            # Get scene description once (first cycle) and on score changes
+            # Scene description: first time + on large changes
             if not self._scene_described:
                 self.k.scene_description = self.scene.describe(frame.frame[-1])
                 self._scene_described = True
-                logger.info(f"[scene] {self.k.scene_description[:200]}...")
+                logger.info(f"[scene] {self.k.scene_description[:300]}...")
 
-            # Ask model what to do
-            plan, goal, reasoning = self._think(frame, budget - self.action_counter)
+            # Change 8: Split into analyze (what happened) + plan (what to do)
+            current_grid = frame.frame[-1]
+            self._analyze(frame)
+            plan, goal = self._plan(frame, budget - self.action_counter)
+
             logger.info(f"[plan] ({len(plan)} actions) {goal}")
-            if reasoning:
-                logger.info(f"[reasoning] {reasoning[:200]}")
 
-            # Execute the plan
+            # Save grid for before/after comparison next cycle
+            self._last_plan_grid = current_grid
+
+            # Execute
             expanded = self.skills.expand(plan)
             executed: list[str] = []
             replan_reason = None
+            consecutive_stuck = 0
+            last_change_count: int | None = None
 
             for action_name in expanded:
                 if self.action_counter >= budget:
@@ -133,7 +121,6 @@ class Planner:
                     action = GameAction.from_name(action_name)
                 except (ValueError, KeyError, AttributeError):
                     continue
-
                 if action.value not in self.k.available_actions and action != GameAction.RESET:
                     continue
 
@@ -146,14 +133,11 @@ class Planner:
                 grid_after = frame.frame[-1]
                 diff = self.differ.compute(action_name, grid_before, grid_after)
                 blocked = self.differ.is_blocked(diff)
-
                 score_delta = frame.levels_completed - score_before
                 is_death = frame.state == GameState.GAME_OVER
 
-                self.k.log_action(
-                    self.action_counter, action_name, diff.total_changes,
-                    frame.levels_completed, blocked=blocked,
-                )
+                self.k.log_action(self.action_counter, action_name, diff.total_changes,
+                                  frame.levels_completed, blocked=blocked)
                 self.k.transitions.record(Transition(
                     action=action_name, changes=diff.total_changes,
                     blocked=blocked, score_delta=score_delta,
@@ -161,137 +145,196 @@ class Planner:
                 ))
                 executed.append(action_name)
 
-                logger.info(
-                    f"#{self.action_counter} {action_name}: "
-                    f"{diff.total_changes}ch {'BLOCKED' if blocked else ''} "
-                    f"score={frame.levels_completed}"
-                )
+                logger.info(f"#{self.action_counter} {action_name}: "
+                            f"{diff.total_changes}ch {'BLOCKED' if blocked else ''} "
+                            f"score={frame.levels_completed}")
 
-                # Events that trigger re-thinking
-                if frame.state == GameState.WIN:
+                # Change 1: Abort stuck plans
+                if last_change_count is not None and abs(diff.total_changes - last_change_count) < 5:
+                    consecutive_stuck += 1
+                else:
+                    consecutive_stuck = 0
+                last_change_count = diff.total_changes
+
+                if consecutive_stuck >= 3:
+                    replan_reason = f"stuck ({consecutive_stuck} similar outcomes in a row)"
                     break
 
+                # Events
+                if frame.state == GameState.WIN:
+                    break
                 if is_death:
                     replan_reason = "died"
                     break
-
                 if frame.levels_completed > self.highest_score:
                     self.highest_score = frame.levels_completed
-                    self.k.score_events.append({
-                        "step": self.action_counter,
-                        "score": frame.levels_completed,
-                        "actions": executed.copy(),
-                        "goal": goal,
-                    })
-                    self.skills.record_success_sequence(
-                        executed.copy(), f"Score to {frame.levels_completed}"
-                    )
+                    self.k.score_events.append({"step": self.action_counter, "score": frame.levels_completed,
+                                                "actions": executed.copy(), "goal": goal})
+                    self.skills.record_success_sequence(executed.copy(), f"Score to {frame.levels_completed}")
                     logger.info(f"*** SCORE UP: {frame.levels_completed} ***")
-                    # Re-describe scene on score change (level might have changed)
                     self.k.scene_description = self.scene.describe(frame.frame[-1])
                     replan_reason = f"score increased to {frame.levels_completed}"
                     break
 
+                # Change 6: Re-describe scene on large changes
                 if diff.total_changes > 100:
+                    self.k.scene_description = self.scene.describe(frame.frame[-1])
                     replan_reason = f"large change ({diff.total_changes} cells)"
                     break
 
-            if replan_reason:
+            # Change 3: Record plan failure
+            if replan_reason and not replan_reason.startswith("score"):
+                self.failed_plans.append({
+                    "goal": goal, "actions": executed[:8],
+                    "reason": replan_reason, "step": self.action_counter,
+                })
                 logger.info(f"[replan] {replan_reason}")
+
+            # Change 4: Record skill outcomes
+            plan_succeeded = (replan_reason is None) or replan_reason.startswith("score")
+            for item in plan:
+                if item in self.skills.skills:
+                    self.skills.record_use(item, plan_succeeded)
 
         return frame
 
-    def _think(self, frame: FrameData, remaining: int) -> tuple[list[str], str, str]:
-        """Ask the model what to do. Returns (plan, goal, reasoning)."""
+    # ── Change 8: Two-phase thinking ────────────────────────────
+
+    def _analyze(self, frame: FrameData) -> None:
+        """Phase 1: Analyze what happened. Update knowledge. Uses vision model."""
+        if not self._last_plan_grid:
+            return  # nothing to analyze on first cycle
+
+        content = [
+            text_block(
+                f"{AGENT_CONTEXT}\n\n"
+                f"CURRENT KNOWLEDGE:\n{self.k.compact_text()}\n\n"
+                "Side-by-side: frame BEFORE your last plan (left) vs frame NOW (right):"
+            ),
+            image_block(side_by_side_b64(self._last_plan_grid, frame.frame[-1], "BEFORE", "AFTER")),
+        ]
+
+        # Change 3: Surface failures
+        if self.failed_plans:
+            failures = "\nRECENT FAILURES (do NOT repeat):\n"
+            for f in self.failed_plans[-3:]:
+                failures += f"  - '{f['goal']}' failed: {f['reason']} after {f['actions']}\n"
+            content.append(text_block(failures))
+
+        content.append(text_block(
+            "\nAnalyze what happened since your last plan. What changed? What did you learn?\n"
+            "Update your understanding of the game.\n\n"
+            "Respond with JSON:\n"
+            '{"analysis": "what happened and what you learned",\n'
+            ' "new_rules": [{"description": "...", "confidence": 0.5}],\n'
+            ' "updated_hypotheses": [{"statement": "...", "status": "confirmed/refuted/untested", "priority": 1}]}'
+        ))
+
+        response = self.router.call(VISION_MODEL, content, max_tokens=1000)
+        data = self._extract_json(response)
+
+        analysis = data.get("analysis", "")
+        if analysis:
+            logger.info(f"[analyze] {analysis[:200]}")
+
+        for r in data.get("new_rules", []):
+            self.k.rules.append(Rule(id=f"rule_{len(self.k.rules)}",
+                                     description=r.get("description", ""), confidence=r.get("confidence", 0.5)))
+
+        for h in data.get("updated_hypotheses", []):
+            statement = h.get("statement", "")
+            status = h.get("status", "untested")
+            # Update existing or add new
+            found = False
+            for existing in self.k.hypotheses:
+                if existing.statement.lower()[:40] == statement.lower()[:40]:
+                    existing.status = status
+                    found = True
+                    break
+            if not found:
+                self.k.hypotheses.append(Hypothesis(
+                    id=f"hyp_{len(self.k.hypotheses)}", statement=statement,
+                    priority=h.get("priority", 3), status=status,
+                ))
+
+    def _plan(self, frame: FrameData, remaining: int) -> tuple[list[str], str]:
+        """Phase 2: Decide what to do next. Uses reasoning model."""
         content = [
             text_block(
                 f"{AGENT_CONTEXT}\n\n"
                 f"{self.k.compact_text()}\n\n"
                 f"SKILLS:\n{self.skills.summary()}\n\n"
                 f"Actions remaining: {remaining}\n\n"
-                f"Current frame:"
-            ),
-            image_block(grid_to_b64(frame.frame[-1])),
-            text_block(
-                "\nLook at the image and everything you know. Decide what to do next.\n\n"
-                "You can:\n"
-                "- Explore: try actions to learn how the game works\n"
-                "- Test a hypothesis: execute a specific sequence to confirm/deny a theory\n"
-                "- Execute a strategy: carry out a plan to complete the level\n"
-                "- Define new skills: name useful action sequences for reuse\n\n"
-                "Think step by step about the current situation.\n"
-                "If previous plans failed, explain WHY and try something DIFFERENT.\n\n"
-                "Respond with JSON:\n"
-                "{\n"
-                '  "reasoning": "your analysis of the current situation",\n'
-                '  "plan": ["ACTION3", "ACTION1", ...],\n'
-                '  "goal": "what this plan aims to achieve",\n'
-                '  "new_skills": [{"name": "...", "actions": [...], "description": "..."}],\n'
-                '  "new_rules": [{"description": "...", "confidence": 0.5}],\n'
-                '  "new_hypotheses": [{"statement": "...", "priority": 1, "test_plan": [...]}]\n'
-                "}"
             ),
         ]
 
+        # Change 3: Surface failures in plan prompt too
+        if self.failed_plans:
+            failures = "RECENT FAILURES (do NOT repeat these approaches):\n"
+            for f in self.failed_plans[-3:]:
+                failures += f"  - '{f['goal']}' failed: {f['reason']} after {f['actions']}\n"
+            content.append(text_block(failures + "\n"))
+
+        # Show side-by-side if we have a previous frame, otherwise just current
+        if self._last_plan_grid:
+            content.extend([
+                text_block("Side-by-side (before last plan vs now):"),
+                image_block(side_by_side_b64(self._last_plan_grid, frame.frame[-1], "BEFORE", "NOW")),
+            ])
+        else:
+            content.extend([
+                text_block("Current frame:"),
+                image_block(grid_to_b64(frame.frame[-1])),
+            ])
+
+        content.append(text_block(
+            "\nDecide what to do next. Think step by step.\n"
+            "If previous plans failed, try something FUNDAMENTALLY different.\n"
+            "You can explore, test hypotheses, execute strategies, or define new skills.\n\n"
+            "Respond with JSON:\n"
+            '{"plan": ["ACTION3", "ACTION1", ...],\n'
+            ' "goal": "what this plan aims to achieve",\n'
+            ' "new_skills": [{"name": "...", "actions": [...], "description": "..."}],\n'
+            ' "new_hypotheses": [{"statement": "...", "priority": 1, "test_plan": [...]}]}'
+        ))
+
         response = self.router.call(REASONING_MODEL, content, max_tokens=3000)
-        return self._parse_response(response)
+        return self._parse_plan(response)
 
-    def _parse_response(self, response: str) -> tuple[list[str], str, str]:
-        """Parse model response. Returns (plan, goal, reasoning)."""
+    def _parse_plan(self, response: str) -> tuple[list[str], str]:
         data = self._extract_json(response)
-
         plan = data.get("plan", [])
         goal = data.get("goal", "")
-        reasoning = data.get("reasoning", "")
 
-        # Add new skills
         for s in data.get("new_skills", []):
             actions = s.get("actions", [])
             if actions and all(isinstance(a, str) for a in actions):
-                self.skills.add(
-                    s.get("name", f"skill_{len(self.skills.skills)}"),
-                    actions,
-                    description=s.get("description", ""),
-                    source="synthesis",
-                )
+                self.skills.add(s.get("name", f"skill_{len(self.skills.skills)}"),
+                                actions, description=s.get("description", ""), source="synthesis")
 
-        # Add new rules
-        for r in data.get("new_rules", []):
-            self.k.rules.append(Rule(
-                id=f"rule_{len(self.k.rules)}",
-                description=r.get("description", ""),
-                confidence=r.get("confidence", 0.5),
-            ))
-
-        # Add new hypotheses
         for h in data.get("new_hypotheses", []):
             test_plan = [a for a in (h.get("test_plan") or []) if isinstance(a, str) and a.startswith("ACTION")]
             self.k.hypotheses.append(Hypothesis(
-                id=f"hyp_{len(self.k.hypotheses)}",
-                statement=h.get("statement", ""),
-                priority=h.get("priority", 3),
-                test_plan=test_plan,
+                id=f"hyp_{len(self.k.hypotheses)}", statement=h.get("statement", ""),
+                priority=h.get("priority", 3), test_plan=test_plan,
             ))
 
         if not plan:
-            # Fallback: try an untested hypothesis
+            # Change 5: Systematic probe fallback instead of random cycling
             for hyp in sorted(self.k.hypotheses, key=lambda h: h.priority):
                 if hyp.status == "untested" and hyp.test_plan:
-                    return hyp.test_plan, f"Testing: {hyp.statement}", "Fallback to hypothesis test"
+                    return hyp.test_plan, f"Testing: {hyp.statement}"
 
-            plan = ["ACTION1", "ACTION2", "ACTION3", "ACTION4"] * 5
-            goal = "Fallback exploration"
-            reasoning = "Could not parse plan from model response"
+            available = [f"ACTION{i}" for i in self.k.available_actions]
+            return available[:4], "Systematic probe: try each available action once"
 
-        return plan, goal, reasoning
+        return plan, goal
 
     def _extract_json(self, response: str) -> dict:
         try:
             return json.loads(response)
         except (json.JSONDecodeError, ValueError):
             pass
-
-        # Strip markdown fences
         cleaned = response
         if "```json" in cleaned:
             cleaned = cleaned.split("```json", 1)[1]
@@ -301,12 +344,10 @@ class Planner:
             cleaned = cleaned.split("```", 1)[1]
             if "```" in cleaned:
                 cleaned = cleaned.split("```", 1)[0]
-
         try:
             return json.loads(cleaned.strip())
         except (json.JSONDecodeError, ValueError):
             pass
-
         start = response.find("{")
         end = response.rfind("}")
         if start >= 0 and end > start:
@@ -314,5 +355,4 @@ class Planner:
                 return json.loads(response[start:end + 1])
             except (json.JSONDecodeError, ValueError):
                 pass
-
         return {}
