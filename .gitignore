@@ -7,21 +7,7 @@ wheels/
 *.egg-info
 
 # Virtual environments
-.venv/
+.venv
 
-# Lock files
-uv.lock
-
-# Logs and runtime artifacts
-*.log
-*.db
-frame.json
-
-# Recordings (large JSONL files)
-recordings/
-
-# Environment files (local game data)
-environment_files/
-
-# Env files
+# Secrets
 .env

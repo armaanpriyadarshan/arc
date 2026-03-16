@@ -4,87 +4,69 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is an ARC-AGI-3 competition workspace for building agents that play ARC-AGI-3 games. It contains two Python projects:
+ARC-AGI-3 competition workspace. Building agents that play unknown turn-based games on 64×64 grids.
 
-- **Root project** (`/`) — Personal experimentation space using the `arc-agi` SDK directly (Python 3.14, uv-managed)
-- **ARC-AGI-3-Agents** (`/ARC-AGI-3-Agents/`) — The official ARC-AGI-3 agent framework (Python 3.12+, uv-managed), cloned from `arcprize/ARC-AGI-3-Agents`
+- **Root project** (`/`) — Workspace with `arc-agi` SDK (Python 3.14, uv-managed)
+- **ARC-AGI-3-Agents** (`/ARC-AGI-3-Agents/`) — Official upstream framework (read-only reference, don't modify)
+- **Experiments** (`/experiments/NNN-description/`) — Each experiment is self-contained: code, config, logs, analysis
 
-## Commands
+### Key types (from `arc-agi` / `arcengine`)
 
-### Root project
-```bash
-uv run main.py          # run main entry point
-uv run my-play.py       # run playground script
+- `GameAction` — enum: RESET, ACTION1–ACTION7. Simple (no params) or complex (x, y coords 0–63).
+- `FrameData` — frame grid (`list[list[list[int]]]`, 64×64 of ints 0–15), state, levels_completed, available_actions.
+- `GameState` — NOT_PLAYED, NOT_FINISHED, GAME_OVER, WIN.
+
+## Experiment Philosophy
+
+**Build fast, run, analyze after.** An experiment is a complete agent run against a game. The goal is to get data as quickly as possible, then think carefully about what it means.
+
+Each experiment produces a **write-up** (`analysis.md`) that becomes a permanent reference. Future experiments cite past write-ups by number to build on prior findings. The write-ups are the real artifact — code changes between experiments, but the analysis accumulates.
+
+**What makes a new experiment:** a change in agent logic, prompts, stage budgets, perception approach, or game target. Not a bug fix or refactor.
+
+### Structure
+
+Each experiment is **one self-contained folder** with everything in it — code, config, logs, analysis. No subdirectories, no shared code outside the folder.
+
+```
+experiments/
+├── 001-staged-explorer-v1/
+│   ├── pyproject.toml   # dependencies
+│   ├── run.py           # entry point
+│   ├── config.py        # params, scorecard ID, result summary
+│   ├── analysis.md      # post-run write-up
+│   ├── experiment.log   # raw output
+│   └── agents/          # agent code for this experiment
+├── 002-fixed-perception/
+│   ├── ...              # copies and modifies what it needs from 001
+│   └── analysis.md      # references experiment 001
 ```
 
-### ARC-AGI-3-Agents
-```bash
-cd ARC-AGI-3-Agents
+### Workflow
 
-# Run an agent against a game
-uv run main.py --agent=random --game=ls20
-uv run main.py --agent=llm --game=ls20 --tags=experiment,v1
+1. **Build** the agent code inside `experiments/NNN-description/`.
+2. **Run** it from inside that directory: `uv run python run.py --agent=explorer --game=ls20`
+3. **Analyze** the logs and outcomes.
+4. **Write up** what happened in `analysis.md`.
+5. **Reference** prior experiment numbers in the next experiment's analysis.
 
-# Tests
-uv run pytest                              # all tests
-uv run pytest tests/unit/test_core.py      # single file
-uv run pytest -k test_name                 # single test by name
-uv run pytest -m unit                      # only unit tests
-uv run pytest -m integration               # only integration tests
+## Design Principles
 
-# Linting & formatting (ruff)
-uv run ruff check .
-uv run ruff format .
-
-# Type checking
-uv run mypy .
-```
-
-## Architecture (ARC-AGI-3-Agents)
-
-### Agent system
-
-`Agent` (abstract base in `agents/agent.py`) defines the game loop: repeatedly call `choose_action()` then `take_action()` until `is_done()` returns true or `MAX_ACTIONS` (80) is reached. Subclasses must implement `choose_action()` and `is_done()`.
-
-`Swarm` (`agents/swarm.py`) orchestrates multiple agents across games — creates an agent per game, runs each in its own thread, manages scorecards via `Arcade` from the `arc-agi` SDK.
-
-`Playback` (in `agent.py`) replays recorded JSONL sessions.
-
-### Agent templates (`agents/templates/`)
-
-- `random_agent.py` — random actions
-- `llm_agents.py` — LLM-based (LLM, FastLLM, GuidedLLM, ReasoningLLM) using OpenAI
-- `reasoning_agent.py` — chain-of-thought reasoning agent
-- `multimodal.py` — multimodal (vision) LLM agent
-- `langgraph_*.py` — LangGraph-based agents
-- `smolagents.py` — HuggingFace smolagents integration
-
-### Key types (from `arc-agi` / `arcengine` packages)
-
-- `GameAction` — enum of actions (ACTION1–ACTION7, RESET)
-- `FrameData` — per-frame state (frame grid, levels_completed, win_levels, state, available_actions)
-- `GameState` — game lifecycle state
-- `Arcade` / `EnvironmentWrapper` — game environment management
-
-### Recordings
-
-Gameplay is recorded as JSONL files in `recordings/`. Agents auto-register recording files as playback agents.
+- **Perception is code, reasoning is LLM.** Frame diffing and object detection are deterministic Python. LLM calls only for interpretation and synthesis.
+- **Action budget is sacred.** Every action must either gather information or make progress.
+- **World model is test-driven.** The test suite grows monotonically. Fixing one mechanic must not break another.
+- **LLM calls are expensive.** Use plan-then-execute (LLM outputs action sequences), not LLM-per-action.
+- **Upstream is read-only.** `ARC-AGI-3-Agents/` is a reference only.
 
 ## Environment Setup
 
-Both projects require API keys in `.env`:
+API keys in `.env`:
 - `ARC_API_KEY` — required, from https://three.arcprize.org/
-- `AGENTOPS_API_KEY` — optional, for observability
-- `ONLINE_ONLY=True` — to force online API instead of local execution
+- `OPENAI_API_KEY` — required for LLM-based stages
 
-Local game environments are stored in `environment_files/`.
+Local game environments in `environment_files/`.
 
-## Detailed Documentation
+## Reference Documentation
 
-See `docs/` for comprehensive walkthroughs:
-- `docs/01-overview.md` — Project overview, how to run agents, all CLI options
-- `docs/02-architecture.md` — Execution flow, Swarm, Agent base class, Recorder, Playback, Tracing
-- `docs/03-agent-templates.md` — Every agent template in detail (Random, LLM family, ReasoningAgent, MultiModalLLM, LangGraph agents)
-- `docs/04-smolagents.md` — HuggingFace smolagents integration (SmolCodingAgent, SmolVisionAgent)
-- `docs/05-game-concepts.md` — Frame structure, GameState lifecycle, color palette, LockSmith rules
-- `docs/06-testing-and-development.md` — Test structure, creating new agents, experiment workflow
+See `docs/` for upstream framework walkthroughs:
+- `docs/01-overview.md` through `docs/06-testing-and-development.md`
