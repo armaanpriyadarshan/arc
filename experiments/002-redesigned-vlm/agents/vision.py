@@ -4,7 +4,7 @@ import base64
 import io
 
 import numpy as np
-from PIL import Image
+from PIL import Image, ImageDraw, ImageFont
 
 # Official ARC color palette
 PALETTE = [
@@ -26,20 +26,40 @@ PALETTE = [
     (0xA3, 0x56, 0xD6),  # 15 Purple
 ]
 
-SCALE = 4  # 64px -> 256px
+SCALE = 4
 
 
 def grid_to_image(grid: list[list[int]]) -> Image.Image:
-    """Convert a 64x64 int grid to a scaled PIL Image."""
     h = len(grid)
     w = len(grid[0]) if h > 0 else 0
     img = Image.new("RGB", (w, h))
     pixels = img.load()
     for y in range(h):
         for x in range(w):
-            val = grid[y][x] & 0xF
-            pixels[x, y] = PALETTE[val]
+            pixels[x, y] = PALETTE[grid[y][x] & 0xF]
     return img.resize((w * SCALE, h * SCALE), Image.NEAREST)
+
+
+def make_side_by_side(before_grid: list[list[int]], after_grid: list[list[int]], label_before: str = "BEFORE", label_after: str = "AFTER") -> Image.Image:
+    """Create a side-by-side comparison image with labels."""
+    img_a = grid_to_image(before_grid)
+    img_b = grid_to_image(after_grid)
+    gap = 20
+    total_w = img_a.width + gap + img_b.width
+    total_h = img_a.height + 25  # room for labels
+    canvas = Image.new("RGB", (total_w, total_h), (40, 40, 40))
+    canvas.paste(img_a, (0, 25))
+    canvas.paste(img_b, (img_a.width + gap, 25))
+
+    draw = ImageDraw.Draw(canvas)
+    try:
+        font = ImageFont.load_default(size=16)
+    except TypeError:
+        font = ImageFont.load_default()
+    draw.text((img_a.width // 2 - 30, 4), label_before, fill=(255, 255, 255), font=font)
+    draw.text((img_a.width + gap + img_b.width // 2 - 20, 4), label_after, fill=(255, 255, 255), font=font)
+
+    return canvas
 
 
 def image_to_b64(img: Image.Image) -> str:
@@ -52,8 +72,11 @@ def grid_to_b64(grid: list[list[int]]) -> str:
     return image_to_b64(grid_to_image(grid))
 
 
-def make_diff_image(before: list[list[int]], after: list[list[int]]) -> Image.Image:
-    """Create a visual diff: red pixels where changes occurred, black elsewhere."""
+def side_by_side_b64(before: list[list[int]], after: list[list[int]], label_before: str = "BEFORE", label_after: str = "AFTER") -> str:
+    return image_to_b64(make_side_by_side(before, after, label_before, label_after))
+
+
+def diff_to_b64(before: list[list[int]], after: list[list[int]]) -> str:
     h = len(before)
     w = len(before[0]) if h > 0 else 0
     img = Image.new("RGB", (w, h), (0, 0, 0))
@@ -62,18 +85,11 @@ def make_diff_image(before: list[list[int]], after: list[list[int]]) -> Image.Im
         for x in range(w):
             if before[y][x] != after[y][x]:
                 pixels[x, y] = (255, 0, 0)
-    return img.resize((w * SCALE, h * SCALE), Image.NEAREST)
-
-
-def diff_to_b64(before: list[list[int]], after: list[list[int]]) -> str:
-    return image_to_b64(make_diff_image(before, after))
+    return image_to_b64(img.resize((w * SCALE, h * SCALE), Image.NEAREST))
 
 
 def image_block(b64: str) -> dict:
-    return {
-        "type": "image_url",
-        "image_url": {"url": f"data:image/png;base64,{b64}"},
-    }
+    return {"type": "image_url", "image_url": {"url": f"data:image/png;base64,{b64}"}}
 
 
 def text_block(text: str) -> dict:
