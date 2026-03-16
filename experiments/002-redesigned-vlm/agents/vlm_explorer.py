@@ -1,29 +1,25 @@
-"""VLM Explorer — vision-first agent that sees the game as images.
+"""VLM Explorer v2 — fixed based on iteration 1 failure analysis.
 
-Architecture (radically different from experiment 001):
+Iteration 1 problems:
+- VLM didn't understand actions are MOVEMENT (thought they were "interactions")
+- Obsessively repeated ACTION2 near "white cross" for 100+ actions
+- 2ch = wall hit wasn't recognized
+- 1 VLM call per action too expensive, responses were garbage
 
-1. DISCOVERY PHASE (~8 actions):
-   - Reset, take each directional action once
-   - Send the VLM: initial frame + 4 post-action frames + 4 diff images
-   - VLM outputs: what is the player, what do actions do, what objects exist, what might the goal be
-
-2. PLAY PHASE (remaining budget):
-   - Each turn: send VLM the current frame image + game rules learned so far + action history
-   - VLM picks one action at a time (not batched plans — the VLM needs to SEE each frame)
-   - After every action, check for score changes, death, win
-   - Every 10 actions: VLM does a "reflection" — what's working, what's not, what to try differently
-
-3. SELF-CORRECTION:
-   - If stuck (5+ actions with no grid change), VLM gets a special "you're stuck" prompt
-   - If died, VLM gets death context and must explain what killed it
-   - If score changed, VLM gets celebration + "what did you do right" prompt
-   - Accumulated learnings persist across deaths/resets
+Fixes:
+- Discovery phase: take each action TWICE, show side-by-side before/after images
+  AND explicitly compute movement direction from diff centroids
+- Tell the VLM upfront: "52ch = moved, 2ch = hit wall, 0ch = no effect"
+- Play phase: VLM outputs PLANS (10-20 actions), not single actions
+- Show action counts in reflection to prevent repetition loops
+- Include diff image with EVERY VLM call so it sees spatial changes
 """
 
 import json
 import logging
 import os
 import time
+from collections import Counter
 
 from arcengine import FrameData, GameAction, GameState
 from openai import OpenAI
@@ -46,22 +42,21 @@ class VLMExplorerAgent:
         self.frames: list[FrameData] = []
         self.action_counter = 0
         self.client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY", ""))
-        self.game_knowledge = ""  # accumulated understanding of the game
-        self.action_history: list[str] = []  # for context
+        self.game_knowledge = ""
+        self.action_history: list[str] = []
+        self.action_counts: Counter = Counter()
         self.total_deaths = 0
         self.highest_score = 0
 
     def run(self) -> None:
         timer = time.time()
         logger.info("=" * 60)
-        logger.info(f"EXPERIMENT 002: VLM Explorer on {self.game_id}")
+        logger.info(f"EXPERIMENT 002 (iter 2): VLM Explorer on {self.game_id}")
         logger.info("=" * 60)
 
-        # RESET
         frame = self._step(GameAction.RESET)
 
         if frame.state == GameState.WIN:
-            logger.info("Won on reset?!")
             self._close()
             return
 
@@ -70,7 +65,6 @@ class VLMExplorerAgent:
         frame = self._discovery_phase(frame)
 
         if frame.state == GameState.WIN:
-            logger.info("Won during discovery!")
             self._close()
             return
 
@@ -84,84 +78,95 @@ class VLMExplorerAgent:
             f"FINISHED: actions={self.action_counter} state={frame.state.name} "
             f"score={frame.levels_completed} deaths={self.total_deaths} time={elapsed}s"
         )
-        logger.info(f"Game knowledge:\n{self.game_knowledge}")
+        logger.info(f"Final game knowledge:\n{self.game_knowledge}")
         logger.info("=" * 60)
         self._close()
 
     def _discovery_phase(self, frame: FrameData) -> FrameData:
-        """Take one of each directional action, show VLM the before/after/diff."""
+        """Take each directional action twice. Compute movement from diffs. Show VLM everything."""
         initial_grid = frame.frame[-1]
-        initial_b64 = grid_to_b64(initial_grid)
 
-        # Take 4 directional actions and collect results
-        test_actions = [GameAction.ACTION1, GameAction.ACTION2, GameAction.ACTION3, GameAction.ACTION4]
-        action_names = ["ACTION1", "ACTION2", "ACTION3", "ACTION4"]
-        results = []
-
-        for action, name in zip(test_actions, action_names):
-            grid_before = frame.frame[-1]
-            frame = self._step(action)
-            grid_after = frame.frame[-1]
-
-            results.append({
-                "action": name,
-                "after_b64": grid_to_b64(grid_after),
-                "diff_b64": diff_to_b64(grid_before, grid_after),
-                "num_changes": sum(1 for r in range(len(grid_before)) for c in range(len(grid_before[0])) if grid_before[r][c] != grid_after[r][c]),
-            })
-
-            self.action_history.append(f"{name}: {results[-1]['num_changes']} changes")
-
-            if frame.state == GameState.GAME_OVER:
-                frame = self._step(GameAction.RESET)
-                self.total_deaths += 1
-
-            if frame.state == GameState.WIN:
-                return frame
-
-        # Now ask VLM to analyze everything
-        content = [
-            text_block("You are analyzing an unknown video game displayed as a 64x64 pixel grid. "
-                       "Each pixel is one of 16 colors. I will show you:\n"
-                       "1. The initial game frame\n"
-                       "2. The result of 4 different actions, each with the resulting frame and a diff image (red pixels = what changed)\n\n"
-                       "Analyze carefully and tell me:\n"
-                       "- What is the player? (describe its appearance, position, size)\n"
-                       "- What does each action do? (direction of movement, step size)\n"
-                       "- What objects/structures do you see? (walls, doors, items, UI elements)\n"
-                       "- What might the goal be?\n"
-                       "- What is the color coding? (what color = walls, floor, player, etc)\n"
-                       "- Any UI elements? (score, health, inventory displayed on the grid)\n\n"
-                       "Be very specific about positions and colors."),
-            text_block("\n--- INITIAL FRAME ---"),
-            image_block(initial_b64),
+        test_actions = [
+            (GameAction.ACTION1, "ACTION1"),
+            (GameAction.ACTION2, "ACTION2"),
+            (GameAction.ACTION3, "ACTION3"),
+            (GameAction.ACTION4, "ACTION4"),
         ]
 
-        for r in results:
-            content.extend([
-                text_block(f"\n--- After {r['action']} ({r['num_changes']} pixels changed) ---"),
-                text_block("Resulting frame:"),
-                image_block(r["after_b64"]),
-                text_block("Diff (red = changed pixels):"),
-                image_block(r["diff_b64"]),
-            ])
+        # For each action: take it twice, record before/after grids and compute movement
+        discovery_data = []
+        for action, name in test_actions:
+            for trial in range(2):
+                grid_before = frame.frame[-1]
+                frame = self._step(action)
+                grid_after = frame.frame[-1]
 
-        content.append(text_block(
-            "\n\nBased on ALL of this, provide a comprehensive analysis. "
-            "End your response with a section called GAME RULES that summarizes "
-            "everything you've learned in a compact format I can reference later."
-        ))
+                changes = self._count_changes(grid_before, grid_after)
+                direction = self._compute_movement_direction(grid_before, grid_after)
+
+                discovery_data.append({
+                    "action": name,
+                    "trial": trial,
+                    "changes": changes,
+                    "direction": direction,
+                    "before_b64": grid_to_b64(grid_before),
+                    "after_b64": grid_to_b64(grid_after),
+                    "diff_b64": diff_to_b64(grid_before, grid_after),
+                })
+
+                self.action_history.append(f"{name}: {changes}ch dir={direction}")
+
+                if frame.state == GameState.GAME_OVER:
+                    frame = self._step(GameAction.RESET)
+                    self.total_deaths += 1
+                if frame.state == GameState.WIN:
+                    return frame
+
+        # Build movement summary from data
+        movement_summary = self._summarize_movements(discovery_data)
+        logger.info(f"[discovery] Movement summary: {movement_summary}")
+
+        # Now ask VLM to analyze with all the computed info
+        content = [
+            text_block(
+                "You are analyzing an unknown video game on a 64x64 pixel grid with 16 colors.\n\n"
+                "CRITICAL FACTS I've already computed:\n"
+                f"{movement_summary}\n\n"
+                "KEY PATTERNS:\n"
+                "- When ~52 cells change: the player MOVED successfully\n"
+                "- When ~2 cells change: the player HIT A WALL (couldn't move)\n"
+                "- When 0 cells change: the action has no effect\n\n"
+                "I'll show you the initial frame, then each action's result with a diff overlay.\n"
+                "Based on all this, describe:\n"
+                "1. What the game looks like (player, walls, objects, UI elements)\n"
+                "2. What you think the GOAL might be\n"
+                "3. What strategy you'd recommend\n\n"
+                "End with a GAME RULES section.\n"
+            ),
+            text_block("INITIAL FRAME:"),
+            image_block(grid_to_b64(initial_grid)),
+        ]
+
+        # Show first trial of each action
+        for d in discovery_data:
+            if d["trial"] == 0:
+                content.extend([
+                    text_block(f"\n{d['action']}: {d['changes']} cells changed, movement direction: {d['direction']}"),
+                    text_block("Result:"),
+                    image_block(d["after_b64"]),
+                    text_block("Diff (red = changes):"),
+                    image_block(d["diff_b64"]),
+                ])
 
         response = self._vlm_call(content, "discovery")
-        self.game_knowledge = response
+        self.game_knowledge = f"MOVEMENT MAP:\n{movement_summary}\n\nVLM ANALYSIS:\n{response}"
 
         logger.info(f"[discovery] VLM analysis:\n{response[:500]}...")
         return frame
 
     def _play_phase(self, frame: FrameData) -> FrameData:
-        """VLM-guided play loop. Each turn: see frame, pick action, observe result."""
-        stale_count = 0
-        actions_since_reflection = 0
+        """VLM outputs action PLANS (10-20 steps), executed without VLM calls until re-plan needed."""
+        actions_since_replan = 0
 
         while self.action_counter < self.MAX_ACTIONS:
             if frame.state == GameState.WIN:
@@ -170,165 +175,233 @@ class VLMExplorerAgent:
 
             if frame.state == GameState.GAME_OVER:
                 self.total_deaths += 1
-                logger.info(f"[play] DIED (death #{self.total_deaths}) — resetting")
+                logger.info(f"[play] DIED #{self.total_deaths}")
 
-                # Ask VLM what killed us
-                death_analysis = self._vlm_call([
-                    text_block(f"You just DIED in the game. Here's what you know:\n\n"
-                               f"GAME KNOWLEDGE:\n{self.game_knowledge}\n\n"
-                               f"RECENT ACTIONS:\n{chr(10).join(self.action_history[-15:])}\n\n"
-                               f"What likely killed you? How should you avoid it? "
-                               f"Update your understanding. Be specific."),
-                    text_block("Last frame before death:"),
-                    image_block(grid_to_b64(frame.frame[-1])),
-                ], "death_analysis")
-
-                self.game_knowledge += f"\n\nDEATH #{self.total_deaths} LESSON: {death_analysis}"
-                logger.info(f"[play] death analysis: {death_analysis[:200]}...")
+                # Quick death analysis
+                death_note = f"DEATH #{self.total_deaths} at action {self.action_counter}. " \
+                             f"Recent: {', '.join(self.action_history[-10:])}. " \
+                             f"Likely cause: ran out of energy (too many actions without progress)."
+                self.game_knowledge += f"\n\n{death_note}"
+                logger.info(f"[play] {death_note}")
 
                 frame = self._step(GameAction.RESET)
-                stale_count = 0
-                actions_since_reflection = 0
+                actions_since_replan = 0
                 continue
 
-            grid_before = frame.frame[-1]
+            # Get a plan from VLM
+            grid = frame.frame[-1]
+            plan, reasoning = self._get_plan(frame, grid)
+            logger.info(f"[play] plan ({len(plan)} steps): {plan[:15]}{'...' if len(plan)>15 else ''} | {reasoning[:100]}")
 
-            # Every 10 actions, do a reflection
-            if actions_since_reflection >= 10:
-                frame, stale_count = self._reflect(frame, stale_count)
-                actions_since_reflection = 0
-                if frame.state in (GameState.WIN, GameState.GAME_OVER):
+            # Execute the plan
+            for action_name in plan:
+                if self.action_counter >= self.MAX_ACTIONS:
+                    break
+
+                try:
+                    action = GameAction.from_name(action_name)
+                except (ValueError, KeyError):
                     continue
 
-            # Build the action prompt
-            content = [
-                text_block(f"GAME KNOWLEDGE:\n{self.game_knowledge}\n\n"
-                           f"Score: {frame.levels_completed} | Deaths: {self.total_deaths} | "
-                           f"Actions used: {self.action_counter}/{self.MAX_ACTIONS}\n\n"
-                           f"Recent actions: {', '.join(self.action_history[-8:])}\n"),
-            ]
+                grid_before = frame.frame[-1]
+                score_before = frame.levels_completed
 
-            if stale_count >= 3:
-                content.append(text_block(
-                    f"\n⚠️ WARNING: Last {stale_count} actions had NO EFFECT. "
-                    f"You're probably hitting a wall. Try a COMPLETELY different direction.\n"
-                ))
+                frame = self._step(action)
+                grid_after = frame.frame[-1]
 
-            content.extend([
-                text_block("Current frame:"),
-                image_block(grid_to_b64(grid_before)),
-                text_block(
-                    "\nWhat is your next action? Choose ONE of: ACTION1, ACTION2, ACTION3, ACTION4, ACTION5\n"
-                    "Respond with ONLY a JSON object: {\"action\": \"ACTION1\", \"reasoning\": \"brief why\"}"
-                ),
-            ])
+                changes = self._count_changes(grid_before, grid_after)
+                self.action_counts[action_name] += 1
+                actions_since_replan += 1
 
-            response = self._vlm_call(content, "action")
+                score_changed = frame.levels_completed > self.highest_score
+                if score_changed:
+                    self.highest_score = frame.levels_completed
+                    logger.info(f"[play] *** SCORE UP: {frame.levels_completed} ***")
+                    self.game_knowledge += f"\n\nSCORE to {frame.levels_completed} after {action_name}!"
 
-            # Parse action
-            action_name, reasoning = self._parse_action(response)
-            try:
-                action = GameAction.from_name(action_name)
-            except (ValueError, KeyError):
-                action = GameAction.ACTION1
-                reasoning = f"fallback (couldn't parse: {action_name})"
+                wall_hit = changes <= 5 and changes > 0
 
-            # Execute
-            frame = self._step(action)
-            grid_after = frame.frame[-1]
+                self.action_history.append(
+                    f"{action_name}: {changes}ch" +
+                    (" WALL" if wall_hit else "") +
+                    (" SCORE!" if score_changed else "")
+                )
 
-            # Count changes
-            changes = sum(1 for r in range(len(grid_before)) for c in range(len(grid_before[0]))
-                          if grid_before[r][c] != grid_after[r][c])
+                logger.info(
+                    f"[play] #{self.action_counter} {action_name}: "
+                    f"{changes}ch score={frame.levels_completed}"
+                    + (" WALL" if wall_hit else "")
+                    + (" SCORE!" if score_changed else "")
+                )
 
-            if changes == 0:
-                stale_count += 1
-            else:
-                stale_count = 0
+                # Re-plan triggers
+                if frame.state in (GameState.WIN, GameState.GAME_OVER):
+                    break
+                if score_changed:
+                    logger.info("[play] re-planning: score changed!")
+                    break
 
-            # Check score change
-            score_changed = frame.levels_completed > self.highest_score
-            if score_changed:
-                self.highest_score = frame.levels_completed
-                logger.info(f"[play] *** SCORE UP: {frame.levels_completed} ***")
-                self.game_knowledge += f"\n\nSCORE INCREASE after {action_name}! Score now {frame.levels_completed}."
-
-            self.action_history.append(
-                f"{action_name}: {changes}ch score={frame.levels_completed}"
-                + (" SCORE!" if score_changed else "")
-                + (f" ({reasoning[:50]})" if reasoning else "")
-            )
-            actions_since_reflection += 1
-
-            logger.info(
-                f"[play] #{self.action_counter} {action_name}: "
-                f"{changes}ch score={frame.levels_completed} stale={stale_count} "
-                f"| {reasoning[:60]}"
-            )
+            # If plan exhausted normally, will loop back and get new plan
 
         return frame
 
-    def _reflect(self, frame: FrameData, stale_count: int) -> tuple[FrameData, int]:
-        """Periodic reflection — VLM re-analyzes the situation."""
+    def _get_plan(self, frame: FrameData, grid: list[list[int]]) -> tuple[list[str], str]:
+        """Ask VLM for a multi-step plan."""
+        # Build action stats
+        stats = ", ".join(f"{k}:{v}" for k, v in sorted(self.action_counts.items()))
+
         content = [
-            text_block(f"REFLECTION TIME. You've taken 10 actions. Step back and think.\n\n"
-                       f"GAME KNOWLEDGE:\n{self.game_knowledge}\n\n"
-                       f"Score: {frame.levels_completed} | Deaths: {self.total_deaths} | "
-                       f"Actions: {self.action_counter}/{self.MAX_ACTIONS}\n\n"
-                       f"Recent actions:\n{chr(10).join(self.action_history[-10:])}\n\n"
-                       f"Current frame:"),
-            image_block(grid_to_b64(frame.frame[-1])),
-            text_block("\nQuestions to consider:\n"
-                       "1. Are you making progress toward the goal? What evidence?\n"
-                       "2. Are you stuck in a pattern? Repeating the same moves?\n"
-                       "3. Is there something on the screen you haven't explored?\n"
-                       "4. Should you change your strategy entirely?\n"
-                       "5. What part of the game do you NOT understand yet?\n\n"
-                       "Provide an updated GAME RULES section with everything you now know. "
-                       "Be creative — consider possibilities you haven't tried."),
+            text_block(
+                f"GAME KNOWLEDGE:\n{self.game_knowledge}\n\n"
+                f"Score: {frame.levels_completed} | Deaths: {self.total_deaths} | "
+                f"Actions: {self.action_counter}/{self.MAX_ACTIONS}\n"
+                f"Action counts so far: {stats or 'none'}\n"
+                f"Recent history: {', '.join(self.action_history[-15:])}\n\n"
+                f"REMINDERS:\n"
+                f"- ~52 cell changes = successful move\n"
+                f"- ~2 cell changes = hit a wall, try different direction\n"
+                f"- If you keep hitting walls, you need to navigate AROUND them\n"
+                f"- You have limited energy — don't waste moves hitting walls\n"
+            ),
+            text_block("Current frame:"),
+            image_block(grid_to_b64(grid)),
+            text_block(
+                "\nOutput a PLAN of 10-20 actions as JSON:\n"
+                '{"plan": ["ACTION1", "ACTION4", ...], "reasoning": "what you\'re trying to do"}\n\n'
+                "Think about WHERE the player is and WHERE it needs to go. "
+                "Plan a PATH, not random moves. If you keep hitting walls in one direction, "
+                "try going around them."
+            ),
         ]
 
-        reflection = self._vlm_call(content, "reflection")
-        self.game_knowledge = reflection
-        logger.info(f"[reflect] VLM reflection:\n{reflection[:300]}...")
-        return frame, stale_count
+        response = self._vlm_call(content, "plan")
+        return self._parse_plan(response)
+
+    def _parse_plan(self, response: str) -> tuple[list[str], str]:
+        """Extract plan from VLM response."""
+        try:
+            start = response.find("{")
+            end = response.rfind("}") + 1
+            if start >= 0 and end > start:
+                data = json.loads(response[start:end])
+                plan = data.get("plan", [])
+                reasoning = data.get("reasoning", "")
+                if plan:
+                    return plan, reasoning
+        except (json.JSONDecodeError, KeyError):
+            pass
+
+        # Fallback: extract ACTION keywords
+        actions = []
+        for word in response.split():
+            word = word.strip('",[]')
+            if word in ("ACTION1", "ACTION2", "ACTION3", "ACTION4", "ACTION5"):
+                actions.append(word)
+        if actions:
+            return actions[:20], response[:100]
+
+        return ["ACTION1", "ACTION4", "ACTION2", "ACTION3"] * 3, "fallback plan"
+
+    def _compute_movement_direction(self, before: list[list[int]], after: list[list[int]]) -> str:
+        """Compute movement direction from frame diff using centroid shift of changed cells."""
+        changed = []
+        for r in range(len(before)):
+            for c in range(len(before[0])):
+                if before[r][c] != after[r][c]:
+                    changed.append((r, c))
+
+        if len(changed) < 4:
+            return "none (wall hit or no effect)"
+
+        # Split changed cells into "gained non-floor" and "lost non-floor"
+        # The player moved FROM cells that became floor-like TO cells that became player-like
+        gained = []  # cells where new value is rarer (likely player arrived)
+        lost = []    # cells where old value was rarer (likely player left)
+
+        for r, c in changed:
+            old, new = before[r][c], after[r][c]
+            # Simple heuristic: the less common value in the grid is the "interesting" one
+            gained.append((r, c, new))
+            lost.append((r, c, old))
+
+        # Compute centroids of all changed cells — the centroid shift IS the movement
+        avg_r = sum(r for r, c in changed) / len(changed)
+        avg_c = sum(c for r, c in changed) / len(changed)
+
+        # Compare with centroid of changed cells weighted by whether they gained or lost rare colors
+        # Simpler: just look at the bounding box shift
+        min_r = min(r for r, c in changed)
+        max_r = max(r for r, c in changed)
+        min_c = min(c for r, c in changed)
+        max_c = max(c for r, c in changed)
+
+        # The changed region is typically a band in the direction of movement
+        height = max_r - min_r + 1
+        width = max_c - min_c + 1
+
+        if height > width * 2:
+            # Tall thin band = vertical movement
+            # Check if top or bottom cells gained player colors
+            top_cells = [(r, c) for r, c in changed if r < avg_r]
+            bot_cells = [(r, c) for r, c in changed if r > avg_r]
+            # The side where player color appeared is where player moved TO
+            top_new = [after[r][c] for r, c in top_cells]
+            bot_new = [after[r][c] for r, c in bot_cells]
+            # More diverse colors = player area (player has multiple colors)
+            if len(set(top_new)) > len(set(bot_new)):
+                return "UP (row decreasing)"
+            else:
+                return "DOWN (row increasing)"
+        elif width > height * 2:
+            left_cells = [(r, c) for r, c in changed if c < avg_c]
+            right_cells = [(r, c) for r, c in changed if c > avg_c]
+            left_new = [after[r][c] for r, c in left_cells]
+            right_new = [after[r][c] for r, c in right_cells]
+            if len(set(left_new)) > len(set(right_new)):
+                return "LEFT (col decreasing)"
+            else:
+                return "RIGHT (col increasing)"
+        else:
+            return f"unclear (changed region {width}x{height})"
+
+    def _summarize_movements(self, data: list[dict]) -> str:
+        """Build a human-readable movement summary from discovery data."""
+        lines = []
+        for d in data:
+            lines.append(f"  {d['action']} trial {d['trial']}: {d['changes']}ch, direction={d['direction']}")
+
+        # Deduce action-to-direction mapping
+        action_dirs: dict[str, list[str]] = {}
+        for d in data:
+            if d["action"] not in action_dirs:
+                action_dirs[d["action"]] = []
+            action_dirs[d["action"]].append(d["direction"])
+
+        lines.append("\nInferred action mapping:")
+        for action, dirs in action_dirs.items():
+            # Most common direction
+            common = Counter(dirs).most_common(1)[0][0] if dirs else "unknown"
+            lines.append(f"  {action} = {common}")
+
+        return "\n".join(lines)
+
+    def _count_changes(self, before: list[list[int]], after: list[list[int]]) -> int:
+        return sum(1 for r in range(len(before)) for c in range(len(before[0])) if before[r][c] != after[r][c])
 
     def _vlm_call(self, content: list[dict], label: str) -> str:
-        """Make a VLM API call with retry logic."""
         for attempt in range(5):
             try:
                 response = self.client.chat.completions.create(
                     model=self.MODEL,
                     messages=[{"role": "user", "content": content}],
-                    max_tokens=1500,
+                    max_tokens=2000,
                 )
                 return response.choices[0].message.content or ""
             except Exception as e:
                 wait = 2 ** attempt
                 logger.warning(f"[{label}] API error (attempt {attempt+1}): {e}, retry in {wait}s")
                 time.sleep(wait)
-        logger.error(f"[{label}] All API attempts failed")
-        return "API unavailable. Continue exploring with directional actions."
-
-    def _parse_action(self, response: str) -> tuple[str, str]:
-        """Extract action name and reasoning from VLM response."""
-        # Try JSON parse
-        try:
-            # Find JSON in response
-            start = response.find("{")
-            end = response.rfind("}") + 1
-            if start >= 0 and end > start:
-                data = json.loads(response[start:end])
-                return data.get("action", "ACTION1"), data.get("reasoning", "")
-        except (json.JSONDecodeError, KeyError):
-            pass
-
-        # Fallback: look for ACTION keywords
-        for name in ["ACTION1", "ACTION2", "ACTION3", "ACTION4", "ACTION5"]:
-            if name in response.upper():
-                return name, response[:100]
-
-        return "ACTION1", "could not parse response"
+        return "API unavailable."
 
     def _step(self, action: GameAction) -> FrameData:
         raw = self.env.step(action)
