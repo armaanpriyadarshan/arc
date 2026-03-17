@@ -73,11 +73,16 @@ class GridTools:
         return f"Row {row}: {' '.join(runs)}"
 
     def get_region(self, r1: int, c1: int, r2: int, c2: int) -> str:
-        """Get a rectangular region of the grid."""
+        """Get a rectangular region of the grid (max 10x10)."""
         if not self.current_grid:
             return "No grid loaded."
         r1, r2 = max(0, r1), min(63, r2)
         c1, c2 = max(0, c1), min(63, c2)
+        # Clamp to 10x10 max
+        if r2 - r1 > 9:
+            r2 = r1 + 9
+        if c2 - c1 > 9:
+            c2 = c1 + 9
         lines = [f"Region ({r1},{c1})-({r2},{c2}):"]
         for r in range(r1, r2 + 1):
             lines.append(f"  r{r}: {self.current_grid[r][c1:c2+1]}")

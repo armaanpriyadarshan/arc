@@ -129,3 +129,101 @@
 2026-03-16 23:01:26,699 | INFO | #28 ACTION4: 2ch BLOCKED score=0
 2026-03-16 23:01:27,002 | INFO | #29 ACTION4: 2ch BLOCKED score=0
 2026-03-16 23:01:27,002 | INFO | [replan] stuck: 5 consecutive blocked moves
+2026-03-16 23:01:45,433 | INFO | [model #7 o4-mini] {"plan": [
+  "ACTION1","ACTION1",           
+
+  "ACTION4","ACTION4","ACTION4","ACTION4","ACTION4",
+  "ACTION4","ACTION4","ACTION4","ACTION4","ACTION4",
+  "ACTION4","ACTION4","ACTION4","ACTION4","ACTION4",
+
+  "ACTION1","ACTION1","ACTION1","ACTION1"
+],
+ "goal": "Walk the avatar into the open exit at the top center to complete the level",
+ "theory": "This is a Sokoban‐style puzzle: push the orange crate onto the blue target to unlock the door, then navigate the character to the exit."}...
+2026-03-16 23:01:45,433 | INFO | [theory] This is a Sokoban‐style puzzle: push the orange crate onto the blue target to unlock the door, then navigate the character to the exit.
+2026-03-16 23:01:45,433 | INFO | [plan] (21 actions) Walk the avatar into the open exit at the top center to complete the level
+2026-03-16 23:01:45,747 | INFO | #30 ACTION1: 52ch  score=0
+2026-03-16 23:01:46,050 | INFO | #31 ACTION1: 52ch  score=0
+2026-03-16 23:01:46,361 | INFO | #32 ACTION4: 2ch BLOCKED score=0
+2026-03-16 23:01:46,668 | INFO | #33 ACTION4: 2ch BLOCKED score=0
+2026-03-16 23:01:46,887 | INFO | #34 ACTION4: 2ch BLOCKED score=0
+2026-03-16 23:01:46,990 | INFO | #35 ACTION4: 2ch BLOCKED score=0
+2026-03-16 23:01:47,093 | INFO | #36 ACTION4: 2ch BLOCKED score=0
+2026-03-16 23:01:47,093 | INFO | [replan] stuck: 5 consecutive blocked moves
+2026-03-16 23:02:04,292 | INFO | [model #8 o4-mini] {"plan": [
+  "ACTION2",
+  "ACTION3","ACTION3","ACTION3","ACTION3","ACTION3","ACTION3","ACTION3",
+  "ACTION3","ACTION3","ACTION3","ACTION3","ACTION3","ACTION3","ACTION3",
+  "ACTION1","ACTION1","ACTION1","ACTION1","ACTION1","ACTION1","ACTION1","ACTION1"
+],
+"goal": "Walk off the right‐hand crate area, go around the bottom of the U‐shaped wall, enter the central corridor and climb up into the exit to finish the level",
+"theory": "This is a Sokoban‐style puzzle: push the orange crate onto the blue ta...
+2026-03-16 23:02:04,292 | INFO | [theory] This is a Sokoban‐style puzzle: push the orange crate onto the blue target to unlock a door, then navigate the avatar to the exit.
+2026-03-16 23:02:04,292 | INFO | [plan] (23 actions) Walk off the right‐hand crate area, go around the bottom of the U‐shaped wall, enter the central corridor and climb up into the exit to finish the level
+2026-03-16 23:02:04,511 | INFO | #37 ACTION2: 52ch  score=0
+2026-03-16 23:02:04,730 | INFO | #38 ACTION3: 52ch  score=0
+2026-03-16 23:02:04,959 | INFO | #39 ACTION3: 52ch  score=0
+2026-03-16 23:02:05,172 | INFO | #40 ACTION3: 52ch  score=0
+2026-03-16 23:02:05,392 | INFO | #41 ACTION3: 2ch BLOCKED score=0
+2026-03-16 23:02:05,612 | INFO | #42 ACTION3: 2ch BLOCKED score=0
+2026-03-16 23:02:05,897 | INFO | #43 ACTION3: 138ch  score=0
+2026-03-16 23:02:06,112 | INFO | #44 ACTION3: 52ch  score=0
+2026-03-16 23:02:06,331 | INFO | #45 ACTION3: 52ch  score=0
+2026-03-16 23:02:06,551 | INFO | #46 ACTION3: 52ch  score=0
+2026-03-16 23:02:06,653 | INFO | #47 ACTION3: 52ch  score=0
+2026-03-16 23:02:06,758 | INFO | #48 ACTION3: 2ch BLOCKED score=0
+2026-03-16 23:02:06,864 | INFO | #49 ACTION3: 2ch BLOCKED score=0
+2026-03-16 23:02:07,081 | INFO | #50 ACTION3: 2ch BLOCKED score=0
+2026-03-16 23:02:07,303 | INFO | #51 ACTION3: 2ch BLOCKED score=0
+2026-03-16 23:02:07,530 | INFO | #52 ACTION1: 52ch  score=0
+2026-03-16 23:02:07,639 | INFO | #53 ACTION1: 52ch  score=0
+2026-03-16 23:02:07,744 | INFO | #54 ACTION1: 120ch  score=0
+2026-03-16 23:02:07,970 | INFO | #55 ACTION1: 52ch  score=0
+2026-03-16 23:02:08,192 | INFO | #56 ACTION1: 2ch BLOCKED score=0
+2026-03-16 23:02:08,299 | INFO | #57 ACTION1: 2ch BLOCKED score=0
+2026-03-16 23:02:08,405 | INFO | #58 ACTION1: 2ch BLOCKED score=0
+2026-03-16 23:02:08,624 | INFO | #59 ACTION1: 2ch BLOCKED score=0
+2026-03-16 23:02:30,488 | INFO | [model #9 o4-mini] {"plan": ["ACTION2","ACTION2","ACTION4","ACTION4","ACTION4","ACTION1","ACTION1","ACTION1","ACTION4","ACTION1","ACTION1","ACTION1","ACTION1","ACTION1","ACTION1"],  
+ "goal": "Go down out of the left chamber, skirt around the bottom of the U-shaped wall, enter the corridor and climb up into the exit to finish the level",  
+ "theory": "This is a Sokoban-style puzzle: you push the orange crate onto colored floor switches to unlock doors, then you guide the avatar through the now-open passage to the ...
+2026-03-16 23:02:30,488 | INFO | [theory] This is a Sokoban-style puzzle: you push the orange crate onto colored floor switches to unlock doors, then you guide the avatar through the now-open passage to the exit.
+2026-03-16 23:02:30,488 | INFO | [plan] (15 actions) Go down out of the left chamber, skirt around the bottom of the U-shaped wall, enter the corridor and climb up into the exit to finish the level
+2026-03-16 23:02:30,803 | INFO | #60 ACTION2: 120ch  score=0
+2026-03-16 23:02:31,023 | INFO | #61 ACTION2: 52ch  score=0
+2026-03-16 23:02:31,311 | INFO | #62 ACTION4: 52ch  score=0
+2026-03-16 23:02:31,618 | INFO | #63 ACTION4: 2ch BLOCKED score=0
+2026-03-16 23:02:31,859 | INFO | #64 ACTION4: 2ch BLOCKED score=0
+2026-03-16 23:02:31,964 | INFO | #65 ACTION1: 52ch  score=0
+2026-03-16 23:02:32,180 | INFO | #66 ACTION1: 52ch  score=0
+2026-03-16 23:02:32,439 | INFO | #67 ACTION1: 2ch BLOCKED score=0
+2026-03-16 23:02:32,665 | INFO | #68 ACTION4: 52ch  score=0
+2026-03-16 23:02:32,895 | INFO | #69 ACTION1: 2ch BLOCKED score=0
+2026-03-16 23:02:33,153 | INFO | #70 ACTION1: 2ch BLOCKED score=0
+2026-03-16 23:02:33,264 | INFO | #71 ACTION1: 2ch BLOCKED score=0
+2026-03-16 23:02:33,481 | INFO | #72 ACTION1: 2ch BLOCKED score=0
+2026-03-16 23:02:33,767 | INFO | #73 ACTION1: 2ch BLOCKED score=0
+2026-03-16 23:02:33,767 | INFO | [replan] stuck: 5 consecutive blocked moves
+2026-03-16 23:02:53,836 | INFO | [model #10 o4-mini] {"plan": [
+  "ACTION3",  "ACTION1",  "ACTION4",  "ACTION4",  "ACTION4",
+  "ACTION2",  "ACTION4",  "ACTION4",  "ACTION1",  "ACTION1",
+  "ACTION1",  "ACTION1",  "ACTION4",  "ACTION1",  "ACTION1"
+],
+ "goal": "Push the orange crate along the corridor onto the hidden floor switch to open the door, then walk the avatar through the newly opened passage up into the exit.",
+ "theory": "This is a Sokoban‐style puzzle: you must push orange crates onto colored floor switches to unlock doors, then guide your...
+2026-03-16 23:02:53,836 | INFO | [theory] This is a Sokoban‐style puzzle: you must push orange crates onto colored floor switches to unlock doors, then guide your avatar to the exit.
+2026-03-16 23:02:53,837 | INFO | [plan] (15 actions) Push the orange crate along the corridor onto the hidden floor switch to open the door, then walk the avatar through the newly opened passage up into the exit.
+2026-03-16 23:02:54,146 | INFO | #74 ACTION3: 52ch  score=0
+2026-03-16 23:02:54,455 | INFO | #75 ACTION1: 2ch BLOCKED score=0
+2026-03-16 23:02:54,671 | INFO | #76 ACTION4: 52ch  score=0
+2026-03-16 23:02:54,779 | INFO | #77 ACTION4: 52ch  score=0
+2026-03-16 23:02:55,068 | INFO | #78 ACTION4: 52ch  score=0
+2026-03-16 23:02:55,172 | INFO | #79 ACTION2: 52ch  score=0
+2026-03-16 23:02:55,477 | INFO | #80 ACTION4: 52ch  score=0
+2026-03-16 23:02:55,784 | INFO | #81 ACTION4: 52ch  score=0
+2026-03-16 23:02:55,892 | INFO | #82 ACTION1: 52ch  score=0
+2026-03-16 23:02:56,112 | INFO | #83 ACTION1: 2ch BLOCKED score=0
+2026-03-16 23:02:56,397 | INFO | #84 ACTION1: 2ch BLOCKED score=0
+2026-03-16 23:02:56,708 | INFO | #85 ACTION1: 2ch BLOCKED score=0
+2026-03-16 23:02:57,016 | INFO | #86 ACTION4: 154ch  score=0
+2026-03-16 23:02:57,124 | INFO | #87 ACTION1: 52ch  score=0
+2026-03-16 23:02:57,423 | INFO | #88 ACTION1: 52ch  score=0
