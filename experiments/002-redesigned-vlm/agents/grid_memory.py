@@ -90,13 +90,24 @@ class GridMemory:
         return "\n".join(lines)
 
 
-def compress_grid(grid: Grid) -> str:
-    """Run-length encode each row of the grid for compact text representation.
+def compress_grid(grid: Grid, grid_mem: 'GridMemory | None' = None, max_rows: int = 20) -> str:
+    """Run-length encode only the most relevant rows."""
 
-    Example: [4,4,4,8,8,8,8,8,4,4] -> "4×3 8×5 4×2"
-    """
+    if grid_mem and grid_mem.total_updates > 5:
+        row_activity = grid_mem.activity_by_row()
+        active_rows = [r for r, count in enumerate(row_activity) if count > 0]
+        if active_rows:
+            min_r = max(0, min(active_rows) - 3)
+            max_r = min(63, max(active_rows) + 3)
+            rows_to_show = range(min_r, max_r + 1)
+        else:
+            rows_to_show = range(64)
+    else:
+        rows_to_show = range(64)
+
     lines = []
-    for r, row in enumerate(grid):
+    for r in rows_to_show:
+        row = grid[r]
         runs = []
         current = row[0]
         count = 1
@@ -104,13 +115,16 @@ def compress_grid(grid: Grid) -> str:
             if row[c] == current:
                 count += 1
             else:
-                runs.append(f"{current}×{count}")
+                runs.append(f"{current}x{count}")
                 current = row[c]
                 count = 1
-        runs.append(f"{current}×{count}")
-
-        # Only include rows that aren't uniform (skip solid background rows)
+        runs.append(f"{current}x{count}")
         if len(runs) > 1:
             lines.append(f"  r{r}: {' '.join(runs)}")
+        if len(lines) >= max_rows:
+            lines.append(f"  ... ({len(list(rows_to_show)) - max_rows} more rows)")
+            break
 
-    return "GRID (run-length encoded, non-uniform rows only):\n" + "\n".join(lines) if lines else "GRID: all rows uniform"
+    if not lines:
+        return ""
+    return "GRID (active area, run-length encoded):\n" + "\n".join(lines)

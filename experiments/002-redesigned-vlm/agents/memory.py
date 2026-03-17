@@ -129,6 +129,7 @@ class GameKnowledge(BaseModel):
     score_events: list[dict] = Field(default_factory=list)
     death_events: list[dict] = Field(default_factory=list)
     scene_description: str = ""
+    current_theory: str = ""  # one-sentence game theory, persists across calls
     action_log: list[ActionLogEntry] = Field(default_factory=list)
     available_actions: list[int] = Field(default_factory=list)
 
