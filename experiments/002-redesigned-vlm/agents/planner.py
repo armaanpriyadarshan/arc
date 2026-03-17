@@ -42,6 +42,10 @@ INPUT_MAP = {
 
 
 class Planner:
+    # Test flags — set from config
+    SEND_IMAGE = True       # Hypothesis 2: set False to test without image
+    MINIMAL_PROMPT = True   # Hypothesis 1: set True for stripped-down prompt
+
     def __init__(self, knowledge: GameKnowledge, router: ModelRouter,
                  differ: DiffAnalyzer, grid_mem: GridMemory, episodic: EpisodicBuffer,
                  scene: SceneDescriber, skills: SkillLibrary) -> None:
@@ -92,8 +96,8 @@ class Planner:
             self.k.dedup_hypotheses()
             self.k.dedup_rules()
 
-            # Scene description on first cycle and after score changes
-            if not self._scene_described:
+            # Scene description only when images are enabled
+            if self.SEND_IMAGE and not self._scene_described:
                 self.k.scene_description = self.scene.describe(frame.frame[-1])
                 self._scene_described = True
                 logger.info(f"[scene] {self.k.scene_description[:300]}...")
@@ -176,11 +180,13 @@ class Planner:
                                                 "actions": executed.copy(), "goal": goal})
                     self.skills.record_success_sequence(executed.copy(), f"Score to {frame.levels_completed}")
                     logger.info(f"*** SCORE UP: {frame.levels_completed} ***")
-                    self.k.scene_description = self.scene.describe(frame.frame[-1])
+                    if self.SEND_IMAGE:
+                        self.k.scene_description = self.scene.describe(frame.frame[-1])
                     replan_reason = f"score increased to {frame.levels_completed}"
                     break
                 if diff.total_changes > 100:
-                    self.k.scene_description = self.scene.describe(frame.frame[-1])
+                    if self.SEND_IMAGE:
+                        self.k.scene_description = self.scene.describe(frame.frame[-1])
                     replan_reason = f"large change ({diff.total_changes} cells)"
                     break
 
@@ -200,64 +206,78 @@ class Planner:
         return frame
 
     def _think(self, frame: FrameData, remaining: int) -> tuple[list[str], str]:
-        """Single LLM call fed by all three memory layers."""
+        """Single LLM call. Prompt size and image controlled by flags."""
         grid = frame.frame[-1]
-
-        # Priority 2: Compressed grid as text
         grid_text = compress_grid(grid)
 
-        # Layer 1: Grid memory summary
-        grid_mem_text = self.grid_mem.compact_text()
+        if self.MINIMAL_PROMPT:
+            # Hypothesis 1: Stripped-down prompt — just essentials
+            # Last 5 action results from episodic buffer
+            recent = ""
+            if self.episodic.steps:
+                for s in self.episodic.steps[-5:]:
+                    status = "BLOCKED" if s.blocked else f"{s.changes}ch"
+                    recent += f"  #{s.number} {s.action}: {status} score={s.score}\n"
 
-        # Layer 2: Episodic buffer summary
-        episodic_text = self.episodic.compact_text()
+            failures = ""
+            if self.failed_plans:
+                for f in self.failed_plans[-2:]:
+                    failures += f"  - '{f['goal'][:40]}' failed: {f['reason']}\n"
 
-        # Layer 3: Semantic memory
-        knowledge_text = self.k.compact_text()
-
-        content = [
-            text_block(
-                f"{AGENT_CONTEXT}\n\n"
-                f"{knowledge_text}\n\n"
-                f"{grid_mem_text}\n\n"
-                f"{episodic_text}\n\n"
-                f"SKILLS:\n{self.skills.summary()}\n\n"
-                f"Actions remaining: {remaining}\n\n"
-                f"{grid_text}\n\n"
-            ),
-        ]
-
-        if self.failed_plans:
-            failures = "RECENT FAILURES (do NOT repeat):\n"
-            for f in self.failed_plans[-3:]:
-                failures += f"  - '{f['goal']}' failed: {f['reason']} after {f['actions']}\n"
-            content.append(text_block(failures))
-
-        # Side-by-side if we have a previous frame
-        if self._last_plan_grid:
-            content.extend([
-                text_block("Side-by-side (before last plan vs now):"),
-                image_block(side_by_side_b64(self._last_plan_grid, grid, "BEFORE", "NOW")),
-            ])
+            content = [
+                text_block(
+                    f"{AGENT_CONTEXT}\n\n"
+                    f"Actions remaining: {remaining}\n"
+                    f"Score: {frame.levels_completed} | Deaths: {self.total_deaths}\n\n"
+                    f"RECENT ACTIONS:\n{recent}\n"
+                    + (f"FAILURES:\n{failures}\n" if failures else "")
+                    + f"{grid_text}\n\n"
+                    "Output a plan of 10-25 actions. Respond with JSON:\n"
+                    '{"plan": ["ACTION1", ...], "goal": "what this achieves"}'
+                ),
+            ]
         else:
-            content.extend([
-                text_block("Current frame:"),
-                image_block(grid_to_b64(grid)),
-            ])
+            # Full prompt with all three layers
+            content = [
+                text_block(
+                    f"{AGENT_CONTEXT}\n\n"
+                    f"{self.k.compact_text()}\n\n"
+                    f"{self.grid_mem.compact_text()}\n\n"
+                    f"{self.episodic.compact_text()}\n\n"
+                    f"SKILLS:\n{self.skills.summary()}\n\n"
+                    f"Actions remaining: {remaining}\n\n"
+                    f"{grid_text}\n\n"
+                ),
+            ]
 
-        content.append(text_block(
-            "\nYou have BOTH the image AND the grid data above. "
-            "Use the grid data for precise spatial reasoning (wall positions, corridors, object locations). "
-            "Use the image for visual patterns and overall layout.\n\n"
-            "Think step by step. What do you see? Where are you? What should you do?\n"
-            "If previous plans failed, try something FUNDAMENTALLY different.\n\n"
-            "Respond with JSON:\n"
-            '{"plan": ["ACTION3", "ACTION1", ...],\n'
-            ' "goal": "what this plan aims to achieve",\n'
-            ' "new_skills": [{"name": "...", "actions": [...], "description": "..."}],\n'
-            ' "new_rules": [{"description": "...", "confidence": 0.5}],\n'
-            ' "new_hypotheses": [{"statement": "...", "priority": 1, "test_plan": [...]}]}'
-        ))
+            if self.failed_plans:
+                failures = "RECENT FAILURES (do NOT repeat):\n"
+                for f in self.failed_plans[-3:]:
+                    failures += f"  - '{f['goal']}' failed: {f['reason']} after {f['actions']}\n"
+                content.append(text_block(failures))
+
+            content.append(text_block(
+                "\nThink step by step. If previous plans failed, try something different.\n\n"
+                "Respond with JSON:\n"
+                '{"plan": ["ACTION3", "ACTION1", ...],\n'
+                ' "goal": "what this plan aims to achieve",\n'
+                ' "new_skills": [{"name": "...", "actions": [...], "description": "..."}],\n'
+                ' "new_rules": [{"description": "...", "confidence": 0.5}],\n'
+                ' "new_hypotheses": [{"statement": "...", "priority": 1, "test_plan": [...]}]}'
+            ))
+
+        # Hypothesis 2: Only add image if SEND_IMAGE is True
+        if self.SEND_IMAGE:
+            if self._last_plan_grid:
+                content.extend([
+                    text_block("Side-by-side (before vs now):"),
+                    image_block(side_by_side_b64(self._last_plan_grid, grid, "BEFORE", "NOW")),
+                ])
+            else:
+                content.extend([
+                    text_block("Current frame:"),
+                    image_block(grid_to_b64(grid)),
+                ])
 
         response = self.router.call(REASONING_MODEL, content, max_tokens=3000)
         return self._parse_plan(response)
