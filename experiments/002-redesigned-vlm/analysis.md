@@ -2,8 +2,8 @@
 
 **Date:** 2026-03-15 to 2026-03-16
 **Game:** ls20 (LockSmith)
-**Result:** 0/7 levels across ~10 iterations
-**Total runs:** ~10 with architectural changes between each
+**Result:** 0/7 levels across ~12 iterations
+**Total runs:** ~12 with architectural changes between each
 
 ## What was tried
 
@@ -89,42 +89,67 @@ It immediately hypothesizes "the colored block is the goal" and tries to reach i
 
 ## Prioritized improvements for next iteration
 
-### Priority 1: Fix stuck detection
-The stuck detector should only fire on BLOCKED moves, not successful movement. Change from "3 consecutive similar total_changes" to "5+ consecutive moves where total_changes < 10 (blocked)."
+### Implemented: Fix stuck detection (Priority 1)
+Changed from "3 consecutive similar total_changes" to "5+ consecutive BLOCKED moves." Plans that are actually working no longer get interrupted.
 
-**Impact:** Immediately doubles effective plan execution length. Plans that are actually working won't be interrupted.
+### Implemented: Compressed grid as text (Priority 2)
+Run-length encoded grid sent alongside image. Row 20 = `4×18 8×28 4×18` means "18 cells of color 4, 28 cells of color 8, 18 cells of color 4."
 
-### Priority 2: Send compressed grid as text alongside image
-The 64×64 grid is structured data. Encode it compactly (run-length per row) and send as text. The model can then reason numerically about walls and corridors instead of guessing from pixels.
+### Implemented: Three-layer memory
+- **Layer 1 (GridMemory):** Per-cell change counts, color history, activity heatmap. Shows rows 45-49 are the movement corridor, rows 61-62 are the HUD.
+- **Layer 2 (EpisodicBuffer):** Rolling window clustered into episodes. Correctly flags stuck loops and consecutive blocked moves.
+- **Layer 3 (GameKnowledge):** Rules, hypotheses, skills. Updated by LLM on significant events.
 
-Example: Row 20 = `4×18, 8×28, 4×18` means "wall for 18 cells, corridor for 28 cells, wall for 18 cells."
+### Result of iteration 11 (three-layer memory + grid text + fixed stuck detection)
+100 actions, 0/7 levels, 0 deaths, 28 model calls (3 gpt-4o, 25 o4-mini), 653s.
 
-**Impact:** Gives the model precise spatial truth. It can count cells to plan paths, identify corridor widths, locate objects by coordinate. This is how the upstream GuidedLLM works — it sends the full grid as text.
+**What worked:**
+- Grid memory correctly identified the active area (rows 45-49), HUD (rows 61-62), and hotspots
+- Episodic buffer correctly detected "12 consecutive blocked moves" and stuck loops
+- Stuck detection no longer fires on successful movement
+- The model correctly identified the player (white cross) in iteration 9-10
 
-### Priority 3: Directed exploration before theorizing
-Prompt the model to do systematic exploration first: "Walk in each direction until blocked to map the boundaries of your current area." This is game-agnostic (works for any grid game) and builds a spatial model before the agent commits to a strategy.
+**What failed catastrophically:**
+The model invented a completely wrong game theory. It thinks it's playing **Sokoban** (block-pushing puzzle) instead of a maze navigation game. Its entire strategy is:
+- "Push the blue-orange block up the narrow central shaft into the goal box"
+- "Rotate the block horizontal so it fits through the shaft"
+- Skills like `tumble_block_down`, `rotate_block_horizontal`, `push_block_upshaft`
 
-**Impact:** The model builds an accurate map from direct observation instead of guessing from images. Subsequent plans are grounded in actual wall positions.
+This is 100% hallucinated. The blue/orange sprite IS the player (confirmed in iteration 9-10), but the model now treats it as a pushable block. The white cross IS the player (also confirmed), but after a 138ch "large change" event (likely the energy bar refilling), the model's understanding reset.
 
-### Priority 4: Grid query tools
-Let the model REQUEST specific spatial information: "What values are in row 25, columns 20-40?" or "Is there a path from (25,30) to (35,40)?" The model decides what it needs to know, and code provides precise answers.
+**The model spent 100 actions trying to reach an object it misidentified, using mechanics it invented.**
 
-**Impact:** The model controls its own perception. It can verify hypotheses without burning game actions (querying the current frame is free).
+### Contradictory knowledge problem
+The rules section contains contradictions:
+- "The start chamber only connects via a single tile opening at its bottom‐left corner" (conf=0.9)
+- "The start chamber does not open at its bottom-left corner but instead at its bottom-right" (conf=0.6)
+- "The starting chamber opens at its bottom‐middle tile" (conf=0.7)
+- "The start chamber connects via a one‐tile opening in its eastern wall" (conf=0.6)
 
-### Priority 5: Better models for spatial reasoning
-Claude (Sonnet/Opus) is significantly better than GPT-4o at structured spatial reasoning from text/numbers. If we send the grid as text, the reasoning model doesn't have to be OpenAI. The constraint is that `env.step()` goes through the arc-agi SDK which is model-agnostic — only the agent's brain needs an LLM.
+Four contradictory rules about the SAME thing, all with medium-high confidence. The dedup catches exact duplicates but not semantic contradictions. The model can't resolve these because it never actually tested them — it theorized from images and never systematically walked to each wall to find the opening.
 
-**Impact:** Better spatial reasoning → better plans → fewer wasted actions.
+### Systematic probe fallback loop
+The first 12 actions were all "systematic probe" fallback (ACTION1, ACTION2, ACTION3, ACTION4 repeated 3 times). The o4-mini plan calls returned empty/unparseable 3 times in a row. The compressed grid text may be overwhelming the context — the full run-length grid is large.
 
-### Priority 6: Reduce analyze+plan to single call
-Merge the analyze and plan phases back into a single LLM call. The two-call pattern was supposed to improve quality but at the cost of 2x API calls. With better spatial data (Priority 2), a single call should be sufficient.
+## Open problems for experiment 003
 
-**Impact:** Halves LLM calls per cycle. Budget goes further.
+### 1. Game theory hallucination
+The model invents game mechanics from visual similarity to training data (sees rectangles → "Sokoban"). It needs to be forced to test theories before building on them. Currently hypotheses accumulate without testing because the model can't navigate to the objects it hypothesizes about.
 
-### Priority 7: Accumulate a wall map
-Every time a move is BLOCKED, record the direction and approximate position. Feed this "known walls" list to the model so it doesn't try blocked paths again. This is game-agnostic (any game with obstacles benefits).
+### 2. Exploration before theorizing
+The model immediately theorizes ("push block into goal") instead of first exploring ("what can I reach? where are the corridors?"). A human would walk around the starting area first. The model needs to establish what's reachable before planning paths to distant objects.
 
-**Impact:** The model stops repeating failed navigation attempts. Plans avoid known walls.
+### 3. Grid text may be too large
+The full run-length encoded grid is potentially thousands of tokens. It may be overwhelming the model's context or causing parse failures. Consider sending only the interesting rows (non-uniform rows near the active area) rather than the full grid.
+
+### 4. Semantic contradiction resolution
+The knowledge base accumulates contradictory rules with similar confidence. Need a mechanism to detect and resolve contradictions — either by testing, or by requiring new rules to explicitly supersede old ones.
+
+### 5. The 138ch "large change" problem
+Several times during the run, an action produces 138ch instead of the usual 52ch. This triggers scene re-description and replan, but the model doesn't understand what happened. In LockSmith this is likely the energy bar refilling or the player crossing into a new area. The model should investigate large changes rather than just replanning.
+
+### 6. Skill pollution
+The skill library accumulated 16 skills, most with placeholder actions like `navigate_to(north_of_block)` or `ACTION4×8` (not valid action names). These pollute the context without being usable. Skills should be validated before storage — only sequences of valid ACTION names.
 
 ## Scorecard references
 
@@ -138,7 +163,16 @@ Every time a move is BLOCKED, record the direction and approximate position. Fee
 - `df10633a` — Iteration 7 (compositional, 0/7)
 - `02706eee` — Iteration 8 (known inputs, 0/7)
 - `f1f39ba2` — Iteration 9 (larger images, 0/7)
+- `08570829` — Iteration 11 (three-layer memory, 0/7)
 
-## Key insight
+## Key insights
 
-The game is fundamentally a spatial navigation problem. Level 1 baseline is 29 actions. The model needs to: find the player, understand the maze layout, identify the objective, and navigate there. We've solved "find the player" (iteration 9) but "understand the maze layout" remains unsolved because VLMs can't extract precise spatial structure from images. The most promising path forward is supplementing images with structured grid data (text) so the model can reason numerically about positions and paths.
+1. **The spatial reasoning bottleneck is NOT just about images vs text.** Even with compressed grid text, the model can't navigate because it builds wrong game theories and never tests them. The bottleneck is the reasoning loop, not the perception format.
+
+2. **The model conflates visual similarity with mechanical similarity.** It sees shapes that look like Sokoban and assumes Sokoban mechanics. It needs to be prompted to distinguish "what I see" from "what I assume" and test assumptions before acting on them.
+
+3. **Grid memory (Layer 1) produces the most useful data.** Rows 45-49 being the most active, with hotspots showing colors 3 and 12 alternating, is exactly the player movement corridor. This is precise, game-agnostic, and came from zero LLM calls. The model should be taught to read this data.
+
+4. **Episodic buffer (Layer 2) correctly identifies problems** (stuck loops, blocked streaks) but the model doesn't act on the warnings. "12 consecutive blocked moves" should trigger a fundamental strategy change, not just another "try going right."
+
+5. **The baseline is 29 actions for level 1.** After 12 iterations and ~2000 total actions across runs, we haven't completed a single level. The architecture keeps getting more sophisticated but the fundamental action — "walk through a maze and interact with objects" — remains unachieved because the model can't build an accurate spatial model from its observations.

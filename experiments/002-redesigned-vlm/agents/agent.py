@@ -1,7 +1,9 @@
 """Compositional Discovery Agent — orchestrator.
 
-Single loop: the model observes, reasons, and decides what to do next.
-No hardcoded phases. The model controls its own learning process.
+Three memory layers:
+  Layer 1: GridMemory (code) — per-cell metadata, static mask, hotspots
+  Layer 2: EpisodicBuffer (code) — rolling window, episode clustering, pattern detection
+  Layer 3: GameKnowledge (LLM) — rules, hypotheses, skills, updated on significant events
 """
 
 import json
@@ -10,6 +12,8 @@ import time
 
 from arcengine import FrameData, GameAction, GameState
 
+from .episodic import EpisodicBuffer
+from .grid_memory import GridMemory
 from .memory import GameKnowledge
 from .models import ModelRouter
 from .perception import DiffAnalyzer, SceneDescriber
@@ -30,14 +34,22 @@ class CompositionalAgent:
         self.env = self.arcade.make(game_id, scorecard_id=self.scorecard_id)
         self.frames: list[FrameData] = []
 
-        # Components
+        # Layer 1: Grid memory (code)
+        self.grid_mem = GridMemory()
+        # Layer 2: Episodic buffer (code)
+        self.episodic = EpisodicBuffer()
+        # Layer 3: Semantic memory (LLM-updated)
         self.knowledge = GameKnowledge()
+
+        # Other components
         self.router = ModelRouter()
         self.differ = DiffAnalyzer()
         self.scene = SceneDescriber(model_call_fn=self.router.call)
         self.skills = SkillLibrary()
         self.planner = Planner(
-            self.knowledge, self.router, self.differ, self.scene, self.skills
+            self.knowledge, self.router, self.differ,
+            self.grid_mem, self.episodic,
+            self.scene, self.skills,
         )
 
     def run(self) -> None:
@@ -52,10 +64,11 @@ class CompositionalAgent:
             self._close()
             return
 
-        # Set up known inputs and available actions
-        self.planner.setup_primitives(frame)
+        # Record initial frame in grid memory
+        if frame.frame:
+            self.grid_mem.record_initial(frame.frame[-1])
 
-        # Single unified loop — the model decides what to do
+        self.planner.setup_primitives(frame)
         frame = self.planner.run(frame, self._step, self.MAX_ACTIONS)
 
         elapsed = round(time.time() - timer, 2)
@@ -67,6 +80,8 @@ class CompositionalAgent:
             f"model_calls={self.router.stats()} time={elapsed}s"
         )
         logger.info(f"Knowledge:\n{self.knowledge.compact_text()}")
+        logger.info(f"Grid memory:\n{self.grid_mem.compact_text()}")
+        logger.info(f"Episodes:\n{self.episodic.compact_text()}")
         logger.info(f"Skills:\n{self.skills.summary()}")
         logger.info("=" * 60)
         self._close()
