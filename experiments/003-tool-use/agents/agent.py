@@ -1,8 +1,12 @@
-"""Code-driven agent with rare LLM strategy calls.
+"""Program-synthesis agent — the model writes code to analyze and navigate the grid.
 
-Code handles: position tracking, wall mapping, pathfinding, exploration.
-LLM handles: looking at the game, hypothesizing the goal, setting strategy.
-LLM is called ~3-5 times total. Everything else is code.
+1. Model sees the image + knows it has a 64x64 grid of ints 0-15
+2. Model writes Python code to analyze the grid (find objects, walls, paths)
+3. Code executes, model reads output
+4. Model writes more code or outputs actions based on what it learned
+5. Actions execute, model gets results, loop
+
+The model does spatial reasoning by WRITING PROGRAMS, not by thinking about coordinates.
 """
 
 import json
@@ -13,11 +17,60 @@ import time
 from arcengine import FrameData, GameAction, GameState
 from openai import OpenAI
 
-from .navigator import Navigator
-from .tools import GridTools
+from .sandbox import run_program
 from .vision import grid_to_b64, image_block, text_block
 
 logger = logging.getLogger(__name__)
+
+SYSTEM_PROMPT = """You are playing a turn-based game on a 64x64 grid. Each cell is an integer 0-15 (colors).
+INPUTS: ACTION1=up(row-4), ACTION2=down(row+4), ACTION3=left(col-4), ACTION4=right(col+4).
+
+You have two tools:
+1. run_code: Execute Python code with `grid` (64x64 list of ints) available. Use print() to see results.
+2. take_actions: Execute a list of game actions.
+
+APPROACH:
+- Write code to analyze the grid. Find objects, walls, the player, paths.
+- The grid is raw data — you can compute anything: connected components, flood fill, BFS pathfinding.
+- Write code first, understand the layout, THEN decide what actions to take.
+- After taking actions, write more code to see what changed.
+
+IMPORTANT: Each move shifts the player by ~4 cells. BLOCKED means you hit a wall."""
+
+TOOL_DEFINITIONS = [
+    {
+        "type": "function",
+        "function": {
+            "name": "run_code",
+            "description": "Execute Python code with `grid` (64x64 int list) and `ROWS`/`COLS` (both 64) available. Use print() to output results. No imports needed — basic builtins are available.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "code": {"type": "string", "description": "Python code to execute"},
+                },
+                "required": ["code"],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "take_actions",
+            "description": "Execute a sequence of game actions. Each costs one action from your budget. Returns results for each action.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "actions": {
+                        "type": "array",
+                        "items": {"type": "string", "enum": ["ACTION1", "ACTION2", "ACTION3", "ACTION4"]},
+                        "description": "List of actions to execute in order",
+                    },
+                },
+                "required": ["actions"],
+            },
+        },
+    },
+]
 
 
 class ToolUseAgent:
@@ -34,35 +87,39 @@ class ToolUseAgent:
         self.total_deaths = 0
 
         self.client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY", ""))
-        self.nav = Navigator()
-        self.tools = GridTools()
-
-        self.strategy: str = ""
-        self.targets: list[tuple[int, int]] = []  # positions to visit
-        self.current_target_idx = 0
+        self.current_grid: list[list[int]] = []
+        self.messages: list[dict] = [{"role": "system", "content": SYSTEM_PROMPT}]
         self.llm_calls = 0
 
     def run(self) -> None:
         timer = time.time()
         logger.info("=" * 60)
-        logger.info(f"Code-Driven Agent on {self.game_id}")
+        logger.info(f"Program-Synthesis Agent on {self.game_id}")
         logger.info("=" * 60)
 
         frame = self._step(GameAction.RESET)
-        if frame.frame:
-            self.tools.current_grid = frame.frame[-1]
+        self.current_grid = frame.frame[-1] if frame.frame else []
 
         if frame.state == GameState.WIN:
             self._close()
             return
 
-        # === LLM CALL 1: Look at the game and set initial strategy ===
-        self._strategize(frame, "Initial analysis — what is this game? What objects do you see? Where should I go first?")
+        # Initial prompt with image
+        self.messages.append({
+            "role": "user",
+            "content": [
+                text_block(
+                    f"Game started. Score: {frame.levels_completed}. "
+                    f"You have {self.MAX_ACTIONS} actions.\n\n"
+                    "Here is the game frame. The grid variable contains the raw 64x64 data.\n"
+                    "Write code to analyze the grid — find distinct regions, objects, the player, walls. "
+                    "Then decide what actions to take."
+                ),
+                image_block(grid_to_b64(frame.frame[-1])),
+            ],
+        })
 
-        # === MAIN LOOP: code-driven execution ===
-        consecutive_blocked = 0
-        actions_since_strategy = 0
-
+        # Main loop
         while self.action_counter < self.MAX_ACTIONS:
             if frame.state == GameState.WIN:
                 logger.info("WIN!")
@@ -73,74 +130,129 @@ class ToolUseAgent:
                 logger.info(f"DIED #{self.total_deaths}")
                 frame = self._step(GameAction.RESET)
                 self.action_counter += 1
-                if frame.frame:
-                    self.tools.current_grid = frame.frame[-1]
-                    self.nav = Navigator()  # reset nav on death
-                self._strategize(frame, f"Died (death #{self.total_deaths}). What should I do differently?")
-                consecutive_blocked = 0
-                actions_since_strategy = 0
+                self.current_grid = frame.frame[-1] if frame.frame else []
+                self.messages.append({
+                    "role": "user",
+                    "content": f"GAME_OVER! Death #{self.total_deaths}. Reset. "
+                               f"Score: {frame.levels_completed}. Actions left: {self.MAX_ACTIONS - self.action_counter}. "
+                               "Analyze the new grid and try again.",
+                })
                 continue
 
-            # Pick action: navigate to target or explore
-            if self.targets and self.current_target_idx < len(self.targets):
-                target = self.targets[self.current_target_idx]
-                action_name = self.nav.direction_to(target)
-                if action_name is None:
-                    action_name = self.nav.explore_action()
-                # Check if we reached the target
-                if self.nav.pos and abs(self.nav.pos[0] - target[0]) < 6 and abs(self.nav.pos[1] - target[1]) < 6:
-                    logger.info(f"Reached target {self.current_target_idx}: {target}")
-                    self.current_target_idx += 1
-                    if self.current_target_idx >= len(self.targets):
-                        self._strategize(frame, "Reached all targets. What next?")
-                        actions_since_strategy = 0
-            else:
-                action_name = self.nav.explore_action()
-
-            # Execute
+            # Call model
+            self.llm_calls += 1
             try:
-                action = GameAction.from_name(action_name)
-            except (ValueError, KeyError):
-                action = GameAction.ACTION1
+                response = self.client.chat.completions.create(
+                    model="o4-mini",
+                    messages=self.messages,
+                    tools=TOOL_DEFINITIONS,
+                    max_completion_tokens=16000,
+                )
+            except Exception as e:
+                logger.warning(f"API error: {e}")
+                time.sleep(2)
+                continue
 
-            grid_before = frame.frame[-1]
-            score_before = frame.levels_completed
-            frame = self._step(action, reasoning=self.strategy[:80])
-            self.action_counter += 1
-            actions_since_strategy += 1
+            msg = response.choices[0].message
 
-            grid_after = frame.frame[-1]
-            changes = sum(1 for r in range(64) for c in range(64)
-                          if grid_before[r][c] != grid_after[r][c])
-            blocked = 0 < changes < 10
+            # Serialize assistant message
+            assistant_msg: dict = {"role": "assistant"}
+            if msg.content:
+                assistant_msg["content"] = msg.content
+                logger.info(f"[think] {msg.content[:200]}")
+            if msg.tool_calls:
+                assistant_msg["tool_calls"] = [
+                    {"id": tc.id, "type": "function",
+                     "function": {"name": tc.function.name, "arguments": tc.function.arguments}}
+                    for tc in msg.tool_calls
+                ]
+            self.messages.append(assistant_msg)
 
-            self.nav.update(action.name, grid_before, grid_after, changes, blocked)
-            self.tools.update(grid_after, action.name, changes, blocked)
+            if not msg.tool_calls:
+                self.messages.append({
+                    "role": "user",
+                    "content": f"Actions left: {self.MAX_ACTIONS - self.action_counter}. "
+                               "Use run_code to analyze or take_actions to act.",
+                })
+                continue
 
-            if blocked:
-                consecutive_blocked += 1
-            else:
-                consecutive_blocked = 0
+            # Process tool calls
+            for tc in msg.tool_calls:
+                name = tc.function.name
+                try:
+                    args = json.loads(tc.function.arguments)
+                except json.JSONDecodeError:
+                    self.messages.append({
+                        "role": "tool", "tool_call_id": tc.id,
+                        "content": "Invalid JSON arguments",
+                    })
+                    continue
 
-            logger.info(f"#{self.action_counter} {action.name}: {changes}ch "
-                        f"{'BLOCKED' if blocked else ''} "
-                        f"pos={self.nav.pos} score={frame.levels_completed}")
+                if name == "run_code":
+                    code = args.get("code", "")
+                    logger.info(f"[code] {code[:150]}...")
+                    result = run_program(code, self.current_grid)
+                    logger.info(f"[result] {result[:200]}")
+                    self.messages.append({
+                        "role": "tool", "tool_call_id": tc.id,
+                        "content": result,
+                    })
 
-            # Re-strategize triggers (RARE — only on significant events)
-            if frame.levels_completed > score_before:
-                logger.info(f"*** SCORE UP: {frame.levels_completed} ***")
-                self._strategize(frame, f"Score increased to {frame.levels_completed}! What happened and what next?")
-                actions_since_strategy = 0
-                consecutive_blocked = 0
+                elif name == "take_actions":
+                    action_names = args.get("actions", [])
+                    results = []
+                    for action_name in action_names:
+                        if self.action_counter >= self.MAX_ACTIONS:
+                            break
+                        try:
+                            action = GameAction.from_name(action_name)
+                        except (ValueError, KeyError):
+                            results.append(f"{action_name}: INVALID")
+                            continue
 
-            elif consecutive_blocked >= 8:
-                self._strategize(frame, f"Stuck — {consecutive_blocked} blocked moves in a row. Need a new approach.")
-                actions_since_strategy = 0
-                consecutive_blocked = 0
+                        grid_before = self.current_grid
+                        frame = self._step(action, reasoning="")
+                        self.action_counter += 1
+                        self.current_grid = frame.frame[-1] if frame.frame else grid_before
 
-            elif actions_since_strategy >= 30:
-                self._strategize(frame, "30 actions since last strategy check. Am I making progress?")
-                actions_since_strategy = 0
+                        changes = sum(1 for r in range(64) for c in range(64)
+                                      if grid_before[r][c] != self.current_grid[r][c])
+                        blocked = 0 < changes < 10
+
+                        if blocked:
+                            results.append(f"{action_name}: BLOCKED")
+                        else:
+                            results.append(f"{action_name}: MOVED ({changes} cells changed)")
+
+                        logger.info(f"#{self.action_counter} {action_name}: "
+                                    f"{'BLOCKED' if blocked else f'{changes}ch'} "
+                                    f"score={frame.levels_completed}")
+
+                        if frame.state in (GameState.WIN, GameState.GAME_OVER):
+                            results.append(f"State: {frame.state.name}")
+                            break
+
+                        if frame.levels_completed > 0 and "SCORE" not in " ".join(results):
+                            results.append(f"*** SCORE: {frame.levels_completed} ***")
+
+                    result_text = "\n".join(results)
+                    result_text += f"\nActions left: {self.MAX_ACTIONS - self.action_counter}"
+                    result_text += "\nThe `grid` variable is now updated with the current frame."
+
+                    self.messages.append({
+                        "role": "tool", "tool_call_id": tc.id,
+                        "content": result_text,
+                    })
+
+            # Trim conversation to prevent overflow
+            if len(self.messages) > 40:
+                # Keep system + first user (with image) + last 25
+                trimmed = self.messages[-25:]
+                while trimmed and isinstance(trimmed[0], dict) and trimmed[0].get("role") == "tool":
+                    trimmed.pop(0)
+                while trimmed and isinstance(trimmed[0], dict) and trimmed[0].get("tool_calls"):
+                    trimmed.pop(0)
+                self.messages = self.messages[:2] + trimmed
 
         elapsed = round(time.time() - timer, 2)
         logger.info("=" * 60)
@@ -149,77 +261,8 @@ class ToolUseAgent:
             f"score={frame.levels_completed} deaths={self.total_deaths} "
             f"llm_calls={self.llm_calls} time={elapsed}s"
         )
-        logger.info(f"Strategy: {self.strategy}")
-        logger.info(f"Nav: {self.nav.status()}")
         logger.info("=" * 60)
         self._close()
-
-    def _strategize(self, frame: FrameData, trigger: str) -> None:
-        """Rare LLM call (~3-5 per game). Looks at the image + grid data, sets strategy and targets."""
-        self.llm_calls += 1
-        logger.info(f"[strategy #{self.llm_calls}] {trigger}")
-
-        # Build compact grid info from tools
-        color_info = self.tools.color_summary()
-        nav_status = self.nav.status()
-
-        content = [
-            text_block(
-                f"You are playing a turn-based game. 64x64 grid, 16 colors.\n"
-                f"ACTION1=up, ACTION2=down, ACTION3=left, ACTION4=right.\n\n"
-                f"TRIGGER: {trigger}\n\n"
-                f"Score: {frame.levels_completed} | Deaths: {self.total_deaths} | "
-                f"Actions: {self.action_counter}/{self.MAX_ACTIONS}\n\n"
-                f"{nav_status}\n\n"
-                f"{color_info}\n\n"
-                f"Current frame:"
-            ),
-            image_block(grid_to_b64(frame.frame[-1])),
-            text_block(
-                "\nAnalyze the image. What do you see? What is the game about?\n"
-                "Then give me:\n"
-                "1. A one-sentence STRATEGY (what should I do to complete the level)\n"
-                "2. A list of TARGET POSITIONS (row, col) to visit in order\n\n"
-                "Respond with JSON:\n"
-                '{"strategy": "one sentence", "targets": [[row,col], [row,col], ...]}'
-            ),
-        ]
-
-        for attempt in range(3):
-            try:
-                response = self.client.chat.completions.create(
-                    model="o4-mini",
-                    messages=[{"role": "user", "content": content}],
-                    max_completion_tokens=2000,
-                    response_format={"type": "json_object"},
-                )
-                raw = response.choices[0].message.content or "{}"
-                break
-            except Exception as e:
-                logger.warning(f"[strategy] API error: {e}")
-                time.sleep(2 ** attempt)
-                raw = "{}"
-
-        try:
-            data = json.loads(raw)
-        except json.JSONDecodeError:
-            data = {}
-
-        self.strategy = data.get("strategy", self.strategy or "Explore the grid systematically")
-        raw_targets = data.get("targets", [])
-
-        # Parse targets
-        self.targets = []
-        self.current_target_idx = 0
-        for t in raw_targets:
-            if isinstance(t, list) and len(t) == 2:
-                try:
-                    self.targets.append((int(t[0]), int(t[1])))
-                except (ValueError, TypeError):
-                    pass
-
-        logger.info(f"[strategy] {self.strategy}")
-        logger.info(f"[strategy] targets: {self.targets}")
 
     def _step(self, action: GameAction, reasoning: str = "") -> FrameData:
         try:
