@@ -16,6 +16,19 @@ ARC-AGI-3 competition workspace. Building agents that play unknown turn-based ga
 - `FrameData` — frame grid (`list[list[list[int]]]`, 64×64 of ints 0–15), state, levels_completed, available_actions.
 - `GameState` — NOT_PLAYED, NOT_FINISHED, GAME_OVER, WIN.
 
+### API
+
+- Actions map to keyboard/mouse inputs: up, down, left, right, spacebar, click(x,y), undo
+- `available_actions` from FrameData tells which actions are valid for the current game
+- Reasoning is passed to `env.step(action, reasoning=...)` and shows in the ARC replay
+
+### Models
+
+- GPT-5.4: Use Responses API (`client.responses.create`). Image format: `{"type": "input_image", "image_url": "data:image/png;base64,..."}`. Text: `{"type": "input_text", "text": "..."}`. Output: `response.output_text`.
+- GPT-5.4-mini: Same API, faster/cheaper, no vision.
+- o4-mini: Chat Completions API. Uses `max_completion_tokens` not `max_tokens`. Supports `response_format: json_object`.
+- gpt-4o: Chat Completions API. Uses `max_tokens`. Good vision.
+
 ## Experiment Philosophy
 
 **Build fast, run, analyze after.** An experiment is a complete agent run against a game. The goal is to get data as quickly as possible, then think carefully about what it means.
@@ -37,8 +50,7 @@ experiments/
 │   ├── analysis.md      # post-run write-up
 │   ├── experiment.log   # raw output
 │   └── agents/          # agent code for this experiment
-├── 002-fixed-perception/
-│   ├── ...              # copies and modifies what it needs from 001
+├── 002-redesigned-vlm/
 │   └── analysis.md      # references experiment 001
 ```
 
@@ -50,12 +62,40 @@ experiments/
 4. **Write up** what happened in `analysis.md`.
 5. **Reference** prior experiment numbers in the next experiment's analysis.
 
+## Current Best Architecture (Experiment 004)
+
+The most effective approach so far: **observe-then-act with auto-probe, symbolic state, and hypothesis-driven action sequences.**
+
+### Components
+
+- **Auto-probe** (4 actions, 0 LLM calls): Take one of each action on startup. Code records structured symbolic diffs. Results are fed as ESTABLISHED FACTS to every LLM call — the model never has to guess what actions do.
+- **Symbolic state** (`symbolic.py`): Connected component analysis on the grid. Outputs objects with color, shape, size, position, bounding box, center. Plus spatial relations (above, below, adjacent).
+- **Symbolic diff** (`diff_symbolic`): Compares two symbolic states. Reports which objects moved, appeared, disappeared, or changed size — no interpretation, just facts.
+- **Side-by-side image** (`vision.py`): Previous frame vs current with red outlines on changed cells. Sent to the model every turn.
+- **GPT-5.4** (Responses API): One call per turn. Sees: probe facts + symbolic state + symbolic diff + image + its own notes. Outputs: observation, hypotheses (with test_actions), notes.
+- **Hypothesis-driven actions**: The model outputs structured hypotheses, each with a `test_actions` sequence. The first `testing` hypothesis drives the actions. Execution stops on BLOCKED or unexpected events.
+- **Detailed unusual-event reporting**: When changes > 80 (beyond normal movement), the full symbolic diff is included in action results so the model sees exactly what happened.
+
+### What works
+
+- Probe facts eliminate the "what do actions do" problem that killed experiments 001-003
+- Symbolic state + diff gives the model precise spatial data without pixel-squinting
+- Hypothesis-driven action sequences reduce LLM calls (batch actions per hypothesis test)
+- GPT-5.4 produces consistently good spatial reasoning from symbolic data + images
+
+### What doesn't work yet
+
+- The model navigates well but doesn't investigate game objects deeply enough
+- Hypotheses tend to be about paths ("go up to reach X") rather than mechanics ("interacting with X does Y")
+- Energy/timer depletion is noticed but not acted on with urgency
+- Inconsistent across runs — initial interpretation can vary
+
 ## Design Principles
 
-- **Perception is code, reasoning is LLM.** Frame diffing and object detection are deterministic Python. LLM calls only for interpretation and synthesis.
+- **NEVER hardcode game-specific knowledge** into agent code, prompts, or comments. The agent must discover everything through observation. No "player", "wall", "floor", "energy" labels — only what the model infers.
+- **Don't hardcode position tracking or entity detection.** The model decides what info it needs. Only raw diffs and symbolic state are computed by code.
 - **Action budget is sacred.** Every action must either gather information or make progress.
-- **World model is test-driven.** The test suite grows monotonically. Fixing one mechanic must not break another.
-- **LLM calls are expensive.** Use plan-then-execute (LLM outputs action sequences), not LLM-per-action.
+- **LLM calls are expensive.** Use hypothesis-driven action sequences, not LLM-per-action.
 - **Upstream is read-only.** `ARC-AGI-3-Agents/` is a reference only.
 
 ## Environment Setup

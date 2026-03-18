@@ -1,0 +1,307 @@
+2026-03-17 21:54:05,898 | INFO | ============================================================
+2026-03-17 21:54:05,898 | INFO | World-Model Induction Agent on ls20
+2026-03-17 21:54:05,898 | INFO | ============================================================
+2026-03-17 21:54:06,028 | INFO | === PHASE 1: ACTION PROBING ===
+2026-03-17 21:54:06,269 | INFO | [probe] #1 ACTION1: 52ch
+2026-03-17 21:54:06,383 | INFO | [probe] #2 ACTION1: 52ch
+2026-03-17 21:54:06,496 | INFO | [probe] #3 ACTION1: 52ch
+2026-03-17 21:54:06,781 | INFO | [probe] #4 ACTION2: 52ch
+2026-03-17 21:54:07,089 | INFO | [probe] #5 ACTION2: 52ch
+2026-03-17 21:54:07,196 | INFO | [probe] #6 ACTION2: 52ch
+2026-03-17 21:54:07,303 | INFO | [probe] #7 ACTION3: 52ch
+2026-03-17 21:54:07,598 | INFO | [probe] #8 ACTION3: 52ch
+2026-03-17 21:54:07,910 | INFO | [probe] #9 ACTION3: 52ch
+2026-03-17 21:54:08,138 | INFO | [probe] #10 ACTION4: 52ch
+2026-03-17 21:54:08,247 | INFO | [probe] #11 ACTION4: 52ch
+2026-03-17 21:54:08,355 | INFO | [probe] #12 ACTION4: 52ch
+2026-03-17 21:54:08,355 | INFO | [controllable] color=-1: color -1 changed position in 292% of successful actions
+2026-03-17 21:54:19,428 | INFO | [induce] Model:
+OBJECTS:
+  color=-1 role=controllable conf=0.9 (color -1 changed position in 292% of successful actions)
+  color=orange role=controllable conf=0.5 (moves exactly with player input in all four directions; forms a paired avatar with blue)
+  color=blue role=controllable conf=0.5 (moves exactly with player input in all four directions; stays adjacent to orange, suggesting a 2-cell player body or linked pieces)
+  color=light_gray role=walkable_structure conf=0.5 (static maze/room geometry visible in frame; movement appears constrained to its corridors/platforms)
+  color=dark_gray role=timer_or_progress_indicator conf=0.5 (steadily grows downward by 2 pixels after every action regardless of direction; not controlled by movement)
+  color=yellow role=depleting_resource_or_timer_bar conf=0.5 (shrinks by 2 pixels after every action regardless of direction; likely HUD countdown/air/time/energy)
+  color=white role=goal_like_marker conf=0.5 (small static object inside maze, visually salient and unaffected by actions; plausible collectible/target/checkpoint)
+  color=black role=background_or_mask conf=0.5 (large black region changed/disappeared only on first probe, likely artifact of observation/HUD masking rather than gameplay object)
+
+ACTION RULES:
+  ACTION1: move left dist=5 target=controllable_pair pre=likely path_clear conf=0.5
+  ACTION2: move right dist=5 target=controllable_pair pre=likely path_clear conf=0.5
+  ACTION3: move up dist=5 target=controllable_pair pre=likely path_clear conf=0.5
+  ACTION4: move down dist=5 target=controllable_pair pre=likely path_clear conf=0.5
+
+GOAL HYPOTHESES:
+  [time_pressure] reach the target before the yellow bar fully depletes / while dark-gray progress fills conf=0.7
+  [navigation] move the controllable orange-blue pair through the maze to reach the white marker conf=0.7
+  [collection] touch or collect the white object while navigating corridors conf=0.6
+  [survival] each action consumes a limited resource, so the objective may be efficient pathfinding to an exit or item conf=0.6
+2026-03-17 21:54:19,428 | INFO | === PHASE 2: GOAL-DIRECTED PLAY ===
+2026-03-17 21:54:19,681 | INFO | #13 ACTION1: 52ch score=0 | Rule type 'move' not yet evaluated
+2026-03-17 21:54:19,991 | INFO | #14 ACTION2: 52ch score=0 | Rule type 'move' not yet evaluated
+2026-03-17 21:54:20,102 | INFO | #15 ACTION3: 52ch score=0 | Rule type 'move' not yet evaluated
+2026-03-17 21:54:20,417 | INFO | #16 ACTION4: 52ch score=0 | Rule type 'move' not yet evaluated
+2026-03-17 21:54:20,712 | INFO | #17 ACTION1: 52ch score=0 | Rule type 'move' not yet evaluated
+2026-03-17 21:54:21,016 | INFO | #18 ACTION2: 52ch score=0 | Rule type 'move' not yet evaluated
+2026-03-17 21:54:21,246 | INFO | #19 ACTION3: 52ch score=0 | Rule type 'move' not yet evaluated
+2026-03-17 21:54:21,532 | INFO | #20 ACTION4: 52ch score=0 | Rule type 'move' not yet evaluated
+2026-03-17 21:54:21,834 | INFO | #21 ACTION1: 52ch score=0 | Rule type 'move' not yet evaluated
+2026-03-17 21:54:21,948 | INFO | #22 ACTION2: 52ch score=0 | Rule type 'move' not yet evaluated
+2026-03-17 21:54:22,060 | INFO | #23 ACTION3: 52ch score=0 | Rule type 'move' not yet evaluated
+2026-03-17 21:54:22,171 | INFO | #24 ACTION4: 52ch score=0 | Rule type 'move' not yet evaluated
+2026-03-17 21:54:22,449 | INFO | #25 ACTION1: 52ch score=0 | Rule type 'move' not yet evaluated
+2026-03-17 21:54:22,562 | INFO | #26 ACTION2: 52ch score=0 | Rule type 'move' not yet evaluated
+2026-03-17 21:54:22,804 | INFO | #27 ACTION3: 52ch score=0 | Rule type 'move' not yet evaluated
+2026-03-17 21:54:23,063 | INFO | #28 ACTION4: 52ch score=0 | Rule type 'move' not yet evaluated
+2026-03-17 21:54:23,173 | INFO | #29 ACTION1: 52ch score=0 | Rule type 'move' not yet evaluated
+2026-03-17 21:54:23,474 | INFO | #30 ACTION2: 52ch score=0 | Rule type 'move' not yet evaluated
+2026-03-17 21:54:23,781 | INFO | #31 ACTION3: 52ch score=0 | Rule type 'move' not yet evaluated
+2026-03-17 21:54:23,905 | INFO | #32 ACTION4: 52ch score=0 | Rule type 'move' not yet evaluated
+2026-03-17 21:54:39,937 | INFO | [refine] 20 actions since last check. Am I making progress?
+2026-03-17 21:54:39,937 | INFO | [model] OBJECTS:
+  color=-1 role=controllable conf=0.9 (color -1 changed position in 292% of successful actions)
+  color=orange role=controllable conf=0.5 (moves exactly with player input in all four directions; forms a paired avatar with blue)
+  color=blue role=controllable conf=0.5 (moves exactly with pla
+2026-03-17 21:54:40,171 | INFO | #33 ACTION1: 52ch score=0 | Rule type 'move left by 1 tile/cell if corridor open' not yet evaluated
+2026-03-17 21:54:40,469 | INFO | #34 ACTION2: 52ch score=0 | Rule type 'move right by 1 tile/cell if corridor open' not yet evaluated
+2026-03-17 21:54:40,779 | INFO | #35 ACTION3: 52ch score=0 | Rule type 'move up by 1 tile/cell if corridor open' not yet evaluated
+2026-03-17 21:54:41,087 | INFO | #36 ACTION4: 52ch score=0 | Rule type 'move down by 1 tile/cell if corridor open' not yet evaluated
+2026-03-17 21:54:41,393 | INFO | #37 ACTION1: 52ch score=0 | Rule type 'move left by 1 tile/cell if corridor open' not yet evaluated
+2026-03-17 21:54:41,617 | INFO | #38 ACTION2: 52ch score=0 | Rule type 'move right by 1 tile/cell if corridor open' not yet evaluated
+2026-03-17 21:54:41,726 | INFO | #39 ACTION3: 52ch score=0 | Rule type 'move up by 1 tile/cell if corridor open' not yet evaluated
+2026-03-17 21:54:41,841 | INFO | #40 ACTION4: 52ch score=0 | Rule type 'move down by 1 tile/cell if corridor open' not yet evaluated
+2026-03-17 21:54:41,951 | INFO | #41 ACTION1: 52ch score=0 | Rule type 'move left by 1 tile/cell if corridor open' not yet evaluated
+2026-03-17 21:54:42,210 | INFO | #42 ACTION2: 52ch score=0 | Rule type 'move right by 1 tile/cell if corridor open' not yet evaluated
+2026-03-17 21:54:42,499 | INFO | #43 ACTION3: 88ch score=0 | Rule type 'move up by 1 tile/cell if corridor open' not yet evaluated
+2026-03-17 21:54:42,724 | INFO | #44 ACTION4: 52ch score=0 | Rule type 'move down by 1 tile/cell if corridor open' not yet evaluated
+2026-03-17 21:54:42,836 | INFO | #45 ACTION1: 52ch score=0 | Rule type 'move left by 1 tile/cell if corridor open' not yet evaluated
+2026-03-17 21:54:43,131 | INFO | #46 ACTION2: 52ch score=0 | Rule type 'move right by 1 tile/cell if corridor open' not yet evaluated
+2026-03-17 21:54:43,247 | INFO | #47 ACTION3: 52ch score=0 | Rule type 'move up by 1 tile/cell if corridor open' not yet evaluated
+2026-03-17 21:54:43,358 | INFO | #48 ACTION4: 52ch score=0 | Rule type 'move down by 1 tile/cell if corridor open' not yet evaluated
+2026-03-17 21:54:43,584 | INFO | #49 ACTION1: 52ch score=0 | Rule type 'move left by 1 tile/cell if corridor open' not yet evaluated
+2026-03-17 21:54:43,853 | INFO | #50 ACTION2: 52ch score=0 | Rule type 'move right by 1 tile/cell if corridor open' not yet evaluated
+2026-03-17 21:54:43,964 | INFO | #51 ACTION3: 52ch score=0 | Rule type 'move up by 1 tile/cell if corridor open' not yet evaluated
+2026-03-17 21:54:44,069 | INFO | #52 ACTION4: 52ch score=0 | Rule type 'move down by 1 tile/cell if corridor open' not yet evaluated
+2026-03-17 21:54:56,484 | INFO | [refine] 20 actions since last check. Am I making progress?
+2026-03-17 21:54:56,485 | INFO | [model] OBJECTS:
+  color=-1 role=controllable conf=0.9 (color -1 changed position in 292% of successful actions)
+  color=orange role=controllable conf=0.5 (moves exactly with player input in all four directions; forms a paired avatar with blue)
+  color=blue role=controllable conf=0.5 (moves exactly with pla
+2026-03-17 21:54:56,724 | INFO | #53 ACTION1: 52ch score=0 | Rule type 'move avatar left by 1 cell when not blocked' not yet evaluated
+2026-03-17 21:54:56,845 | INFO | #54 ACTION2: 52ch score=0 | Rule type 'move avatar right by 1 cell when not blocked' not yet evaluated
+2026-03-17 21:54:57,073 | INFO | #55 ACTION3: 52ch score=0 | Rule type 'move avatar up by 1 cell when not blocked' not yet evaluated
+2026-03-17 21:54:57,372 | INFO | #56 ACTION4: 52ch score=0 | Rule type 'move avatar down by 1 cell when not blocked' not yet evaluated
+2026-03-17 21:54:57,481 | INFO | #57 ACTION1: 52ch score=0 | Rule type 'move avatar left by 1 cell when not blocked' not yet evaluated
+2026-03-17 21:54:57,774 | INFO | #58 ACTION2: 52ch score=0 | Rule type 'move avatar right by 1 cell when not blocked' not yet evaluated
+2026-03-17 21:54:58,082 | INFO | #59 ACTION3: 52ch score=0 | Rule type 'move avatar up by 1 cell when not blocked' not yet evaluated
+2026-03-17 21:54:58,389 | INFO | #60 ACTION4: 52ch score=0 | Rule type 'move avatar down by 1 cell when not blocked' not yet evaluated
+2026-03-17 21:54:58,697 | INFO | #61 ACTION1: 52ch score=0 | Rule type 'move avatar left by 1 cell when not blocked' not yet evaluated
+2026-03-17 21:54:59,005 | INFO | #62 ACTION2: 52ch score=0 | Rule type 'move avatar right by 1 cell when not blocked' not yet evaluated
+2026-03-17 21:54:59,114 | INFO | #63 ACTION3: 52ch score=0 | Rule type 'move avatar up by 1 cell when not blocked' not yet evaluated
+2026-03-17 21:54:59,335 | INFO | #64 ACTION4: 52ch score=0 | Rule type 'move avatar down by 1 cell when not blocked' not yet evaluated
+2026-03-17 21:54:59,453 | INFO | #65 ACTION1: 52ch score=0 | Rule type 'move avatar left by 1 cell when not blocked' not yet evaluated
+2026-03-17 21:54:59,723 | INFO | #66 ACTION2: 52ch score=0 | Rule type 'move avatar right by 1 cell when not blocked' not yet evaluated
+2026-03-17 21:55:00,028 | INFO | #67 ACTION3: 52ch score=0 | Rule type 'move avatar up by 1 cell when not blocked' not yet evaluated
+2026-03-17 21:55:00,336 | INFO | #68 ACTION4: 52ch score=0 | Rule type 'move avatar down by 1 cell when not blocked' not yet evaluated
+2026-03-17 21:55:00,451 | INFO | #69 ACTION1: 52ch score=0 | Rule type 'move avatar left by 1 cell when not blocked' not yet evaluated
+2026-03-17 21:55:00,561 | INFO | #70 ACTION2: 52ch score=0 | Rule type 'move avatar right by 1 cell when not blocked' not yet evaluated
+2026-03-17 21:55:00,855 | INFO | #71 ACTION3: 52ch score=0 | Rule type 'move avatar up by 1 cell when not blocked' not yet evaluated
+2026-03-17 21:55:01,155 | INFO | #72 ACTION4: 52ch score=0 | Rule type 'move avatar down by 1 cell when not blocked' not yet evaluated
+2026-03-17 21:55:13,712 | INFO | [refine] 20 actions since last check. Am I making progress?
+2026-03-17 21:55:13,713 | INFO | [model] OBJECTS:
+  color=-1 role=controllable conf=0.9 (color -1 changed position in 292% of successful actions)
+  color=orange role=controllable conf=0.5 (moves exactly with player input in all four directions; forms a paired avatar with blue)
+  color=blue role=controllable conf=0.5 (moves exactly with pla
+2026-03-17 21:55:13,963 | INFO | #73 ACTION1: 52ch score=0 | Rule type 'move linked orange-blue avatar left by 1 cell when corridor space to the left is open' not yet evaluated
+2026-03-17 21:55:14,203 | INFO | #74 ACTION2: 52ch score=0 | Rule type 'move linked orange-blue avatar right by 1 cell when corridor space to the right is open' not yet evaluated
+2026-03-17 21:55:14,427 | INFO | #75 ACTION3: 52ch score=0 | Rule type 'move linked orange-blue avatar up by 1 cell when corridor space above is open' not yet evaluated
+2026-03-17 21:55:14,536 | INFO | #76 ACTION4: 52ch score=0 | Rule type 'move linked orange-blue avatar down by 1 cell when corridor space below is open' not yet evaluated
+2026-03-17 21:55:14,761 | INFO | #77 ACTION1: 52ch score=0 | Rule type 'move linked orange-blue avatar left by 1 cell when corridor space to the left is open' not yet evaluated
+2026-03-17 21:55:15,079 | INFO | #78 ACTION2: 52ch score=0 | Rule type 'move linked orange-blue avatar right by 1 cell when corridor space to the right is open' not yet evaluated
+2026-03-17 21:55:15,191 | INFO | #79 ACTION3: 52ch score=0 | Rule type 'move linked orange-blue avatar up by 1 cell when corridor space above is open' not yet evaluated
+2026-03-17 21:55:15,415 | INFO | #80 ACTION4: 52ch score=0 | Rule type 'move linked orange-blue avatar down by 1 cell when corridor space below is open' not yet evaluated
+2026-03-17 21:55:15,524 | INFO | #81 ACTION1: 52ch score=0 | Rule type 'move linked orange-blue avatar left by 1 cell when corridor space to the left is open' not yet evaluated
+2026-03-17 21:55:15,640 | INFO | #82 ACTION2: 52ch score=0 | Rule type 'move linked orange-blue avatar right by 1 cell when corridor space to the right is open' not yet evaluated
+2026-03-17 21:55:15,876 | INFO | #83 ACTION3: 52ch score=0 | Rule type 'move linked orange-blue avatar up by 1 cell when corridor space above is open' not yet evaluated
+2026-03-17 21:55:16,101 | INFO | #84 ACTION4: 52ch score=0 | Rule type 'move linked orange-blue avatar down by 1 cell when corridor space below is open' not yet evaluated
+2026-03-17 21:55:16,207 | INFO | #85 ACTION1: 52ch score=0 | Rule type 'move linked orange-blue avatar left by 1 cell when corridor space to the left is open' not yet evaluated
+2026-03-17 21:55:16,326 | INFO | #86 ACTION2: 138ch score=0 | Rule type 'move linked orange-blue avatar right by 1 cell when corridor space to the right is open' not yet evaluated
+2026-03-17 21:55:16,622 | INFO | #87 ACTION3: 52ch score=0 | Rule type 'move linked orange-blue avatar up by 1 cell when corridor space above is open' not yet evaluated
+2026-03-17 21:55:16,732 | INFO | #88 ACTION4: 52ch score=0 | Rule type 'move linked orange-blue avatar down by 1 cell when corridor space below is open' not yet evaluated
+2026-03-17 21:55:16,959 | INFO | #89 ACTION1: 52ch score=0 | Rule type 'move linked orange-blue avatar left by 1 cell when corridor space to the left is open' not yet evaluated
+2026-03-17 21:55:17,069 | INFO | #90 ACTION2: 52ch score=0 | Rule type 'move linked orange-blue avatar right by 1 cell when corridor space to the right is open' not yet evaluated
+2026-03-17 21:55:17,299 | INFO | #91 ACTION3: 52ch score=0 | Rule type 'move linked orange-blue avatar up by 1 cell when corridor space above is open' not yet evaluated
+2026-03-17 21:55:17,537 | INFO | #92 ACTION4: 52ch score=0 | Rule type 'move linked orange-blue avatar down by 1 cell when corridor space below is open' not yet evaluated
+2026-03-17 21:55:31,095 | INFO | [refine] 20 actions since last check. Am I making progress?
+2026-03-17 21:55:31,096 | INFO | [model] OBJECTS:
+  color=-1 role=controllable conf=0.9 (color -1 changed position in 292% of successful actions)
+  color=orange role=controllable conf=0.5 (moves exactly with player input in all four directions; forms a paired avatar with blue)
+  color=blue role=controllable conf=0.5 (moves exactly with pla
+2026-03-17 21:55:31,369 | INFO | #93 ACTION1: 52ch score=0 | Rule type 'move the linked orange-blue 2-cell avatar left by 1 cell when not blocked by light-gray wall geometry' not yet evaluated
+2026-03-17 21:55:31,674 | INFO | #94 ACTION2: 52ch score=0 | Rule type 'move the linked orange-blue 2-cell avatar right by 1 cell when not blocked by light-gray wall geometry' not yet evaluated
+2026-03-17 21:55:31,974 | INFO | #95 ACTION3: 52ch score=0 | Rule type 'move the linked orange-blue 2-cell avatar up by 1 cell when not blocked by light-gray wall geometry' not yet evaluated
+2026-03-17 21:55:32,083 | INFO | #96 ACTION4: 52ch score=0 | Rule type 'move the linked orange-blue 2-cell avatar down by 1 cell when not blocked by light-gray wall geometry' not yet evaluated
+2026-03-17 21:55:32,321 | INFO | #97 ACTION1: 52ch score=0 | Rule type 'move the linked orange-blue 2-cell avatar left by 1 cell when not blocked by light-gray wall geometry' not yet evaluated
+2026-03-17 21:55:32,589 | INFO | #98 ACTION2: 52ch score=0 | Rule type 'move the linked orange-blue 2-cell avatar right by 1 cell when not blocked by light-gray wall geometry' not yet evaluated
+2026-03-17 21:55:32,899 | INFO | #99 ACTION3: 52ch score=0 | Rule type 'move the linked orange-blue 2-cell avatar up by 1 cell when not blocked by light-gray wall geometry' not yet evaluated
+2026-03-17 21:55:33,011 | INFO | #100 ACTION4: 52ch score=0 | Rule type 'move the linked orange-blue 2-cell avatar down by 1 cell when not blocked by light-gray wall geometry' not yet evaluated
+2026-03-17 21:55:33,012 | INFO | ============================================================
+2026-03-17 21:55:33,012 | INFO | FINISHED: actions=100 state=NOT_FINISHED score=0 deaths=0 llm_calls=5 time=87.11s
+2026-03-17 21:55:33,012 | INFO | World model:
+OBJECTS:
+  color=-1 role=controllable conf=0.9 (color -1 changed position in 292% of successful actions)
+  color=orange role=controllable conf=0.5 (moves exactly with player input in all four directions; forms a paired avatar with blue)
+  color=blue role=controllable conf=0.5 (moves exactly with player input in all four directions; stays adjacent to orange, suggesting a 2-cell player body or linked pieces)
+  color=light_gray role=walkable_structure conf=0.5 (static maze/room geometry visible in frame; movement appears constrained to its corridors/platforms)
+  color=dark_gray role=timer_or_progress_indicator conf=0.5 (steadily grows downward by 2 pixels after every action regardless of direction; not controlled by movement)
+  color=yellow role=depleting_resource_or_timer_bar conf=0.5 (shrinks by 2 pixels after every action regardless of direction; likely HUD countdown/air/time/energy)
+  color=white role=goal_like_marker conf=0.5 (small static object inside maze, visually salient and unaffected by actions; plausible collectible/target/checkpoint)
+  color=black role=background_or_mask conf=0.5 (large black region changed/disappeared only on first probe, likely artifact of observation/HUD masking rather than gameplay object)
+
+ACTION RULES:
+  ACTION1: move the linked orange-blue 2-cell avatar left by 1 cell when not blocked by light-gray wall geometry target=orange_blue_linked_avatar conf=0.0 acc=0%
+  ACTION2: move the linked orange-blue 2-cell avatar right by 1 cell when not blocked by light-gray wall geometry target=orange_blue_linked_avatar conf=0.0 acc=0%
+  ACTION3: move the linked orange-blue 2-cell avatar up by 1 cell when not blocked by light-gray wall geometry target=orange_blue_linked_avatar conf=0.0 acc=0%
+  ACTION4: move the linked orange-blue 2-cell avatar down by 1 cell when not blocked by light-gray wall geometry target=orange_blue_linked_avatar conf=0.0 acc=0%
+
+GOAL HYPOTHESES:
+  [unknown]  conf=0.8
+  [unknown]  conf=0.8
+  [unknown]  conf=0.8
+  [unknown]  conf=0.8
+  [unknown]  conf=0.8
+  [unknown]  conf=0.8
+  [unknown]  conf=0.8
+  [time_pressure] reach the target before the yellow bar fully depletes / while dark-gray progress fills conf=0.7
+  [unknown]  conf=0.7
+  [navigation] move the controllable orange-blue pair through the maze to reach the white marker conf=0.7
+  [unknown]  conf=0.7
+  [collection] touch or collect the white object while navigating corridors conf=0.6
+  [survival] each action consumes a limited resource, so the objective may be efficient pathfinding to an exit or item conf=0.6
+  [unknown]  conf=0.6
+  [unknown]  conf=0.5
+  [unknown]  conf=0.3
+  [unknown]  conf=0.3
+  [unknown]  conf=0.3
+  [unknown]  conf=0.3
+
+KEY OBSERVATIONS (15):
+  - Major fix: controls are no longer uncertain—all four actions reliably map to cardinal movement of one linked 2-cell avatar, so action confidence should be high.
+  - The separate controllable object with color=-1 is a false segmentation artifact and should be removed.
+  - The dark-gray 'progress indicator' hypothesis is likely wrong; the only strong action-coupled HUD evidence is the yellow bar shrinking each step.
+  - Orange and blue should be modeled as one composite player entity, not two loosely paired controllables.
+  - Progress has been made in understanding controls and map constraints, but objective completion is still unverified because score/deaths remain unchanged.
+2026-03-17 21:55:33,012 | INFO | ============================================================
+2026-03-17 21:55:33,303 | INFO | --- SCORECARD ---
+2026-03-17 21:55:33,303 | INFO | {
+  "source_url": null,
+  "tags": [
+    "wrapper",
+    "agent"
+  ],
+  "opaque": null,
+  "card_id": "50bc609f-8e95-413b-a5b4-37fabae0df24",
+  "api_key": null,
+  "score": 0.0,
+  "environments": [
+    {
+      "id": "ls20-cb3b57cc",
+      "runs": [
+        {
+          "id": null,
+          "guid": "ef5747d2-5bbb-42bc-b417-9a5917fcf291",
+          "score": 0.0,
+          "levels_completed": 0,
+          "actions": 0,
+          "resets": 0,
+          "state": "NOT_FINISHED",
+          "completed": false,
+          "level_scores": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "level_actions": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "level_baseline_actions": [
+            29,
+            41,
+            172,
+            49,
+            53,
+            62,
+            82
+          ],
+          "number_of_levels": null,
+          "number_of_environments": 0,
+          "message": null
+        },
+        {
+          "id": null,
+          "guid": "ef5747d2-5bbb-42bc-b417-9a5917fcf291",
+          "score": 0.0,
+          "levels_completed": 0,
+          "actions": 100,
+          "resets": 0,
+          "state": "NOT_FINISHED",
+          "completed": false,
+          "level_scores": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "level_actions": [
+            100,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "level_baseline_actions": [
+            29,
+            41,
+            172,
+            49,
+            53,
+            62,
+            82
+          ],
+          "number_of_levels": null,
+          "number_of_environments": 0,
+          "message": null
+        }
+      ],
+      "score": 0.0,
+      "actions": 100,
+      "levels_completed": 0,
+      "completed": false,
+      "level_count": 7,
+      "resets": 0
+    }
+  ],
+  "tags_scores": [],
+  "competition_mode": false,
+  "total_environments_completed": 0,
+  "total_environments": 1,
+  "total_levels_completed": 0,
+  "total_levels": 7,
+  "total_actions": 100
+}
