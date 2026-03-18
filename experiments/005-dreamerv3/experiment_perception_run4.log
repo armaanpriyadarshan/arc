@@ -1,0 +1,29 @@
+2026-03-17 01:10:36 | INFO | Successfully fetched 3 environment(s) from API
+2026-03-17 01:10:36 | INFO | Created new scorecard: e3f7630a-91d2-414a-abd4-40a0b340ec6d
+2026-03-17 01:10:37 | INFO | Successfully fetched metadata for game ls20
+2026-03-17 01:10:37 | INFO | Successfully loaded game class Ls20 from ..\..\environment_files\ls20\cb3b57cc\ls20.py
+2026-03-17 01:10:37,209 | INFO | env_wrapper | ARCEnvWrapper: game=ls20 scorecard=None
+2026-03-17 01:10:37,209 | INFO | agents.perception_agent | PerceptionAgent starting on game=ls20
+2026-03-17 01:10:37,214 | INFO | env_wrapper | Discovered valid action indices: [0, 1, 2, 3, 4] (from env available_actions=[1, 2, 3, 4])
+2026-03-17 01:10:37,214 | INFO | agents.perception_agent | Initial obs shape: (64, 64), valid_actions: [0, 1, 2, 3, 4]
+2026-03-17 01:10:37,214 | INFO | agents.perception_agent | Phase 1: Calibration
+2026-03-17 01:10:37,214 | INFO | agents.perception_agent | Floor color (most common): 4
+2026-03-17 01:10:37,214 | INFO | agents.perception_agent | Background colors: {3, 4}
+2026-03-17 01:10:37,236 | INFO | agents.perception_agent | Action 1: step (dy=-5, dx=0)
+2026-03-17 01:10:37,242 | INFO | agents.perception_agent | Action 2: step (dy=5, dx=0)
+2026-03-17 01:10:37,249 | INFO | agents.perception_agent | Action 3: could not determine direction (1 positions)
+2026-03-17 01:10:37,255 | INFO | agents.perception_agent | Action 4: step (dy=0, dx=5)
+2026-03-17 01:10:37,259 | INFO | agents.perception_agent | Inferred action 3: step (dy=0, dx=-5)
+2026-03-17 01:10:37,259 | INFO | agents.perception_agent | Detected cell size: 5 pixels
+2026-03-17 01:10:37,262 | INFO | agents.perception_agent | Player position after reset: (42, 41)
+2026-03-17 01:10:37,262 | INFO | agents.perception_agent | Navigation: directions={(-1, 0): 1, (1, 0): 2, (0, 1): 4, (0, -1): 3}
+2026-03-17 01:10:37,262 | INFO | agents.perception_agent | Calibration complete: 4 action effects learned, player at (42, 41)
+2026-03-17 01:10:37,262 | INFO | agents.perception_agent | Phase 2: Systematic exploration
+2026-03-17 01:10:37,423 | INFO | agents.perception_agent | GAME OVER at action 167 — resetting
+2026-03-17 01:10:37,597 | INFO | agents.perception_agent | GAME OVER at action 297 — resetting
+2026-03-17 01:10:37,715 | INFO | agents.perception_agent | GAME OVER at action 427 — resetting
+2026-03-17 01:10:37,802 | INFO | env_wrapper | LEVEL PROGRESS: 0 -> 1 (+5.0 reward)
+2026-03-17 01:10:37,802 | INFO | agents.perception_agent | LEVEL PROGRESS: 0 -> 1
+2026-03-17 01:10:37,807 | INFO | agents.perception_agent | Exploration complete: 500 actions, 77 cells visited, 1 levels
+2026-03-17 01:10:37 | INFO | Closed scorecard: e3f7630a-91d2-414a-abd4-40a0b340ec6d
+2026-03-17 01:10:37,807 | INFO | agents.perception_agent | PerceptionAgent done: 500 actions used, 1 levels completed

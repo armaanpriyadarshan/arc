@@ -1,0 +1,75 @@
+2026-03-17 01:48:56,364 | INFO | agents.dqn_agent | DQNAgent starting: game=ls20 device=cpu episodes=400
+2026-03-17 01:48:57 | INFO | Successfully fetched 3 environment(s) from API
+2026-03-17 01:48:57 | INFO | Created new scorecard: d2cb8dd6-1232-46a1-9dbf-b9e067153e2f
+2026-03-17 01:48:57 | INFO | Successfully fetched metadata for game ls20
+2026-03-17 01:48:58 | INFO | Successfully loaded game class Ls20 from ..\..\environment_files\ls20\cb3b57cc\ls20.py
+2026-03-17 01:48:58,007 | INFO | env_wrapper | ARCEnvWrapper: game=ls20 scorecard=None
+2026-03-17 01:48:58,007 | INFO | agents.dqn_agent | Phase 1: Random data collection (10 episodes)
+2026-03-17 01:48:58,011 | INFO | env_wrapper | Discovered valid action indices: [0, 1, 2, 3, 4] (from env available_actions=[1, 2, 3, 4])
+2026-03-17 01:49:18,724 | INFO | agents.dqn_agent | Phase 2: Pretrain action-effect predictor (5000 samples)
+2026-03-17 01:49:30,236 | INFO | agents.dqn_agent | Phase 3: DQN training (400 episodes)
+2026-03-17 01:49:35,875 | INFO | agents.dqn_agent | Ep 0/400: return=128.82 steps=500 levels=0 eps=1.000 replay=5500 effect_acc=100.00% unique_states=6
+2026-03-17 01:50:09,233 | INFO | agents.dqn_agent | Ep 10/400: return=92.43 steps=500 levels=0 eps=0.980 replay=10500 effect_acc=99.50% unique_states=2
+2026-03-17 01:50:43,432 | INFO | agents.dqn_agent | Ep 20/400: return=116.48 steps=500 levels=0 eps=0.961 replay=15500 effect_acc=100.00% unique_states=4
+2026-03-17 01:50:58,460 | INFO | env_wrapper | LEVEL PROGRESS: 0 -> 1 (+5.0 reward)
+2026-03-17 01:50:58,995 | INFO | agents.dqn_agent | NEW BEST: 1 levels at episode 25!
+2026-03-17 01:51:12,835 | INFO | agents.dqn_agent | Ep 30/400: return=137.29 steps=500 levels=1 eps=0.942 replay=20500 effect_acc=100.00% unique_states=4
+2026-03-17 01:51:49,066 | INFO | agents.dqn_agent | Ep 40/400: return=69.28 steps=500 levels=1 eps=0.923 replay=25500 effect_acc=100.00% unique_states=1
+2026-03-17 01:52:25,865 | INFO | agents.dqn_agent | Ep 50/400: return=97.57 steps=500 levels=1 eps=0.905 replay=30500 effect_acc=100.00% unique_states=2
+2026-03-17 01:52:59,261 | INFO | agents.dqn_agent | Ep 60/400: return=97.24 steps=500 levels=1 eps=0.887 replay=35500 effect_acc=100.00% unique_states=2
+2026-03-17 01:53:33,360 | INFO | agents.dqn_agent | Ep 70/400: return=149.83 steps=500 levels=1 eps=0.869 replay=40500 effect_acc=100.00% unique_states=5
+2026-03-17 01:54:06,378 | INFO | agents.dqn_agent | Ep 80/400: return=135.08 steps=500 levels=1 eps=0.852 replay=45500 effect_acc=100.00% unique_states=4
+2026-03-17 01:54:47,729 | INFO | agents.dqn_agent | Ep 90/400: return=102.67 steps=500 levels=1 eps=0.835 replay=50000 effect_acc=100.00% unique_states=2
+2026-03-17 01:55:32,450 | INFO | agents.dqn_agent | Ep 100/400: return=121.03 steps=500 levels=1 eps=0.819 replay=50000 effect_acc=100.00% unique_states=4
+2026-03-17 01:56:14,806 | INFO | agents.dqn_agent | Ep 110/400: return=73.69 steps=500 levels=1 eps=0.802 replay=50000 effect_acc=100.00% unique_states=1
+2026-03-17 01:56:57,503 | INFO | agents.dqn_agent | Ep 120/400: return=97.73 steps=500 levels=1 eps=0.786 replay=50000 effect_acc=100.00% unique_states=2
+2026-03-17 01:57:35,135 | INFO | agents.dqn_agent | Ep 130/400: return=120.68 steps=500 levels=1 eps=0.771 replay=50000 effect_acc=100.00% unique_states=3
+2026-03-17 01:58:18,662 | INFO | agents.dqn_agent | Ep 140/400: return=125.03 steps=500 levels=1 eps=0.756 replay=50000 effect_acc=100.00% unique_states=4
+2026-03-17 01:59:03,342 | INFO | agents.dqn_agent | Ep 150/400: return=142.27 steps=500 levels=1 eps=0.741 replay=50000 effect_acc=100.00% unique_states=4
+2026-03-17 01:59:49,476 | INFO | agents.dqn_agent | Ep 160/400: return=155.25 steps=500 levels=1 eps=0.726 replay=50000 effect_acc=100.00% unique_states=5
+2026-03-17 02:00:30,542 | INFO | agents.dqn_agent | Ep 170/400: return=144.14 steps=500 levels=1 eps=0.712 replay=50000 effect_acc=100.00% unique_states=5
+2026-03-17 02:01:11,163 | INFO | agents.dqn_agent | Ep 180/400: return=151.23 steps=500 levels=1 eps=0.697 replay=50000 effect_acc=100.00% unique_states=6
+2026-03-17 02:01:56,643 | INFO | agents.dqn_agent | Ep 190/400: return=116.75 steps=500 levels=1 eps=0.684 replay=50000 effect_acc=100.00% unique_states=4
+2026-03-17 02:02:39,201 | INFO | agents.dqn_agent | Ep 200/400: return=122.49 steps=500 levels=1 eps=0.670 replay=50000 effect_acc=100.00% unique_states=4
+2026-03-17 02:03:24,182 | INFO | agents.dqn_agent | Ep 210/400: return=69.59 steps=500 levels=1 eps=0.657 replay=50000 effect_acc=100.00% unique_states=1
+2026-03-17 02:04:10,671 | INFO | agents.dqn_agent | Ep 220/400: return=125.21 steps=500 levels=1 eps=0.644 replay=50000 effect_acc=100.00% unique_states=4
+2026-03-17 02:04:53,528 | INFO | agents.dqn_agent | Ep 230/400: return=156.12 steps=500 levels=1 eps=0.631 replay=50000 effect_acc=100.00% unique_states=8
+2026-03-17 02:05:37,687 | INFO | agents.dqn_agent | Ep 240/400: return=162.95 steps=500 levels=1 eps=0.618 replay=50000 effect_acc=100.00% unique_states=6
+2026-03-17 02:06:26,950 | INFO | agents.dqn_agent | Ep 250/400: return=149.67 steps=500 levels=1 eps=0.606 replay=50000 effect_acc=100.00% unique_states=5
+2026-03-17 02:07:06,470 | INFO | agents.dqn_agent | Ep 260/400: return=142.50 steps=500 levels=1 eps=0.594 replay=50000 effect_acc=100.00% unique_states=5
+2026-03-17 02:07:54,151 | INFO | agents.dqn_agent | Ep 270/400: return=97.37 steps=500 levels=1 eps=0.582 replay=50000 effect_acc=100.00% unique_states=4
+2026-03-17 02:08:35,474 | INFO | agents.dqn_agent | Ep 280/400: return=155.99 steps=500 levels=1 eps=0.571 replay=50000 effect_acc=100.00% unique_states=9
+2026-03-17 02:09:24,062 | INFO | agents.dqn_agent | Ep 290/400: return=181.40 steps=500 levels=1 eps=0.560 replay=50000 effect_acc=100.00% unique_states=11
+2026-03-17 02:10:13,101 | INFO | agents.dqn_agent | Ep 300/400: return=179.73 steps=500 levels=1 eps=0.548 replay=50000 effect_acc=100.00% unique_states=10
+2026-03-17 02:10:59,576 | INFO | agents.dqn_agent | Ep 310/400: return=103.14 steps=500 levels=1 eps=0.538 replay=50000 effect_acc=100.00% unique_states=3
+2026-03-17 02:11:42,095 | INFO | agents.dqn_agent | Ep 320/400: return=107.46 steps=500 levels=1 eps=0.527 replay=50000 effect_acc=100.00% unique_states=5
+2026-03-17 02:12:29,055 | INFO | agents.dqn_agent | Ep 330/400: return=128.63 steps=500 levels=1 eps=0.517 replay=50000 effect_acc=100.00% unique_states=5
+2026-03-17 02:13:14,547 | INFO | agents.dqn_agent | Ep 340/400: return=141.88 steps=500 levels=1 eps=0.506 replay=50000 effect_acc=100.00% unique_states=6
+2026-03-17 02:14:00,108 | INFO | agents.dqn_agent | Ep 350/400: return=128.68 steps=500 levels=1 eps=0.496 replay=50000 effect_acc=100.00% unique_states=8
+2026-03-17 02:14:51,951 | INFO | agents.dqn_agent | Ep 360/400: return=118.18 steps=500 levels=1 eps=0.486 replay=50000 effect_acc=100.00% unique_states=5
+2026-03-17 02:15:35,768 | INFO | agents.dqn_agent | Ep 370/400: return=154.92 steps=500 levels=1 eps=0.477 replay=50000 effect_acc=99.50% unique_states=6
+Traceback (most recent call last):
+  File "C:\Users\ezhou\projects\arc\experiments\004-dreamerv3\run.py", line 107, in <module>
+    main()
+    ~~~~^^
+  File "C:\Users\ezhou\projects\arc\experiments\004-dreamerv3\run.py", line 103, in main
+    agent.run()
+    ~~~~~~~~~^^
+  File "C:\Users\ezhou\projects\arc\experiments\004-dreamerv3\agents\dqn_agent.py", line 229, in run
+    ep_return, ep_steps, levels, info = self._train_episode(env)
+                                        ~~~~~~~~~~~~~~~~~~~^^^^^
+  File "C:\Users\ezhou\projects\arc\experiments\004-dreamerv3\agents\dqn_agent.py", line 356, in _train_episode
+    self._train_q_step()
+    ~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\ezhou\projects\arc\experiments\004-dreamerv3\agents\dqn_agent.py", line 371, in _train_q_step
+    obs, actions, rewards, next_obs, dones = self.replay.sample(self.batch_size)
+                                             ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\ezhou\projects\arc\experiments\004-dreamerv3\agents\dqn_agent.py", line 134, in sample
+    np.stack(obs),
+    ~~~~~~~~^^^^^
+  File "C:\Users\ezhou\projects\arc\experiments\004-dreamerv3\.venv\Lib\site-packages\numpy\_core\shape_base.py", line 465, in stack
+    return _nx.concatenate(expanded_arrays, axis=axis, out=out,
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                           dtype=dtype, casting=casting)
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+numpy._core._exceptions._ArrayMemoryError: Unable to allocate 8.00 MiB for an array with shape (32, 16, 64, 64) and data type float32

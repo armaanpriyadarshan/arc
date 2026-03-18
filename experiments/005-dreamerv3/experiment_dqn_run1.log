@@ -1,0 +1,34 @@
+2026-03-17 01:34:39,438 | INFO | agents.dqn_agent | DQNAgent starting: game=ls20 device=cpu episodes=200
+2026-03-17 01:34:40 | INFO | Successfully fetched 3 environment(s) from API
+2026-03-17 01:34:40 | INFO | Created new scorecard: 38503146-6e46-4cb9-862a-58d106e24c2b
+2026-03-17 01:34:40 | INFO | Successfully fetched metadata for game ls20
+2026-03-17 01:34:40 | INFO | Successfully loaded game class Ls20 from ..\..\environment_files\ls20\cb3b57cc\ls20.py
+2026-03-17 01:34:40,736 | INFO | env_wrapper | ARCEnvWrapper: game=ls20 scorecard=None
+2026-03-17 01:34:40,736 | INFO | agents.dqn_agent | Phase 1: Random data collection (10 episodes)
+2026-03-17 01:34:40,740 | INFO | env_wrapper | Discovered valid action indices: [0, 1, 2, 3, 4] (from env available_actions=[1, 2, 3, 4])
+2026-03-17 01:34:46,274 | INFO | env_wrapper | LEVEL PROGRESS: 0 -> 1 (+5.0 reward)
+2026-03-17 01:35:04,490 | INFO | agents.dqn_agent | Phase 2: Pretrain action-effect predictor (5000 samples)
+2026-03-17 01:35:17,700 | INFO | agents.dqn_agent | Phase 3: DQN training (200 episodes)
+2026-03-17 01:35:23,628 | INFO | agents.dqn_agent | NEW BEST: 1 levels at episode 0!
+2026-03-17 01:35:23,668 | INFO | agents.dqn_agent | Ep 0/200: return=10.40 steps=500 levels=1 eps=1.000 replay=5500 effect_acc=100.00% unique_states=23
+2026-03-17 01:35:52,154 | INFO | agents.dqn_agent | Ep 10/200: return=29.34 steps=500 levels=1 eps=0.951 replay=10500 effect_acc=100.00% unique_states=36
+2026-03-17 01:36:15,970 | INFO | agents.dqn_agent | Ep 20/200: return=18.64 steps=500 levels=1 eps=0.905 replay=15500 effect_acc=100.00% unique_states=45
+2026-03-17 01:36:46,235 | INFO | agents.dqn_agent | Ep 30/200: return=6.26 steps=500 levels=1 eps=0.860 replay=20500 effect_acc=100.00% unique_states=51
+2026-03-17 01:37:17,728 | INFO | agents.dqn_agent | Ep 40/200: return=6.26 steps=500 levels=1 eps=0.818 replay=25500 effect_acc=100.00% unique_states=56
+2026-03-17 01:37:58,141 | INFO | agents.dqn_agent | Ep 50/200: return=6.26 steps=500 levels=1 eps=0.778 replay=30500 effect_acc=100.00% unique_states=62
+2026-03-17 01:38:27,596 | INFO | agents.dqn_agent | Ep 60/200: return=18.64 steps=500 levels=1 eps=0.740 replay=35500 effect_acc=100.00% unique_states=66
+2026-03-17 01:38:59,892 | INFO | agents.dqn_agent | Ep 70/200: return=18.64 steps=500 levels=1 eps=0.704 replay=40500 effect_acc=100.00% unique_states=70
+2026-03-17 01:39:34,267 | INFO | agents.dqn_agent | Ep 80/200: return=18.64 steps=500 levels=1 eps=0.670 replay=45500 effect_acc=100.00% unique_states=74
+2026-03-17 01:40:08,127 | INFO | agents.dqn_agent | Ep 90/200: return=6.26 steps=500 levels=1 eps=0.637 replay=50000 effect_acc=100.00% unique_states=77
+2026-03-17 01:40:50,109 | INFO | agents.dqn_agent | Ep 100/200: return=18.64 steps=500 levels=1 eps=0.606 replay=50000 effect_acc=100.00% unique_states=79
+2026-03-17 01:41:32,641 | INFO | agents.dqn_agent | Ep 110/200: return=4.11 steps=500 levels=1 eps=0.576 replay=50000 effect_acc=100.00% unique_states=83
+2026-03-17 01:42:13,442 | INFO | agents.dqn_agent | Ep 120/200: return=2.26 steps=500 levels=1 eps=0.548 replay=50000 effect_acc=100.00% unique_states=83
+2026-03-17 01:42:50,883 | INFO | agents.dqn_agent | Ep 130/200: return=1.08 steps=500 levels=1 eps=0.521 replay=50000 effect_acc=100.00% unique_states=84
+2026-03-17 01:43:33,329 | INFO | agents.dqn_agent | Ep 140/200: return=3.13 steps=500 levels=1 eps=0.496 replay=50000 effect_acc=100.00% unique_states=85
+2026-03-17 01:44:20,222 | INFO | agents.dqn_agent | Ep 150/200: return=4.11 steps=500 levels=1 eps=0.471 replay=50000 effect_acc=100.00% unique_states=86
+2026-03-17 01:45:04,783 | INFO | agents.dqn_agent | Ep 160/200: return=2.99 steps=500 levels=1 eps=0.448 replay=50000 effect_acc=100.00% unique_states=87
+2026-03-17 01:45:50,808 | INFO | agents.dqn_agent | Ep 170/200: return=1.08 steps=500 levels=1 eps=0.427 replay=50000 effect_acc=100.00% unique_states=87
+2026-03-17 01:46:35,058 | INFO | agents.dqn_agent | Ep 180/200: return=0.45 steps=500 levels=1 eps=0.406 replay=50000 effect_acc=100.00% unique_states=87
+2026-03-17 01:47:14,810 | INFO | agents.dqn_agent | Ep 190/200: return=-0.25 steps=500 levels=1 eps=0.386 replay=50000 effect_acc=100.00% unique_states=87
+2026-03-17 01:47:56 | INFO | Closed scorecard: 38503146-6e46-4cb9-862a-58d106e24c2b
+2026-03-17 01:47:56,285 | INFO | agents.dqn_agent | DQN training complete. Best levels: 1

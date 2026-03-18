@@ -1,0 +1,37 @@
+2026-03-17 11:57:45,757 | INFO | env_wrapper | ARCEnvWrapper: game=ls20 scorecard=None
+2026-03-17 11:57:45,758 | INFO | agents.adaptive_agent | === AdaptiveExplorer v2 on game=ls20 ===
+2026-03-17 11:57:45,758 | INFO | agents.adaptive_agent | Budget: 500 actions
+2026-03-17 11:57:46,056 | INFO | env_wrapper | Discovered valid action indices: [0, 1, 2, 3, 4] (from env available_actions=[1, 2, 3, 4])
+2026-03-17 11:57:46,056 | INFO | agents.adaptive_agent | Grid: (64, 64), valid_actions: [0, 1, 2, 3, 4]
+2026-03-17 11:57:46,056 | INFO | agents.adaptive_agent | --- Calibrating ---
+2026-03-17 11:57:46,060 | INFO | agents.adaptive_agent | Floor=4, bg={3, 4}
+2026-03-17 11:57:48,366 | INFO | agents.adaptive_agent | Action 1 -> (dy=-5, dx=0)
+2026-03-17 11:57:49,030 | INFO | agents.adaptive_agent | Action 2 -> (dy=5, dx=0)
+2026-03-17 11:57:49,587 | INFO | agents.adaptive_agent | Action 3 -> (dy=0, dx=-5)
+2026-03-17 11:57:50,370 | INFO | agents.adaptive_agent | Action 4 -> (dy=0, dx=5)
+2026-03-17 11:57:50,781 | INFO | agents.adaptive_agent | Player at (42, 41)
+2026-03-17 11:57:50,782 | INFO | agents.adaptive_agent | Calibrated: 4 dirs, cell=5, player=(42, 41)
+2026-03-17 11:57:50,782 | INFO | agents.adaptive_agent | --- Scanning objects ---
+2026-03-17 11:57:50,784 | INFO | agents.adaptive_agent | Found 14 object clusters (6 colors): [((25, 1), 5, 208), ((61, 38), 5, 112), ((61, 33), 11, 84), ((57, 5), 5, 76), ((12, 35), 5, 43), ((56, 4), 9, 20), ((48, 41), 9, 15), ((45, 41), 12, 10), ((11, 36), 9, 5), ((59, 7), 9, 4), ((61, 56), 8, 4), ((61, 59), 8, 4), ((61, 62), 8, 4), ((31, 21), 0, 3)]
+2026-03-17 11:57:50,785 | INFO | agents.adaptive_agent | --- Discovering display region ---
+2026-03-17 11:58:19,328 | INFO | agents.adaptive_agent | Display region: rows 27-62, cols 19-50 (6 cells tested)
+2026-03-17 11:58:19,328 | INFO | agents.adaptive_agent | --- Classifying objects ---
+2026-03-17 11:58:20,049 | INFO | agents.adaptive_agent | GAME_OVER at action 176 (life=1, steps=154)
+2026-03-17 11:58:20,347 | INFO | agents.adaptive_agent | Player at (42, 41)
+2026-03-17 11:58:21,516 | INFO | agents.adaptive_agent | MODIFIER at (61, 38) (color 5, size 112)
+2026-03-17 11:58:22,111 | INFO | agents.adaptive_agent | MODIFIER at (61, 33) (color 11, size 84)
+2026-03-17 11:58:23,126 | INFO | agents.adaptive_agent | MODIFIER at (57, 5) (color 5, size 76)
+2026-03-17 11:58:23,716 | INFO | agents.adaptive_agent | MODIFIER at (45, 41) (color 12, size 10)
+2026-03-17 11:58:24,890 | INFO | agents.adaptive_agent | MODIFIER at (61, 59) (color 8, size 4)
+2026-03-17 11:58:27,965 | INFO | agents.adaptive_agent | MODIFIER at (31, 21) (color 0, size 3)
+2026-03-17 11:58:27,965 | INFO | agents.adaptive_agent | Classification: 6 modifiers, 0 locks, 13 total tested
+2026-03-17 11:58:27,965 | INFO | agents.adaptive_agent | --- Combination search (6 modifiers) ---
+2026-03-17 11:58:27,965 | INFO | agents.adaptive_agent | Modifier groups by color: {5: 2, 11: 1, 12: 1, 8: 1, 0: 1}
+2026-03-17 11:58:27,965 | INFO | agents.adaptive_agent | Testing combinations with 5 modifier types
+2026-03-17 11:58:28,260 | INFO | agents.adaptive_agent | Player at (42, 41)
+2026-03-17 11:58:28,261 | INFO | agents.adaptive_agent | Trying combo 0: visits=[0, 0, 0, 0, 0]
+2026-03-17 11:58:40,242 | INFO | agents.adaptive_agent | Player at (42, 41)
+2026-03-17 11:58:40,242 | INFO | agents.adaptive_agent | Trying combo 1: visits=[1, 0, 0, 0, 0]
+2026-03-17 11:58:54,462 | INFO | agents.adaptive_agent | Player at (42, 41)
+2026-03-17 11:58:54,462 | INFO | agents.adaptive_agent | Trying combo 2: visits=[2, 0, 0, 0, 0]
+2026-03-17 11:59:07,926 | INFO | agents.adaptive_agent | === Done: 500 actions, 0 levels ===

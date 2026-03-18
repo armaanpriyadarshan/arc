@@ -1,0 +1,73 @@
+2026-03-17 15:37:27,219 | INFO | env_wrapper | ARCEnvWrapper: game=ls20 scorecard=None
+2026-03-17 15:37:27,228 | INFO | agents.adaptive_agent | === AdaptiveExplorer v7 on game=ls20 ===
+2026-03-17 15:37:27,444 | INFO | env_wrapper | Discovered valid action indices: [0, 1, 2, 3, 4] (from env available_actions=[1, 2, 3, 4])
+2026-03-17 15:37:27,444 | INFO | agents.adaptive_agent | --- Calibrating ---
+2026-03-17 15:37:30,578 | INFO | agents.adaptive_agent | Action 1 -> dy=-5, dx=0
+2026-03-17 15:37:31,292 | INFO | agents.adaptive_agent | Action 2 -> dy=5, dx=0
+2026-03-17 15:37:32,214 | INFO | agents.adaptive_agent | Action 3 -> dy=0, dx=-5
+2026-03-17 15:37:32,941 | INFO | agents.adaptive_agent | Action 4 -> dy=0, dx=5
+2026-03-17 15:37:33,499 | INFO | agents.adaptive_agent | Player at (42, 41)
+2026-03-17 15:37:33,499 | INFO | agents.adaptive_agent | Calibrated: 4 dirs, cell=5, player=(42, 41)
+2026-03-17 15:37:33,499 | INFO | agents.adaptive_agent | --- Life 1 (action 23/2000, levels=0) ---
+2026-03-17 15:38:14,034 | INFO | agents.adaptive_agent | GAME_OVER at action 151 (steps=128)
+2026-03-17 15:38:14,414 | INFO | agents.adaptive_agent | Player at (42, 41)
+2026-03-17 15:38:14,414 | INFO | agents.adaptive_agent | Life 1: visited 34 cells
+2026-03-17 15:38:14,414 | INFO | agents.adaptive_agent | --- Life 2 (action 153/2000, levels=0) ---
+2026-03-17 15:38:52,314 | INFO | agents.adaptive_agent | GAME_OVER at action 281 (steps=128)
+2026-03-17 15:38:52,862 | INFO | agents.adaptive_agent | Player at (42, 41)
+2026-03-17 15:38:52,862 | INFO | agents.adaptive_agent | Life 2: visited 40 cells
+2026-03-17 15:38:52,862 | INFO | agents.adaptive_agent | --- Life 3 (action 283/2000, levels=0) ---
+2026-03-17 15:39:33,362 | INFO | agents.adaptive_agent | GAME_OVER at action 411 (steps=128)
+2026-03-17 15:39:33,901 | INFO | agents.adaptive_agent | Player at (42, 41)
+2026-03-17 15:39:33,901 | INFO | agents.adaptive_agent | Life 3: visited 35 cells
+2026-03-17 15:39:33,901 | INFO | agents.adaptive_agent | --- Life 4 (action 413/2000, levels=0) ---
+2026-03-17 15:40:12,500 | INFO | agents.adaptive_agent | GAME_OVER at action 541 (steps=128)
+2026-03-17 15:40:13,047 | INFO | agents.adaptive_agent | Player at (42, 41)
+2026-03-17 15:40:13,048 | INFO | agents.adaptive_agent | Life 4: visited 41 cells
+2026-03-17 15:40:13,048 | INFO | agents.adaptive_agent | --- Life 5 (action 543/2000, levels=0) ---
+2026-03-17 15:40:52,835 | INFO | agents.adaptive_agent | GAME_OVER at action 671 (steps=128)
+2026-03-17 15:40:53,405 | INFO | agents.adaptive_agent | Player at (42, 41)
+2026-03-17 15:40:53,406 | INFO | agents.adaptive_agent | Life 5: visited 36 cells
+2026-03-17 15:40:53,406 | INFO | agents.adaptive_agent | --- Life 6 (action 673/2000, levels=0) ---
+2026-03-17 15:41:32,346 | INFO | agents.adaptive_agent | GAME_OVER at action 801 (steps=128)
+2026-03-17 15:41:33,090 | INFO | agents.adaptive_agent | Player at (42, 41)
+2026-03-17 15:41:33,090 | INFO | agents.adaptive_agent | Life 6: visited 37 cells
+2026-03-17 15:41:33,090 | INFO | agents.adaptive_agent | --- Life 7 (action 803/2000, levels=0) ---
+2026-03-17 15:42:12,382 | INFO | agents.adaptive_agent | GAME_OVER at action 931 (steps=128)
+2026-03-17 15:42:13,102 | INFO | agents.adaptive_agent | Player at (42, 41)
+2026-03-17 15:42:13,102 | INFO | agents.adaptive_agent | Life 7: visited 34 cells
+2026-03-17 15:42:13,102 | INFO | agents.adaptive_agent | --- Life 8 (action 933/2000, levels=0) ---
+2026-03-17 15:42:52,702 | INFO | agents.adaptive_agent | GAME_OVER at action 1061 (steps=128)
+2026-03-17 15:42:53,273 | INFO | agents.adaptive_agent | Player at (42, 41)
+2026-03-17 15:42:53,273 | INFO | agents.adaptive_agent | Life 8: visited 40 cells
+2026-03-17 15:42:53,273 | INFO | agents.adaptive_agent | --- Life 9 (action 1063/2000, levels=0) ---
+2026-03-17 15:43:33,261 | INFO | agents.adaptive_agent | GAME_OVER at action 1191 (steps=128)
+2026-03-17 15:43:33,637 | INFO | agents.adaptive_agent | Player at (42, 41)
+2026-03-17 15:43:33,637 | INFO | agents.adaptive_agent | Life 9: visited 33 cells
+2026-03-17 15:43:33,637 | INFO | agents.adaptive_agent | --- Life 10 (action 1193/2000, levels=0) ---
+2026-03-17 15:44:14,523 | INFO | agents.adaptive_agent | GAME_OVER at action 1321 (steps=128)
+2026-03-17 15:44:15,256 | INFO | agents.adaptive_agent | Player at (42, 41)
+2026-03-17 15:44:15,256 | INFO | agents.adaptive_agent | Life 10: visited 37 cells
+2026-03-17 15:44:15,256 | INFO | agents.adaptive_agent | --- Life 11 (action 1323/2000, levels=0) ---
+2026-03-17 15:44:54,440 | INFO | agents.adaptive_agent | GAME_OVER at action 1451 (steps=128)
+2026-03-17 15:44:55,182 | INFO | agents.adaptive_agent | Player at (42, 41)
+2026-03-17 15:44:55,182 | INFO | agents.adaptive_agent | Life 11: visited 45 cells
+2026-03-17 15:44:55,182 | INFO | agents.adaptive_agent | --- Life 12 (action 1453/2000, levels=0) ---
+2026-03-17 15:45:35,021 | INFO | agents.adaptive_agent | GAME_OVER at action 1581 (steps=128)
+2026-03-17 15:45:35,586 | INFO | agents.adaptive_agent | Player at (42, 41)
+2026-03-17 15:45:35,586 | INFO | agents.adaptive_agent | Life 12: visited 39 cells
+2026-03-17 15:45:35,586 | INFO | agents.adaptive_agent | --- Life 13 (action 1583/2000, levels=0) ---
+2026-03-17 15:46:13,960 | INFO | agents.adaptive_agent | GAME_OVER at action 1711 (steps=128)
+2026-03-17 15:46:14,690 | INFO | agents.adaptive_agent | Player at (42, 41)
+2026-03-17 15:46:14,691 | INFO | agents.adaptive_agent | Life 13: visited 37 cells
+2026-03-17 15:46:14,691 | INFO | agents.adaptive_agent | --- Life 14 (action 1713/2000, levels=0) ---
+2026-03-17 15:46:54,198 | INFO | agents.adaptive_agent | GAME_OVER at action 1841 (steps=128)
+2026-03-17 15:46:54,749 | INFO | agents.adaptive_agent | Player at (42, 41)
+2026-03-17 15:46:54,750 | INFO | agents.adaptive_agent | Life 14: visited 43 cells
+2026-03-17 15:46:54,750 | INFO | agents.adaptive_agent | --- Life 15 (action 1843/2000, levels=0) ---
+2026-03-17 15:47:34,508 | INFO | agents.adaptive_agent | GAME_OVER at action 1971 (steps=128)
+2026-03-17 15:47:35,313 | INFO | agents.adaptive_agent | Player at (42, 41)
+2026-03-17 15:47:35,314 | INFO | agents.adaptive_agent | Life 15: visited 39 cells
+2026-03-17 15:47:35,314 | INFO | agents.adaptive_agent | --- Life 16 (action 1973/2000, levels=0) ---
+2026-03-17 15:47:42,943 | INFO | agents.adaptive_agent | Life 16: visited 15 cells
+2026-03-17 15:47:43,441 | INFO | agents.adaptive_agent | === Done: 2000 actions, 0 levels, 16 lives ===
