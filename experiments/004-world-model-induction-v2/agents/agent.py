@@ -44,6 +44,9 @@ Output JSON:
     {"claim": "...", "status": "untested"}
   ]
   The first hypothesis with status "testing" and test_actions will be executed.
+- verified_rules: list of UNIVERSAL game rules you've confirmed (persist across levels).
+  Only include rules about game MECHANICS, not level-specific positions or layouts.
+  Example: ["Same-colored objects interact when touched", "The yellow bar depletes per action (timer)"]
 - notes: anything to remember (gets carried to next turn)
 
 The test_actions sequence executes automatically, stopping on BLOCKED or unexpected events.
@@ -55,7 +58,11 @@ IMPORTANT:
 - Don't just navigate. The game likely has mechanics beyond movement — objects may have
   functions you need to discover through interaction.
 - If a hypothesis hasn't led to progress after several tests, REJECT it and try something new.
-- You have limited actions. Don't re-explore areas you've already mapped."""
+- You have limited actions. Don't re-explore areas you've already mapped.
+- When you complete a level, the layout changes but game MECHANICS carry over. Look for the
+  same types of interactions (switches, gates, collectibles) in the new layout.
+- If you're stuck (repeated BLOCKED), you're probably missing a game mechanic, not a path.
+  Look for objects you haven't interacted with yet."""
 
 
 class ToolUseAgent:
@@ -77,7 +84,8 @@ class ToolUseAgent:
         self.prev_symbolic: dict | None = None
         self.hypothesis = ""
         self.notes = ""
-        self.probe_facts = ""  # established facts from auto-probe, never changes
+        self.probe_facts = ""  # established facts from auto-probe, refreshed on level change
+        self.verified_rules: list[str] = []  # universal game rules, persist across levels
         self.recent_actions: list[str] = []
         self.llm_calls = 0
 
@@ -170,8 +178,21 @@ class ToolUseAgent:
                 if blocked:
                     break
                 if frame.levels_completed > score_before:
-                    self.recent_actions.append(f"*** SCORE: {frame.levels_completed} ***")
+                    logger.info(f"[level-up] Level {frame.levels_completed}! Re-probing new layout.")
+                    # Promote any confirmed hypotheses to verified rules
+                    self._promote_confirmed_hypotheses()
+                    # Re-probe new level layout
+                    avail = frame.available_actions or [1, 2, 3, 4]
+                    self.probe_facts = self._auto_probe(frame, avail)
+                    logger.info(f"[probe] {self.probe_facts}")
+                    # Clear per-level state but keep verified_rules
+                    self.hypothesis = ""
+                    self.notes = ""
+                    self.prev_symbolic = None
                     self.prev_image_grid = None
+                    self.recent_actions = [f"*** LEVEL {frame.levels_completed} ***"]
+                    if self.verified_rules:
+                        logger.info(f"[rules] {self.verified_rules}")
                     break
                 if changes > 100:
                     self.prev_image_grid = None
@@ -186,8 +207,24 @@ class ToolUseAgent:
         )
         logger.info(f"Hypothesis: {self.hypothesis}")
         logger.info(f"Notes: {self.notes}")
+        if self.verified_rules:
+            logger.info(f"Verified rules: {self.verified_rules}")
         logger.info("=" * 60)
         self._close()
+
+    def _promote_confirmed_hypotheses(self) -> None:
+        """Extract confirmed hypotheses and add as verified rules."""
+        if not self.hypothesis:
+            return
+        for line in self.hypothesis.split("\n"):
+            if line.startswith("[confirmed]"):
+                rule = line.replace("[confirmed]", "").strip()
+                # Remove trailing evidence in parens
+                if "(" in rule:
+                    rule = rule[:rule.rfind("(")].strip()
+                if rule and rule not in self.verified_rules:
+                    self.verified_rules.append(rule)
+                    logger.info(f"[rule+] {rule}")
 
     def _auto_probe(self, frame: FrameData, available: list[int]) -> str:
         """Take one of each action. Record what changed. Return as text facts."""
@@ -264,7 +301,10 @@ class ToolUseAgent:
                 f"\nScore: {frame.levels_completed} | Deaths: {self.total_deaths} | "
                 f"Actions: {self.action_counter}/{self.MAX_ACTIONS}\n"
                 f"Available: {avail_str}\n\n"
-                f"ESTABLISHED FACTS (from initial probing):\n{self.probe_facts}\n\n"
+                f"ESTABLISHED FACTS (from probing this level):\n{self.probe_facts}\n\n"
+                + (f"VERIFIED RULES (confirmed across levels — these are ground truth):\n"
+                   + "\n".join(f"- {r}" for r in self.verified_rules) + "\n\n"
+                   if self.verified_rules else "")
                 + (f"YOUR NOTES:\n{self.notes}\n\n" if self.notes else "")
                 + (f"CURRENT HYPOTHESES:\n{self.hypothesis}\n\n" if self.hypothesis else "")
                 + f"RECENT:\n{recent}\n\n"
@@ -289,6 +329,7 @@ class ToolUseAgent:
             '   {"claim": "...", "status": "testing", "test_actions": ["ACTION3","ACTION3","ACTION3"], "evidence": "..."},\n'
             '   {"claim": "...", "status": "confirmed", "evidence": "..."}\n'
             ' ],\n'
+            ' "verified_rules": ["universal game mechanic you confirmed"],\n'
             ' "notes": "persistent notes for next turn"}'
         ))
 
@@ -338,6 +379,23 @@ class ToolUseAgent:
             single = data.get("action", "")
             if single:
                 raw_actions = [single]
+
+        # Extract verified rules from model output
+        new_rules = data.get("verified_rules", [])
+        if new_rules and isinstance(new_rules, list):
+            for rule in new_rules:
+                if isinstance(rule, str) and rule and rule not in self.verified_rules:
+                    self.verified_rules.append(rule)
+                    logger.info(f"[rule+] {rule}")
+
+        # Also promote any hypotheses the model marked confirmed
+        if hypotheses:
+            for h in hypotheses:
+                if isinstance(h, dict) and h.get("status") == "confirmed":
+                    claim = h.get("claim", "")
+                    if claim and claim not in self.verified_rules:
+                        self.verified_rules.append(claim)
+                        logger.info(f"[rule+] {claim}")
 
         if notes:
             self.notes = notes
