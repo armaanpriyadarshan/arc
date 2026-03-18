@@ -1,0 +1,65 @@
+2026-03-17 00:06:55,813 | INFO | agents.agent | DreamerAgent init: game=ls20 device=cpu
+2026-03-17 00:06:56 | INFO | Successfully fetched 3 environment(s) from API
+2026-03-17 00:06:56 | INFO | Created new scorecard: d1331e41-f89d-48db-ada3-8a574e7eb10e
+2026-03-17 00:06:57 | INFO | Successfully fetched metadata for game ls20
+2026-03-17 00:06:57 | INFO | Successfully loaded game class Ls20 from ..\..\environment_files\ls20\cb3b57cc\ls20.py
+2026-03-17 00:06:57,128 | INFO | env_wrapper | ARCEnvWrapper: game=ls20 scorecard=None
+2026-03-17 00:06:58,149 | INFO | agents.agent | Starting DreamerV3: game=ls20 device=cpu max_iterations=200
+2026-03-17 00:06:58,149 | INFO | agents.agent | Phase 1: random exploration (10 episodes)
+2026-03-17 00:06:58,153 | INFO | env_wrapper | Discovered valid action indices: [0, 1, 2, 3, 4] (from env available_actions=[1, 2, 3, 4])
+2026-03-17 00:06:58,323 | INFO | agents.agent | Random ep 1/10: steps=200 return=0.00
+2026-03-17 00:06:58,491 | INFO | agents.agent | Random ep 2/10: steps=200 return=0.00
+2026-03-17 00:06:58,654 | INFO | agents.agent | Random ep 3/10: steps=200 return=0.00
+2026-03-17 00:06:58,832 | INFO | agents.agent | Random ep 4/10: steps=200 return=0.00
+2026-03-17 00:06:59,009 | INFO | agents.agent | Random ep 5/10: steps=200 return=0.00
+2026-03-17 00:06:59,176 | INFO | agents.agent | Random ep 6/10: steps=200 return=0.00
+2026-03-17 00:06:59,343 | INFO | agents.agent | Random ep 7/10: steps=200 return=0.00
+2026-03-17 00:06:59,501 | INFO | agents.agent | Random ep 8/10: steps=200 return=0.00
+2026-03-17 00:06:59,679 | INFO | agents.agent | Random ep 9/10: steps=200 return=0.00
+2026-03-17 00:06:59,849 | INFO | agents.agent | Random ep 10/10: steps=200 return=0.00
+2026-03-17 00:06:59,849 | INFO | agents.agent | Phase 2: generating reward shaping function via LLM
+2026-03-17 00:06:59,898 | INFO | llm.reward_shaping | LLM reward shaping: calling claude-sonnet-4-20250514 for game=ls20
+2026-03-17 00:06:59,927 | WARNING | agents.agent | LLM reward shaping failed ("Could not resolve authentication method. Expected either api_key or auth_token to be set. Or for one of the `X-Api-Key` or `Authorization` headers to be explicitly omitted") — falling back to default
+2026-03-17 00:06:59,927 | INFO | env_wrapper | ARCEnvWrapper: shaped_reward_fn updated
+2026-03-17 00:06:59,927 | INFO | agents.agent | Phase 3: interleaved training
+2026-03-17 00:07:00,863 | INFO | agents.agent | Collect: steps=200 return=8.56 levels=0 state=NOT_FINISHED
+2026-03-17 00:07:01,208 | INFO | evaluation.evaluate | iter=0 | episode_return=8.5600 | wm/total_loss=14.1356 | wm/recon_loss=2.7726 | wm/rew_loss=0.2473 | wm/cont_loss=0.7157 | wm/kl_loss=10.4000 | ac/actor_loss=0.8749 | ac/critic_loss=1.6332 | ac/mean_return=-2.3113 | ac/mean_entropy=9.8251
+2026-03-17 00:07:04,582 | INFO | evaluation.evaluate | iter=10 | wm/total_loss=13.2814 | wm/recon_loss=2.7349 | wm/rew_loss=0.1364 | wm/cont_loss=0.0102 | wm/kl_loss=10.4000 | ac/actor_loss=1.6311 | ac/critic_loss=0.4402 | ac/mean_return=-0.3649 | ac/mean_entropy=9.8369
+2026-03-17 00:07:07,994 | INFO | evaluation.evaluate | iter=20 | wm/total_loss=12.8216 | wm/recon_loss=2.3642 | wm/rew_loss=0.0536 | wm/cont_loss=0.0037 | wm/kl_loss=10.4000 | ac/actor_loss=1.4216 | ac/critic_loss=0.5524 | ac/mean_return=-0.5487 | ac/mean_entropy=9.8400
+2026-03-17 00:07:11,189 | INFO | evaluation.evaluate | iter=30 | wm/total_loss=11.6132 | wm/recon_loss=1.2044 | wm/rew_loss=0.0067 | wm/cont_loss=0.0022 | wm/kl_loss=10.4000 | ac/actor_loss=1.4952 | ac/critic_loss=0.1977 | ac/mean_return=-0.2518 | ac/mean_entropy=9.7769
+2026-03-17 00:07:14,416 | INFO | evaluation.evaluate | iter=40 | wm/total_loss=11.4305 | wm/recon_loss=1.0234 | wm/rew_loss=0.0053 | wm/cont_loss=0.0017 | wm/kl_loss=10.4000 | ac/actor_loss=1.5538 | ac/critic_loss=0.0422 | ac/mean_return=0.1587 | ac/mean_entropy=9.6603
+2026-03-17 00:07:18,483 | INFO | agents.agent | Collect: steps=200 return=7.88 levels=0 state=NOT_FINISHED
+2026-03-17 00:07:18,848 | INFO | evaluation.evaluate | iter=50 | episode_return=7.8840 | wm/total_loss=11.2516 | wm/recon_loss=0.8468 | wm/rew_loss=0.0033 | wm/cont_loss=0.0016 | wm/kl_loss=10.4000 | ac/actor_loss=1.5237 | ac/critic_loss=0.0712 | ac/mean_return=0.1902 | ac/mean_entropy=9.7629
+2026-03-17 00:07:19,872 | INFO | evaluation.evaluate | Eval ep 1/3: return=8.24 steps=200 state=NOT_FINISHED
+2026-03-17 00:07:21,068 | INFO | evaluation.evaluate | Eval ep 2/3: return=7.32 steps=200 state=NOT_FINISHED
+2026-03-17 00:07:22,100 | INFO | evaluation.evaluate | Eval ep 3/3: return=7.45 steps=200 state=NOT_FINISHED
+2026-03-17 00:07:22,100 | INFO | evaluation.evaluate | Eval summary: mean_return=7.67 max_return=8.24 mean_steps=200.0 max_levels=0 win_rate=0%
+2026-03-17 00:07:22,100 | INFO | agents.agent | Eval @ iter 50: {'mean_return': 7.669999999999978, 'max_return': 8.235999999999978, 'mean_steps': 200.0, 'max_levels_completed': 0, 'win_rate': 0.0}
+2026-03-17 00:07:25,205 | INFO | evaluation.evaluate | iter=60 | wm/total_loss=11.1357 | wm/recon_loss=0.7326 | wm/rew_loss=0.0017 | wm/cont_loss=0.0014 | wm/kl_loss=10.4000 | ac/actor_loss=1.3506 | ac/critic_loss=0.0623 | ac/mean_return=0.1203 | ac/mean_entropy=9.7305
+2026-03-17 00:07:28,646 | INFO | evaluation.evaluate | iter=70 | wm/total_loss=10.9856 | wm/recon_loss=0.5831 | wm/rew_loss=0.0013 | wm/cont_loss=0.0012 | wm/kl_loss=10.4000 | ac/actor_loss=1.3828 | ac/critic_loss=0.0197 | ac/mean_return=0.0283 | ac/mean_entropy=9.5931
+2026-03-17 00:07:31,958 | INFO | evaluation.evaluate | iter=80 | wm/total_loss=10.8110 | wm/recon_loss=0.4091 | wm/rew_loss=0.0008 | wm/cont_loss=0.0011 | wm/kl_loss=10.4000 | ac/actor_loss=1.4282 | ac/critic_loss=0.0156 | ac/mean_return=-0.1326 | ac/mean_entropy=9.6793
+2026-03-17 00:07:35,702 | INFO | evaluation.evaluate | iter=90 | wm/total_loss=10.6971 | wm/recon_loss=0.2957 | wm/rew_loss=0.0004 | wm/cont_loss=0.0010 | wm/kl_loss=10.4000 | ac/actor_loss=1.3853 | ac/critic_loss=0.0178 | ac/mean_return=-0.0733 | ac/mean_entropy=9.7296
+2026-03-17 00:07:40,875 | INFO | agents.agent | Collect: steps=200 return=7.30 levels=0 state=NOT_FINISHED
+2026-03-17 00:07:41,360 | INFO | evaluation.evaluate | iter=100 | episode_return=7.2960 | wm/total_loss=10.6350 | wm/recon_loss=0.2329 | wm/rew_loss=0.0013 | wm/cont_loss=0.0009 | wm/kl_loss=10.4000 | ac/actor_loss=1.4995 | ac/critic_loss=0.0159 | ac/mean_return=-0.1088 | ac/mean_entropy=9.7706
+2026-03-17 00:07:42,686 | INFO | evaluation.evaluate | Eval ep 1/3: return=7.44 steps=200 state=NOT_FINISHED
+2026-03-17 00:07:44,030 | INFO | evaluation.evaluate | Eval ep 2/3: return=7.52 steps=200 state=NOT_FINISHED
+2026-03-17 00:07:45,361 | INFO | evaluation.evaluate | Eval ep 3/3: return=7.65 steps=200 state=NOT_FINISHED
+2026-03-17 00:07:45,361 | INFO | evaluation.evaluate | Eval summary: mean_return=7.54 max_return=7.65 mean_steps=200.0 max_levels=0 win_rate=0%
+2026-03-17 00:07:45,361 | INFO | agents.agent | Eval @ iter 100: {'mean_return': 7.535333333333312, 'max_return': 7.647999999999976, 'mean_steps': 200.0, 'max_levels_completed': 0, 'win_rate': 0.0}
+2026-03-17 00:07:50,426 | INFO | evaluation.evaluate | iter=110 | wm/total_loss=10.5886 | wm/recon_loss=0.1872 | wm/rew_loss=0.0005 | wm/cont_loss=0.0008 | wm/kl_loss=10.4000 | ac/actor_loss=1.2903 | ac/critic_loss=0.0120 | ac/mean_return=-0.1002 | ac/mean_entropy=9.7641
+2026-03-17 00:07:56,039 | INFO | evaluation.evaluate | iter=120 | wm/total_loss=10.5508 | wm/recon_loss=0.1496 | wm/rew_loss=0.0004 | wm/cont_loss=0.0008 | wm/kl_loss=10.4000 | ac/actor_loss=1.3286 | ac/critic_loss=0.0101 | ac/mean_return=-0.0711 | ac/mean_entropy=9.6577
+2026-03-17 00:08:02,453 | INFO | evaluation.evaluate | iter=130 | wm/total_loss=10.5208 | wm/recon_loss=0.1192 | wm/rew_loss=0.0009 | wm/cont_loss=0.0007 | wm/kl_loss=10.4000 | ac/actor_loss=1.2968 | ac/critic_loss=0.0184 | ac/mean_return=-0.0106 | ac/mean_entropy=9.6416
+2026-03-17 00:08:09,345 | INFO | evaluation.evaluate | iter=140 | wm/total_loss=10.5010 | wm/recon_loss=0.0994 | wm/rew_loss=0.0009 | wm/cont_loss=0.0007 | wm/kl_loss=10.4000 | ac/actor_loss=1.1622 | ac/critic_loss=0.0137 | ac/mean_return=-0.0309 | ac/mean_entropy=9.6488
+2026-03-17 00:08:16,976 | INFO | agents.agent | Collect: steps=200 return=6.37 levels=0 state=NOT_FINISHED
+2026-03-17 00:08:17,588 | INFO | evaluation.evaluate | iter=150 | episode_return=6.3720 | wm/total_loss=10.4891 | wm/recon_loss=0.0876 | wm/rew_loss=0.0009 | wm/cont_loss=0.0006 | wm/kl_loss=10.4000 | ac/actor_loss=1.1032 | ac/critic_loss=0.0043 | ac/mean_return=-0.1120 | ac/mean_entropy=9.5062
+2026-03-17 00:08:18,522 | INFO | evaluation.evaluate | Eval ep 1/3: return=5.40 steps=200 state=NOT_FINISHED
+2026-03-17 00:08:19,639 | INFO | evaluation.evaluate | Eval ep 2/3: return=6.84 steps=200 state=NOT_FINISHED
+2026-03-17 00:08:20,727 | INFO | evaluation.evaluate | Eval ep 3/3: return=6.46 steps=200 state=NOT_FINISHED
+2026-03-17 00:08:20,727 | INFO | evaluation.evaluate | Eval summary: mean_return=6.23 max_return=6.84 mean_steps=200.0 max_levels=0 win_rate=0%
+2026-03-17 00:08:20,728 | INFO | agents.agent | Eval @ iter 150: {'mean_return': 6.233999999999977, 'max_return': 6.843999999999974, 'mean_steps': 200.0, 'max_levels_completed': 0, 'win_rate': 0.0}
+2026-03-17 00:08:26,929 | INFO | evaluation.evaluate | iter=160 | wm/total_loss=10.4755 | wm/recon_loss=0.0744 | wm/rew_loss=0.0005 | wm/cont_loss=0.0006 | wm/kl_loss=10.4000 | ac/actor_loss=1.0212 | ac/critic_loss=0.0048 | ac/mean_return=-0.0762 | ac/mean_entropy=9.4747
+2026-03-17 00:08:33,687 | INFO | evaluation.evaluate | iter=170 | wm/total_loss=10.4682 | wm/recon_loss=0.0671 | wm/rew_loss=0.0006 | wm/cont_loss=0.0006 | wm/kl_loss=10.4000 | ac/actor_loss=0.8831 | ac/critic_loss=0.0214 | ac/mean_return=-0.1424 | ac/mean_entropy=9.3671
+2026-03-17 00:08:40,484 | INFO | evaluation.evaluate | iter=180 | wm/total_loss=10.4585 | wm/recon_loss=0.0575 | wm/rew_loss=0.0004 | wm/cont_loss=0.0005 | wm/kl_loss=10.4000 | ac/actor_loss=0.7703 | ac/critic_loss=0.0040 | ac/mean_return=-0.0922 | ac/mean_entropy=9.3250
+2026-03-17 00:08:48,145 | INFO | evaluation.evaluate | iter=190 | wm/total_loss=10.4481 | wm/recon_loss=0.0471 | wm/rew_loss=0.0005 | wm/cont_loss=0.0005 | wm/kl_loss=10.4000 | ac/actor_loss=0.7129 | ac/critic_loss=0.0039 | ac/mean_return=-0.1110 | ac/mean_entropy=9.2881
+2026-03-17 00:08:55 | INFO | Closed scorecard: d1331e41-f89d-48db-ada3-8a574e7eb10e
+2026-03-17 00:08:55,799 | INFO | agents.agent | DreamerV3 training complete.

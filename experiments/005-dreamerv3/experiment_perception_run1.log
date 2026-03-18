@@ -1,0 +1,18 @@
+2026-03-17 01:05:45 | INFO | Successfully fetched 3 environment(s) from API
+2026-03-17 01:05:45 | INFO | Created new scorecard: 4716a458-762e-4b74-a14a-c75642a89d5a
+2026-03-17 01:05:45 | INFO | Successfully fetched metadata for game ls20
+2026-03-17 01:05:46 | INFO | Successfully loaded game class Ls20 from ..\..\environment_files\ls20\cb3b57cc\ls20.py
+2026-03-17 01:05:46,015 | INFO | env_wrapper | ARCEnvWrapper: game=ls20 scorecard=None
+2026-03-17 01:05:46,015 | INFO | agents.perception_agent | PerceptionAgent starting on game=ls20
+2026-03-17 01:05:46,018 | INFO | env_wrapper | Discovered valid action indices: [0, 1, 2, 3, 4] (from env available_actions=[1, 2, 3, 4])
+2026-03-17 01:05:46,018 | INFO | agents.perception_agent | Initial obs shape: (64, 64), valid_actions: [0, 1, 2, 3, 4]
+2026-03-17 01:05:46,018 | INFO | agents.perception_agent | Phase 1: Calibration
+2026-03-17 01:05:46,019 | INFO | agents.perception_agent | Floor color (most common): 4
+2026-03-17 01:05:46,021 | INFO | agents.perception_agent | Calibration complete: 0 action effects learned, player at None
+2026-03-17 01:05:46,021 | INFO | agents.perception_agent | Phase 2: Systematic exploration
+2026-03-17 01:05:46,021 | WARNING | agents.perception_agent | No player position detected — falling back to random exploration
+2026-03-17 01:05:46,021 | INFO | agents.perception_agent | Random fallback mode
+2026-03-17 01:05:46,110 | INFO | agents.perception_agent | GAME OVER at action 129 — resetting
+2026-03-17 01:05:46,190 | INFO | agents.perception_agent | GAME OVER at action 259 — resetting
+2026-03-17 01:05:46 | INFO | Closed scorecard: 4716a458-762e-4b74-a14a-c75642a89d5a
+2026-03-17 01:05:46,212 | INFO | agents.perception_agent | PerceptionAgent done: 300 actions used, 0 levels completed

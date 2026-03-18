@@ -1,0 +1,39 @@
+2026-03-17 15:13:13,437 | INFO | env_wrapper | ARCEnvWrapper: game=ls20 scorecard=None
+2026-03-17 15:13:13,438 | INFO | agents.adaptive_agent | === AdaptiveExplorer v6 on game=ls20 ===
+2026-03-17 15:13:13,610 | INFO | env_wrapper | Discovered valid action indices: [0, 1, 2, 3, 4] (from env available_actions=[1, 2, 3, 4])
+2026-03-17 15:13:13,610 | INFO | agents.adaptive_agent | --- Calibrating ---
+2026-03-17 15:13:16,160 | INFO | agents.adaptive_agent | Action 1 -> dy=-5, dx=0
+2026-03-17 15:13:16,835 | INFO | agents.adaptive_agent | Action 2 -> dy=5, dx=0
+2026-03-17 15:13:17,513 | INFO | agents.adaptive_agent | Action 3 -> dy=0, dx=-5
+2026-03-17 15:13:18,312 | INFO | agents.adaptive_agent | Action 4 -> dy=0, dx=5
+2026-03-17 15:13:18,846 | INFO | agents.adaptive_agent | Player at (42, 41)
+2026-03-17 15:13:18,846 | INFO | agents.adaptive_agent | Calibrated: 4 dirs, cell=5, player=(42, 41)
+2026-03-17 15:13:18,846 | INFO | agents.adaptive_agent | --- Exploration life 1 (action 23/1000, levels=0) ---
+2026-03-17 15:13:29,416 | INFO | agents.adaptive_agent | Interesting: (37, 32) (diff=128)
+2026-03-17 15:13:36,866 | INFO | agents.adaptive_agent | Interesting: (42, 57) (diff=120)
+2026-03-17 15:13:42,335 | INFO | agents.adaptive_agent | GAME_OVER at action 151 (steps=128)
+2026-03-17 15:13:42,625 | INFO | agents.adaptive_agent | Player at (42, 41)
+2026-03-17 15:13:50,027 | INFO | agents.adaptive_agent | Interesting: (62, 32) (diff=106)
+2026-03-17 15:13:55,665 | INFO | agents.adaptive_agent | Interesting: (57, 52) (diff=118)
+2026-03-17 15:14:01,241 | INFO | agents.adaptive_agent | GAME_OVER at action 281 (steps=129)
+2026-03-17 15:14:01,538 | INFO | agents.adaptive_agent | Player at (42, 41)
+2026-03-17 15:14:14,872 | INFO | agents.adaptive_agent | Interesting: (57, 42) (diff=116)
+2026-03-17 15:14:20,213 | INFO | agents.adaptive_agent | GAME_OVER at action 411 (steps=129)
+2026-03-17 15:14:20,505 | INFO | agents.adaptive_agent | Player at (42, 41)
+2026-03-17 15:14:21,080 | INFO | agents.adaptive_agent | Modifier groups: 3 (sizes: [3, 1, 1])
+2026-03-17 15:14:21,080 | INFO | agents.adaptive_agent | Exploration done: 29 cells, 5 interesting, 3 groups
+2026-03-17 15:14:21,080 | INFO | agents.adaptive_agent | --- Combo life 2 (action 417/1000, combo=[0, 0, 0]) ---
+2026-03-17 15:14:21,368 | INFO | agents.adaptive_agent | Player at (42, 41)
+2026-03-17 15:14:32,932 | INFO | agents.adaptive_agent | --- Combo life 3 (action 499/1000, combo=[1, 0, 0]) ---
+2026-03-17 15:14:33,222 | INFO | agents.adaptive_agent | Player at (42, 41)
+2026-03-17 15:14:46,261 | INFO | agents.adaptive_agent | --- Combo life 4 (action 591/1000, combo=[2, 0, 0]) ---
+2026-03-17 15:14:46,551 | INFO | agents.adaptive_agent | Player at (42, 41)
+2026-03-17 15:14:59,641 | INFO | agents.adaptive_agent | --- Combo life 5 (action 683/1000, combo=[3, 0, 0]) ---
+2026-03-17 15:14:59,952 | INFO | agents.adaptive_agent | Player at (42, 41)
+2026-03-17 15:15:13,576 | INFO | agents.adaptive_agent | --- Combo life 6 (action 775/1000, combo=[4, 0, 0]) ---
+2026-03-17 15:15:13,867 | INFO | agents.adaptive_agent | Player at (42, 41)
+2026-03-17 15:15:27,300 | INFO | agents.adaptive_agent | --- Combo life 7 (action 870/1000, combo=[5, 0, 0]) ---
+2026-03-17 15:15:27,590 | INFO | agents.adaptive_agent | Player at (42, 41)
+2026-03-17 15:15:41,886 | INFO | agents.adaptive_agent | --- Combo life 8 (action 971/1000, combo=[6, 0, 0]) ---
+2026-03-17 15:15:42,179 | INFO | agents.adaptive_agent | Player at (42, 41)
+2026-03-17 15:15:46,382 | INFO | agents.adaptive_agent | === Done: 1000 actions, 0 levels, 8 lives ===

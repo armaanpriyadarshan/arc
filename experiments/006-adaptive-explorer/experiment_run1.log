@@ -1,0 +1,85 @@
+2026-03-17 11:52:55,205 | INFO | env_wrapper | ARCEnvWrapper: game=ls20 scorecard=None
+2026-03-17 11:52:55,206 | INFO | agents.adaptive_agent | === AdaptiveExplorer starting on game=ls20 ===
+2026-03-17 11:52:55,206 | INFO | agents.adaptive_agent | Budget: 500 actions
+2026-03-17 11:52:55,373 | INFO | env_wrapper | Discovered valid action indices: [0, 1, 2, 3, 4] (from env available_actions=[1, 2, 3, 4])
+2026-03-17 11:52:55,373 | INFO | agents.adaptive_agent | Grid: (64, 64), valid_actions: [0, 1, 2, 3, 4]
+2026-03-17 11:52:55,374 | INFO | agents.adaptive_agent | --- Phase 1: Calibration ---
+2026-03-17 11:52:55,377 | INFO | agents.adaptive_agent | Floor=4, bg_colors={3, 4}
+2026-03-17 11:52:57,678 | INFO | agents.adaptive_agent | Action 1 -> (dy=-5, dx=0)
+2026-03-17 11:52:58,363 | INFO | agents.adaptive_agent | Action 2 -> (dy=5, dx=0)
+2026-03-17 11:52:59,165 | INFO | agents.adaptive_agent | Action 3 -> (dy=0, dx=-5)
+2026-03-17 11:52:59,840 | INFO | agents.adaptive_agent | Action 4 -> (dy=0, dx=5)
+2026-03-17 11:53:00,261 | INFO | agents.adaptive_agent | Player detected at (42, 41)
+2026-03-17 11:53:00,261 | INFO | agents.adaptive_agent | Calibrated: 4 directions, cell_size=5, player=(42, 41)
+2026-03-17 11:53:00,262 | INFO | agents.adaptive_agent | --- Life 1 (action 23/500, 0 levels done) ---
+2026-03-17 11:53:00,264 | INFO | agents.adaptive_agent | Grid scan: 9 objects found (5 unique colors)
+2026-03-17 11:53:00,265 | DEBUG | agents.adaptive_agent | No interaction at (45, 41) (color 12)
+2026-03-17 11:53:01,120 | INFO | agents.adaptive_agent | INTERACTION at (61, 38) (color 5): changed 10 cells, colors: {(11, 3): 10}
+2026-03-17 11:53:02,051 | INFO | agents.adaptive_agent | INTERACTION at (61, 33) (color 11): changed 58 cells, colors: {(3, 12): 10, (12, 3): 10, (3, 9): 15, (9, 3): 15, (11, 3): 8}
+2026-03-17 11:53:04,063 | INFO | agents.adaptive_agent | INTERACTION at (31, 21) (color 0): changed 68 cells, colors: {(3, 12): 10, (3, 9): 15, (12, 3): 10, (9, 3): 15, (11, 3): 18}
+2026-03-17 11:53:06,374 | INFO | agents.adaptive_agent | INTERACTION at (61, 56) (color 8): changed 72 cells, colors: {(12, 3): 10, (9, 3): 15, (3, 12): 10, (3, 9): 15, (11, 3): 22}
+2026-03-17 11:53:07,615 | INFO | agents.adaptive_agent | INTERACTION at (61, 62) (color 8): changed 2 cells, colors: {(11, 3): 2}
+2026-03-17 11:53:08,834 | INFO | agents.adaptive_agent | INTERACTION at (60, 50) (color 5): changed 12 cells, colors: {(11, 3): 12}
+2026-03-17 11:53:09,586 | INFO | agents.adaptive_agent | INTERACTION at (49, 53) (color 9): changed 84 cells, colors: {(3, 11): 80, (8, 3): 4}
+2026-03-17 11:53:10,314 | INFO | agents.adaptive_agent | INTERACTION at (60, 46) (color 5): changed 60 cells, colors: {(3, 12): 10, (12, 3): 10, (3, 9): 15, (9, 3): 15, (11, 3): 10}
+2026-03-17 11:53:10,719 | INFO | agents.adaptive_agent | INTERACTION at (45, 53) (color 12): changed 54 cells, colors: {(3, 12): 10, (3, 9): 15, (12, 3): 10, (9, 3): 15, (11, 3): 4}
+2026-03-17 11:53:11,006 | DEBUG | agents.adaptive_agent | No interaction at (35, 44) (color 12)
+2026-03-17 11:53:11,007 | DEBUG | agents.adaptive_agent | No interaction at (35, 48) (color 12)
+2026-03-17 11:53:11,007 | DEBUG | agents.adaptive_agent | No interaction at (39, 44) (color 9)
+2026-03-17 11:53:11,007 | DEBUG | agents.adaptive_agent | No interaction at (39, 48) (color 9)
+2026-03-17 11:53:11,154 | INFO | agents.adaptive_agent | INTERACTION at (45, 49) (color 12): changed 52 cells, colors: {(12, 3): 10, (9, 3): 15, (3, 12): 10, (3, 9): 15, (11, 3): 2}
+2026-03-17 11:53:11,440 | DEBUG | agents.adaptive_agent | No interaction at (30, 44) (color 12)
+2026-03-17 11:53:11,440 | DEBUG | agents.adaptive_agent | No interaction at (30, 48) (color 12)
+2026-03-17 11:53:11,873 | INFO | agents.adaptive_agent | INTERACTION at (49, 49) (color 9): changed 56 cells, colors: {(12, 3): 10, (9, 3): 15, (3, 12): 10, (3, 9): 15, (11, 3): 6}
+2026-03-17 11:53:20,441 | DEBUG | agents.adaptive_agent | Couldn't reach object at (12, 35) (dist=11)
+2026-03-17 11:53:21,451 | INFO | agents.adaptive_agent | INTERACTION at (25, 1) (color 5): changed 14 cells, colors: {(11, 3): 14}
+2026-03-17 11:53:22,604 | DEBUG | agents.adaptive_agent | No interaction at (18, 0) (color 5)
+2026-03-17 11:53:22,605 | DEBUG | agents.adaptive_agent | No interaction at (14, 0) (color 5)
+2026-03-17 11:53:24,976 | INFO | agents.adaptive_agent | Energy limit refined: ~148 steps per life
+2026-03-17 11:53:24,976 | INFO | agents.adaptive_agent | GAME_OVER at action 171 (life 1, steps_this_life=148) — resetting
+2026-03-17 11:53:25,264 | INFO | agents.adaptive_agent | Player detected at (42, 41)
+2026-03-17 11:53:28,159 | INFO | agents.adaptive_agent | INTERACTION at (10, 0) (color 5): changed 80 cells, colors: {(12, 5): 5, (12, 3): 5, (9, 3): 15, (3, 12): 10, (3, 9): 15, (3, 11): 22, (3, 8): 8}
+2026-03-17 11:53:28,306 | INFO | agents.adaptive_agent | INTERACTION at (6, 0) (color 5): changed 2 cells, colors: {(11, 3): 2}
+2026-03-17 11:53:28,879 | INFO | agents.adaptive_agent | INTERACTION at (29, 0) (color 5): changed 58 cells, colors: {(12, 3): 10, (9, 3): 15, (3, 12): 10, (3, 9): 15, (11, 3): 8}
+2026-03-17 11:53:30,032 | INFO | agents.adaptive_agent | INTERACTION at (33, 0) (color 5): changed 58 cells, colors: {(12, 3): 10, (9, 3): 15, (3, 12): 10, (3, 9): 15, (11, 3): 8}
+2026-03-17 11:53:30,606 | INFO | agents.adaptive_agent | INTERACTION at (37, 0) (color 5): changed 58 cells, colors: {(12, 3): 10, (9, 3): 15, (3, 12): 10, (3, 9): 15, (11, 3): 8}
+2026-03-17 11:53:31,184 | INFO | agents.adaptive_agent | INTERACTION at (25, 14) (color 12): changed 126 cells, colors: {(5, 0): 60, (3, 12): 10, (3, 9): 15, (12, 3): 10, (9, 3): 15, (9, 5): 4, (5, 9): 4, (11, 3): 8}
+2026-03-17 11:53:31,185 | DEBUG | agents.adaptive_agent | No interaction at (29, 14) (color 9)
+2026-03-17 11:53:33,075 | INFO | agents.adaptive_agent | INTERACTION at (41, 0) (color 5): changed 182 cells, colors: {(0, 5): 60, (12, 3): 10, (9, 3): 15, (3, 12): 10, (3, 9): 15, (5, 9): 4, (9, 5): 4, (3, 11): 60, (8, 3): 4}
+2026-03-17 11:53:33,805 | DEBUG | agents.adaptive_agent | No interaction at (45, 0) (color 5)
+2026-03-17 11:53:33,805 | DEBUG | agents.adaptive_agent | No interaction at (49, 0) (color 5)
+2026-03-17 11:53:33,948 | INFO | agents.adaptive_agent | INTERACTION at (53, 1) (color 5): changed 2 cells, colors: {(11, 3): 2}
+2026-03-17 11:53:34,815 | INFO | agents.adaptive_agent | INTERACTION at (53, 5) (color 5): changed 12 cells, colors: {(11, 3): 12}
+2026-03-17 11:53:35,105 | INFO | agents.adaptive_agent | INTERACTION at (57, 1) (color 5): changed 4 cells, colors: {(11, 3): 4}
+2026-03-17 11:53:35,249 | DEBUG | agents.adaptive_agent | No interaction at (61, 1) (color 5)
+2026-03-17 11:53:36,394 | INFO | agents.adaptive_agent | INTERACTION at (61, 5) (color 5): changed 16 cells, colors: {(11, 3): 16}
+2026-03-17 11:53:38,839 | INFO | agents.adaptive_agent | INTERACTION at (57, 5) (color 5): changed 56 cells, colors: {(3, 11): 52, (8, 3): 4}
+2026-03-17 11:53:38,985 | INFO | agents.adaptive_agent | INTERACTION at (61, 9) (color 5): changed 2 cells, colors: {(11, 3): 2}
+2026-03-17 11:53:39,862 | INFO | agents.adaptive_agent | INTERACTION at (57, 9) (color 5): changed 12 cells, colors: {(11, 3): 12}
+2026-03-17 11:53:40,733 | DEBUG | agents.adaptive_agent | No interaction at (60, 17) (color 5)
+2026-03-17 11:53:40,733 | DEBUG | agents.adaptive_agent | No interaction at (60, 13) (color 5)
+2026-03-17 11:53:41,610 | INFO | agents.adaptive_agent | INTERACTION at (60, 21) (color 5): changed 12 cells, colors: {(11, 3): 12}
+2026-03-17 11:53:42,778 | INFO | agents.adaptive_agent | INTERACTION at (53, 9) (color 5): changed 16 cells, colors: {(11, 3): 16}
+2026-03-17 11:53:43,072 | INFO | agents.adaptive_agent | INTERACTION at (49, 19) (color 9): changed 4 cells, colors: {(11, 3): 4}
+2026-03-17 11:53:43,362 | DEBUG | agents.adaptive_agent | No interaction at (40, 23) (color 12)
+2026-03-17 11:53:43,362 | DEBUG | agents.adaptive_agent | No interaction at (45, 23) (color 12)
+2026-03-17 11:53:43,511 | INFO | agents.adaptive_agent | INTERACTION at (40, 19) (color 12): changed 2 cells, colors: {(11, 3): 2}
+2026-03-17 11:53:43,512 | DEBUG | agents.adaptive_agent | No interaction at (45, 19) (color 12)
+2026-03-17 11:53:43,657 | INFO | agents.adaptive_agent | INTERACTION at (49, 23) (color 9): changed 52 cells, colors: {(12, 3): 10, (9, 3): 15, (3, 12): 10, (3, 9): 15, (11, 3): 2}
+2026-03-17 11:53:43,804 | INFO | agents.adaptive_agent | Energy limit refined: ~129 steps per life
+2026-03-17 11:53:43,804 | INFO | agents.adaptive_agent | GAME_OVER at action 301 (life 2, steps_this_life=129) — resetting
+2026-03-17 11:53:44,098 | INFO | agents.adaptive_agent | Player detected at (42, 41)
+2026-03-17 11:53:44,828 | DEBUG | agents.adaptive_agent | No interaction at (49, 29) (color 9)
+2026-03-17 11:53:44,828 | DEBUG | agents.adaptive_agent | No interaction at (49, 33) (color 9)
+2026-03-17 11:53:44,973 | INFO | agents.adaptive_agent | INTERACTION at (45, 29) (color 12): changed 2 cells, colors: {(11, 3): 2}
+2026-03-17 11:53:44,973 | DEBUG | agents.adaptive_agent | No interaction at (45, 33) (color 12)
+2026-03-17 11:53:45,263 | INFO | agents.adaptive_agent | INTERACTION at (60, 29) (color 5): changed 4 cells, colors: {(11, 3): 4}
+2026-03-17 11:53:45,995 | DEBUG | agents.adaptive_agent | No interaction at (60, 25) (color 5)
+2026-03-17 11:53:47,156 | INFO | agents.adaptive_agent | INTERACTION at (60, 42) (color 5): changed 66 cells, colors: {(12, 3): 10, (3, 12): 10, (9, 3): 15, (3, 9): 15, (11, 3): 16}
+2026-03-17 11:53:55,276 | DEBUG | agents.adaptive_agent | Couldn't reach object at (12, 35) (dist=16)
+2026-03-17 11:53:57,153 | INFO | agents.adaptive_agent | INTERACTION at (2, 0) (color 5): changed 76 cells, colors: {(3, 12): 10, (12, 3): 10, (3, 9): 15, (9, 3): 15, (11, 3): 26}
+2026-03-17 11:54:05,940 | INFO | agents.adaptive_agent | Energy limit refined: ~148 steps per life
+2026-03-17 11:54:05,941 | INFO | agents.adaptive_agent | GAME_OVER at action 450 (life 3, steps_this_life=148) — resetting
+2026-03-17 11:54:06,233 | INFO | agents.adaptive_agent | Player detected at (42, 41)
+2026-03-17 11:54:10,080 | INFO | agents.adaptive_agent | INTERACTION at (12, 35) (color 5): changed 64 cells, colors: {(5, 12): 5, (3, 12): 5, (3, 9): 15, (12, 3): 10, (9, 3): 15, (3, 11): 6, (3, 8): 8}
+2026-03-17 11:54:13,772 | INFO | agents.adaptive_agent | === Done: 501 actions, 0 levels completed, 3 lives lost ===

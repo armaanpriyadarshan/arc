@@ -1,0 +1,46 @@
+2026-03-17 14:25:03,490 | INFO | env_wrapper | ARCEnvWrapper: game=ls20 scorecard=None
+2026-03-17 14:25:03,499 | INFO | agents.adaptive_agent | === AdaptiveExplorer v6 on game=ls20 ===
+2026-03-17 14:25:03,672 | INFO | env_wrapper | Discovered valid action indices: [0, 1, 2, 3, 4] (from env available_actions=[1, 2, 3, 4])
+2026-03-17 14:25:03,673 | INFO | agents.adaptive_agent | --- Calibrating ---
+2026-03-17 14:25:06,134 | INFO | agents.adaptive_agent | Action 1 -> dy=-5, dx=0
+2026-03-17 14:25:06,814 | INFO | agents.adaptive_agent | Action 2 -> dy=5, dx=0
+2026-03-17 14:25:07,489 | INFO | agents.adaptive_agent | Action 3 -> dy=0, dx=-5
+2026-03-17 14:25:08,045 | INFO | agents.adaptive_agent | Action 4 -> dy=0, dx=5
+2026-03-17 14:25:08,460 | INFO | agents.adaptive_agent | Player at (42, 41)
+2026-03-17 14:25:08,461 | INFO | agents.adaptive_agent | Calibrated: 4 dirs, cell=5, player=(42, 41)
+2026-03-17 14:25:08,461 | INFO | agents.adaptive_agent | --- Exploration life 1 (action 23/1000, levels=0) ---
+2026-03-17 14:25:18,581 | INFO | agents.adaptive_agent | Interesting: (37, 32) (diff=128)
+2026-03-17 14:25:25,818 | INFO | agents.adaptive_agent | Interesting: (42, 57) (diff=120)
+2026-03-17 14:25:31,315 | INFO | agents.adaptive_agent | GAME_OVER at action 151 (steps=128)
+2026-03-17 14:25:31,612 | INFO | agents.adaptive_agent | Player at (42, 41)
+2026-03-17 14:25:32,191 | INFO | agents.adaptive_agent | Interesting: (62, 42) (diff=118)
+2026-03-17 14:25:38,563 | INFO | agents.adaptive_agent | Interesting: (42, 22) (diff=120)
+2026-03-17 14:25:45,107 | INFO | agents.adaptive_agent | Interesting: (32, 57) (diff=124)
+2026-03-17 14:25:50,327 | INFO | agents.adaptive_agent | GAME_OVER at action 281 (steps=129)
+2026-03-17 14:25:50,617 | INFO | agents.adaptive_agent | Player at (42, 41)
+2026-03-17 14:25:51,791 | INFO | agents.adaptive_agent | Interesting: (57, 32) (diff=124)
+2026-03-17 14:26:00,137 | INFO | env_wrapper | LEVEL PROGRESS: 0 -> 1 (+5.0 reward)
+2026-03-17 14:26:00,137 | INFO | agents.adaptive_agent | LEVEL 0 -> 1 at action 348
+2026-03-17 14:26:01,969 | INFO | agents.adaptive_agent | LEVEL 1 COMPLETED during exploration!
+2026-03-17 14:26:01,969 | INFO | agents.adaptive_agent | --- Exploration life 2 (action 360/1000, levels=1) ---
+2026-03-17 14:26:08,218 | INFO | agents.adaptive_agent | Interesting: (12, 52) (diff=116)
+2026-03-17 14:26:13,601 | INFO | agents.adaptive_agent | Interesting: (17, 32) (diff=126)
+2026-03-17 14:26:19,088 | INFO | agents.adaptive_agent | GAME_OVER at action 477 (steps=117)
+2026-03-17 14:26:19,377 | INFO | agents.adaptive_agent | Player at (37, 31)
+2026-03-17 14:26:27,509 | INFO | agents.adaptive_agent | Interesting: (12, 62) (diff=104)
+2026-03-17 14:26:37,878 | INFO | agents.adaptive_agent | GAME_OVER at action 607 (steps=129)
+2026-03-17 14:26:38,168 | INFO | agents.adaptive_agent | Player at (37, 31)
+2026-03-17 14:26:45,650 | INFO | agents.adaptive_agent | Interesting: (7, 17) (diff=114)
+2026-03-17 14:26:52,702 | INFO | agents.adaptive_agent | Interesting: (22, 62) (diff=106)
+2026-03-17 14:27:02,012 | INFO | agents.adaptive_agent | GAME_OVER at action 774 (steps=166)
+2026-03-17 14:27:02,306 | INFO | agents.adaptive_agent | Player at (37, 31)
+2026-03-17 14:27:02,739 | INFO | agents.adaptive_agent | Interesting: (32, 27) (diff=136)
+2026-03-17 14:27:09,951 | INFO | agents.adaptive_agent | Interesting: (12, 7) (diff=112)
+2026-03-17 14:27:15,752 | INFO | agents.adaptive_agent | Interesting: (52, 42) (diff=108)
+2026-03-17 14:27:21,357 | INFO | agents.adaptive_agent | GAME_OVER at action 908 (steps=133)
+2026-03-17 14:27:21,649 | INFO | agents.adaptive_agent | Player at (37, 31)
+2026-03-17 14:27:22,508 | INFO | agents.adaptive_agent | Interesting: (27, 17) (diff=120)
+2026-03-17 14:27:26,242 | INFO | agents.adaptive_agent | Interesting: (2, 7) (diff=90)
+2026-03-17 14:27:34,568 | INFO | agents.adaptive_agent | Modifier groups: 3 (sizes: [4, 4, 2])
+2026-03-17 14:27:34,568 | INFO | agents.adaptive_agent | Exploration done: 105 cells, 10 interesting, 3 groups
+2026-03-17 14:27:34,849 | INFO | agents.adaptive_agent | === Done: 1000 actions, 1 levels, 2 lives ===

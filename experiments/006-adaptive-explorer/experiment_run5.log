@@ -1,0 +1,29 @@
+2026-03-17 12:10:42,276 | INFO | env_wrapper | ARCEnvWrapper: game=ls20 scorecard=None
+2026-03-17 12:10:42,276 | INFO | agents.adaptive_agent | === AdaptiveExplorer v5 on game=ls20 ===
+2026-03-17 12:10:42,445 | INFO | env_wrapper | Discovered valid action indices: [0, 1, 2, 3, 4] (from env available_actions=[1, 2, 3, 4])
+2026-03-17 12:10:42,446 | INFO | agents.adaptive_agent | --- Calibrating ---
+2026-03-17 12:10:42,448 | INFO | agents.adaptive_agent | Floor=4, bg={3, 4}
+2026-03-17 12:10:45,017 | INFO | agents.adaptive_agent | Action 1 -> dy=-5, dx=0
+2026-03-17 12:10:45,687 | INFO | agents.adaptive_agent | Action 2 -> dy=5, dx=0
+2026-03-17 12:10:46,472 | INFO | agents.adaptive_agent | Action 3 -> dy=0, dx=-5
+2026-03-17 12:10:46,909 | INFO | agents.adaptive_agent | Action 4 -> dy=0, dx=5
+2026-03-17 12:10:47,454 | INFO | agents.adaptive_agent | Player at (42, 41)
+2026-03-17 12:10:47,454 | INFO | agents.adaptive_agent | Calibrated: 4 dirs, cell=5, player=(42, 41)
+2026-03-17 12:10:47,454 | INFO | agents.adaptive_agent | --- Exploration life 1 (action 23/500, levels=0) ---
+2026-03-17 12:10:57,717 | INFO | agents.adaptive_agent | Interesting position at (37, 32) (diff=128 cells)
+2026-03-17 12:11:05,385 | INFO | agents.adaptive_agent | Interesting position at (42, 57) (diff=120 cells)
+2026-03-17 12:11:10,934 | INFO | agents.adaptive_agent | GAME_OVER at action 151 (steps=128)
+2026-03-17 12:11:11,228 | INFO | agents.adaptive_agent | Player at (42, 41)
+2026-03-17 12:11:11,813 | INFO | agents.adaptive_agent | Interesting position at (62, 42) (diff=118 cells)
+2026-03-17 12:11:18,102 | INFO | agents.adaptive_agent | Interesting position at (42, 22) (diff=120 cells)
+2026-03-17 12:11:25,661 | INFO | agents.adaptive_agent | Interesting position at (32, 57) (diff=124 cells)
+2026-03-17 12:11:30,890 | INFO | agents.adaptive_agent | GAME_OVER at action 281 (steps=129)
+2026-03-17 12:11:31,184 | INFO | agents.adaptive_agent | Player at (42, 41)
+2026-03-17 12:11:32,347 | INFO | agents.adaptive_agent | Interesting position at (57, 32) (diff=124 cells)
+2026-03-17 12:11:40,735 | INFO | env_wrapper | LEVEL PROGRESS: 0 -> 1 (+5.0 reward)
+2026-03-17 12:11:40,735 | INFO | agents.adaptive_agent | LEVEL 0 -> 1 at action 348
+2026-03-17 12:11:42,500 | INFO | agents.adaptive_agent | LEVEL 1 COMPLETED during exploration!
+2026-03-17 12:11:42,500 | INFO | agents.adaptive_agent | --- Targeted life 2 (action 360/500, levels=1, 0 interesting) ---
+2026-03-17 12:11:59,602 | INFO | agents.adaptive_agent | GAME_OVER at action 477 (steps=117)
+2026-03-17 12:11:59,892 | INFO | agents.adaptive_agent | Player at (37, 31)
+2026-03-17 12:12:03,644 | INFO | agents.adaptive_agent | === Done: 500 actions, 1 levels, 2 lives ===

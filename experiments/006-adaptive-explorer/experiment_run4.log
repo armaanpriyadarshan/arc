@@ -1,0 +1,36 @@
+2026-03-17 12:07:02,316 | INFO | env_wrapper | ARCEnvWrapper: game=ls20 scorecard=None
+2026-03-17 12:07:02,316 | INFO | agents.adaptive_agent | === AdaptiveExplorer v4 on game=ls20 ===
+2026-03-17 12:07:02,494 | INFO | env_wrapper | Discovered valid action indices: [0, 1, 2, 3, 4] (from env available_actions=[1, 2, 3, 4])
+2026-03-17 12:07:02,495 | INFO | agents.adaptive_agent | --- Calibrating ---
+2026-03-17 12:07:02,497 | INFO | agents.adaptive_agent | Floor=4, bg={3, 4}
+2026-03-17 12:07:05,060 | INFO | agents.adaptive_agent | Action 1 -> dy=-5, dx=0
+2026-03-17 12:07:05,856 | INFO | agents.adaptive_agent | Action 2 -> dy=5, dx=0
+2026-03-17 12:07:06,409 | INFO | agents.adaptive_agent | Action 3 -> dy=0, dx=-5
+2026-03-17 12:07:07,079 | INFO | agents.adaptive_agent | Action 4 -> dy=0, dx=5
+2026-03-17 12:07:07,487 | INFO | agents.adaptive_agent | Player at (42, 41)
+2026-03-17 12:07:07,487 | INFO | agents.adaptive_agent | Calibrated: 4 dirs, cell=5, player=(42, 41)
+2026-03-17 12:07:07,487 | INFO | agents.adaptive_agent | --- Scanning objects ---
+2026-03-17 12:07:07,489 | INFO | agents.adaptive_agent | Found 14 objects
+2026-03-17 12:07:07,489 | INFO | agents.adaptive_agent | --- Phase 3: Discovering modifiers ---
+2026-03-17 12:07:07,911 | INFO | agents.adaptive_agent | MODIFIER: color=12 at (45, 41), 6 display cells changed
+2026-03-17 12:07:08,583 | INFO | agents.adaptive_agent | MODIFIER: color=9 at (48, 41), 4 display cells changed
+2026-03-17 12:07:10,514 | INFO | agents.adaptive_agent | MODIFIER: color=0 at (31, 21), 4 display cells changed
+2026-03-17 12:07:12,927 | INFO | agents.adaptive_agent | MODIFIER: color=8 at (61, 56), 4 display cells changed
+2026-03-17 12:07:15,978 | INFO | agents.adaptive_agent | MODIFIER: color=5 at (12, 35), 2 display cells changed
+2026-03-17 12:07:15,978 | INFO | agents.adaptive_agent | Found 5 modifier types, display has 20 cells
+2026-03-17 12:07:15,978 | INFO | agents.adaptive_agent | --- Phase 4: Characterizing 5 modifier types ---
+2026-03-17 12:07:15,978 | INFO | agents.adaptive_agent | Display region: rows 61-62, cols 13-50
+2026-03-17 12:07:22,365 | INFO | agents.adaptive_agent | Modifier color=12: no cycle found in 8 visits
+2026-03-17 12:07:27,094 | INFO | agents.adaptive_agent | Modifier color=9: no cycle found in 8 visits
+2026-03-17 12:07:30,315 | INFO | agents.adaptive_agent | GAME_OVER at action 152 (steps=130)
+2026-03-17 12:07:30,611 | INFO | agents.adaptive_agent | Player at (42, 41)
+2026-03-17 12:07:38,558 | INFO | agents.adaptive_agent | Modifier color=0: cycle length=4 (detected at visit 6)
+2026-03-17 12:07:49,096 | INFO | agents.adaptive_agent | Modifier color=8: cycle length=5 (detected at visit 7)
+2026-03-17 12:07:49,389 | INFO | agents.adaptive_agent | GAME_OVER at action 282 (steps=129)
+2026-03-17 12:07:49,684 | INFO | agents.adaptive_agent | Player at (42, 41)
+2026-03-17 12:08:16,993 | INFO | agents.adaptive_agent | GAME_OVER at action 466 (steps=183)
+2026-03-17 12:08:17,284 | INFO | agents.adaptive_agent | Player at (42, 41)
+2026-03-17 12:08:22,329 | INFO | agents.adaptive_agent | Modifier color=5: no cycle found in 3 visits
+2026-03-17 12:08:22,329 | INFO | agents.adaptive_agent | --- Phase 5-7: Execute solution ---
+2026-03-17 12:08:22,329 | INFO | agents.adaptive_agent | Potential locks: 0 objects (non-modifier, non-bg, small)
+2026-03-17 12:08:22,620 | INFO | agents.adaptive_agent | === Done: 502 actions, 0 levels ===

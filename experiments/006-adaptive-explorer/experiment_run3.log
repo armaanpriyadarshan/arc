@@ -1,0 +1,25 @@
+2026-03-17 12:01:15,466 | INFO | env_wrapper | ARCEnvWrapper: game=ls20 scorecard=None
+2026-03-17 12:01:15,467 | INFO | agents.adaptive_agent | === AdaptiveExplorer v3 on game=ls20 ===
+2026-03-17 12:01:15,762 | INFO | env_wrapper | Discovered valid action indices: [0, 1, 2, 3, 4] (from env available_actions=[1, 2, 3, 4])
+2026-03-17 12:01:15,762 | INFO | agents.adaptive_agent | Grid: (64, 64), actions: [0, 1, 2, 3, 4]
+2026-03-17 12:01:15,762 | INFO | agents.adaptive_agent | --- Calibrating ---
+2026-03-17 12:01:15,765 | INFO | agents.adaptive_agent | Floor=4, bg={3, 4}
+2026-03-17 12:01:18,361 | INFO | agents.adaptive_agent | Action 1 -> dy=-5, dx=0
+2026-03-17 12:01:18,930 | INFO | agents.adaptive_agent | Action 2 -> dy=5, dx=0
+2026-03-17 12:01:19,724 | INFO | agents.adaptive_agent | Action 3 -> dy=0, dx=-5
+2026-03-17 12:01:20,411 | INFO | agents.adaptive_agent | Action 4 -> dy=0, dx=5
+2026-03-17 12:01:20,845 | INFO | agents.adaptive_agent | Player at (42, 41)
+2026-03-17 12:01:20,846 | INFO | agents.adaptive_agent | Calibrated: 4 dirs, cell=5, player=(42, 41)
+2026-03-17 12:01:20,846 | INFO | agents.adaptive_agent | --- Scanning objects ---
+2026-03-17 12:01:20,848 | INFO | agents.adaptive_agent | Found 14 objects
+2026-03-17 12:01:20,849 | INFO | agents.adaptive_agent | --- Life 1 (action 23/500, levels=0) ---
+2026-03-17 12:01:49,716 | INFO | agents.adaptive_agent | GAME_OVER at action 171 (steps_this_life=148)
+2026-03-17 12:01:50,016 | INFO | agents.adaptive_agent | Player at (42, 41)
+2026-03-17 12:02:12,686 | INFO | agents.adaptive_agent | GAME_OVER at action 322 (steps_this_life=150)
+2026-03-17 12:02:12,985 | INFO | agents.adaptive_agent | Player at (42, 41)
+2026-03-17 12:02:18,223 | INFO | agents.adaptive_agent | Life 1 end: visited 12/14 objects, 36 steps
+2026-03-17 12:02:18,224 | INFO | agents.adaptive_agent | --- Life 2 (action 359/500, levels=0) ---
+2026-03-17 12:02:32,955 | INFO | agents.adaptive_agent | GAME_OVER at action 457 (steps_this_life=98)
+2026-03-17 12:02:33,254 | INFO | agents.adaptive_agent | Player at (42, 41)
+2026-03-17 12:02:39,497 | INFO | agents.adaptive_agent | Life 2 end: visited 9/14 objects, 42 steps
+2026-03-17 12:02:39,782 | INFO | agents.adaptive_agent | === Done: 500 actions, 0 levels ===

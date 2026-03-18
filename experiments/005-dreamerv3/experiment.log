@@ -1,0 +1,51 @@
+2026-03-17 11:51:01,314 | INFO | agents.dqn_agent | DQNAgent starting: game=ls20 device=cpu episodes=5000
+2026-03-17 11:51:09,219 | INFO | env_wrapper | ARCEnvWrapper: game=ls20 scorecard=None
+2026-03-17 11:51:09,219 | INFO | agents.dqn_agent | Phase 1: Random data collection (10 episodes)
+2026-03-17 11:51:09,223 | INFO | env_wrapper | Discovered valid action indices: [0, 1, 2, 3, 4] (from env available_actions=[1, 2, 3, 4])
+2026-03-17 11:51:31,366 | INFO | agents.dqn_agent | Phase 2: Pretrain action-effect predictor (5000 samples)
+2026-03-17 11:51:43,649 | DEBUG | agents.dqn_agent | Effect predictor: epoch 20, loss=0.0172
+2026-03-17 11:51:43,650 | INFO | agents.dqn_agent | Phase 3: DQN training (5000 episodes)
+2026-03-17 11:51:49,715 | DEBUG | agents.dqn_agent | Effect predictor: epoch 5, loss=0.0184
+2026-03-17 11:51:49,754 | INFO | agents.dqn_agent | Ep 0/5000: return=90.73 steps=500 levels=0 eps=1.000 replay=5500 effect_acc=100.00% unique_states=2
+2026-03-17 11:52:18,829 | INFO | agents.dqn_agent | Ep 10/5000: return=107.89 steps=500 levels=0 eps=0.980 replay=10500 effect_acc=100.00% unique_states=2
+2026-03-17 11:52:48,606 | INFO | agents.dqn_agent | Ep 20/5000: return=80.74 steps=500 levels=0 eps=0.961 replay=15500 effect_acc=100.00% unique_states=1
+2026-03-17 11:53:22,509 | INFO | agents.dqn_agent | Ep 30/5000: return=101.32 steps=500 levels=0 eps=0.942 replay=20500 effect_acc=100.00% unique_states=2
+2026-03-17 11:53:53,962 | INFO | agents.dqn_agent | Ep 40/5000: return=79.54 steps=500 levels=0 eps=0.923 replay=25500 effect_acc=97.00% unique_states=1
+2026-03-17 11:54:30,151 | DEBUG | agents.dqn_agent | Effect predictor: epoch 5, loss=0.0126
+2026-03-17 11:54:30,193 | INFO | agents.dqn_agent | Ep 50/5000: return=68.84 steps=500 levels=0 eps=0.905 replay=30500 effect_acc=100.00% unique_states=1
+2026-03-17 11:54:59,082 | INFO | agents.dqn_agent | Ep 60/5000: return=68.70 steps=500 levels=0 eps=0.887 replay=35500 effect_acc=97.50% unique_states=1
+2026-03-17 11:55:33,002 | INFO | agents.dqn_agent | Ep 70/5000: return=70.20 steps=500 levels=0 eps=0.869 replay=40500 effect_acc=100.00% unique_states=1
+2026-03-17 11:56:03,780 | INFO | agents.dqn_agent | Ep 80/5000: return=70.85 steps=500 levels=0 eps=0.852 replay=45500 effect_acc=100.00% unique_states=1
+2026-03-17 11:56:33,135 | INFO | agents.dqn_agent | Ep 90/5000: return=80.22 steps=500 levels=0 eps=0.835 replay=50000 effect_acc=99.00% unique_states=1
+2026-03-17 11:57:20,925 | DEBUG | agents.dqn_agent | Effect predictor: epoch 5, loss=0.0420
+2026-03-17 11:57:20,971 | INFO | agents.dqn_agent | Ep 100/5000: return=80.74 steps=500 levels=0 eps=0.819 replay=50000 effect_acc=100.00% unique_states=1
+2026-03-17 11:58:02,227 | INFO | agents.dqn_agent | Ep 110/5000: return=69.28 steps=500 levels=0 eps=0.802 replay=50000 effect_acc=100.00% unique_states=1
+2026-03-17 11:58:35,057 | INFO | agents.dqn_agent | Ep 120/5000: return=75.74 steps=500 levels=0 eps=0.786 replay=50000 effect_acc=93.00% unique_states=2
+2026-03-17 11:59:14,476 | INFO | agents.dqn_agent | Ep 130/5000: return=98.59 steps=500 levels=0 eps=0.771 replay=50000 effect_acc=100.00% unique_states=2
+2026-03-17 11:59:49,608 | INFO | agents.dqn_agent | Ep 140/5000: return=93.58 steps=500 levels=0 eps=0.756 replay=50000 effect_acc=100.00% unique_states=2
+2026-03-17 12:00:30,676 | DEBUG | agents.dqn_agent | Effect predictor: epoch 5, loss=0.0001
+2026-03-17 12:00:30,726 | INFO | agents.dqn_agent | Ep 150/5000: return=106.17 steps=500 levels=0 eps=0.741 replay=50000 effect_acc=100.00% unique_states=3
+2026-03-17 12:01:16,286 | INFO | agents.dqn_agent | Ep 160/5000: return=70.81 steps=500 levels=0 eps=0.726 replay=50000 effect_acc=100.00% unique_states=1
+2026-03-17 12:01:55,847 | INFO | env_wrapper | LEVEL PROGRESS: 0 -> 1 (+5.0 reward)
+2026-03-17 12:01:56,195 | INFO | agents.dqn_agent | NEW BEST: 1 levels at episode 169!
+2026-03-17 12:02:00,031 | INFO | agents.dqn_agent | Ep 170/5000: return=90.98 steps=500 levels=1 eps=0.712 replay=50000 effect_acc=100.00% unique_states=2
+2026-03-17 12:02:38,345 | INFO | agents.dqn_agent | Ep 180/5000: return=116.34 steps=500 levels=1 eps=0.697 replay=50000 effect_acc=100.00% unique_states=3
+2026-03-17 12:03:23,134 | INFO | agents.dqn_agent | Ep 190/5000: return=95.64 steps=500 levels=1 eps=0.684 replay=50000 effect_acc=100.00% unique_states=3
+2026-03-17 12:04:07,459 | DEBUG | agents.dqn_agent | Effect predictor: epoch 5, loss=0.0000
+2026-03-17 12:04:07,501 | INFO | agents.dqn_agent | Ep 200/5000: return=117.30 steps=500 levels=1 eps=0.670 replay=50000 effect_acc=100.00% unique_states=4
+2026-03-17 12:04:50,454 | INFO | agents.dqn_agent | Ep 210/5000: return=100.63 steps=500 levels=1 eps=0.657 replay=50000 effect_acc=100.00% unique_states=2
+2026-03-17 12:05:32,966 | INFO | agents.dqn_agent | Ep 220/5000: return=117.11 steps=500 levels=1 eps=0.644 replay=50000 effect_acc=100.00% unique_states=4
+2026-03-17 12:06:07,782 | INFO | agents.dqn_agent | Ep 230/5000: return=120.58 steps=500 levels=1 eps=0.631 replay=50000 effect_acc=100.00% unique_states=4
+2026-03-17 12:06:51,723 | INFO | agents.dqn_agent | Ep 240/5000: return=82.57 steps=500 levels=1 eps=0.618 replay=50000 effect_acc=100.00% unique_states=1
+2026-03-17 12:07:34,710 | DEBUG | agents.dqn_agent | Effect predictor: epoch 5, loss=0.0000
+2026-03-17 12:07:34,763 | INFO | agents.dqn_agent | Ep 250/5000: return=145.08 steps=500 levels=1 eps=0.606 replay=50000 effect_acc=100.00% unique_states=6
+2026-03-17 12:08:14,157 | INFO | agents.dqn_agent | Ep 260/5000: return=148.90 steps=500 levels=1 eps=0.594 replay=50000 effect_acc=100.00% unique_states=5
+2026-03-17 12:08:50,796 | INFO | agents.dqn_agent | Ep 270/5000: return=171.39 steps=500 levels=1 eps=0.582 replay=50000 effect_acc=100.00% unique_states=10
+2026-03-17 12:09:33,431 | INFO | agents.dqn_agent | Ep 280/5000: return=121.64 steps=500 levels=1 eps=0.571 replay=50000 effect_acc=100.00% unique_states=9
+2026-03-17 12:10:18,718 | INFO | agents.dqn_agent | Ep 290/5000: return=103.41 steps=500 levels=1 eps=0.560 replay=50000 effect_acc=88.00% unique_states=1
+2026-03-17 12:11:10,879 | DEBUG | agents.dqn_agent | Effect predictor: epoch 5, loss=0.0000
+2026-03-17 12:11:10,929 | INFO | agents.dqn_agent | Ep 300/5000: return=153.24 steps=500 levels=1 eps=0.548 replay=50000 effect_acc=100.00% unique_states=7
+2026-03-17 12:11:54,185 | INFO | agents.dqn_agent | Ep 310/5000: return=120.11 steps=500 levels=1 eps=0.538 replay=50000 effect_acc=100.00% unique_states=3
+2026-03-17 12:12:42,377 | INFO | agents.dqn_agent | Ep 320/5000: return=180.08 steps=500 levels=1 eps=0.527 replay=50000 effect_acc=100.00% unique_states=10
+2026-03-17 12:13:25,944 | INFO | agents.dqn_agent | Ep 330/5000: return=171.10 steps=500 levels=1 eps=0.517 replay=50000 effect_acc=100.00% unique_states=9
+2026-03-17 12:14:11,865 | INFO | agents.dqn_agent | Ep 340/5000: return=185.99 steps=500 levels=0 eps=0.506 replay=50000 effect_acc=97.00% unique_states=10

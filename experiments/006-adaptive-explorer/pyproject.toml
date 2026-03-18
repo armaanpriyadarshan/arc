@@ -1,0 +1,14 @@
+[project]
+name = "experiment-005-adaptive-explorer"
+version = "0.1.0"
+description = "Adaptive perception agent with object interaction discovery and persistent mapping"
+requires-python = ">=3.12"
+dependencies = [
+    "arc-agi",
+    "numpy",
+    "torch",
+    "python-dotenv",
+]
+
+[tool.uv]
+dev-dependencies = []
