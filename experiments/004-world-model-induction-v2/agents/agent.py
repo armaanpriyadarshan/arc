@@ -50,6 +50,10 @@ Output JSON:
   BAD: "Moving right is blocked from x=40" (level-specific)
   GOOD: "Touching white objects triggers remote reconfiguration of other objects"
   GOOD: "When a trigger is activated, some colored objects MOVE/ROTATE to new positions"
+- falsified: list of approaches/beliefs that turned out to be WRONG. These persist for this level
+  so you don't repeat the same mistakes. Be specific about what failed and why.
+- cause_effect: (include when a large change just happened) describe what you did, what changed
+  remotely, and your best theory for the causal relationship. This helps you build a mental model.
 - notes: anything to remember (gets carried to next turn)
 
 The test_actions sequence executes automatically, stopping on BLOCKED or unexpected events.
@@ -71,7 +75,7 @@ IMPORTANT:
 
 
 class ToolUseAgent:
-    MAX_ACTIONS = 200
+    MAX_ACTIONS = 100
 
     def __init__(self, game_id: str) -> None:
         from arc_agi import Arcade
@@ -92,8 +96,12 @@ class ToolUseAgent:
         self.probe_facts = ""  # established facts from auto-probe, refreshed on level change
         self.verified_rules: list[str] = []  # universal game rules, persist across levels
         self.max_rules = 10  # cap to prevent token bloat
+        self.falsified: list[str] = []  # approaches that failed, per-level
+        self.blocked_tracker: dict[str, int] = {}  # "(region, action)" → count
+        self.dead_ends: list[str] = []  # auto-detected from blocked_tracker
         self.recent_actions: list[str] = []
         self.llm_calls = 0
+        self._large_change_pending = False  # flag for cause-effect prompt
 
     def run(self) -> None:
         timer = time.time()
@@ -149,6 +157,22 @@ class ToolUseAgent:
 
                 result = f"{action.name}: {'BLOCKED' if blocked else f'{changes} cells changed'}"
 
+                # Track blocked directions by region
+                if blocked:
+                    region = self._get_region()
+                    key = f"{region}:{action.name}"
+                    self.blocked_tracker[key] = self.blocked_tracker.get(key, 0) + 1
+                    if self.blocked_tracker[key] >= 3:
+                        dead_end = f"{action.name} from region {region}"
+                        if dead_end not in self.dead_ends:
+                            self.dead_ends.append(dead_end)
+                            logger.info(f"[dead-end] {dead_end} (blocked {self.blocked_tracker[key]}x)")
+                elif changes > 100:
+                    # Large change may have altered the map — clear blocked tracker
+                    self.blocked_tracker.clear()
+                    self.dead_ends.clear()
+                    self._large_change_pending = True
+
                 self.recent_actions.append(result)
                 if len(self.recent_actions) > 15:
                     self.recent_actions = self.recent_actions[-15:]
@@ -171,6 +195,10 @@ class ToolUseAgent:
                     # Clear per-level state but keep verified_rules
                     self.hypothesis = ""
                     self.notes = ""
+                    self.falsified = []
+                    self.blocked_tracker.clear()
+                    self.dead_ends.clear()
+                    self._large_change_pending = False
                     self.prev_symbolic = None
                     self.prev_image_grid = None
                     self.recent_actions = [f"*** LEVEL {frame.levels_completed} ***"]
@@ -195,6 +223,19 @@ class ToolUseAgent:
             logger.info(f"Verified rules: {self.verified_rules}")
         logger.info("=" * 60)
         self._close()
+
+    def _get_region(self) -> str:
+        """Get approximate player region from current grid's symbolic state."""
+        sym = grid_to_symbolic(self.current_grid)
+        # Find the smallest non-background object (likely the player)
+        objects = sym.get("objects", [])
+        moving = [o for o in objects if o.get("size", 9999) < 50]
+        if moving:
+            moving.sort(key=lambda o: o.get("size", 9999))
+            c = moving[0].get("center", [32, 32])
+            # Bucket to 10x10 regions
+            return f"({c[0]//10*10},{c[1]//10*10})"
+        return "(?,?)"
 
     def _add_rule(self, rule: str) -> None:
         """Add a rule with deduplication and position filtering."""
@@ -317,6 +358,12 @@ class ToolUseAgent:
                 + (f"VERIFIED RULES (confirmed across levels — these are ground truth):\n"
                    + "\n".join(f"- {r}" for r in self.verified_rules) + "\n\n"
                    if self.verified_rules else "")
+                + (f"DEAD ENDS (do NOT retry these — confirmed blocked multiple times):\n"
+                   + "\n".join(f"- {d}" for d in self.dead_ends) + "\n\n"
+                   if self.dead_ends else "")
+                + (f"FALSIFIED (approaches that failed — do NOT repeat):\n"
+                   + "\n".join(f"- {f}" for f in self.falsified) + "\n\n"
+                   if self.falsified else "")
                 + (f"YOUR NOTES:\n{self.notes}\n\n" if self.notes else "")
                 + (f"CURRENT HYPOTHESES:\n{self.hypothesis}\n\n" if self.hypothesis else "")
                 + f"RECENT:\n{recent}\n\n"
@@ -334,7 +381,7 @@ class ToolUseAgent:
 
         self.prev_image_grid = self.current_grid
 
-        content.append(input_text(
+        json_format = (
             "\nRespond with JSON:\n"
             '{"observation": "what changed and what it means",\n'
             ' "hypotheses": [\n'
@@ -342,21 +389,49 @@ class ToolUseAgent:
             '   {"claim": "...", "status": "confirmed", "evidence": "..."}\n'
             ' ],\n'
             ' "verified_rules": ["universal game mechanic you confirmed"],\n'
-            ' "notes": "persistent notes for next turn"}'
-        ))
+            ' "falsified": ["approach that failed and why"],\n'
+        )
+        use_reasoning = self._large_change_pending
+        if use_reasoning:
+            json_format += (
+                ' "cause_effect": {"action": "what you did", "changes": "what changed remotely", '
+                '"theory": "your best causal explanation"},\n'
+            )
+            self._large_change_pending = False
+        json_format += ' "notes": "persistent notes for next turn"}'
+        content.append(input_text(json_format))
 
         try:
-            response = self.client.responses.create(
-                model="gpt-5.4",
-                input=[{"role": "user", "content": content}],
-                max_output_tokens=1500,
-                temperature=0.2,
-            )
-            raw = response.output_text or "{}"
+            create_kwargs = {
+                "model": "gpt-5.4",
+                "input": [{"role": "user", "content": content}],
+                "max_output_tokens": 2000 if use_reasoning else 1500,
+            }
+            if use_reasoning:
+                create_kwargs["reasoning"] = {"effort": "medium"}
+                logger.info("[reasoning] Using medium reasoning effort for post-trigger planning")
+            else:
+                create_kwargs["temperature"] = 0.2
+            response = self.client.responses.create(**create_kwargs)
+            raw = response.output_text or ""
+            if not raw and hasattr(response, 'output'):
+                # Reasoning mode may structure output differently — extract text from output items
+                for item in (response.output or []):
+                    if hasattr(item, 'content'):
+                        for block in (item.content or []):
+                            if hasattr(block, 'text') and block.text:
+                                raw = block.text
+                                break
+                    if raw:
+                        break
+            if not raw:
+                raw = "{}"
+            if use_reasoning:
+                logger.info(f"[reasoning-raw] {raw[:300]}")
         except Exception as e:
             logger.warning(f"API error: {e}")
             time.sleep(2)
-            return GameAction.ACTION1
+            return [GameAction.ACTION1]
 
         data = self._parse_json(raw)
 
@@ -398,6 +473,19 @@ class ToolUseAgent:
             for rule in new_rules:
                 if isinstance(rule, str) and rule:
                     self._add_rule(rule)
+
+        # Extract falsified approaches
+        new_falsified = data.get("falsified", [])
+        if new_falsified and isinstance(new_falsified, list):
+            for f in new_falsified:
+                if isinstance(f, str) and f and f not in self.falsified and len(self.falsified) < 10:
+                    self.falsified.append(f)
+                    logger.info(f"[falsified] {f}")
+
+        # Log cause-effect analysis
+        cause_effect = data.get("cause_effect")
+        if cause_effect and isinstance(cause_effect, dict):
+            logger.info(f"[cause-effect] {cause_effect.get('theory', '')}")
 
         if notes:
             self.notes = notes
