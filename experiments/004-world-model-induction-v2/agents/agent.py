@@ -44,9 +44,12 @@ Output JSON:
     {"claim": "...", "status": "untested"}
   ]
   The first hypothesis with status "testing" and test_actions will be executed.
-- verified_rules: list of UNIVERSAL game rules you've confirmed (persist across levels).
-  Only include rules about game MECHANICS, not level-specific positions or layouts.
-  Example: ["Same-colored objects interact when touched", "The yellow bar depletes per action (timer)"]
+- verified_rules: list of UNIVERSAL game rules you've confirmed (persist across levels, max 10).
+  ONLY include rules about game MECHANICS — NOT positions, corridors, or level-specific layouts.
+  BAD: "The white object at [31,21] is a switch" (position-specific)
+  BAD: "Moving right is blocked from x=40" (level-specific)
+  GOOD: "Touching white objects triggers remote reconfiguration of other objects"
+  GOOD: "When a trigger is activated, some colored objects MOVE/ROTATE to new positions"
 - notes: anything to remember (gets carried to next turn)
 
 The test_actions sequence executes automatically, stopping on BLOCKED or unexpected events.
@@ -55,6 +58,9 @@ IMPORTANT:
 - When something unexpected happens (large change, object appears/disappears), INVESTIGATE.
   Look at the symbolic diff carefully. What objects changed? What appeared? What vanished?
   Formulate a hypothesis about WHY and test it.
+- Pay special attention to REMOTE OBJECTS MOVED — when you touch/trigger something and objects
+  elsewhere change position, that means those objects MOVED or ROTATED. This changes which
+  paths are passable. A gate that was blocking a corridor may have rotated to open it.
 - Don't just navigate. The game likely has mechanics beyond movement — objects may have
   functions you need to discover through interaction.
 - If a hypothesis hasn't led to progress after several tests, REJECT it and try something new.
@@ -86,6 +92,7 @@ class ToolUseAgent:
         self.notes = ""
         self.probe_facts = ""  # established facts from auto-probe, refreshed on level change
         self.verified_rules: list[str] = []  # universal game rules, persist across levels
+        self.max_rules = 10  # cap to prevent token bloat
         self.recent_actions: list[str] = []
         self.llm_calls = 0
 
@@ -143,7 +150,7 @@ class ToolUseAgent:
 
                 result = f"{action.name}: {'BLOCKED' if blocked else f'{changes} cells changed'}"
 
-                # For unusual changes, include detailed symbolic diff
+                # For unusual changes, include categorized symbolic diff
                 if changes > 80 and not blocked:
                     sym_after = grid_to_symbolic(self.current_grid)
                     detail_changes = diff_symbolic(
@@ -151,20 +158,41 @@ class ToolUseAgent:
                         sym_after
                     )
                     if detail_changes:
-                        details = []
-                        for c in detail_changes[:6]:
-                            if c.get("type") == "changed":
-                                parts = [c.get("color", "?")]
+                        triggered = []  # objects that disappeared (trigger activated)
+                        moved = []      # objects that moved position (remote reconfiguration)
+                        appeared = []   # new objects
+                        resized = []    # objects that changed size
+                        for c in detail_changes[:10]:
+                            color = c.get("color", "?")
+                            if c.get("type") == "disappeared":
+                                pos = c.get("was_at", "?")
+                                triggered.append(f"{color} at {pos}")
+                            elif c.get("type") == "appeared":
+                                pos = c.get("at", "?")
+                                appeared.append(f"{color} at {pos}")
+                            elif c.get("type") == "changed":
+                                parts = []
                                 if "center" in c:
-                                    parts.append(f"center {c['center']['was']}→{c['center']['now']}")
+                                    parts.append(f"MOVED {c['center']['was']}→{c['center']['now']}")
                                 if "size" in c:
-                                    parts.append(f"size {c['size']['was']}→{c['size']['now']}")
-                                details.append(" ".join(parts))
-                            elif c.get("type") in ("appeared", "disappeared"):
-                                details.append(f"{c.get('color','?')} {c['type']} at {c.get('at', c.get('was_at', '?'))}")
+                                    parts.append(f"resized {c['size']['was']}→{c['size']['now']}")
+                                if "center" in c:
+                                    moved.append(f"{color} {' '.join(parts)}")
+                                elif parts:
+                                    resized.append(f"{color} {' '.join(parts)}")
                             elif c.get("type") == "background_size_changed":
-                                details.append(f"bg {c.get('color','?')} size {c['size']['was']}→{c['size']['now']}")
-                        result += " | UNUSUAL: " + "; ".join(details)
+                                resized.append(f"bg {color} {c['size']['was']}→{c['size']['now']}")
+                        sections = []
+                        if triggered:
+                            sections.append("TRIGGERED: " + ", ".join(triggered))
+                        if moved:
+                            sections.append("REMOTE OBJECTS MOVED: " + ", ".join(moved))
+                        if appeared:
+                            sections.append("APPEARED: " + ", ".join(appeared))
+                        if resized:
+                            sections.append("RESIZED: " + ", ".join(resized))
+                        if sections:
+                            result += " | " + " | ".join(sections)
 
                 self.recent_actions.append(result)
                 if len(self.recent_actions) > 15:
@@ -212,8 +240,37 @@ class ToolUseAgent:
         logger.info("=" * 60)
         self._close()
 
+    def _add_rule(self, rule: str) -> None:
+        """Add a rule with deduplication and position filtering."""
+        import re
+        # Reject rules with specific coordinates — those are level-specific, not universal
+        if re.search(r'\[\d+,\s*\d+\]', rule) or re.search(r'x[≈=]\d+', rule) or re.search(r'y[≈=]\d+', rule):
+            return
+        # Reject rules about specific positions/lanes
+        if re.search(r'at \(\d+', rule) or re.search(r'from the current', rule, re.IGNORECASE):
+            return
+        # Reject if too similar to an existing rule (substring match)
+        rule_lower = rule.lower().strip()
+        for existing in self.verified_rules:
+            existing_lower = existing.lower().strip()
+            # Skip if one is a substring of the other
+            if rule_lower in existing_lower or existing_lower in rule_lower:
+                return
+            # Skip if they share >70% of words
+            rule_words = set(rule_lower.split())
+            existing_words = set(existing_lower.split())
+            if rule_words and existing_words:
+                overlap = len(rule_words & existing_words) / max(len(rule_words), len(existing_words))
+                if overlap > 0.7:
+                    return
+        # Cap total rules
+        if len(self.verified_rules) >= self.max_rules:
+            return
+        self.verified_rules.append(rule)
+        logger.info(f"[rule+] {rule}")
+
     def _promote_confirmed_hypotheses(self) -> None:
-        """Extract confirmed hypotheses and add as verified rules."""
+        """Extract confirmed hypotheses and add as verified rules on level-up."""
         if not self.hypothesis:
             return
         for line in self.hypothesis.split("\n"):
@@ -222,9 +279,8 @@ class ToolUseAgent:
                 # Remove trailing evidence in parens
                 if "(" in rule:
                     rule = rule[:rule.rfind("(")].strip()
-                if rule and rule not in self.verified_rules:
-                    self.verified_rules.append(rule)
-                    logger.info(f"[rule+] {rule}")
+                if rule:
+                    self._add_rule(rule)
 
     def _auto_probe(self, frame: FrameData, available: list[int]) -> str:
         """Take one of each action. Record what changed. Return as text facts."""
@@ -380,22 +436,12 @@ class ToolUseAgent:
             if single:
                 raw_actions = [single]
 
-        # Extract verified rules from model output
+        # Extract verified rules from model output (only explicit verified_rules field)
         new_rules = data.get("verified_rules", [])
         if new_rules and isinstance(new_rules, list):
             for rule in new_rules:
-                if isinstance(rule, str) and rule and rule not in self.verified_rules:
-                    self.verified_rules.append(rule)
-                    logger.info(f"[rule+] {rule}")
-
-        # Also promote any hypotheses the model marked confirmed
-        if hypotheses:
-            for h in hypotheses:
-                if isinstance(h, dict) and h.get("status") == "confirmed":
-                    claim = h.get("claim", "")
-                    if claim and claim not in self.verified_rules:
-                        self.verified_rules.append(claim)
-                        logger.info(f"[rule+] {claim}")
+                if isinstance(rule, str) and rule:
+                    self._add_rule(rule)
 
         if notes:
             self.notes = notes
