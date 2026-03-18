@@ -58,9 +58,8 @@ IMPORTANT:
 - When something unexpected happens (large change, object appears/disappears), INVESTIGATE.
   Look at the symbolic diff carefully. What objects changed? What appeared? What vanished?
   Formulate a hypothesis about WHY and test it.
-- Pay special attention to REMOTE OBJECTS MOVED — when you touch/trigger something and objects
-  elsewhere change position, that means those objects MOVED or ROTATED. This changes which
-  paths are passable. A gate that was blocking a corridor may have rotated to open it.
+- When a large change happens, you'll see a before/after image. Study it carefully —
+  what objects moved? What appeared or disappeared? What does this tell you about the mechanic?
 - Don't just navigate. The game likely has mechanics beyond movement — objects may have
   functions you need to discover through interaction.
 - If a hypothesis hasn't led to progress after several tests, REJECT it and try something new.
@@ -72,7 +71,7 @@ IMPORTANT:
 
 
 class ToolUseAgent:
-    MAX_ACTIONS = 100
+    MAX_ACTIONS = 200
 
     def __init__(self, game_id: str) -> None:
         from arc_agi import Arcade
@@ -150,50 +149,6 @@ class ToolUseAgent:
 
                 result = f"{action.name}: {'BLOCKED' if blocked else f'{changes} cells changed'}"
 
-                # For unusual changes, include categorized symbolic diff
-                if changes > 80 and not blocked:
-                    sym_after = grid_to_symbolic(self.current_grid)
-                    detail_changes = diff_symbolic(
-                        grid_to_symbolic(grid_before) if grid_before else None,
-                        sym_after
-                    )
-                    if detail_changes:
-                        triggered = []  # objects that disappeared (trigger activated)
-                        moved = []      # objects that moved position (remote reconfiguration)
-                        appeared = []   # new objects
-                        resized = []    # objects that changed size
-                        for c in detail_changes[:10]:
-                            color = c.get("color", "?")
-                            if c.get("type") == "disappeared":
-                                pos = c.get("was_at", "?")
-                                triggered.append(f"{color} at {pos}")
-                            elif c.get("type") == "appeared":
-                                pos = c.get("at", "?")
-                                appeared.append(f"{color} at {pos}")
-                            elif c.get("type") == "changed":
-                                parts = []
-                                if "center" in c:
-                                    parts.append(f"MOVED {c['center']['was']}→{c['center']['now']}")
-                                if "size" in c:
-                                    parts.append(f"resized {c['size']['was']}→{c['size']['now']}")
-                                if "center" in c:
-                                    moved.append(f"{color} {' '.join(parts)}")
-                                elif parts:
-                                    resized.append(f"{color} {' '.join(parts)}")
-                            elif c.get("type") == "background_size_changed":
-                                resized.append(f"bg {color} {c['size']['was']}→{c['size']['now']}")
-                        sections = []
-                        if triggered:
-                            sections.append("TRIGGERED: " + ", ".join(triggered))
-                        if moved:
-                            sections.append("REMOTE OBJECTS MOVED: " + ", ".join(moved))
-                        if appeared:
-                            sections.append("APPEARED: " + ", ".join(appeared))
-                        if resized:
-                            sections.append("RESIZED: " + ", ".join(resized))
-                        if sections:
-                            result += " | " + " | ".join(sections)
-
                 self.recent_actions.append(result)
                 if len(self.recent_actions) > 15:
                     self.recent_actions = self.recent_actions[-15:]
@@ -223,7 +178,8 @@ class ToolUseAgent:
                         logger.info(f"[rules] {self.verified_rules}")
                     break
                 if changes > 100:
-                    self.prev_image_grid = None
+                    # Keep prev_image_grid so next LLM call shows before/after diff
+                    self.prev_image_grid = grid_before
                     break  # stop and re-think on large changes
 
         elapsed = round(time.time() - timer, 2)
