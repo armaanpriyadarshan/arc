@@ -3,13 +3,15 @@ Game 04: Mirror Maze
 
 Mechanics: Navigation + beam reflection + mirror rotation + beam-activated doors + limited moves
 
-A beam of light enters the grid from one edge. Mirror sprites (diagonal 3x3
-blocks) are placed on the grid. The player can rotate mirrors by moving adjacent
-to them and pressing ACTION5. The beam reflects off mirrors and must be directed
-to hit a target receptor. When all beams hit their matching receptors, the exit
-door opens and the player can walk onto it to advance. The player has a limited
-move counter. Later levels have multiple beams of different colors and mirrors
-that only reflect certain colors.
+An open grid with beam emitters on one edge and receptors on another. Mirrors
+are scattered on the grid. The player walks around and presses ACTION5 when
+adjacent to a mirror to rotate it (flips between backslash and forward-slash).
+Beams travel from emitters, reflect off mirrors, and must hit matching-color
+receptors. When all receptors are lit, the exit door opens. Walk onto it to
+advance. Moves are limited — running out resets the level.
+
+Later levels have multiple beams of different colors and mirrors that only
+reflect certain colors (indicated by a colored center pixel).
 
 Actions:
     ACTION1 = Move Up (W)
@@ -20,17 +22,16 @@ Actions:
 
 Display:
     Row 62: move counter (filled bar = remaining moves)
-    Row 63: receptor status dots (lit = beam hitting)
+    Row 63: receptor status dots (colored = hit, gray = not hit)
 
-Win condition: All beams hitting their matching receptors, then player walks
-onto the exit door.
+Win condition: All beams hitting their matching receptors, then walk onto exit.
 
 Color key:
     0  = empty / floor
-    1  = wall
+    1  = wall (border only)
     2  = player
-    3  = mirror frame (backslash orientation)
-    4  = mirror frame (forward-slash orientation)
+    3  = mirror (backslash orientation)
+    4  = mirror (forward-slash orientation)
     5  = HUD background
     6  = blue (beam / emitter / receptor)
     7  = yellow (beam / emitter / receptor)
@@ -39,8 +40,7 @@ Color key:
     10 = green (exit door open)
     11 = exit door closed
     12 = dimmed / inactive indicator
-    13 = beam path pixel
-    14 = receptor border (correct)
+    14 = receptor border (lit)
     15 = HUD border
 """
 
@@ -53,6 +53,7 @@ from arcengine import (
     Camera,
     GameAction,
     Level,
+    RenderableUserDisplay,
     Sprite,
 )
 
@@ -65,8 +66,8 @@ MOVE = 3
 BG = 0
 WALL = 1
 PLAYER_COLOR = 2
-MIRROR_BS = 3      # backslash mirror \
-MIRROR_FS = 4      # forward-slash mirror /
+MIRROR_BS = 3
+MIRROR_FS = 4
 HUD_BG = 5
 BLUE = 6
 YELLOW = 7
@@ -75,31 +76,25 @@ PURPLE = 9
 EXIT_OPEN = 10
 EXIT_CLOSED = 11
 DIMMED = 12
-BEAM_PATH = 13
 RECEPTOR_LIT = 14
 HUD_BORDER = 15
 
-# Beam directions
-UP = (0, -1)
-DOWN = (0, 1)
-LEFT = (-1, 0)
-RIGHT = (1, 0)
-
 BEAM_COLORS = [RED, BLUE, YELLOW, PURPLE]
+
+# Playfield: 20 columns x 20 rows of cells (60x60 pixels, rows 0-59)
+PLAY_COLS = 20
+PLAY_ROWS = 20
 
 
 # ---------------------------------------------------------------------------
-# Mirror orientation: 0 = backslash (\), 1 = forward-slash (/)
-# Reflection rules (dx, dy) -> (dx, dy):
-#   Backslash \:  RIGHT->(0,1)=DOWN, LEFT->(0,-1)=UP, DOWN->(1,0)=RIGHT, UP->(-1,0)=LEFT
-#   Forward  /:  RIGHT->(0,-1)=UP, LEFT->(0,1)=DOWN, DOWN->(-1,0)=LEFT, UP->(1,0)=RIGHT
+# Reflection
 # ---------------------------------------------------------------------------
 
 def _reflect(dx: int, dy: int, orientation: int) -> Tuple[int, int]:
-    """Reflect a beam direction off a mirror. Returns new (dx, dy)."""
-    if orientation == 0:  # backslash
+    """Reflect beam direction off mirror. 0=backslash, 1=forward-slash."""
+    if orientation == 0:  # backslash: swap dx,dy
         return (dy, dx)
-    else:  # forward-slash
+    else:  # forward-slash: swap and negate
         return (-dy, -dx)
 
 
@@ -108,11 +103,7 @@ def _reflect(dx: int, dy: int, orientation: int) -> Tuple[int, int]:
 # ---------------------------------------------------------------------------
 
 def _make_player() -> Sprite:
-    px = [
-        [PLAYER_COLOR, PLAYER_COLOR, PLAYER_COLOR],
-        [PLAYER_COLOR, PLAYER_COLOR, PLAYER_COLOR],
-        [PLAYER_COLOR, PLAYER_COLOR, PLAYER_COLOR],
-    ]
+    px = [[PLAYER_COLOR] * CELL for _ in range(CELL)]
     return Sprite(pixels=px, name="player", visible=True, collidable=True)
 
 
@@ -122,8 +113,6 @@ def _make_wall() -> Sprite:
 
 
 def _make_mirror(orientation: int, idx: int, color_filter: Optional[int] = None) -> Sprite:
-    """3x3 mirror sprite. Orientation 0=backslash, 1=forward-slash.
-    color_filter: if set, mirror only reflects this beam color."""
     if orientation == 0:
         px = [
             [MIRROR_BS, BG, BG],
@@ -136,15 +125,14 @@ def _make_mirror(orientation: int, idx: int, color_filter: Optional[int] = None)
             [BG, MIRROR_FS, BG],
             [MIRROR_FS, BG, BG],
         ]
-    # If color-filtered, tint the center pixel
     if color_filter is not None:
         px[1][1] = color_filter
-    tags = ["mirror"]
-    return Sprite(pixels=px, name=f"mirror_{idx}", visible=True, collidable=True, tags=tags)
+    return Sprite(pixels=px, name=f"mirror_{idx}", visible=True, collidable=True,
+                  tags=["mirror"])
 
 
 def _make_emitter(color: int, idx: int) -> Sprite:
-    """3x3 beam emitter."""
+    """Emitter: colored border with black center, indicates beam source."""
     px = [
         [color, color, color],
         [color, BG, color],
@@ -155,7 +143,7 @@ def _make_emitter(color: int, idx: int) -> Sprite:
 
 
 def _make_receptor(color: int, idx: int) -> Sprite:
-    """3x3 receptor that needs to be hit by matching beam."""
+    """Receptor: dimmed border with colored center showing required color."""
     px = [
         [DIMMED, DIMMED, DIMMED],
         [DIMMED, color, DIMMED],
@@ -173,71 +161,128 @@ def _make_exit(is_open: bool) -> Sprite:
 
 
 # ---------------------------------------------------------------------------
-# Maze generation (reused from game_01)
+# Hand-crafted level layouts (open grids, no maze)
 # ---------------------------------------------------------------------------
-
-def _carve_maze(rng: random.Random, cols: int, rows: int) -> np.ndarray:
-    maze = np.ones((rows, cols), dtype=int)
-
-    def _neighbors(r, c):
-        dirs = [(0, 2), (0, -2), (2, 0), (-2, 0)]
-        rng.shuffle(dirs)
-        for dr, dc in dirs:
-            nr, nc = r + dr, c + dc
-            if 0 <= nr < rows and 0 <= nc < cols and maze[nr, nc] == 1:
-                yield nr, nc, r + dr // 2, c + dc // 2
-
-    stack = [(1, 1)]
-    maze[1, 1] = 0
-    while stack:
-        r, c = stack[-1]
-        found = False
-        for nr, nc, wr, wc in _neighbors(r, c):
-            maze[nr, nc] = 0
-            maze[wr, wc] = 0
-            stack.append((nr, nc))
-            found = True
-            break
-        if not found:
-            stack.pop()
-    return maze
-
-
-# ---------------------------------------------------------------------------
-# Level configs
-# ---------------------------------------------------------------------------
+# Each level: emitters, receptors, mirrors, player_pos, exit_pos, max_moves
+# Positions in cell coords (col, row). Emitters shoot RIGHT by default.
+# Beams are meant to be solvable by rotating the right mirrors.
 
 def _level_configs():
+    """Hand-crafted levels with verified beam paths.
+
+    Reflection rules:
+      \\ (orient 0): RIGHT->DOWN, DOWN->RIGHT, LEFT->UP, UP->LEFT
+      /  (orient 1): RIGHT->UP,   UP->RIGHT,   LEFT->DOWN, DOWN->LEFT
+
+    Each mirror's start orientation is set so the puzzle requires rotating
+    some mirrors to solve. The "needs" comment shows the correct orientation.
+    """
     return [
-        # Level 0: 1 beam, 2 mirrors, generous moves, small grid
+        # Level 0: 1 beam, 2 mirrors — tutorial
+        # Path: (1,4) RIGHT -> (10,4) \\ -> DOWN -> (10,12) \\ -> RIGHT -> receptor (17,12)
+        # Solution: rotate mirror 0 from / to \\
         {
-            "cell_cols": 11, "cell_rows": 15,
-            "num_beams": 1, "num_mirrors": 2, "max_moves": 60,
-            "color_filters": False,
+            "emitters": [(1, 4, RED, (1, 0))],
+            "receptors": [(17, 12, RED)],
+            "mirrors": [
+                (10, 4, 1, None),    # starts /, needs \\ — player rotates this
+                (10, 12, 0, None),   # starts \\ (correct)
+            ],
+            "player": (5, 8),
+            "exit": (3, 16),
+            "max_moves": 50,
         },
-        # Level 1: 1 beam, 3 mirrors, moderate moves
+        # Level 1: 1 beam, 3 mirrors — 3 bounces
+        # Path: (1,3) RIGHT -> (8,3) \\ -> DOWN -> (8,10) \\ -> RIGHT -> (15,10) \\ -> DOWN -> receptor (15,16)
+        # Solution: rotate mirrors 0, 1, 2 from / to \\
         {
-            "cell_cols": 13, "cell_rows": 17,
-            "num_beams": 1, "num_mirrors": 3, "max_moves": 50,
-            "color_filters": False,
+            "emitters": [(1, 3, RED, (1, 0))],
+            "receptors": [(15, 16, RED)],
+            "mirrors": [
+                (8, 3, 1, None),     # starts /, needs \\
+                (8, 10, 1, None),    # starts /, needs \\
+                (15, 10, 1, None),   # starts /, needs \\
+            ],
+            "player": (4, 13),
+            "exit": (2, 17),
+            "max_moves": 50,
         },
-        # Level 2: 2 beams, 4 mirrors
+        # Level 2: 2 beams, 4 mirrors — two separate paths
+        # Red:  (1,3) RIGHT -> (8,3) \\ -> DOWN -> (8,9) \\ -> RIGHT -> receptor (16,9)
+        # Blue: (1,13) RIGHT -> (8,13) \\ -> DOWN -> (8,17) \\ -> RIGHT -> receptor (16,17)
+        # Solution: rotate mirrors 0,2 from / to \\
         {
-            "cell_cols": 13, "cell_rows": 17,
-            "num_beams": 2, "num_mirrors": 4, "max_moves": 60,
-            "color_filters": False,
+            "emitters": [
+                (1, 3, RED, (1, 0)),
+                (1, 13, BLUE, (1, 0)),
+            ],
+            "receptors": [
+                (16, 9, RED),
+                (16, 17, BLUE),
+            ],
+            "mirrors": [
+                (8, 3, 1, None),     # red path, starts /, needs \\
+                (8, 9, 0, None),     # red path, starts \\ (correct)
+                (8, 13, 1, None),    # blue path, starts /, needs \\
+                (8, 17, 0, None),    # blue path, starts \\ (correct)
+            ],
+            "player": (4, 11),
+            "exit": (2, 18),
+            "max_moves": 50,
         },
-        # Level 3: 2 beams, 5 mirrors, some color-filtered
+        # Level 3: 2 beams, 5 mirrors (1 color-filtered)
+        # Red:  (1,4) RIGHT -> (7,4) \\ -> DOWN -> (7,11) \\ -> RIGHT -> receptor (17,11)
+        # Blue: (1,15) RIGHT -> (12,15) / -> UP -> (12,8) / -> RIGHT -> receptor (17,8)
+        # Separate columns (7 vs 12) so beams don't cross each other's mirrors
+        # Mirror 4 at (15,6) is RED-only filter (decoy)
+        # Solution: rotate mirrors 0,1 to \\; rotate mirrors 2,3 to /
         {
-            "cell_cols": 15, "cell_rows": 19,
-            "num_beams": 2, "num_mirrors": 5, "max_moves": 55,
-            "color_filters": True,
+            "emitters": [
+                (1, 4, RED, (1, 0)),
+                (1, 15, BLUE, (1, 0)),
+            ],
+            "receptors": [
+                (17, 11, RED),
+                (17, 8, BLUE),
+            ],
+            "mirrors": [
+                (7, 4, 1, None),     # red, starts /, needs \\
+                (7, 11, 1, None),    # red, starts /, needs \\
+                (12, 15, 0, None),   # blue, starts \\, needs /
+                (12, 8, 0, None),    # blue, starts \\, needs /
+                (15, 6, 1, RED),     # color-filtered decoy
+            ],
+            "player": (5, 10),
+            "exit": (2, 18),
+            "max_moves": 50,
         },
-        # Level 4: 3 beams, 6 mirrors, tight move budget, color filters
+        # Level 4: 3 beams, 6 mirrors
+        # Red:    (1,2) RIGHT -> (7,2) \\ -> DOWN -> (7,7) \\ -> RIGHT -> receptor (17,7)
+        # Blue:   (1,10) RIGHT -> (11,10) \\ -> DOWN -> (11,14) \\ -> RIGHT -> receptor (17,14)
+        # Yellow: (1,17) RIGHT -> (14,17) / -> UP -> (14,4) / -> RIGHT -> receptor (17,4)
+        # Solution: rotate 0,1,2,3 to \\; rotate 4,5 to /
         {
-            "cell_cols": 17, "cell_rows": 19,
-            "num_beams": 3, "num_mirrors": 6, "max_moves": 45,
-            "color_filters": True,
+            "emitters": [
+                (1, 2, RED, (1, 0)),
+                (1, 10, BLUE, (1, 0)),
+                (1, 17, YELLOW, (1, 0)),
+            ],
+            "receptors": [
+                (17, 7, RED),
+                (17, 14, BLUE),
+                (17, 4, YELLOW),
+            ],
+            "mirrors": [
+                (7, 2, 1, None),     # red, starts /, needs \\
+                (7, 7, 1, None),     # red, starts /, needs \\
+                (11, 10, 1, None),   # blue, starts /, needs \\
+                (11, 14, 1, None),   # blue, starts /, needs \\
+                (14, 17, 0, None),   # yellow, starts \\, needs /
+                (14, 4, 0, None),    # yellow, starts \\, needs /
+            ],
+            "player": (5, 18),
+            "exit": (2, 18),
+            "max_moves": 50,
         },
     ]
 
@@ -246,28 +291,54 @@ def _level_configs():
 # Game class
 # ---------------------------------------------------------------------------
 
+class MirrorHUD(RenderableUserDisplay):
+    """Writes move bar and receptor dots directly onto the frame buffer."""
+
+    def __init__(self, game: "MirrorMazeGame"):
+        self.game = game
+
+    def render_interface(self, frame: np.ndarray) -> np.ndarray:
+        # Clear HUD area
+        frame[60:64, :] = HUD_BG
+
+        # Move bar: 60px wide, drops 6px per 10% used
+        g = self.game
+        pct = g._moves_left / g._max_moves if g._max_moves > 0 else 0
+        tens = int(pct * 10)  # 10=full, 0=empty
+        fill_w = tens * 6
+        bar_color = EXIT_OPEN if tens > 2 else RED
+        for px in range(60):
+            frame[62, 2 + px] = bar_color if px < fill_w else WALL
+
+        # Receptor status dots on row 63
+        for i, (rname, is_hit) in enumerate(g._receptor_hit.items()):
+            color = g._receptor_colors[rname] if is_hit else DIMMED
+            frame[63, 6 + i * 5] = color
+            frame[63, 7 + i * 5] = color
+
+        return frame
+
+
 class MirrorMazeGame(ARCBaseGame):
-    """Game 04: Mirror Maze — navigate, rotate mirrors, direct beams to receptors."""
+    """Game 04: Mirror Maze — navigate open grid, rotate mirrors, direct beams."""
 
     def __init__(self, seed: int = 0):
         self._seed = seed
-        self._rng = random.Random(seed)
         self._cfgs = _level_configs()
 
-        # Per-level state
         self._moves_left = 0
         self._max_moves = 0
-        self._mirror_orientations: Dict[str, int] = {}  # mirror_name -> 0 or 1
-        self._mirror_color_filters: Dict[str, Optional[int]] = {}  # mirror_name -> color or None
-        self._emitter_dirs: Dict[str, Tuple[int, int]] = {}  # emitter_name -> (dx, dy)
-        self._emitter_colors: Dict[str, int] = {}
+        self._mirror_orientations: Dict[str, int] = {}
+        self._mirror_color_filters: Dict[str, Optional[int]] = {}
+        self._emitter_data: List[Tuple[int, int, int, Tuple[int, int]]] = []
         self._receptor_colors: Dict[str, int] = {}
         self._receptor_hit: Dict[str, bool] = {}
         self._exit_open = False
         self._num_receptors = 0
+        self._hud = MirrorHUD(self)
 
         levels = [Level(sprites=[], grid_size=(GRID, GRID)) for _ in self._cfgs]
-        camera = Camera(0, 0, GRID, GRID, BG, HUD_BG)
+        camera = Camera(0, 0, GRID, GRID, BG, HUD_BG, [self._hud])
         super().__init__(
             game_id="game_04_mirror_maze",
             levels=levels,
@@ -283,180 +354,114 @@ class MirrorMazeGame(ARCBaseGame):
 
     def on_set_level(self, level):
         level_idx = self._levels.index(level)
-        rng = random.Random(self._seed * 100 + level_idx)
         cfg = self._cfgs[level_idx]
 
-        cell_cols = cfg["cell_cols"]
-        cell_rows = cfg["cell_rows"]
-        num_beams = cfg["num_beams"]
-        num_mirrors = cfg["num_mirrors"]
         self._max_moves = cfg["max_moves"]
         self._moves_left = cfg["max_moves"]
-        use_color_filters = cfg["color_filters"]
+        self._exit_open = False
 
-        # Generate open maze
-        maze = _carve_maze(rng, cell_cols, cell_rows)
+        # Border walls (top, bottom, left, right of play area)
+        for c in range(PLAY_COLS):
+            for r in [0, PLAY_ROWS - 1]:
+                w = _make_wall()
+                w.set_position(c * CELL, r * CELL)
+                level.add_sprite(w)
+        for r in range(PLAY_ROWS):
+            for c in [0, PLAY_COLS - 1]:
+                w = _make_wall()
+                w.set_position(c * CELL, r * CELL)
+                level.add_sprite(w)
 
-        # Gather floor cells
-        floor_cells = []
-        for r in range(cell_rows):
-            for c in range(cell_cols):
-                if maze[r, c] == 0:
-                    floor_cells.append((r, c))
-        rng.shuffle(floor_cells)
-        used = set()
-
-        def _take():
-            while floor_cells:
-                cell = floor_cells.pop()
-                if cell not in used:
-                    used.add(cell)
-                    return cell
-            return None
-
-        # Place walls
-        for r in range(cell_rows):
-            for c in range(cell_cols):
-                if maze[r, c] == 1:
-                    w = _make_wall()
-                    w.set_position(c * CELL, r * CELL)
-                    level.add_sprite(w)
-
-        # Place player
-        player_cell = _take()
-        player = _make_player()
-        player.set_position(player_cell[1] * CELL, player_cell[0] * CELL)
-        level.add_sprite(player)
-
-        # Choose beam colors
-        beam_colors = list(BEAM_COLORS[:num_beams])
-
-        # Place emitters on left edge (column 0 floor cells, or nearest floor)
-        self._emitter_dirs = {}
-        self._emitter_colors = {}
-        edge_floors = [(r, c) for r, c in floor_cells if c <= 1 and (r, c) not in used]
-        if not edge_floors:
-            edge_floors = [(r, c) for r, c in floor_cells if (r, c) not in used]
-
-        for i, color in enumerate(beam_colors):
-            if edge_floors:
-                cell = edge_floors.pop(0)
-                used.add(cell)
-            else:
-                cell = _take()
-            if cell is None:
-                continue
+        # Place emitters
+        self._emitter_data = []
+        for i, (cx, cy, color, direction) in enumerate(cfg["emitters"]):
             emitter = _make_emitter(color, i)
-            emitter.set_position(cell[1] * CELL, cell[0] * CELL)
+            emitter.set_position(cx * CELL, cy * CELL)
             level.add_sprite(emitter)
-            self._emitter_dirs[f"emitter_{i}"] = RIGHT  # beams go right
-            self._emitter_colors[f"emitter_{i}"] = color
+            self._emitter_data.append((cx, cy, color, direction))
 
-        # Place receptors on right side
+        # Place receptors
         self._receptor_colors = {}
         self._receptor_hit = {}
-        right_floors = [(r, c) for r, c in floor_cells
-                        if c >= cell_cols - 3 and (r, c) not in used]
-        if not right_floors:
-            right_floors = [(r, c) for r, c in floor_cells if (r, c) not in used]
-
-        for i, color in enumerate(beam_colors):
-            if right_floors:
-                cell = right_floors.pop(0)
-                used.add(cell)
-            else:
-                cell = _take()
-            if cell is None:
-                continue
+        for i, (cx, cy, color) in enumerate(cfg["receptors"]):
             receptor = _make_receptor(color, i)
-            receptor.set_position(cell[1] * CELL, cell[0] * CELL)
+            receptor.set_position(cx * CELL, cy * CELL)
             level.add_sprite(receptor)
             self._receptor_colors[f"receptor_{i}"] = color
             self._receptor_hit[f"receptor_{i}"] = False
-
         self._num_receptors = len(self._receptor_colors)
 
         # Place mirrors
         self._mirror_orientations = {}
         self._mirror_color_filters = {}
-        for i in range(num_mirrors):
-            cell = _take()
-            if cell is None:
-                break
-            orientation = rng.randint(0, 1)
-            color_filter = None
-            if use_color_filters and i < len(beam_colors) and rng.random() < 0.4:
-                color_filter = beam_colors[i % len(beam_colors)]
-            mirror = _make_mirror(orientation, i, color_filter)
-            mirror.set_position(cell[1] * CELL, cell[0] * CELL)
+        for i, (cx, cy, orient, cf) in enumerate(cfg["mirrors"]):
+            mirror = _make_mirror(orient, i, cf)
+            mirror.set_position(cx * CELL, cy * CELL)
             level.add_sprite(mirror)
-            self._mirror_orientations[f"mirror_{i}"] = orientation
-            self._mirror_color_filters[f"mirror_{i}"] = color_filter
+            self._mirror_orientations[f"mirror_{i}"] = orient
+            self._mirror_color_filters[f"mirror_{i}"] = cf
 
-        # Place exit door
-        exit_cell = _take()
-        self._exit_open = False
-        if exit_cell:
-            exit_sprite = _make_exit(False)
-            exit_sprite.set_position(exit_cell[1] * CELL, exit_cell[0] * CELL)
-            level.add_sprite(exit_sprite)
+        # Place player
+        px, py = cfg["player"]
+        player = _make_player()
+        player.set_position(px * CELL, py * CELL)
+        level.add_sprite(player)
 
-        # Initial beam trace and HUD
+        # Place exit
+        ex, ey = cfg["exit"]
+        exit_sprite = _make_exit(False)
+        exit_sprite.set_position(ex * CELL, ey * CELL)
+        level.add_sprite(exit_sprite)
+
         self._trace_all_beams()
-        self._render_hud()
+        # HUD auto-renders via MirrorHUD RenderableUserDisplay
 
     # ------------------------------------------------------------------
     # Beam tracing
     # ------------------------------------------------------------------
 
     def _trace_all_beams(self):
-        """Trace all beams from emitters through mirrors. Update receptor hit status."""
+        """Trace beams from emitters through mirrors. Render beam paths as
+        full CELL-wide colored strips so they're clearly visible."""
         level = self.current_level
 
-        # Remove old beam path sprites
+        # Remove old beam sprites
         for s in list(level.get_sprites_by_tag("beam_path")):
             level.remove_sprite(s)
 
-        # Reset receptor hits
-        for key in self._receptor_hit:
-            self._receptor_hit[key] = False
+        # Reset receptor visuals and hit state
+        for rname in self._receptor_hit:
+            self._receptor_hit[rname] = False
+        for s in level.get_sprites_by_tag("receptor"):
+            color = self._receptor_colors.get(s.name, DIMMED)
+            s.pixels[0] = [DIMMED, DIMMED, DIMMED]
+            s.pixels[2] = [DIMMED, DIMMED, DIMMED]
 
-        # Build a spatial map: cell (cx, cy) -> sprite name for mirrors/receptors/walls
+        # Build spatial map of collidable objects
         sprite_map: Dict[Tuple[int, int], Sprite] = {}
         for s in level._sprites:
             if s.is_visible and s.is_collidable:
-                cx = s.x // CELL
-                cy = s.y // CELL
-                if "mirror" in s.tags or "receptor" in s.tags or "emitter" in s.tags:
-                    sprite_map[(cx, cy)] = s
-                elif s.name == "wall":
+                cx, cy = s.x // CELL, s.y // CELL
+                if any(tag in s.tags for tag in ["mirror", "receptor", "emitter"]) or s.name == "wall":
                     sprite_map[(cx, cy)] = s
 
         beam_idx = 0
-        for ename, direction in self._emitter_dirs.items():
-            emitters = level.get_sprites_by_name(ename)
-            if not emitters:
-                continue
-            emitter = emitters[0]
-            color = self._emitter_colors[ename]
-            cx = emitter.x // CELL
-            cy = emitter.y // CELL
+        for i, (ecx, ecy, color, direction) in enumerate(self._emitter_data):
+            cx, cy = ecx, ecy
             dx, dy = direction
 
-            # Trace beam
-            visited = set()
-            max_steps = 200
-            for _ in range(max_steps):
+            visited: Set[Tuple[int, int, int, int]] = set()
+            for _ in range(100):
                 cx += dx
                 cy += dy
 
                 # Out of bounds
-                if cx < 0 or cx >= GRID // CELL or cy < 0 or cy >= 20:
+                if cx < 0 or cx >= PLAY_COLS or cy < 0 or cy >= PLAY_ROWS:
                     break
 
                 state_key = (cx, cy, dx, dy)
                 if state_key in visited:
-                    break  # loop detection
+                    break
                 visited.add(state_key)
 
                 hit = sprite_map.get((cx, cy))
@@ -466,44 +471,42 @@ class MirrorMazeGame(ARCBaseGame):
                     if "emitter" in hit.tags:
                         break
                     if "receptor" in hit.tags:
-                        # Check if beam color matches
                         rname = hit.name
-                        if rname in self._receptor_colors:
-                            if self._receptor_colors[rname] == color:
-                                self._receptor_hit[rname] = True
-                                # Light up the receptor
-                                hit.pixels[0] = [RECEPTOR_LIT, RECEPTOR_LIT, RECEPTOR_LIT]
-                                hit.pixels[2] = [RECEPTOR_LIT, RECEPTOR_LIT, RECEPTOR_LIT]
+                        if rname in self._receptor_colors and self._receptor_colors[rname] == color:
+                            self._receptor_hit[rname] = True
+                            hit.pixels[0] = [RECEPTOR_LIT, RECEPTOR_LIT, RECEPTOR_LIT]
+                            hit.pixels[2] = [RECEPTOR_LIT, RECEPTOR_LIT, RECEPTOR_LIT]
                         break
                     if "mirror" in hit.tags:
                         mname = hit.name
                         m_filter = self._mirror_color_filters.get(mname)
                         if m_filter is not None and m_filter != color:
-                            # Mirror doesn't reflect this color — beam passes through
-                            # Draw beam pixel and continue same direction
-                            pass
+                            pass  # beam passes through
                         else:
-                            orientation = self._mirror_orientations[mname]
-                            dx, dy = _reflect(dx, dy, orientation)
+                            dx, dy = _reflect(dx, dy, self._mirror_orientations[mname])
                         continue
 
-                # Draw beam path pixel at this cell
-                bpx = [[color]]
+                # Draw beam as full 3x1 or 1x3 strip depending on direction
+                if dx != 0:  # horizontal beam
+                    bpx = [[color], [color], [color]]
+                else:  # vertical beam
+                    bpx = [[color, color, color]]
                 bp = Sprite(pixels=bpx, name=f"beam_{beam_idx}",
                             visible=True, collidable=False, tags=["beam_path"])
-                bp.set_position(cx * CELL + CELL // 2, cy * CELL + CELL // 2)
+                bp.set_position(cx * CELL + (0 if dx != 0 else 0),
+                                cy * CELL + (0 if dy != 0 else 0))
                 level.add_sprite(bp)
                 beam_idx += 1
 
-        # Check if all receptors are hit -> open exit
+        # Update exit door
         all_hit = all(self._receptor_hit.values()) and self._num_receptors > 0
         if all_hit != self._exit_open:
             self._exit_open = all_hit
             exits = level.get_sprites_by_tag("exit")
             if exits:
-                old_exit = exits[0]
-                ex, ey = old_exit.x, old_exit.y
-                level.remove_sprite(old_exit)
+                old = exits[0]
+                ex, ey = old.x, old.y
+                level.remove_sprite(old)
                 new_exit = _make_exit(all_hit)
                 new_exit.set_position(ex, ey)
                 level.add_sprite(new_exit)
@@ -512,48 +515,8 @@ class MirrorMazeGame(ARCBaseGame):
     # HUD
     # ------------------------------------------------------------------
 
-    def _render_hud(self):
-        level = self.current_level
-
-        for s in list(level.get_sprites_by_tag("hud")):
-            level.remove_sprite(s)
-
-        # HUD background
-        hud_bg = [[HUD_BG] * GRID for _ in range(4)]
-        bg_sprite = Sprite(pixels=hud_bg, name="hud_bg", visible=True,
-                           collidable=False, tags=["hud"])
-        bg_sprite.set_position(0, 60)
-        level.add_sprite(bg_sprite)
-
-        # Move counter bar on row 62
-        if self._max_moves > 0:
-            fill_width = max(0, int(50 * self._moves_left / self._max_moves))
-        else:
-            fill_width = 0
-
-        border_px = [[HUD_BORDER] * 52]
-        border = Sprite(pixels=border_px, name="move_border", visible=True,
-                        collidable=False, tags=["hud"])
-        border.set_position(6, 62)
-        level.add_sprite(border)
-
-        if fill_width > 0:
-            # Color shifts from green to red as moves deplete
-            bar_color = EXIT_OPEN if self._moves_left > self._max_moves // 4 else RED
-            fill_px = [[bar_color] * fill_width]
-            fill = Sprite(pixels=fill_px, name="move_fill", visible=True,
-                          collidable=False, tags=["hud"])
-            fill.set_position(7, 62)
-            level.add_sprite(fill)
-
-        # Receptor status dots on row 63
-        for i, (rname, is_hit) in enumerate(self._receptor_hit.items()):
-            color = self._receptor_colors[rname] if is_hit else DIMMED
-            dot_px = [[color, color]]
-            dot = Sprite(pixels=dot_px, name=f"rdot_{i}", visible=True,
-                         collidable=False, tags=["hud"])
-            dot.set_position(6 + i * 5, 63)
-            level.add_sprite(dot)
+    # HUD is rendered by MirrorHUD (RenderableUserDisplay) — writes directly
+    # to frame buffer after sprites are rendered, so no sprite layering issues.
 
     # ------------------------------------------------------------------
     # Helpers
@@ -564,7 +527,6 @@ class MirrorMazeGame(ARCBaseGame):
         return sprites[0] if sprites else None
 
     def _find_adjacent_mirror(self, player: Sprite) -> Optional[str]:
-        """Find a mirror sprite adjacent to the player (within 1 cell)."""
         px, py = player.x // CELL, player.y // CELL
         for s in self.current_level.get_sprites_by_tag("mirror"):
             mx, my = s.x // CELL, s.y // CELL
@@ -584,35 +546,38 @@ class MirrorMazeGame(ARCBaseGame):
 
         action = self.action.id
 
+        # RESET doesn't cost a move
+        if action == GameAction.RESET:
+            self.complete_action()
+            return
+
+        # Every other action costs a move (even blocked ones)
+        self._moves_left -= 1
+
+        # Check depletion immediately — reset and stop
+        if self._moves_left <= 0:
+            self.level_reset()
+            self.complete_action()
+            return
+
         if action == GameAction.ACTION5:
-            # Rotate adjacent mirror
             mirror_name = self._find_adjacent_mirror(player)
             if mirror_name is not None:
-                old_orient = self._mirror_orientations[mirror_name]
-                new_orient = 1 - old_orient
+                new_orient = 1 - self._mirror_orientations[mirror_name]
                 self._mirror_orientations[mirror_name] = new_orient
 
-                # Update mirror sprite visually
                 mirrors = self.current_level.get_sprites_by_name(mirror_name)
                 if mirrors:
-                    old_mirror = mirrors[0]
-                    mx, my = old_mirror.x, old_mirror.y
-                    self.current_level.remove_sprite(old_mirror)
-
+                    old = mirrors[0]
+                    mx, my = old.x, old.y
+                    self.current_level.remove_sprite(old)
                     idx = int(mirror_name.split("_")[1])
                     cf = self._mirror_color_filters.get(mirror_name)
-                    new_mirror = _make_mirror(new_orient, idx, cf)
-                    new_mirror.set_position(mx, my)
-                    self.current_level.add_sprite(new_mirror)
+                    new_m = _make_mirror(new_orient, idx, cf)
+                    new_m.set_position(mx, my)
+                    self.current_level.add_sprite(new_m)
 
-                # Re-trace beams
                 self._trace_all_beams()
-                self._render_hud()
-
-                # Uses a move
-                self._moves_left -= 1
-                if self._moves_left <= 0:
-                    self.lose()
 
             self.complete_action()
             return
@@ -634,26 +599,12 @@ class MirrorMazeGame(ARCBaseGame):
         collided = self.try_move("player", dx, dy)
 
         if not collided:
-            # Successful move
-            self._moves_left -= 1
-
-            # Check if player stepped on open exit
             if self._exit_open:
                 exits = self.current_level.get_sprites_by_tag("exit")
-                if exits:
-                    ex_sprite = exits[0]
-                    if player.x == ex_sprite.x and player.y == ex_sprite.y:
-                        self.next_level()
-                        self.complete_action()
-                        return
-
-            if self._moves_left <= 0:
-                self.lose()
-                self.complete_action()
-                return
-
-            # Re-trace beams (player position blocks beams)
+                if exits and player.x == exits[0].x and player.y == exits[0].y:
+                    self.next_level()
+                    self.complete_action()
+                    return
             self._trace_all_beams()
 
-        self._render_hud()
         self.complete_action()

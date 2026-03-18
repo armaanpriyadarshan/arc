@@ -14,7 +14,7 @@ Controls:
     Left Click      = ACTION6 (click at grid position)
     Z               = ACTION7 (undo)
     R               = Restart current level
-    Shift+R         = Full reset (back to level 0)
+    Cmd+R / Ctrl+R  = Full reset (back to level 0)
     ESC / Q         = Quit
 
 Requires: pip install pygame
@@ -186,13 +186,21 @@ def main():
 
                 elif event.key == pygame.K_r:
                     mods = pygame.key.get_mods()
-                    if mods & pygame.KMOD_SHIFT:
-                        # Shift+R: full reset (back to level 0)
-                        frame = game.perform_action(ActionInput(id=GameAction.RESET))
+                    if mods & (pygame.KMOD_META | pygame.KMOD_CTRL):
+                        # Cmd+R / Ctrl+R: full reset (back to level 0)
+                        game.full_reset()
                     else:
                         # R: restart current level
                         game.level_reset()
-                        frame = game.perform_action(ActionInput(id=GameAction.RESET))
+                    # Render directly — avoid perform_action(RESET) which
+                    # calls handle_reset and triggers full_reset (because
+                    # set_level always zeros _action_count).
+                    rendered = game.camera.render(game.current_level.get_sprites())
+                    frame = argparse.Namespace(
+                        frame=[rendered.tolist()],
+                        state=game._state,
+                        levels_completed=game._score,
+                    )
                     pygame.display.set_caption(f"ARC Synthetic: {args.game} (seed={args.seed})")
                     render_frame(frame)
 
@@ -205,7 +213,7 @@ def main():
                         continue
                     if cur_state == "GAME_OVER":
                         pygame.display.set_caption(
-                            f"GAME OVER — {args.game} (R to restart level, Shift+R for level 0)")
+                            f"GAME OVER — {args.game} (R to restart level, Cmd+R for level 0)")
                         continue
 
                     ga = key_to_action[event.key]
@@ -220,7 +228,7 @@ def main():
                                 f"YOU WIN! — {args.game} — All levels complete! (R to play again)")
                         elif new_state == "GAME_OVER":
                             pygame.display.set_caption(
-                                f"GAME OVER — {args.game} (R to restart level, Shift+R for level 0)")
+                                f"GAME OVER — {args.game} (R to restart level, Cmd+R for level 0)")
 
             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 # Block clicks if game is over or won

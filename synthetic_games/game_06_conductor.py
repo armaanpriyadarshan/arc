@@ -327,9 +327,9 @@ def _level_configs():
                 [(8,6), (9,6), (10,6), (11,6), (12,6)],
                 # Top entry
                 [(8,1), (8,2), (8,3), (8,4)],
-                # Switch 3 at (8,4): left or right
+                # Switch 3 at (8,4): right to station or down to middle
                 [(8,4), (9,4)],
-                [(8,4), (7,4), (6,4)],
+                [(8,4), (8,5), (8,6)],
                 # Bottom entry
                 [(4,12), (5,12), (6,12), (7,12), (8,12)],
                 # Switch 4 at (8,12): up or right
@@ -339,7 +339,7 @@ def _level_configs():
             "switches": [
                 ((5,6), (6,6), (5,5)),
                 ((8,6), (9,6), (8,7)),
-                ((8,4), (9,4), (7,4)),
+                ((8,4), (9,4), (8,5)),
                 ((8,12), (8,11), (9,12)),
             ],
             "stations": [
@@ -558,6 +558,10 @@ class ConductorGame(ARCBaseGame):
 
     def step(self):
         action = self.action.id
+
+        if action == GameAction.RESET:
+            self.complete_action()
+            return
 
         if action == GameAction.ACTION5:
             # Toggle pause
