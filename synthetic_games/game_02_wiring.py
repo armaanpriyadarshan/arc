@@ -5,21 +5,21 @@ Mechanics: Click-to-place wires + signal propagation + color mixing + toggle swi
 
 The grid shows power sources (colored squares on the left edge) and light bulbs
 (on the right edge) that need to be lit. The player clicks empty cells (ACTION6)
-to place wire segments. Wires propagate the color of whatever power source they
-connect to. If two different-colored signals meet at a wire, they mix
-(red + blue = purple, red + yellow = orange, blue + yellow = green). Each bulb
-requires a specific color. Toggle switches on the grid flip which power sources
-are active. The player must wire the grid AND set switches correctly so all
-bulbs receive the right color. ACTION5 toggles the nearest switch. Clicking an
-existing wire removes it.
+to place wire segments. Clicking an existing wire removes it. Clicking a switch
+toggles which power sources are active. Wires propagate the color of whatever
+power source they connect to. If two different-colored signals meet at a wire,
+they mix (red + blue = purple, red + yellow = orange, blue + yellow = green).
+Each bulb requires a specific color — shown as the colored center of the bulb
+at all times. The player must wire the grid AND set switches correctly so all
+bulbs receive the right color.
 
 Actions:
-    ACTION5 = Toggle nearest switch (within 8px)
-    ACTION6 = Click to place/remove wire segment at cell
+    ACTION6 = Click to place/remove wire, or toggle a switch
 
 Display:
     Left column:   power sources (colored squares, dimmed when off)
-    Right column:  light bulbs (bordered, filled when correctly lit)
+    Right column:  light bulbs (aqua border = unlit, green border = correct,
+                   center always shows required color)
     Row 62-63:     status bar showing how many bulbs are correctly lit
 
 Win condition: All bulbs lit with their required colors.
@@ -38,8 +38,8 @@ Color key:
     10 = green (mixed: blue + yellow)
     11 = orange (mixed: red + yellow)
     12 = dimmed source indicator
-    13 = bulb border (unlit)
-    14 = bulb border (correct)
+    13 = bulb border (unlit / aqua)
+    14 = bulb border (correct / green)
     15 = HUD label / border
 """
 
@@ -92,13 +92,18 @@ BASE_COLORS = [RED, BLUE, YELLOW]
 # - cell_size: pixels per logical cell (the playfield is divided into cells)
 # - sources: list of (row, color, initially_on)
 # - bulb_targets: list of (row, required_color)
-# - switch_positions: list of (cell_row, cell_col) for toggle switches
+# - switches: list of (cell_row, cell_col, source_index) — which source each switch controls
 
 
 def _make_level_configs():
-    """Return configs for 5 levels of increasing difficulty."""
+    """Return configs for 5 levels of increasing difficulty.
+
+    Key constraint: signal propagation is flood-fill, so each bulb must be
+    served by a completely isolated wire network. Two bulbs that need
+    different mixes CANNOT share a source — use duplicate sources instead.
+    """
     return [
-        # Level 0: 1 source, 1 bulb, no switches, just connect wire
+        # Level 0: 1 source, 1 bulb — just connect a wire path (tutorial)
         {
             "cell_size": 6,
             "cols": 8,
@@ -107,7 +112,7 @@ def _make_level_configs():
             "bulbs": [(1, RED)],
             "switches": [],
         },
-        # Level 1: 2 sources, 2 bulbs, no switches — route without crossing
+        # Level 1: 2 sources, 2 bulbs — two separate paths, no mixing
         {
             "cell_size": 6,
             "cols": 8,
@@ -116,7 +121,7 @@ def _make_level_configs():
             "bulbs": [(1, RED), (5, BLUE)],
             "switches": [],
         },
-        # Level 2: 2 sources, 1 bulb needing mixed color (purple = red+blue)
+        # Level 2: 2 sources, 1 bulb — introduce color mixing (purple = red+blue)
         {
             "cell_size": 6,
             "cols": 8,
@@ -125,23 +130,31 @@ def _make_level_configs():
             "bulbs": [(3, PURPLE)],
             "switches": [],
         },
-        # Level 3: 3 sources (one off), 2 bulbs, 1 switch
+        # Level 3: mixing + switch — BLUE is off, must toggle to make purple
         {
             "cell_size": 5,
             "cols": 10,
             "rows": 10,
-            "sources": [(1, RED, True), (4, BLUE, False), (7, YELLOW, True)],
-            "bulbs": [(2, PURPLE), (6, ORANGE)],
-            "switches": [(4, 5)],
+            "sources": [(2, RED, True), (6, BLUE, False)],
+            "bulbs": [(4, PURPLE)],
+            "switches": [(6, 5, 1)],  # switch controls source 1 (BLUE)
         },
-        # Level 4: 3 sources, 3 bulbs (2 mixed), 2 switches
+        # Level 4: two separate mixing circuits + switch
+        # Each mix uses its own dedicated sources (no sharing).
+        # Circuit 1: RED + BLUE -> PURPLE (both on, isolated network)
+        # Circuit 2: RED2 + YELLOW -> ORANGE (RED2 is off, needs switch)
         {
             "cell_size": 4,
             "cols": 12,
             "rows": 12,
-            "sources": [(1, RED, False), (5, BLUE, True), (9, YELLOW, True)],
-            "bulbs": [(1, GREEN), (5, PURPLE), (9, ORANGE)],
-            "switches": [(3, 6), (7, 6)],
+            "sources": [
+                (1, RED, True),      # 0: for purple mix
+                (3, BLUE, True),     # 1: for purple mix
+                (7, RED, False),     # 2: for orange mix (OFF — needs switch)
+                (9, YELLOW, True),   # 3: for orange mix
+            ],
+            "bulbs": [(2, PURPLE), (8, ORANGE)],
+            "switches": [(7, 6, 2)],  # switch controls source 2 (RED, off)
         },
     ]
 
@@ -164,6 +177,7 @@ class WiringGame(ARCBaseGame):
         self._sources: List[Tuple[int, int, bool]] = []  # (row, color, on)
         self._bulbs: List[Tuple[int, int]] = []  # (row, required_color)
         self._switches: List[Tuple[int, int]] = []  # (cell_row, cell_col)
+        self._switch_source_map: List[int] = []  # which source index each switch controls
 
         levels = [Level(sprites=[], grid_size=(GRID, GRID)) for _ in self._level_configs]
         camera = Camera(0, 0, GRID, GRID, BG, HUD_BG)
@@ -171,7 +185,7 @@ class WiringGame(ARCBaseGame):
             game_id="game_02_wiring",
             levels=levels,
             camera=camera,
-            available_actions=[5, 6],
+            available_actions=[6],
             win_score=len(self._level_configs),
             seed=seed,
         )
@@ -190,7 +204,8 @@ class WiringGame(ARCBaseGame):
         self._sources = [(r, c, on) for r, c, on in cfg["sources"]]
         self._source_states = [on for _, _, on in cfg["sources"]]
         self._bulbs = list(cfg["bulbs"])
-        self._switches = list(cfg["switches"])
+        self._switches = [(r, c) for r, c, *_ in cfg["switches"]]
+        self._switch_source_map = [s[2] for s in cfg["switches"]]
 
         self._wire_grid = np.zeros((self._rows, self._cols), dtype=int)
         self._signal_grid = np.zeros((self._rows, self._cols), dtype=int)
@@ -350,7 +365,8 @@ class WiringGame(ARCBaseGame):
             x, y = self._cell_to_pixel(src_row, 0)
             _add(px_block, x + 1, y + 1, name=f"source_{i}", tags=["source"])
 
-        # Draw bulbs (last column)
+        # Draw bulbs (last column) — center always shows required color,
+        # border indicates lit (green) vs unlit (aqua)
         for i, (bulb_row, req_color) in enumerate(self._bulbs):
             received = self._signal_grid[bulb_row, self._cols - 1]
             lit = received == req_color and received != 0
@@ -362,24 +378,25 @@ class WiringGame(ARCBaseGame):
             border_px = [[border_color] * cs for _ in range(cs)]
             x, y = self._cell_to_pixel(bulb_row, self._cols - 1)
             _add(border_px, x, y, name=f"bulb_border_{i}")
-            # Inner fill: show required color (bright if lit, dimmed if not)
-            fill_color = req_color if lit else DIMMED
-            fill_px = [[fill_color] * inner for _ in range(inner)]
+            # Inner fill: ALWAYS show the required color so player knows what's needed
+            fill_px = [[req_color] * inner for _ in range(inner)]
             _add(fill_px, x + 1, y + 1, name=f"bulb_fill_{i}", tags=["bulb"])
 
-        # Draw switches
+        # Draw switches — border shows on/off state, inner shows source color
         for i, (sw_row, sw_col) in enumerate(self._switches):
-            # Find if this switch is "on" — switches toggle source at matching index
-            # For simplicity, each switch toggles source[i] if i < len(sources)
-            frame_color = SWITCH_ON if self._get_switch_visual(i) else SWITCH_OFF
+            is_on = self._get_switch_visual(i)
+            frame_color = SWITCH_ON if is_on else SWITCH_OFF
             inner = cs - 2
             if inner < 1:
                 inner = 1
             frame_px = [[frame_color] * cs for _ in range(cs)]
             x, y = self._cell_to_pixel(sw_row, sw_col)
             _add(frame_px, x, y, name=f"switch_{i}", tags=["switch"])
-            # Inner marker
-            mark_px = [[HUD_BORDER] * inner for _ in range(inner)]
+            # Inner marker: show the color of the source this switch controls
+            src_idx = self._switch_source_map[i]
+            src_color = self._sources[src_idx][1] if src_idx < len(self._sources) else HUD_BORDER
+            mark_color = src_color if is_on else DIMMED
+            mark_px = [[mark_color] * inner for _ in range(inner)]
             _add(mark_px, x + 1, y + 1, name=f"switch_mark_{i}")
 
         # Draw wires
@@ -412,12 +429,20 @@ class WiringGame(ARCBaseGame):
             dot_px = [[dot_color] * 3 for _ in range(2)]
             _add(dot_px, 6 + i * 5, 62, name=f"status_dot_{i}")
 
+        # Color mixing reference grid (right side of HUD)
+        # Each row: [color_A 2x2] [color_B 2x2] [result 2x2]
+        recipes = [(RED, BLUE, PURPLE), (RED, YELLOW, ORANGE), (BLUE, YELLOW, GREEN)]
+        ref_x = 40  # right side of HUD
+        for i, (a, b, result) in enumerate(recipes):
+            y = 60 + i
+            _add([[a, a, BG, b, b, BG, result, result]], ref_x, y,
+                 name=f"mix_ref_{i}", tags=["hud"])
+
     def _get_switch_visual(self, switch_idx: int) -> bool:
-        """Whether switch visually shows ON. Each switch toggles the source
-        that was initially OFF (or cycles through sources)."""
-        # Each switch is linked to a source by index
-        if switch_idx < len(self._source_states):
-            return self._source_states[switch_idx]
+        """Whether switch visually shows ON based on its linked source state."""
+        src_idx = self._switch_source_map[switch_idx]
+        if src_idx < len(self._source_states):
+            return self._source_states[src_idx]
         return False
 
     # ------------------------------------------------------------------
@@ -428,7 +453,6 @@ class WiringGame(ARCBaseGame):
         action = self.action.id
 
         if action == GameAction.ACTION6:
-            # Click to place or remove wire
             x = self.action.data.get("x", 0)
             y = self.action.data.get("y", 0)
             coords = self.camera.display_to_grid(x, y)
@@ -437,64 +461,35 @@ class WiringGame(ARCBaseGame):
                 cell = self._pixel_to_cell(gx, gy)
                 if cell:
                     row, col = cell
-                    # Don't place wires on source column (0), bulb column (last),
-                    # or switch cells
-                    if col > 0 and col < self._cols - 1:
-                        is_switch = any(sr == row and sc == col
-                                        for sr, sc in self._switches)
-                        if not is_switch:
-                            # Toggle wire
-                            if self._wire_grid[row, col] == 1:
-                                self._wire_grid[row, col] = 0
-                            else:
-                                self._wire_grid[row, col] = 1
 
-                            # Re-propagate and re-render
-                            self._propagate_signals()
-                            self._render_full()
+                    # Check if clicked cell is a switch — toggle it
+                    switch_idx = self._get_switch_at(row, col)
+                    if switch_idx is not None:
+                        # Toggle the source this switch controls
+                        src_idx = self._switch_source_map[switch_idx]
+                        if src_idx < len(self._source_states):
+                            self._source_states[src_idx] = not self._source_states[src_idx]
+                        self._propagate_signals()
+                        self._render_full()
+                        if self._check_bulbs():
+                            self.next_level()
 
-                            # Check win
-                            if self._check_bulbs():
-                                self.next_level()
-
-        elif action == GameAction.ACTION5:
-            # Toggle nearest switch
-            # Find which switch the player might be targeting
-            # Use click position if available, otherwise toggle first switch
-            x = self.action.data.get("x", 0) if hasattr(self.action, 'data') and self.action.data else 0
-            y = self.action.data.get("y", 0) if hasattr(self.action, 'data') and self.action.data else 0
-
-            best_idx = self._find_nearest_switch(x, y)
-            if best_idx is not None:
-                # Toggle the source linked to this switch
-                src_idx = best_idx
-                if src_idx < len(self._source_states):
-                    self._source_states[src_idx] = not self._source_states[src_idx]
-
-                # Re-propagate and re-render
-                self._propagate_signals()
-                self._render_full()
-
-                # Check win
-                if self._check_bulbs():
-                    self.next_level()
+                    # Otherwise, place/remove wire (not on source or bulb columns)
+                    elif 0 < col < self._cols - 1:
+                        if self._wire_grid[row, col] == 1:
+                            self._wire_grid[row, col] = 0
+                        else:
+                            self._wire_grid[row, col] = 1
+                        self._propagate_signals()
+                        self._render_full()
+                        if self._check_bulbs():
+                            self.next_level()
 
         self.complete_action()
 
-    def _find_nearest_switch(self, px: int, py: int) -> Optional[int]:
-        """Find the switch index nearest to pixel position (px, py)."""
-        if not self._switches:
-            return None
-
-        best_dist = float("inf")
-        best_idx = 0
-        cs = self._cell_size
+    def _get_switch_at(self, row: int, col: int) -> Optional[int]:
+        """Return switch index if a switch is at (row, col), else None."""
         for i, (sr, sc) in enumerate(self._switches):
-            sx = sc * cs + cs // 2
-            sy = sr * cs + cs // 2
-            dist = abs(sx - px) + abs(sy - py)
-            if dist < best_dist:
-                best_dist = dist
-                best_idx = i
-
-        return best_idx
+            if sr == row and sc == col:
+                return i
+        return None

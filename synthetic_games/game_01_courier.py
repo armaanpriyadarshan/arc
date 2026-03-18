@@ -44,7 +44,8 @@ Color key:
 """
 
 import random
-from typing import List, Optional, Tuple
+from collections import deque
+from typing import Dict, List, Optional, Set, Tuple
 
 import numpy as np
 from arcengine import (
@@ -105,10 +106,15 @@ def _make_wall_block() -> Sprite:
     return Sprite(pixels=px, name="wall", visible=True, collidable=True)
 
 
-def _make_fuel_station() -> Sprite:
-    """6x6 (2x2 cells) fuel station."""
-    px = [[FUEL_STATION_COLOR] * 6 for _ in range(6)]
-    return Sprite(pixels=px, name="fuel_station", visible=True, collidable=False)
+def _make_fuel_station(idx: int) -> Sprite:
+    """3x3 (1 cell) fuel station — same size as other objects for reliable collision."""
+    px = [
+        [FUEL_STATION_COLOR, FUEL_STATION_COLOR, FUEL_STATION_COLOR],
+        [FUEL_STATION_COLOR, FUEL_FILL, FUEL_STATION_COLOR],
+        [FUEL_STATION_COLOR, FUEL_STATION_COLOR, FUEL_STATION_COLOR],
+    ]
+    return Sprite(pixels=px, name=f"fuel_station_{idx}", visible=True, collidable=False,
+                  tags=["fuel_station"])
 
 
 def _make_package(color: int, idx: int) -> Sprite:
@@ -159,9 +165,8 @@ def _make_hud_bg() -> Sprite:
 # ---------------------------------------------------------------------------
 
 def _carve_maze(rng: random.Random, cols: int, rows: int) -> np.ndarray:
-    """Generate a simple maze using recursive backtracking.
+    """Generate a maze using recursive backtracking.
     Returns a grid where 0=floor, 1=wall. Grid coords are in cell units.
-    The actual pixel grid is cols*CELL x rows*CELL.
     """
     maze = np.ones((rows, cols), dtype=int)
 
@@ -173,7 +178,6 @@ def _carve_maze(rng: random.Random, cols: int, rows: int) -> np.ndarray:
             if 0 <= nr < rows and 0 <= nc < cols and maze[nr, nc] == 1:
                 yield nr, nc, r + dr // 2, c + dc // 2
 
-    # Start from (1,1)
     stack = [(1, 1)]
     maze[1, 1] = 0
     while stack:
@@ -191,6 +195,78 @@ def _carve_maze(rng: random.Random, cols: int, rows: int) -> np.ndarray:
     return maze
 
 
+def _bfs_distance(maze: np.ndarray, start: Tuple[int, int], end: Tuple[int, int]) -> int:
+    """BFS shortest path distance between two cells on the maze. Returns -1 if unreachable."""
+    rows, cols = maze.shape
+    if start == end:
+        return 0
+    visited: Set[Tuple[int, int]] = {start}
+    queue: deque = deque([(start, 0)])
+    while queue:
+        (r, c), dist = queue.popleft()
+        for dr, dc in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+            nr, nc = r + dr, c + dc
+            if 0 <= nr < rows and 0 <= nc < cols and (nr, nc) not in visited and maze[nr, nc] == 0:
+                if (nr, nc) == end:
+                    return dist + 1
+                visited.add((nr, nc))
+                queue.append(((nr, nc), dist + 1))
+    return -1
+
+
+def _all_reachable(maze: np.ndarray, cells: List[Tuple[int, int]]) -> bool:
+    """Check that all cells are reachable from cells[0] via BFS."""
+    if len(cells) <= 1:
+        return True
+    for target in cells[1:]:
+        if _bfs_distance(maze, cells[0], target) == -1:
+            return False
+    return True
+
+
+def _compute_optimal_route(maze: np.ndarray,
+                           player: Tuple[int, int],
+                           packages: List[Tuple[int, int]],
+                           mailboxes: List[Tuple[int, int]],
+                           fuel_stations: List[Tuple[int, int]]) -> int:
+    """Estimate the minimum distance to collect all packages and deliver them.
+    Returns the total BFS distance for a greedy nearest-first route.
+    This is an upper bound on the optimal route, not the true optimum.
+    """
+    # Build distance cache
+    all_points = [player] + packages + mailboxes + fuel_stations
+    dist_cache: Dict[Tuple[Tuple[int, int], Tuple[int, int]], int] = {}
+    for i, a in enumerate(all_points):
+        for j, b in enumerate(all_points):
+            if i < j:
+                d = _bfs_distance(maze, a, b)
+                dist_cache[(a, b)] = d
+                dist_cache[(b, a)] = d
+
+    # Greedy: pick up nearest package, deliver to its mailbox, repeat
+    total = 0
+    pos = player
+    remaining = list(zip(packages, mailboxes))
+
+    while remaining:
+        # Find nearest package
+        best_idx = 0
+        best_dist = float("inf")
+        for i, (pkg, _) in enumerate(remaining):
+            d = dist_cache.get((pos, pkg), _bfs_distance(maze, pos, pkg))
+            if d < best_dist:
+                best_dist = d
+                best_idx = i
+
+        pkg, mb = remaining.pop(best_idx)
+        d_to_pkg = dist_cache.get((pos, pkg), _bfs_distance(maze, pos, pkg))
+        d_to_mb = dist_cache.get((pkg, mb), _bfs_distance(maze, pkg, mb))
+        total += d_to_pkg + d_to_mb
+        pos = mb
+
+    return total
+
+
 class CourierGame(ARCBaseGame):
     """Game 01: Courier — navigate, collect packages, unlock doors, manage fuel."""
 
@@ -205,13 +281,14 @@ class CourierGame(ARCBaseGame):
         self._delivered_count = 0
         self._total_mailboxes = 0
 
-        # Level definitions (grid_cell_size, num_packages, fuel_budget, num_doors)
+        # Level definitions (grid_cell_size, num_packages, fuel_margin_mult, num_doors)
+        # fuel_margin_mult: fuel = optimal_route_distance * this multiplier
         level_configs = [
-            (11, 1, 80,  0),   # Level 1: small, 1 package, no doors
-            (13, 2, 100, 1),   # Level 2: medium, 2 packages, 1 door
-            (15, 2, 90,  2),   # Level 3: tighter fuel, 2 doors
-            (17, 3, 110, 2),   # Level 4: bigger, more packages
-            (19, 3, 80,  3),   # Level 5: hard — tight fuel, 3 doors
+            (11, 1, 3.0, 0),   # Level 1: small, 1 package, no doors, generous fuel
+            (13, 2, 2.5, 1),   # Level 2: medium, 2 packages, 1 door
+            (15, 2, 2.0, 2),   # Level 3: 2 doors, moderate fuel
+            (17, 3, 2.0, 2),   # Level 4: bigger, more packages
+            (19, 3, 1.8, 3),   # Level 5: tight fuel, 3 doors
         ]
         self._level_configs = level_configs
 
@@ -231,38 +308,56 @@ class CourierGame(ARCBaseGame):
     # ------------------------------------------------------------------
 
     def on_set_level(self, level):
-        """Procedurally generate the level layout."""
+        """Procedurally generate the level layout with solvability guarantee."""
         level_idx = self._levels.index(level)
-        rng = random.Random(self._seed * 100 + level_idx)
 
         cfg = self._level_configs[level_idx]
-        cell_cols, num_packages, fuel_budget, num_doors = cfg
-
-        # Keep cell rows limited so HUD rows are free (rows 0-59 = 20 cell rows)
+        cell_cols, num_packages, fuel_margin_mult, num_doors = cfg
         cell_rows = min(cell_cols, 20)
 
-        # Generate maze in cell coordinates
+        # Retry with different sub-seeds until we get a solvable layout
+        for attempt in range(50):
+            rng = random.Random(self._seed * 1000 + level_idx * 50 + attempt)
+            result = self._try_generate_level(
+                rng, level, cell_cols, cell_rows, num_packages, fuel_margin_mult, num_doors
+            )
+            if result is not None:
+                fuel_budget, total_mailboxes = result
+                self._fuel = fuel_budget
+                self._max_fuel = fuel_budget
+                self._carried_package = None
+                self._delivered_count = 0
+                self._total_mailboxes = total_mailboxes
+                self._render_hud()
+                return
+
+        # Fallback: should never happen, but use last attempt with generous fuel
+        self._fuel = 500
+        self._max_fuel = 500
+        self._carried_package = None
+        self._delivered_count = 0
+        self._total_mailboxes = num_packages
+        self._render_hud()
+
+    def _try_generate_level(self, rng, level, cell_cols, cell_rows,
+                            num_packages, fuel_margin_mult, num_doors) -> Optional[Tuple[int, int]]:
+        """Try to generate a solvable level layout. Returns (fuel_budget, num_mailboxes)
+        on success, None if the layout is unsolvable."""
+        # Clear any existing sprites
+        for s in list(level._sprites):
+            level.remove_sprite(s)
+
         maze = _carve_maze(rng, cell_cols, cell_rows)
 
-        # Gather floor cells (maze == 0)
+        # Gather floor cells
         floor_cells = []
         for r in range(cell_rows):
             for c in range(cell_cols):
                 if maze[r, c] == 0:
                     floor_cells.append((r, c))
-
         rng.shuffle(floor_cells)
 
-        # Place wall sprites
-        for r in range(cell_rows):
-            for c in range(cell_cols):
-                if maze[r, c] == 1:
-                    wall = _make_wall_block()
-                    wall.set_position(c * CELL, r * CELL)
-                    level.add_sprite(wall)
-
-        # Reserve cells for placing objects
-        used_cells = set()
+        used_cells: Set[Tuple[int, int]] = set()
 
         def _take_cell():
             while floor_cells:
@@ -272,70 +367,110 @@ class CourierGame(ARCBaseGame):
                     return cell
             return None
 
-        # Place player
+        # Place objects into cell positions first (don't create sprites yet)
         player_cell = _take_cell()
-        player = _make_player()
-        player.set_position(player_cell[1] * CELL, player_cell[0] * CELL)
-        level.add_sprite(player)
+        if player_cell is None:
+            return None
 
-        # Choose package colors for this level
         available_colors = list(PACKAGE_COLORS)
         rng.shuffle(available_colors)
         colors_used = available_colors[:num_packages]
 
-        # Place packages
-        for i, color in enumerate(colors_used):
+        package_cells = []
+        for color in colors_used:
+            cell = _take_cell()
+            if cell is None:
+                return None
+            package_cells.append((cell, color))
+
+        mailbox_cells = []
+        for color in colors_used:
+            cell = _take_cell()
+            if cell is None:
+                return None
+            mailbox_cells.append((cell, color))
+
+        fuel_cells = []
+        num_fuel = 1 if cell_cols <= 13 else 2
+        for _ in range(num_fuel):
             cell = _take_cell()
             if cell is None:
                 break
-            pkg = _make_package(color, i)
-            pkg.set_position(cell[1] * CELL, cell[0] * CELL)
-            level.add_sprite(pkg)
+            fuel_cells.append(cell)
 
-        # Place mailboxes (one per package color)
-        for i, color in enumerate(colors_used):
-            cell = _take_cell()
-            if cell is None:
-                break
-            mb = _make_mailbox(color, i)
-            mb.set_position(cell[1] * CELL, cell[0] * CELL)
-            level.add_sprite(mb)
-
-        # Place doors (using subset of package colors so player can open them)
+        door_cells = []
         door_colors = list(colors_used)
         rng.shuffle(door_colors)
         for i in range(min(num_doors, len(door_colors))):
             cell = _take_cell()
             if cell is None:
                 break
-            door = _make_door(door_colors[i % len(door_colors)], i)
+            door_cells.append((cell, door_colors[i % len(door_colors)]))
+
+        # Verify solvability: all key locations reachable from player
+        all_key_cells = (
+            [player_cell]
+            + [c for c, _ in package_cells]
+            + [c for c, _ in mailbox_cells]
+            + fuel_cells
+        )
+        if not _all_reachable(maze, all_key_cells):
+            return None
+
+        # Compute optimal route distance and set fuel budget
+        pkg_positions = [c for c, _ in package_cells]
+        mb_positions = [c for c, _ in mailbox_cells]
+        optimal_dist = _compute_optimal_route(maze, player_cell, pkg_positions,
+                                              mb_positions, fuel_cells)
+        if optimal_dist <= 0:
+            return None
+
+        fuel_budget = max(int(optimal_dist * fuel_margin_mult), optimal_dist + 30)
+
+        # Layout is solvable — now create sprites
+        # Walls
+        for r in range(cell_rows):
+            for c in range(cell_cols):
+                if maze[r, c] == 1:
+                    wall = _make_wall_block()
+                    wall.set_position(c * CELL, r * CELL)
+                    level.add_sprite(wall)
+
+        # Player
+        player = _make_player()
+        player.set_position(player_cell[1] * CELL, player_cell[0] * CELL)
+        level.add_sprite(player)
+
+        # Packages
+        for i, (cell, color) in enumerate(package_cells):
+            pkg = _make_package(color, i)
+            pkg.set_position(cell[1] * CELL, cell[0] * CELL)
+            level.add_sprite(pkg)
+
+        # Mailboxes
+        for i, (cell, color) in enumerate(mailbox_cells):
+            mb = _make_mailbox(color, i)
+            mb.set_position(cell[1] * CELL, cell[0] * CELL)
+            level.add_sprite(mb)
+
+        # Doors
+        for i, (cell, color) in enumerate(door_cells):
+            door = _make_door(color, i)
             door.set_position(cell[1] * CELL, cell[0] * CELL)
             level.add_sprite(door)
 
-        # Place fuel station(s) — 1 for small levels, 2 for larger
-        num_fuel = 1 if cell_cols <= 13 else 2
-        for _ in range(num_fuel):
-            cell = _take_cell()
-            if cell is None:
-                break
-            fs = _make_fuel_station()
+        # Fuel stations
+        for i, cell in enumerate(fuel_cells):
+            fs = _make_fuel_station(i)
             fs.set_position(cell[1] * CELL, cell[0] * CELL)
             level.add_sprite(fs)
 
-        # Place HUD background
+        # HUD
         hud = _make_hud_bg()
         hud.set_position(0, 60)
         level.add_sprite(hud)
 
-        # Initialize level state
-        self._fuel = fuel_budget
-        self._max_fuel = fuel_budget
-        self._carried_package = None
-        self._delivered_count = 0
-        self._total_mailboxes = num_packages
-
-        # Render HUD
-        self._render_hud()
+        return (fuel_budget, num_packages)
 
     # ------------------------------------------------------------------
     # HUD
@@ -428,10 +563,9 @@ class CourierGame(ARCBaseGame):
                     level.remove_sprite(mb)
                     break
 
-        # Check fuel stations
-        for fs in level.get_sprites_by_name("fuel_station"):
-            # Fuel station is 6x6, player is 3x3 — overlap if within range
-            if (fs.x <= px < fs.x + 6 and fs.y <= py < fs.y + 6):
+        # Check fuel stations (3x3, same size as player — exact position match)
+        for fs in level.get_sprites_by_tag("fuel_station"):
+            if fs.x == px and fs.y == py:
                 self._fuel = self._max_fuel
                 break
 
@@ -486,9 +620,9 @@ class CourierGame(ARCBaseGame):
             # Check interactions at new position
             self._check_overlap(player)
 
-        # Check fuel depletion — game over
+        # Check fuel depletion — reset level to try again
         if self._fuel <= 0:
-            self.lose()
+            self.level_reset()
             self.complete_action()
             return
 

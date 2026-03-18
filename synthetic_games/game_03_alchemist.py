@@ -369,6 +369,23 @@ class AlchemistHUD(RenderableUserDisplay):
         frame[61, 50:53] = HUD_BORDER
         frame[62, 51] = HUD_BORDER
 
+        # Color mixing reference grid (center of HUD, between slots and target)
+        # Each row: [color_A 2px] [gap] [color_B 2px] [gap] [result 2px] = 8px wide
+        recipes = [
+            (RED, BLUE, PURPLE),
+            (RED, YELLOW, ORANGE),
+            (BLUE, YELLOW, GREEN),
+            (PURPLE, GREEN, WHITE),
+        ]
+        ref_x = 18
+        for i, (a, b, result) in enumerate(recipes):
+            y = 60 + i
+            if y > 63:
+                break
+            frame[y, ref_x:ref_x+2] = a
+            frame[y, ref_x+3:ref_x+5] = b
+            frame[y, ref_x+6:ref_x+8] = result
+
         return frame
 
 
