@@ -412,18 +412,26 @@ class ToolUseAgent:
                     logger.info(f"  [{status}] {claim} | {evidence}")
             logger.info(f"[hypotheses] {len(hypotheses)} claims total")
 
-        # Resolve actions
+        # Resolve actions, filtering against available_actions
+        available_set = set(available)
         actions = []
         for action_name in raw_actions:
             if not isinstance(action_name, str):
                 continue
             try:
-                actions.append(GameAction.from_name(action_name))
+                ga = GameAction.from_name(action_name)
             except (ValueError, KeyError):
                 continue
+            if ga.value in available_set:
+                actions.append(ga)
+            else:
+                logger.warning(f"[filter] {action_name} not in available actions {avail_str}, skipping")
 
         if not actions:
-            actions = [GameAction.ACTION1]
+            # Fallback to first available action
+            fallback = GameAction.from_name(f"ACTION{available[0]}")
+            actions = [fallback]
+            logger.info(f"[fallback] No valid actions from LLM, using {fallback.name}")
 
         logger.info(f"[actions] {[a.name for a in actions]}")
         return actions

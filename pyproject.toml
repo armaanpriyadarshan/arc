@@ -6,5 +6,6 @@ readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
     "arc-agi>=0.9.4",
+    "openai>=1.0.0",
     "pygame-ce>=2.4.0",
 ]

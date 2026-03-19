@@ -215,7 +215,12 @@ def _run_standalone(args, pygame):
 
     def _step_with_render(action, reasoning=""):
         frame = original_step(action, reasoning=reasoning)
-        action_name = action.name if hasattr(action, "name") else str(action)
+        # Show coordinates for complex actions (e.g. ACTION6(12,8))
+        if hasattr(action, "is_complex") and action.is_complex() and hasattr(action, "action_data"):
+            ad = action.action_data
+            action_name = f"{action.name}({ad.x},{ad.y})" if hasattr(ad, "x") else action.name
+        else:
+            action_name = action.name if hasattr(action, "name") else str(action)
         frame_q.put((action_name, frame))
         if delay > 0:
             time.sleep(delay)
