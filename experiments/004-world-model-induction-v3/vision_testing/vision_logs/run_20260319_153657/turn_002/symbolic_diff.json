@@ -1,0 +1,130 @@
+[
+  {
+    "color": "dark_gray",
+    "type": "changed",
+    "center": {
+      "was": [
+        61,
+        14
+      ],
+      "now": [
+        61,
+        15
+      ]
+    },
+    "size": {
+      "was": 8,
+      "now": 10
+    },
+    "bbox": {
+      "was": [
+        61,
+        13,
+        62,
+        16
+      ],
+      "now": [
+        61,
+        13,
+        62,
+        17
+      ]
+    },
+    "rotation_id": {
+      "was": "0b77993e",
+      "now": "efefa01d"
+    }
+  },
+  {
+    "color": "orange",
+    "type": "changed",
+    "center": {
+      "was": [
+        45,
+        41
+      ],
+      "now": [
+        40,
+        41
+      ]
+    },
+    "bbox": {
+      "was": [
+        45,
+        39,
+        46,
+        43
+      ],
+      "now": [
+        40,
+        39,
+        41,
+        43
+      ]
+    }
+  },
+  {
+    "color": "blue",
+    "type": "changed",
+    "center": {
+      "was": [
+        48,
+        41
+      ],
+      "now": [
+        43,
+        41
+      ]
+    },
+    "bbox": {
+      "was": [
+        47,
+        39,
+        49,
+        43
+      ],
+      "now": [
+        42,
+        39,
+        44,
+        43
+      ]
+    }
+  },
+  {
+    "color": "yellow",
+    "type": "changed",
+    "center": {
+      "was": [
+        61,
+        35
+      ],
+      "now": [
+        61,
+        36
+      ]
+    },
+    "size": {
+      "was": 76,
+      "now": 74
+    },
+    "bbox": {
+      "was": [
+        61,
+        17,
+        62,
+        54
+      ],
+      "now": [
+        61,
+        18,
+        62,
+        54
+      ]
+    },
+    "rotation_id": {
+      "was": "43d9b9cd",
+      "now": "0b49c912"
+    }
+  }
+]

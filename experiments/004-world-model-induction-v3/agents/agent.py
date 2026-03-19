@@ -36,6 +36,17 @@ AVAILABLE ACTIONS:
 
 Not all actions may be available in every game. Check available_actions.
 
+GOAL-FIRST THINKING:
+
+Every turn, your FIRST output must be a clear GOAL answering: "What specific thing am I
+trying to do RIGHT NOW that will increase my score?"
+
+GOOD goals: "Navigate to the white switch at [31,21] and interact with it"
+BAD goals: "Explore the map" (too vague), "Test hypotheses" (not actionable)
+
+Your PLAN is 2-5 concrete steps to achieve the goal. Hypotheses SUPPORT the goal —
+they explain WHY you chose it. Goals and steps are the output; hypotheses are evidence.
+
 Each turn you receive:
 - Established facts from initial probing (what each action does)
 - Symbolic state of objects on the grid
@@ -124,9 +135,9 @@ EXECUTE mode: You've figured out enough to act. You have a concrete plan and you
 Your JSON output must include a "plan" field:
 
 {
+  "goal": "Match the display pattern to the target pattern in the bottom-left, then reach the door",
   "plan": {
     "mode": "execute",
-    "goal": "Match the display pattern to the target pattern in the bottom-left, then reach the door",
     "steps": [
       {"step": 1, "action": "Navigate to the plus symbol at [25, 38]", "status": "completed"},
       {"step": 2, "action": "Activate the plus (walk into it or ACTION5)", "status": "current"},
@@ -146,9 +157,9 @@ Your JSON output must include a "plan" field:
 Or when still exploring:
 
 {
+  "goal": "Determine what the plus symbol does",
   "plan": {
     "mode": "explore",
-    "goal": "Determine what the plus symbol does",
     "steps": [
       {"step": 1, "action": "Navigate to plus symbol", "status": "current"},
       {"step": 2, "action": "Activate it and observe changes", "status": "pending"}
@@ -332,6 +343,9 @@ class ToolUseAgent:
         # v3: hypothesis category diversity tracking
         self._recent_categories: list[set[str]] = []
 
+        # v3: goal tracking
+        self.current_goal = ""
+
         # v3: planning layer
         self.current_plan = None  # dict from model output, persisted across turns
         self.plan_step_turns = 0  # how many turns we've been on the current step
@@ -461,6 +475,7 @@ class ToolUseAgent:
                     self._top_hypothesis_unchanged_turns = 0
                     self._zero_change_turns = 0
                     self._recent_categories = []
+                    self.current_goal = ""
                     self.current_plan = None
                     self.plan_step_turns = 0
                     self.last_plan_step = None
@@ -911,14 +926,15 @@ class ToolUseAgent:
             self._pending_journal_prompt = None
 
         content.append(input_text(
-            (f"YOUR NOTES:\n{self.notes}\n\n" if self.notes else "")
+            (f"YOUR CURRENT GOAL:\n{self.current_goal}\n\n" if self.current_goal and not self.current_plan else "")
+            + (f"YOUR NOTES:\n{self.notes}\n\n" if self.notes else "")
             + (f"CURRENT HYPOTHESES:\n{self.hypothesis}\n\n" if self.hypothesis else "")
             + f"RECENT:\n{recent}\n\n"
             + changes_text
             + f"OBJECTS:\n{json.dumps(symbolic.get('objects', []), indent=1)}\n"
         ))
 
-        # v3: inject current plan into prompt
+        # v3: inject current plan into prompt (goal is visible via the plan)
         if self.current_plan:
             plan_text = json.dumps(self.current_plan, indent=2)
             content.append(input_text(f"\nYOUR CURRENT PLAN:\n{plan_text}\n"))
@@ -935,13 +951,18 @@ class ToolUseAgent:
         if reflection_prompt:
             content.append(input_text(reflection_prompt))
 
+        is_large_change = self._large_change_pending
         json_format = (
-            "\nRespond with JSON:\n"
-            '{"scene_inventory": {"objects": [...], "open_directions": [...], '
+            "\nRespond with JSON. You MUST fill in ALL fields, especially hypotheses with test_actions.\n"
+            '{"goal": "What you are trying to achieve RIGHT NOW to win",\n'
+            ' "plan": {"mode": "explore/execute", '
+            '"steps": [{"step": 1, "action": "...", "status": "current/completed/pending"}], '
+            '"abort_conditions": [...], "supporting_hypotheses": [...]},\n'
+            ' "observation": "what changed and what it means",\n'
+            ' "scene_inventory": {"objects": [...], "open_directions": [...], '
             '"blocked_directions": [...], "visual_correspondences": [...]},\n'
             ' "untried": {"directions_not_explored": [...], '
             '"objects_not_interacted": [...], "action_types_not_tested": [...]},\n'
-            ' "observation": "what changed and what it means",\n'
             ' "interactions": [{"turn": N, "action": "what you did", '
             '"observed": "specific result", "objects_involved": ["obj1"], '
             '"reversible": "unknown/yes/no", "useful": true/false}],\n'
@@ -952,19 +973,16 @@ class ToolUseAgent:
             '   {"category": "VISUAL_PATTERN", "claim": "...", "probability": 0.3, '
             '"tests": [...], "information_gain": "..."}\n'
             ' ],\n'
-            ' "plan": {"mode": "explore or execute", "goal": "...", '
-            '"steps": [{"step": 1, "action": "...", "status": "current/completed/pending"}], '
-            '"abort_conditions": ["..."], "supporting_hypotheses": ["..."]},\n'
             ' "verified_rules": ["universal game mechanic you confirmed"],\n'
             ' "falsified": ["approach that failed and why"],\n'
         )
-        use_reasoning = self._large_change_pending
-        if use_reasoning:
+        if is_large_change:
             json_format += (
                 ' "cause_effect": {"action": "what you did", "changes": "what changed remotely", '
                 '"theory": "your best causal explanation"},\n'
             )
             self._large_change_pending = False
+            logger.info("[large-change] Including cause_effect field for large change analysis")
         json_format += ' "notes": "persistent notes for next turn"}'
         content.append(input_text(json_format))
 
@@ -972,13 +990,9 @@ class ToolUseAgent:
             create_kwargs = {
                 "model": "gpt-5.4",
                 "input": [{"role": "user", "content": content}],
-                "max_output_tokens": 3000 if use_reasoning else 2500,
+                "temperature": 0.2,
+                "max_output_tokens": 3000 if is_large_change else 2500,
             }
-            if use_reasoning:
-                create_kwargs["reasoning"] = {"effort": "medium"}
-                logger.info("[reasoning] Using medium reasoning effort for post-trigger planning")
-            else:
-                create_kwargs["temperature"] = 0.2
             response = self.client.responses.create(**create_kwargs)
             raw = response.output_text or ""
             if not raw and hasattr(response, 'output'):
@@ -992,8 +1006,6 @@ class ToolUseAgent:
                         break
             if not raw:
                 raw = "{}"
-            if use_reasoning:
-                logger.info(f"[reasoning-raw] {raw[:300]}")
         except Exception as e:
             logger.warning(f"API error: {e}")
             time.sleep(2)
@@ -1025,6 +1037,21 @@ class ToolUseAgent:
         obs = data.get("observation", "")
         hypotheses = data.get("hypotheses", [])
         notes = data.get("notes", "")
+
+        # v3: extract goal (top-level field)
+        goal = data.get("goal", "")
+        if not goal and hypotheses:
+            # Fallback: synthesize from top hypothesis
+            sorted_for_goal = sorted(
+                [h for h in hypotheses if isinstance(h, dict)],
+                key=lambda h: h.get("probability", 0.5),
+                reverse=True,
+            )
+            if sorted_for_goal:
+                goal = f"Testing: {sorted_for_goal[0].get('claim', 'unknown')}"
+            logger.debug("[goal-fallback] No goal field from model, synthesized from top hypothesis")
+        if goal:
+            self.current_goal = goal
 
         # v3: sort hypotheses by probability descending, find first with test_actions
         raw_actions = []
@@ -1077,6 +1104,10 @@ class ToolUseAgent:
         # v3: extract and persist plan
         new_plan = data.get("plan", None)
         if new_plan and isinstance(new_plan, dict):
+            # Inject top-level goal into plan for backward compat (mode_tag uses plan.goal)
+            if self.current_goal and "goal" not in new_plan:
+                new_plan["goal"] = self.current_goal
+
             # Detect if we're stuck on the same step
             current_step = None
             for step in new_plan.get("steps", []):
@@ -1091,14 +1122,6 @@ class ToolUseAgent:
                 self.last_plan_step = current_step
 
             self.current_plan = new_plan
-
-            # Log plan summary
-            mode = new_plan.get("mode", "unknown")
-            goal = new_plan.get("goal", "")
-            steps = new_plan.get("steps", [])
-            current = next((s for s in steps if s.get("status") == "current"), None)
-            current_desc = current.get("action", "?") if current else "none"
-            logger.info(f"[plan] mode={mode} goal='{goal}' current_step='{current_desc}' ({len(steps)} steps total)")
 
         # Fallback: check for "actions" or "action" field
         if not raw_actions:
@@ -1131,34 +1154,60 @@ class ToolUseAgent:
         if notes:
             self.notes = notes
 
+        # === GOAL-FIRST LOGGING (console ~9 lines per turn) ===
+        # Turn header with goal
+        new_plan = self.current_plan
+        mode_str = new_plan.get("mode", "?").upper() if new_plan and isinstance(new_plan, dict) else "?"
+        hyp_count = len(hypotheses) if hypotheses else 0
+        logger.info("=" * 50)
+        logger.info(f"TURN {self.llm_calls} | GOAL: {self.current_goal or '(none)'}")
+
+        # Current step from plan
+        current_step_desc = ""
+        if new_plan and isinstance(new_plan, dict):
+            steps = new_plan.get("steps", [])
+            current = next((s for s in steps if s.get("status") == "current"), None)
+            current_step_desc = current.get("action", "?") if current else "none"
+        logger.info(f"  STEP: {current_step_desc or '(no plan)'}")
+        logger.info(f"  MODE: {mode_str} | {hyp_count} hypotheses")
+
+        # Observation in full
         logger.info(f"[observe] {obs}")
-        if active_claim:
-            logger.info(f"[testing] {active_claim}")
-        # Log scene inventory and untried
+
+        # Top 3 hypotheses at INFO with full claim text
+        if hypotheses:
+            sorted_hyps_for_log = sorted(
+                [h for h in hypotheses if isinstance(h, dict)],
+                key=lambda h: h.get("probability", 0.5),
+                reverse=True,
+            )
+            for h in sorted_hyps_for_log[:3]:
+                prob = h.get("probability", "?")
+                category = h.get("category", "?")
+                claim = h.get("claim", "")
+                logger.info(f"  [p={prob}|{category}] {claim}")
+            # Remaining hypotheses at DEBUG
+            for h in sorted_hyps_for_log[3:]:
+                prob = h.get("probability", "?")
+                category = h.get("category", "?")
+                claim = h.get("claim", "")
+                tests = h.get("tests", [])
+                test_count = len(tests) if isinstance(tests, list) else 0
+                logger.debug(f"  [p={prob}|{category}] {claim} | {test_count} tests")
+
+        # Visual correspondences, untried → DEBUG level
         scene_inv = data.get("scene_inventory")
         if scene_inv and isinstance(scene_inv, dict):
             corrs = scene_inv.get("visual_correspondences", [])
             if corrs:
                 for corr in corrs:
-                    logger.info(f"[visual-corr] {corr}")
+                    logger.debug(f"[visual-corr] {corr}")
             untried_objs = data.get("untried", {}).get("objects_not_interacted", [])
             untried_dirs = data.get("untried", {}).get("directions_not_explored", [])
             if untried_dirs:
-                logger.info(f"[untried-dirs] {untried_dirs}")
+                logger.debug(f"[untried-dirs] {untried_dirs}")
             if untried_objs:
-                logger.info(f"[untried-objs] {untried_objs}")
-
-        if hypotheses:
-            for h in hypotheses:
-                if isinstance(h, dict):
-                    prob = h.get("probability", "?")
-                    claim = h.get("claim", "")
-                    category = h.get("category", "?")
-                    tests = h.get("tests", [])
-                    test_count = len(tests) if isinstance(tests, list) else 0
-                    logger.info(f"  [{category}|p={prob}] {claim} | {test_count} tests")
-            cats = sorted({h.get("category", "?") for h in hypotheses if isinstance(h, dict)})
-            logger.info(f"[hypotheses] {len(hypotheses)} claims, categories: {cats}")
+                logger.debug(f"[untried-objs] {untried_objs}")
 
         if stale_warning:
             logger.info(f"[stale] Warning injected (unchanged={self._top_hypothesis_unchanged_turns}, zero_changes={self._zero_change_turns})")
