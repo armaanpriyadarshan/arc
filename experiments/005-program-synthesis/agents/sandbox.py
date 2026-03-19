@@ -5,6 +5,7 @@ define functions, build data structures, and reference them later.
 The `grid` variable is updated before each call.
 """
 
+import builtins
 import collections
 import functools
 import io
@@ -14,7 +15,17 @@ import signal
 import traceback
 from contextlib import redirect_stdout, redirect_stderr
 
-import numpy as np
+
+# Pre-import numpy and force internal submodules to load
+try:
+    import numpy as np
+    # Force lazy-loaded internals so sandbox exec doesn't trigger blocked imports
+    _ = np.array([0]).mean()
+    _ = np.zeros(1)
+    HAS_NUMPY = True
+except ImportError:
+    np = None
+    HAS_NUMPY = False
 
 
 def safe_import(name, *args, **kwargs):
@@ -23,9 +34,10 @@ def safe_import(name, *args, **kwargs):
         "math": math,
         "functools": functools,
         "json": json,
-        "numpy": np,
-        "np": np,
     }
+    if HAS_NUMPY:
+        allowed["numpy"] = np
+        allowed["np"] = np
     if name in allowed:
         return allowed[name]
     raise ImportError(f"Module '{name}' not available. Available: {list(allowed.keys())}")
@@ -54,19 +66,16 @@ class Sandbox:
     """Persistent sandbox — variables survive across run() calls."""
 
     def __init__(self) -> None:
+        # Start with real builtins, then overlay safe_import
+        safe_builtins = dict(vars(builtins))
+        safe_builtins["__import__"] = safe_import
+        # Remove dangerous builtins
+        for name in ("open", "exec", "eval", "compile", "__loader__",
+                     "exit", "quit", "breakpoint", "input"):
+            safe_builtins.pop(name, None)
+
         self.globals: dict = {
-            "__builtins__": {
-                "range": range, "len": len, "print": print,
-                "min": min, "max": max, "abs": abs, "sum": sum,
-                "sorted": sorted, "enumerate": enumerate, "zip": zip,
-                "list": list, "dict": dict, "set": set, "tuple": tuple,
-                "int": int, "float": float, "str": str, "bool": bool,
-                "True": True, "False": False, "None": None,
-                "isinstance": isinstance, "type": type,
-                "map": map, "filter": filter, "any": any, "all": all,
-                "reversed": reversed, "hash": hash,
-                "__import__": safe_import,
-            },
+            "__builtins__": safe_builtins,
             "grid": [],
             "ROWS": 64,
             "COLS": 64,
@@ -77,9 +86,10 @@ class Sandbox:
             "math": math,
             "functools": functools,
             "json": json,
-            "np": np,
-            "numpy": np,
         }
+        if HAS_NUMPY:
+            self.globals["np"] = np
+            self.globals["numpy"] = np
 
     def run(self, code: str, grid: list[list[int]], timeout: int = 5) -> str:
         """Execute code with the current grid. Variables persist across calls.
@@ -90,9 +100,6 @@ class Sandbox:
         self.globals["grid"] = grid
         self.globals["ROWS"] = len(grid)
         self.globals["COLS"] = len(grid[0]) if grid else 0
-        # Also provide a flat version and numpy array for convenience
-        self.globals["grid_flat"] = [cell for row in grid for cell in row]
-        self.globals["grid_np"] = np.array(grid, dtype=np.int32)
 
         # Clear any previous result
         self.globals.pop("result", None)
@@ -106,7 +113,6 @@ class Sandbox:
                 exec(code, self.globals)
         except Exception as e:
             tb = traceback.format_exc()
-            # Truncate traceback to last 500 chars
             if len(tb) > 500:
                 tb = "..." + tb[-500:]
             return f"ERROR: {type(e).__name__}: {e}\n{tb}"

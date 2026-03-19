@@ -50,8 +50,8 @@ Output JSON:
   ONLY include rules about game MECHANICS — NOT positions, corridors, or level-specific layouts.
 - notes: anything to remember (gets carried to next turn)
 - code: optional Python code to execute. You have access to `grid` (64x64 list[list[int]]),
-  `grid_np` (numpy array), `ROWS` (64), `COLS` (64). Set `result` to return data.
-  Available modules: collections, math, numpy (as np), json, functools.
+  `ROWS` (64), `COLS` (64). Set `result` to return data.
+  All Python builtins available. Modules: collections, math, numpy (as np), json.
   Variables persist between turns — define functions and data structures that accumulate.
 
 The test_actions sequence executes automatically, stopping on BLOCKED or unexpected events.
@@ -64,7 +64,9 @@ IMPORTANT:
   something interactive, figure out its FULL effect — not just "something changed"
   but specifically what changed, where, and how you can use that to make progress.
 - Once you understand a mechanic, EXPLOIT it — don't re-test. Act on what you know.
-- If a hypothesis hasn't led to progress after several tests, REJECT it and try something new.
+- ACTIVELY FALSIFY your hypotheses. If you test a claim and the result contradicts it,
+  mark it "rejected" immediately and try something completely different. Don't rationalize
+  failures or keep testing minor variations of a broken theory.
 - You have limited actions. Don't re-explore areas you've already mapped.
 - When you complete a level, the layout changes but game MECHANICS carry over.
 - If you're stuck (repeated BLOCKED), you're probably missing a game mechanic, not a path.
@@ -352,16 +354,17 @@ class ToolUseAgent:
             ' ],\n'
             ' "verified_rules": ["universal game mechanic you confirmed"],\n'
             ' "notes": "persistent notes for next turn",\n'
-            ' "code": "optional Python code to execute. You have access to `grid` (64x64 list[list[int]]), '
-            '`grid_np` (numpy array), ROWS, COLS. Set `result` to return data. '
-            'Imports: collections, math, numpy (as np), json. Variables persist between turns."}'
+            ' "code": "optional Python code to analyze the grid. You have `grid` (64x64 list[list[int]]), '
+            'ROWS, COLS. Set `result` to return data. '
+            'All Python builtins available. Imports: collections, math, numpy (as np), json. '
+            'Variables persist between turns — build up data structures over time."}'
         ))
 
         try:
             response = self.client.responses.create(
                 model="gpt-5.4",
                 input=[{"role": "user", "content": content}],
-                max_output_tokens=2000,
+                max_output_tokens=4000,
                 temperature=0.2,
             )
             raw = response.output_text or "{}"
