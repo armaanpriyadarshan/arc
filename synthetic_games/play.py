@@ -46,6 +46,7 @@ import os
 import random
 import sys
 import time
+import types
 from typing import Optional, Type
 
 import numpy as np
@@ -222,7 +223,11 @@ BUILTIN_AGENTS: dict[str, Type] = {
 # ---------------------------------------------------------------------------
 
 def _load_custom_agent(spec_str: str) -> Type:
-    """Load agent class from 'path/to/file.py:ClassName' format."""
+    """Load agent class from 'path/to/file.py:ClassName' format.
+
+    Supports agents that use relative imports (e.g. ``from .symbolic import …``)
+    by registering the containing directory as a package before loading.
+    """
     if ":" not in spec_str:
         raise ValueError(
             f"Custom agent spec must be 'path/to/file.py:ClassName', got '{spec_str}'"
@@ -232,8 +237,38 @@ def _load_custom_agent(spec_str: str) -> Type:
     if not os.path.isfile(path):
         raise FileNotFoundError(f"Agent file not found: {path}")
 
-    mod_spec = importlib.util.spec_from_file_location("custom_agent", path)
+    pkg_dir = os.path.dirname(path)
+    pkg_name = os.path.basename(pkg_dir)
+    mod_name = os.path.splitext(os.path.basename(path))[0]
+    fq_name = f"{pkg_name}.{mod_name}"           # e.g. "agents.agent"
+
+    # Ensure the package's parent is on sys.path so sibling imports resolve.
+    parent_dir = os.path.dirname(pkg_dir)
+    if parent_dir not in sys.path:
+        sys.path.insert(0, parent_dir)
+
+    # Register the containing directory as a package if not already imported.
+    if pkg_name not in sys.modules:
+        init_path = os.path.join(pkg_dir, "__init__.py")
+        if os.path.isfile(init_path):
+            pkg_spec = importlib.util.spec_from_file_location(
+                pkg_name, init_path,
+                submodule_search_locations=[pkg_dir],
+            )
+            pkg_mod = importlib.util.module_from_spec(pkg_spec)
+            sys.modules[pkg_name] = pkg_mod
+            pkg_spec.loader.exec_module(pkg_mod)
+        else:
+            # No __init__.py — create a namespace package.
+            pkg_mod = types.ModuleType(pkg_name)
+            pkg_mod.__path__ = [pkg_dir]
+            sys.modules[pkg_name] = pkg_mod
+
+    mod_spec = importlib.util.spec_from_file_location(fq_name, path,
+                                                       submodule_search_locations=[])
     mod = importlib.util.module_from_spec(mod_spec)
+    mod.__package__ = pkg_name
+    sys.modules[fq_name] = mod
     mod_spec.loader.exec_module(mod)
 
     if not hasattr(mod, class_name):

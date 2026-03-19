@@ -77,12 +77,18 @@ IMPORTANT:
 class ToolUseAgent:
     MAX_ACTIONS = 100
 
-    def __init__(self, game_id: str) -> None:
-        from arc_agi import Arcade
+    def __init__(self, game_id: str, env=None) -> None:
         self.game_id = game_id
-        self.arcade = Arcade()
-        self.scorecard_id = self.arcade.open_scorecard()
-        self.env = self.arcade.make(game_id, scorecard_id=self.scorecard_id)
+        if env is not None:
+            # Externally-provided env (e.g. synthetic game adapter)
+            self.arcade = None
+            self.scorecard_id = None
+            self.env = env
+        else:
+            from arc_agi import Arcade
+            self.arcade = Arcade()
+            self.scorecard_id = self.arcade.open_scorecard()
+            self.env = self.arcade.make(game_id, scorecard_id=self.scorecard_id)
         self.frames: list[FrameData] = []
         self.action_counter = 0
         self.total_deaths = 0
@@ -490,11 +496,17 @@ class ToolUseAgent:
         if notes:
             self.notes = notes
 
-        logger.info(f"[observe] {obs[:200]}")
+        logger.info(f"[observe] {obs}")
         if active_claim:
             logger.info(f"[testing] {active_claim}")
         if hypotheses:
-            logger.info(f"[hypotheses] {len(hypotheses)} claims")
+            for h in hypotheses:
+                if isinstance(h, dict):
+                    status = h.get("status", "?")
+                    claim = h.get("claim", "")
+                    evidence = h.get("evidence", "")
+                    logger.info(f"  [{status}] {claim} | {evidence}")
+            logger.info(f"[hypotheses] {len(hypotheses)} claims total")
 
         # Resolve actions
         actions = []
@@ -550,20 +562,20 @@ class ToolUseAgent:
                 return self.frames[-1]
             return FrameData(levels_completed=0)
         frame = FrameData(
-            game_id=raw.game_id,
-            frame=[arr.tolist() for arr in raw.frame],
+            game_id=getattr(raw, "game_id", self.game_id),
+            frame=[arr.tolist() if hasattr(arr, "tolist") else arr for arr in raw.frame],
             state=raw.state,
             levels_completed=raw.levels_completed,
-            win_levels=raw.win_levels,
-            guid=raw.guid,
-            full_reset=raw.full_reset,
+            win_levels=getattr(raw, "win_levels", 0),
+            guid=getattr(raw, "guid", ""),
+            full_reset=getattr(raw, "full_reset", False),
             available_actions=raw.available_actions,
         )
         self.frames.append(frame)
         return frame
 
     def _close(self) -> None:
-        if not self.scorecard_id:
+        if not self.scorecard_id or not self.arcade:
             return
         scorecard = self.arcade.close_scorecard(self.scorecard_id)
         if scorecard:
