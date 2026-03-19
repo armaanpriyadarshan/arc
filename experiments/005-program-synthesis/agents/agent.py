@@ -1,11 +1,10 @@
-"""Observe-act agent with auto-probe and structured hypotheses.
+"""Observe-act agent with auto-probe, structured hypotheses, and program synthesis.
 
-Same core as experiment 003 (GPT-5.4, symbolic state, symbolic diff, image).
-Additions:
-- Auto-probe: code takes one of each action on startup, identifies what changed
-  operationally, and feeds this as established facts to the model
-- Structured hypothesis: model outputs testable claims, not vague theories
-- Probe results persist in notes so the model never has to re-discover primitives
+Same core as experiment 004 (GPT-5.4, symbolic state, symbolic diff, image).
+Addition:
+- Program synthesis: the model can write and execute Python code to analyze the
+  grid however it wants. Variables persist across calls so the model can build
+  up maps, tracking structures, pathfinding, etc. over the course of a game.
 """
 
 import json
@@ -16,6 +15,7 @@ import time
 from arcengine import FrameData, GameAction, GameState
 from openai import OpenAI
 
+from .sandbox import Sandbox
 from .symbolic import grid_to_symbolic, diff_symbolic
 from .vision import grid_b64, diff_b64, input_text, input_image_b64
 
@@ -34,6 +34,7 @@ Each turn you receive:
 - An image (side-by-side with previous frame, red = changed cells)
 - Your own notes from previous turns
 - Results of your last action plan (every action and its outcome)
+- Output from any code you ran last turn
 
 Output JSON:
 - observation: what changed and what it means
@@ -48,6 +49,10 @@ Output JSON:
 - verified_rules: list of UNIVERSAL game rules you've confirmed (persist across levels, max 10).
   ONLY include rules about game MECHANICS — NOT positions, corridors, or level-specific layouts.
 - notes: anything to remember (gets carried to next turn)
+- code: optional Python code to execute. You have access to `grid` (64x64 list[list[int]]),
+  `grid_np` (numpy array), `ROWS` (64), `COLS` (64). Set `result` to return data.
+  Available modules: collections, math, numpy (as np), json, functools.
+  Variables persist between turns — define functions and data structures that accumulate.
 
 The test_actions sequence executes automatically, stopping on BLOCKED or unexpected events.
 
@@ -63,24 +68,21 @@ IMPORTANT:
 - You have limited actions. Don't re-explore areas you've already mapped.
 - When you complete a level, the layout changes but game MECHANICS carry over.
 - If you're stuck (repeated BLOCKED), you're probably missing a game mechanic, not a path.
-  Look for objects you haven't interacted with yet."""
+  Look for objects you haven't interacted with yet.
+- You can write Python code to analyze the grid. Use this to build whatever representations
+  help you — maps, path analysis, object tracking, etc. The code runs with the current
+  grid state and your variables carry to the next turn."""
 
 
 class ToolUseAgent:
     MAX_ACTIONS = 100
 
-    def __init__(self, game_id: str, env=None) -> None:
+    def __init__(self, game_id: str) -> None:
+        from arc_agi import Arcade
         self.game_id = game_id
-        if env is not None:
-            # Externally-provided env (e.g. synthetic game adapter)
-            self.arcade = None
-            self.scorecard_id = None
-            self.env = env
-        else:
-            from arc_agi import Arcade
-            self.arcade = Arcade()
-            self.scorecard_id = self.arcade.open_scorecard()
-            self.env = self.arcade.make(game_id, scorecard_id=self.scorecard_id)
+        self.arcade = Arcade()
+        self.scorecard_id = self.arcade.open_scorecard()
+        self.env = self.arcade.make(game_id, scorecard_id=self.scorecard_id)
         self.frames: list[FrameData] = []
         self.action_counter = 0
         self.total_deaths = 0
@@ -97,6 +99,10 @@ class ToolUseAgent:
         self.recent_actions: list[str] = []
         self.consecutive_blocked = 0
         self.llm_calls = 0
+
+        # Program synthesis
+        self.sandbox = Sandbox()
+        self.program_output: str = ""
 
     def run(self) -> None:
         timer = time.time()
@@ -190,6 +196,7 @@ class ToolUseAgent:
                     self.prev_symbolic = None
                     self.prev_image_grid = None
                     self.recent_actions = [f"*** LEVEL {frame.levels_completed} ***"]
+                    self.program_output = ""
                     if self.verified_rules:
                         logger.info(f"[rules] {self.verified_rules}")
                     break
@@ -319,6 +326,8 @@ class ToolUseAgent:
                    if self.verified_rules else "")
                 + (f"YOUR NOTES:\n{self.notes}\n\n" if self.notes else "")
                 + (f"CURRENT HYPOTHESES:\n{self.hypothesis}\n\n" if self.hypothesis else "")
+                + (f"PROGRAM OUTPUT (from your last code):\n{self.program_output}\n\n"
+                   if self.program_output else "")
                 + f"RECENT:\n{recent}\n\n"
                 + changes_text
                 + f"OBJECTS:\n{json.dumps(symbolic.get('objects', []), indent=1)}\n"
@@ -342,14 +351,17 @@ class ToolUseAgent:
             '   {"claim": "...", "status": "confirmed", "evidence": "..."}\n'
             ' ],\n'
             ' "verified_rules": ["universal game mechanic you confirmed"],\n'
-            ' "notes": "persistent notes for next turn"}'
+            ' "notes": "persistent notes for next turn",\n'
+            ' "code": "optional Python code to execute. You have access to `grid` (64x64 list[list[int]]), '
+            '`grid_np` (numpy array), ROWS, COLS. Set `result` to return data. '
+            'Imports: collections, math, numpy (as np), json. Variables persist between turns."}'
         ))
 
         try:
             response = self.client.responses.create(
                 model="gpt-5.4",
                 input=[{"role": "user", "content": content}],
-                max_output_tokens=1500,
+                max_output_tokens=2000,
                 temperature=0.2,
             )
             raw = response.output_text or "{}"
@@ -363,6 +375,15 @@ class ToolUseAgent:
         obs = data.get("observation", "")
         hypotheses = data.get("hypotheses", [])
         notes = data.get("notes", "")
+
+        # Execute code if provided
+        code = data.get("code", "")
+        if code and isinstance(code, str) and code.strip():
+            logger.info(f"[code] executing {len(code)} chars")
+            self.program_output = self.sandbox.run(code, self.current_grid)
+            logger.info(f"[code-result] {self.program_output[:300]}")
+        else:
+            self.program_output = ""
 
         # Format hypotheses for next turn and extract test_actions from active one
         raw_actions = []
@@ -400,17 +421,11 @@ class ToolUseAgent:
         if notes:
             self.notes = notes
 
-        logger.info(f"[observe] {obs}")
+        logger.info(f"[observe] {obs[:200]}")
         if active_claim:
             logger.info(f"[testing] {active_claim}")
         if hypotheses:
-            for h in hypotheses:
-                if isinstance(h, dict):
-                    status = h.get("status", "?")
-                    claim = h.get("claim", "")
-                    evidence = h.get("evidence", "")
-                    logger.info(f"  [{status}] {claim} | {evidence}")
-            logger.info(f"[hypotheses] {len(hypotheses)} claims total")
+            logger.info(f"[hypotheses] {len(hypotheses)} claims")
 
         # Resolve actions
         actions = []
@@ -466,20 +481,20 @@ class ToolUseAgent:
                 return self.frames[-1]
             return FrameData(levels_completed=0)
         frame = FrameData(
-            game_id=getattr(raw, "game_id", self.game_id),
-            frame=[arr.tolist() if hasattr(arr, "tolist") else arr for arr in raw.frame],
+            game_id=raw.game_id,
+            frame=[arr.tolist() for arr in raw.frame],
             state=raw.state,
             levels_completed=raw.levels_completed,
-            win_levels=getattr(raw, "win_levels", 0),
-            guid=getattr(raw, "guid", ""),
-            full_reset=getattr(raw, "full_reset", False),
+            win_levels=raw.win_levels,
+            guid=raw.guid,
+            full_reset=raw.full_reset,
             available_actions=raw.available_actions,
         )
         self.frames.append(frame)
         return frame
 
     def _close(self) -> None:
-        if not self.scorecard_id or not self.arcade:
+        if not self.scorecard_id:
             return
         scorecard = self.arcade.close_scorecard(self.scorecard_id)
         if scorecard:
