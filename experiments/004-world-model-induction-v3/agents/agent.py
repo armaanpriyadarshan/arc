@@ -244,7 +244,43 @@ IMPORTANT:
 - When you complete a level, the layout changes but game MECHANICS carry over. Look for the
   same types of interactions (switches, gates, collectibles) in the new layout.
 - If you're stuck (repeated BLOCKED), you're probably missing a game mechanic, not a path.
-  Look for objects you haven't interacted with yet."""
+  Look for objects you haven't interacted with yet.
+
+INTERACTION JOURNAL:
+
+Every time you interact with an object or try something new and observe a result, record it in the "interactions" field:
+
+"interactions": [
+  {
+    "turn": 12,
+    "action": "Walked into plus symbol at [25, 38]",
+    "observed": "Purple shape inside the door rotated 90° clockwise. Display changed from L-facing-right to L-facing-down.",
+    "objects_involved": ["plus symbol", "door display"],
+    "reversible": "unknown",
+    "useful": true
+  }
+]
+
+Rules for the interaction journal:
+- Record EVERY interaction where something non-trivial happened (cells changed beyond normal movement, objects appeared/disappeared/changed, score changed).
+- Record interactions where NOTHING happened too, if you expected something — e.g., "Walked into door at [32,12], nothing happened. Door may require display to match target first."
+- Be SPECIFIC about what changed. Not "something changed" but "the purple L-shape rotated 90° clockwise" or "the yellow bar decreased by 2 cells."
+- Each entry is a FACT, not a hypothesis. Only record what you directly observed.
+- The "useful" flag marks interactions that revealed a game mechanic. These get highlighted.
+
+You don't need to repeat old entries — just add new ones each turn. The code accumulates them for you.
+
+USING YOUR JOURNAL IN PLANS:
+
+When forming a plan in EXECUTE mode, your plan steps should be directly informed by journal entries. For example:
+
+- Journal says "Walking into plus rotated the display 90°"
+- Target display shows a specific orientation
+- Therefore plan: "Activate plus N times until display matches target, then go to door"
+
+If your journal tells you HOW a mechanic works, your plan should USE that knowledge with specific expected outcomes. Don't just "go interact with the plus" — say "activate the plus 2 more times (I need 180° more rotation based on turn 12 observation)."
+
+A plan that ignores your journal entries is a BAD plan. Before finalizing a plan, check: does this plan use everything I've learned?"""
 
 
 def _action_label(action: GameAction) -> str:
@@ -300,6 +336,11 @@ class ToolUseAgent:
         self.current_plan = None  # dict from model output, persisted across turns
         self.plan_step_turns = 0  # how many turns we've been on the current step
         self.last_plan_step = None  # to detect when we're stuck on a step
+
+        # v3: interaction journal
+        self.interaction_journal: list[dict] = []  # accumulated across the entire game
+        self.journal_by_object: dict[str, list[dict]] = {}  # indexed by object for quick lookup
+        self._pending_journal_prompt: str | None = None
 
     def run(self) -> None:
         timer = time.time()
@@ -369,6 +410,15 @@ class ToolUseAgent:
                     self.dead_ends.clear()
                     self._large_change_pending = True
 
+                # v3: auto-detect significant interactions for journal
+                if changes > 80 and not blocked:
+                    self._pending_journal_prompt = (
+                        f"\nIMPORTANT: Your last action caused {changes} cell changes, which is "
+                        "well beyond normal movement (~52 cells). Something significant happened. "
+                        "You MUST record this in your interactions journal with specific details "
+                        "about what changed. Look at the symbolic diff and the image carefully.\n"
+                    )
+
                 # v3: track zero-change turns for stale detection
                 if changes == 0:
                     self._zero_change_turns += 1
@@ -379,7 +429,13 @@ class ToolUseAgent:
                 if len(self.recent_actions) > 15:
                     self.recent_actions = self.recent_actions[-15:]
 
-                logger.info(f"#{self.action_counter} {result} score={frame.levels_completed}")
+                mode_tag = ""
+                if self.current_plan and isinstance(self.current_plan, dict):
+                    m = self.current_plan.get("mode", "?").upper()
+                    g = self.current_plan.get("goal", "")
+                    goal_short = (g[:50] + "…") if len(g) > 50 else g
+                    mode_tag = f" [{m}] {goal_short}"
+                logger.info(f"#{self.action_counter} {result} score={frame.levels_completed}{mode_tag}")
 
                 if frame.state in (GameState.WIN, GameState.GAME_OVER):
                     break
@@ -397,6 +453,7 @@ class ToolUseAgent:
                     self.blocked_tracker.clear()
                     self.dead_ends.clear()
                     self._large_change_pending = False
+                    self._pending_journal_prompt = None
                     self.prev_symbolic = None
                     self.prev_image_grid = None
                     self.recent_actions = [f"*** LEVEL {frame.levels_completed} ***"]
@@ -407,6 +464,10 @@ class ToolUseAgent:
                     self.current_plan = None
                     self.plan_step_turns = 0
                     self.last_plan_step = None
+                    # v3: carry journal across levels — tag entries with current level
+                    for entry in self.interaction_journal:
+                        if "level" not in entry:
+                            entry["level"] = score_before
                     if self.verified_rules:
                         logger.info(f"[rules] {self.verified_rules}")
                     break
@@ -427,6 +488,26 @@ class ToolUseAgent:
             logger.info(f"Verified rules: {self.verified_rules}")
         logger.info("=" * 60)
         self._close()
+
+    def _get_nearby_object_journal(self, symbolic_state: dict) -> str:
+        """Check if the player is near any objects with journal entries."""
+        if not self.journal_by_object:
+            return ""
+
+        reminders = []
+
+        for obj_name, entries in self.journal_by_object.items():
+            useful_entries = [e for e in entries if e.get("useful")]
+            if useful_entries:
+                latest = useful_entries[-1]
+                reminders.append(
+                    f"REMINDER — you already know about '{obj_name}': "
+                    f"at turn {latest.get('turn', '?')} you found that: {latest.get('observed', '?')}"
+                )
+
+        if reminders:
+            return "\n" + "\n".join(reminders) + "\n"
+        return ""
 
     def _get_region(self) -> str:
         sym = grid_to_symbolic(self.current_grid)
@@ -786,13 +867,56 @@ class ToolUseAgent:
                 + diversity_nudge
                 + plan_stuck_warning
                 + commit_nudge
-                + (f"YOUR NOTES:\n{self.notes}\n\n" if self.notes else "")
-                + (f"CURRENT HYPOTHESES:\n{self.hypothesis}\n\n" if self.hypothesis else "")
-                + f"RECENT:\n{recent}\n\n"
-                + changes_text
-                + f"OBJECTS:\n{json.dumps(symbolic.get('objects', []), indent=1)}\n"
             ),
         ]
+
+        # v3: inject interaction journal BEFORE hypotheses and plan (factual foundation)
+        if self.interaction_journal:
+            useful = [e for e in self.interaction_journal if e.get("useful")]
+            recent_other = [e for e in self.interaction_journal if not e.get("useful")][-3:]
+
+            journal_text = "=== INTERACTION JOURNAL (facts you've discovered) ===\n"
+
+            if useful:
+                journal_text += "\nKEY DISCOVERIES:\n"
+                for entry in useful:
+                    level_tag = f" [level {entry['level']}]" if "level" in entry else ""
+                    journal_text += (
+                        f"  Turn {entry.get('turn', '?')}{level_tag}: {entry.get('action', '?')}\n"
+                        f"    → {entry.get('observed', '?')}\n"
+                    )
+
+            if recent_other:
+                journal_text += "\nRECENT OBSERVATIONS:\n"
+                for entry in recent_other:
+                    level_tag = f" [level {entry['level']}]" if "level" in entry else ""
+                    journal_text += (
+                        f"  Turn {entry.get('turn', '?')}{level_tag}: {entry.get('action', '?')}\n"
+                        f"    → {entry.get('observed', '?')}\n"
+                    )
+
+            journal_text += "\nUse these facts to inform your plan. If a discovery tells you how a mechanic works, ACT ON IT.\n"
+            journal_text += "=== END JOURNAL ===\n"
+
+            content.append(input_text(journal_text))
+
+        # v3: surface relevant journal entries for known objects
+        nearby_knowledge = self._get_nearby_object_journal(symbolic)
+        if nearby_knowledge:
+            content.append(input_text(nearby_knowledge))
+
+        # v3: inject pending journal prompt (auto-detected large change)
+        if self._pending_journal_prompt:
+            content.append(input_text(self._pending_journal_prompt))
+            self._pending_journal_prompt = None
+
+        content.append(input_text(
+            (f"YOUR NOTES:\n{self.notes}\n\n" if self.notes else "")
+            + (f"CURRENT HYPOTHESES:\n{self.hypothesis}\n\n" if self.hypothesis else "")
+            + f"RECENT:\n{recent}\n\n"
+            + changes_text
+            + f"OBJECTS:\n{json.dumps(symbolic.get('objects', []), indent=1)}\n"
+        ))
 
         # v3: inject current plan into prompt
         if self.current_plan:
@@ -818,6 +942,9 @@ class ToolUseAgent:
             ' "untried": {"directions_not_explored": [...], '
             '"objects_not_interacted": [...], "action_types_not_tested": [...]},\n'
             ' "observation": "what changed and what it means",\n'
+            ' "interactions": [{"turn": N, "action": "what you did", '
+            '"observed": "specific result", "objects_involved": ["obj1"], '
+            '"reversible": "unknown/yes/no", "useful": true/false}],\n'
             ' "hypotheses": [\n'
             '   {"category": "GAME_MECHANIC", "claim": "...", "probability": 0.6, '
             '"tests": [{"action": "...", "result": "...", "interpretation": "..."}], '
@@ -873,6 +1000,27 @@ class ToolUseAgent:
             return [GameAction.ACTION1]
 
         data = self._parse_json(raw)
+
+        # v3: extract and accumulate interaction journal entries
+        new_interactions = data.get("interactions", [])
+        if new_interactions and isinstance(new_interactions, list):
+            for entry in new_interactions:
+                if isinstance(entry, dict) and entry.get("action"):
+                    # Add turn number if not present
+                    if "turn" not in entry:
+                        entry["turn"] = self.action_counter
+
+                    self.interaction_journal.append(entry)
+
+                    # Index by objects involved
+                    for obj in entry.get("objects_involved", []):
+                        if obj not in self.journal_by_object:
+                            self.journal_by_object[obj] = []
+                        self.journal_by_object[obj].append(entry)
+
+                    logger.info(
+                        f"[journal] Turn {entry.get('turn')}: {entry.get('action')} -> {entry.get('observed')}"
+                    )
 
         obs = data.get("observation", "")
         hypotheses = data.get("hypotheses", [])
