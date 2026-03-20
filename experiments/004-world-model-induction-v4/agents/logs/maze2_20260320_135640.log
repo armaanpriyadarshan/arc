@@ -1,0 +1,44 @@
+13:56:40 | INFO | Logging to /Users/Alphastar/Documents/Code/Winter_2026/mandarins/experiments/arc-agi-setup/arc_agi_repo_collab/arc/synthetic_games/../experiments/004-world-model-induction-v4/agents/logs/maze2_20260320_135640.log
+13:56:40 | INFO | ============================================================
+13:56:40 | INFO | Bayesian Hypothesis Agent (v4) on maze2
+13:56:40 | INFO | ============================================================
+13:56:41 | INFO | [probe] ACTION1: 0 cells changed
+ACTION2: 18 cells changed
+  gray: center [16, 16]->[19, 16]
+  black: size 279->270
+ACTION3: 0 cells changed
+ACTION4: 0 cells changed
+13:57:26 | INFO | HTTP Request: POST https://api.openai.com/v1/responses "HTTP/1.1 200 OK"
+13:57:26 | INFO | [cache] prompt=0 cached=0 (0%)
+13:57:26 | INFO | [journal] Turn 2: Pressed ACTION2 -> Gray 3x3 square moved downward from center [16,16] to [19,16]; 9 black cells disappeared from its previous location.
+13:57:26 | INFO | [journal] Turn 1: Pressed ACTION1 -> No cells changed.
+13:57:26 | INFO | [journal] Turn 3: Pressed ACTION3 -> No cells changed.
+13:57:26 | INFO | [journal] Turn 4: Pressed ACTION4 -> No cells changed.
+13:57:26 | INFO | [rule+] The controllable entity is a cohesive 3x3 gray square.
+13:57:26 | INFO | [rule+] ACTION2 can move the gray square downward through the level geometry.
+13:57:26 | INFO | [falsified] From the starting area, ACTION1 did not move the player upward.
+13:57:26 | INFO | [falsified] From the tested positions so far, ACTION3 did not move the player left.
+13:57:26 | INFO | [falsified] From the tested positions so far, ACTION4 did not move the player right.
+13:57:26 | INFO | ==================================================
+13:57:26 | INFO | TURN 1 | GOAL: Move the gray 3x3 block farther downward through the central cavity to test whether it is the controllable player and whether reaching a lower position advances the puzzle.
+13:57:26 | INFO |   STEP: Press ACTION2 to continue moving the gray 3x3 block downward from [19,16]
+13:57:26 | INFO |   MODE: EXECUTE | 4 hypotheses
+13:57:26 | INFO | [observe] Only ACTION2 changed the state so far: the gray 3x3 square moved from center [16,16] to [19,16], while the black sparse cluster lost 9 cells exactly where the gray block had been. This strongly suggests the gray square is the player moving downward through a black obstacle/maze inside the light-gray board; ACTION1/ACTION3/ACTION4 currently produced no movement.
+13:57:26 | INFO |   [p=0.72|GAME_MECHANIC] ACTION2 is the active movement command that moves the gray 3x3 player downward through the black maze corridor.
+13:57:26 | INFO |   [p=0.67|NAVIGATION] The current position is in a vertical corridor with only downward continuation; lateral movement will become possible only after reaching a lower junction.
+13:57:26 | INFO |   [p=0.58|GOAL] The level objective is to navigate the gray square through the maze to a matching endpoint square, likely the dark_gray 3x3 square.
+13:57:26 | INFO | [actions] ['ACTION2']
+13:57:26 | INFO | #5 ACTION2: 18 cells changed score=0 [EXECUTE] Move the gray 3x3 block farther downward through t…
+13:58:11 | INFO | HTTP Request: POST https://api.openai.com/v1/responses "HTTP/1.1 200 OK"
+13:58:11 | INFO | [cache] prompt=0 cached=0 (0%)
+13:58:11 | INFO | [journal] Turn 5: Pressed ACTION2 from center [19,16] -> Gray 3x3 square moved downward to center [22,16]; the previous location became part of a black 18-cell vertical rectangle and the total black maze count decreased by 9 elsewhere due to reclassification.
+13:58:11 | INFO | ==================================================
+13:58:11 | INFO | TURN 2 | GOAL: Continue moving the gray 3x3 block downward through the left vertical shaft to reach the bottom junction or confirm the shaft ends there.
+13:58:11 | INFO |   STEP: Press ACTION2 again to continue moving the gray 3x3 block downward from center [22,16]
+13:58:11 | INFO |   MODE: EXECUTE | 4 hypotheses
+13:58:11 | INFO | [observe] The last ACTION2 moved the gray 3x3 player from center [19,16] to [22,16], another 3 cells downward. The previous player location became black, extending a black vertical rectangle behind it. This strongly suggests the player is traversing a pre-shaped maze corridor and ACTION2 continues movement downward while other directions remain blocked from tested positions.
+13:58:11 | INFO |   [p=0.82|GAME_MECHANIC] ACTION2 is the active movement command and advances the gray 3x3 player downward by one tile-step (3 cells) along open corridor space.
+13:58:11 | INFO |   [p=0.71|NAVIGATION] The player is descending the left vertical shaft of a U-shaped maze toward the bottom horizontal corridor, where horizontal movement may become available.
+13:58:11 | INFO |   [p=0.59|GOAL] The dark_gray 3x3 square is the level's destination, likely to be reached by navigating through the maze from the left shaft to the right shaft.
+13:58:11 | INFO | [actions] ['ACTION2']
+13:58:11 | INFO | #6 ACTION2: 18 cells changed score=0 [EXECUTE] Continue moving the gray 3x3 block downward throug…

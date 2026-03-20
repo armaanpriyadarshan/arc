@@ -610,8 +610,8 @@ class ToolUseAgent:
         moving = [o for o in objects if o.get("size", 9999) < 50]
         if moving:
             moving.sort(key=lambda o: o.get("size", 9999))
-            c = moving[0].get("center", [32, 32])
-            return f"({c[0]//10*10},{c[1]//10*10})"
+            c = moving[0].get("center", {"row": 32, "col": 32})
+            return f"({c['row']//10*10},{c['col']//10*10})"
         return "(?,?)"
 
     def _add_rule(self, rule: str) -> None:
@@ -745,7 +745,7 @@ class ToolUseAgent:
         # Target 1: center of the largest non-background object
         if fg_objects:
             largest = max(fg_objects, key=lambda o: o.get("size", 0))
-            cr, cc = largest["center"]
+            cr, cc = largest["center"]["row"], largest["center"]["col"]
             targets.append((cc, cr, f"largest object ({largest['color']}, size={largest['size']})"))
 
         # Target 2: center of a different-colored object
@@ -753,7 +753,7 @@ class ToolUseAgent:
             first_color = fg_objects[0].get("color_id")
             for obj in fg_objects[1:]:
                 if obj.get("color_id") != first_color:
-                    cr, cc = obj["center"]
+                    cr, cc = obj["center"]["row"], obj["center"]["col"]
                     targets.append((cc, cr, f"different-colored object ({obj['color']}, size={obj['size']})"))
                     break
 
@@ -1021,6 +1021,7 @@ class ToolUseAgent:
             + f"RECENT:\n{recent}\n\n"
             + changes_text
             + f"OBJECTS:\n{json.dumps(symbolic.get('objects', []), indent=1)}\n"
+            + f"SPATIAL RELATIONS:\n{json.dumps(symbolic.get('relations', []), indent=1)}\n"
         ))
 
         # v3: inject current plan into prompt (goal is visible via the plan)

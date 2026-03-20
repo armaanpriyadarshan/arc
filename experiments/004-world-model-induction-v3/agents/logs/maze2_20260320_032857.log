@@ -1,0 +1,57 @@
+03:28:57 | INFO | Logging to /Users/Alphastar/Documents/Code/Winter_2026/mandarins/experiments/arc-agi-setup/arc_agi_repo_collab/arc/synthetic_games/../experiments/004-world-model-induction-v3/agents/logs/maze2_20260320_032857.log
+03:28:58 | INFO | ============================================================
+03:28:58 | INFO | Bayesian Hypothesis Agent (v3) on maze2
+03:28:58 | INFO | ============================================================
+03:28:59 | INFO | [probe] ACTION1: 0 cells changed
+ACTION2: 18 cells changed
+  gray: center {'row': 16, 'col': 16}->{'row': 19, 'col': 16}
+  black: size 279->270
+ACTION3: 0 cells changed
+ACTION4: 0 cells changed
+03:29:13 | INFO | HTTP Request: POST https://api.openai.com/v1/responses "HTTP/1.1 200 OK"
+03:29:13 | INFO | [perceive] 1. **LAYOUT**
+- Small enclosed **puzzle-room / chamber** on a plain background.
+- Main playable-looking area is a **light-gray square room** roughly spanning **rows 12–48, cols 12–48**.
+- Inside it is
+03:29:51 | INFO | HTTP Request: POST https://api.openai.com/v1/responses "HTTP/1.1 200 OK"
+03:29:51 | INFO | [cache] prompt=0 cached=0 (0%)
+03:29:51 | INFO | [journal] Turn 2: ACTION2 from the initial top-left pillar position -> Gray 3x3 square moved downward by 3 cells from center [16,16] to [19,16]; black area count decreased because the player was no longer overlapping the pillar top.
+03:29:51 | INFO | [journal] Turn 1: ACTION1 from initial position -> No cells changed.
+03:29:51 | INFO | [journal] Turn 3: ACTION3 from current area -> No cells changed.
+03:29:51 | INFO | [journal] Turn 4: ACTION4 from current area -> No cells changed.
+03:29:51 | INFO | [rule+] The controllable avatar moves in discrete 3-cell steps matching its 3x3 size.
+03:29:51 | INFO | [rule+] Black structure cells act as solid obstacles that constrain movement.
+03:29:51 | INFO | [falsified] Assuming no movement was possible in this room was wrong; ACTION2 moved the avatar downward off the starting perch.
+03:29:51 | INFO | [falsified] Treating the initial ACTION4 failure as proof that right is globally blocked is premature because it was tested only from one constrained position.
+03:29:51 | INFO | ==================================================
+03:29:51 | INFO | TURN 2 | GOAL: Reach the right gray cap and test whether touching it completes the level or acts as a target.
+03:29:51 | INFO |   STEP: Move right across the open top lane toward the right gray cap at about [16,40]
+03:29:51 | INFO |   MODE: EXECUTE | 5 hypotheses
+03:29:51 | INFO | [observe] Only ACTION2 changed the scene: the gray 3x3 square moved downward from center [16,16] to [19,16], confirming the controllable entity moves down and was sitting on top of the left pillar. ACTION1, ACTION3, and ACTION4 caused no visible change from the tested position, likely because up/left/right were blocked by boundary or because the avatar was aligned with the pillar top in a constrained spot.
+03:29:51 | INFO |   [p=0.8|GAME_MECHANIC] Movement is grid-stepped in 3-cell increments by the 3x3 avatar, and collisions with black structures block motion.
+03:29:51 | INFO |   [p=0.58|VISUAL_PATTERN] The left black cap and right dark-gray cap are paired endpoints: start on one, reach the other to solve the room.
+03:29:51 | INFO |   [p=0.55|OBJECT_INTERACTION] Touching the dark-gray 3x3 cap on the right will trigger a meaningful event such as level completion, teleport, or state change.
+03:29:51 | INFO | [actions] ['ACTION4']
+03:29:51 | INFO | #5 ACTION4: 0 cells changed score=0 [EXECUTE] Reach the right gray cap and test whether touching…
+03:30:04 | INFO | HTTP Request: POST https://api.openai.com/v1/responses "HTTP/1.1 200 OK"
+03:30:04 | INFO | [perceive] 1. **LAYOUT**
+- Small enclosed **puzzle-room / chamber** scene.
+- Background is mostly white outside the play area.
+- Main play area is a **light-gray square** roughly centered, spanning about **rows 
+03:30:32 | INFO | HTTP Request: POST https://api.openai.com/v1/responses "HTTP/1.1 200 OK"
+03:30:32 | INFO | [cache] prompt=0 cached=0 (0%)
+03:30:32 | INFO | ==================================================
+03:30:32 | INFO | TURN 4 | GOAL: Advance right along the top lane toward the dark-gray cap on the right, because reaching/touching that matching endpoint is the most likely way to complete the level.
+03:30:32 | INFO |   STEP: Move right across the open top lane from the current position [19,16] toward the right dark-gray cap near [16,40]
+03:30:32 | INFO |   MODE: EXECUTE | 5 hypotheses
+03:30:32 | INFO | [observe] No new change since the last failed right test; the avatar remains at [19,16]. From this lower row, the immediate right side appears open, so the next score-seeking action is to retry rightward movement from the new alignment rather than from the original perch.
+03:30:32 | INFO |   [p=0.83|GAME_MECHANIC] Movement occurs in discrete 3-cell steps and black cells are solid obstacles; changing row alignment can change which horizontal moves are legal.
+03:30:32 | INFO |   [p=0.62|NAVIGATION] From the current row [19], the avatar can move right in 3-cell steps through the open top corridor until near the middle pillar or beyond it.
+03:30:32 | INFO |   [p=0.58|VISUAL_PATTERN] The left start area and right dark-gray cap are paired endpoints; the puzzle goal is to transfer the avatar from the left pillar to the symmetric right pillar.
+03:30:32 | INFO | [actions] ['ACTION4']
+03:30:32 | INFO | #6 ACTION4: 0 cells changed score=0 [EXECUTE] Advance right along the top lane toward the dark-g…
+03:30:46 | INFO | HTTP Request: POST https://api.openai.com/v1/responses "HTTP/1.1 200 OK"
+03:30:46 | INFO | [perceive] 1. **LAYOUT**
+- Small enclosed **puzzle-room / chamber** scene.
+- Background is mostly white outside the play area.
+- Main play area is a **light-gray square** roughly centered, spanning about **rows 

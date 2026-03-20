@@ -456,12 +456,18 @@ class ToolUseAgent:
                 changes = sum(1 for r in range(64) for c in range(64)
                               if grid_before[r][c] != self.current_grid[r][c])
                 blocked = 0 < changes < 10
+                no_effect = changes == 0
 
                 label = _action_label(action)
-                result = f"{label}: {'BLOCKED' if blocked else f'{changes} cells changed'}"
+                if no_effect:
+                    result = f"{label}: NO EFFECT (0 cells changed)"
+                elif blocked:
+                    result = f"{label}: BLOCKED"
+                else:
+                    result = f"{label}: {changes} cells changed"
 
                 # Track blocked directions by region
-                if blocked:
+                if blocked or no_effect:
                     region = self._get_region()
                     key = f"{region}:{action.name}"
                     self.blocked_tracker[key] = self.blocked_tracker.get(key, 0) + 1
@@ -504,7 +510,7 @@ class ToolUseAgent:
 
                 if frame.state in (GameState.WIN, GameState.GAME_OVER):
                     break
-                if blocked:
+                if blocked or no_effect:
                     break
                 if frame.levels_completed > score_before:
                     logger.info(f"[level-up] Level {frame.levels_completed}! Re-probing new layout.")
@@ -816,6 +822,41 @@ class ToolUseAgent:
                 change_summary.append(f"background {c.get('color', '?')}: size {c['size']['was']}->{c['size']['now']}")
         return change_summary
 
+    def _perceive(self, grid: list[list[int]]) -> str:
+        """Perception step: have GPT-5.4 describe the current game frame."""
+        self.llm_calls += 1
+
+        content = [
+            input_text(
+                "Describe this 64x64 game grid image. Be exhaustive but concise.\n\n"
+                "1. LAYOUT: What type of scene is this? (maze, open field, puzzle room, etc.)\n"
+                "2. PLAYER: Identify the likely player object (usually the smallest distinct object). "
+                "Where is it? What color?\n"
+                "3. DIRECTIONS: From the player's position, what is in each cardinal direction "
+                "(up/down/left/right)? For each: is it open (traversable), blocked (wall), or "
+                "occupied by an object? How far until the next wall or object?\n"
+                "4. OBJECTS: List every distinct non-wall, non-floor object. Color, approximate "
+                "position (top-left, center, bottom-right, etc.), shape, size.\n"
+                "5. PATHS: What corridors or routes are visible? Where do they lead?\n"
+                "6. PATTERNS: Any visual symmetries, repeated elements, or notable features?\n\n"
+                "Use grid coordinates where possible (row 0=top, col 0=left, max=63). "
+                "Focus on spatial facts, not interpretation."
+            ),
+            input_image_b64(grid_b64(grid)),
+        ]
+
+        try:
+            response = self.client.responses.create(
+                model="gpt-5.4",
+                input=[{"role": "user", "content": content}],
+                max_output_tokens=600,
+                temperature=0.2,
+            )
+            return response.output_text or ""
+        except Exception as e:
+            logger.warning(f"Perception API error: {e}")
+            return ""
+
     def _think_and_act(self, frame: FrameData) -> list[GameAction]:
         self.llm_calls += 1
 
@@ -826,6 +867,11 @@ class ToolUseAgent:
         symbolic = grid_to_symbolic(self.current_grid)
         sym_changes = diff_symbolic(self.prev_symbolic, symbolic) if self.prev_symbolic else []
         self.prev_symbolic = symbolic
+
+        # --- Perception step ---
+        scene_description = self._perceive(self.current_grid)
+        if scene_description:
+            logger.info(f"[perceive] {scene_description}")
 
         changes_text = ""
         if sym_changes:
@@ -933,10 +979,10 @@ class ToolUseAgent:
                 f"Actions: {self.action_counter}/{self.MAX_ACTIONS}\n"
                 f"Available: {avail_str}\n\n"
                 + (f"DEAD ENDS (do NOT retry these — confirmed blocked multiple times):\n"
-                   + "\n".join(f"- {d}" for d in self.dead_ends) + "\n\n"
+                   + "\n".join(f"- {d}" for d in self.dead_ends[-10:]) + "\n\n"
                    if self.dead_ends else "")
                 + (f"FALSIFIED (approaches that failed — do NOT repeat):\n"
-                   + "\n".join(f"- {f}" for f in self.falsified) + "\n\n"
+                   + "\n".join(f"- {f}" for f in self.falsified[-8:]) + "\n\n"
                    if self.falsified else "")
                 + stale_warning
                 + diversity_nudge
@@ -947,7 +993,7 @@ class ToolUseAgent:
 
         # v3: inject interaction journal BEFORE hypotheses and plan (factual foundation)
         if self.interaction_journal:
-            useful = [e for e in self.interaction_journal if e.get("useful")]
+            useful = [e for e in self.interaction_journal if e.get("useful")][-15:]
             recent_other = [e for e in self.interaction_journal if not e.get("useful")][-3:]
 
             journal_text = "=== INTERACTION JOURNAL (facts you've discovered) ===\n"
@@ -984,6 +1030,13 @@ class ToolUseAgent:
         if self._pending_journal_prompt:
             content.append(input_text(self._pending_journal_prompt))
             self._pending_journal_prompt = None
+
+        # Perception: inject scene description before hypotheses/goals
+        if scene_description:
+            content.append(input_text(
+                f"VISUAL SCENE DESCRIPTION (from dedicated perception analysis):\n"
+                f"{scene_description}\n"
+            ))
 
         content.append(input_text(
             (f"YOUR CURRENT GOAL:\n{self.current_goal}\n\n" if self.current_goal and not self.current_plan else "")
@@ -1378,6 +1431,10 @@ class ToolUseAgent:
                 return json.loads(raw[start:end + 1])
             except (json.JSONDecodeError, ValueError):
                 pass
+        logger.warning(
+            f"[parse-fail] All JSON parse strategies failed. "
+            f"Raw length={len(raw)}, first 200 chars: {raw[:200]!r}"
+        )
         return {}
 
     def _step(self, action: GameAction, reasoning: str = "") -> FrameData:

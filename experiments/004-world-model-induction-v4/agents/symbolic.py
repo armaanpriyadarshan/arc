@@ -350,11 +350,11 @@ def _find_composites(objects):
                     all_cols.append(c)
 
         if all_rows:
-            bbox = [min(all_rows), min(all_cols), max(all_rows), max(all_cols)]
-            center = [sum(all_rows) // len(all_rows), sum(all_cols) // len(all_cols)]
+            bbox = {"min_row": min(all_rows), "min_col": min(all_cols), "max_row": max(all_rows), "max_col": max(all_cols)}
+            center = {"row": sum(all_rows) // len(all_rows), "col": sum(all_cols) // len(all_cols)}
         else:
-            bbox = list(objects[indices[0]]["bbox"])
-            center = list(objects[indices[0]]["center"])
+            bbox = dict(objects[indices[0]]["bbox"])
+            center = dict(objects[indices[0]]["center"])
 
         composites.append({
             "composite_id": comp_id,
@@ -437,9 +437,9 @@ def grid_to_symbolic(grid: Grid, min_size: int = 2) -> dict:
                 "color_id": color,
                 "shape": shape,
                 "size": area,
-                "position": [min_r, min_c],
-                "bbox": [min_r, min_c, max_r, max_c],
-                "center": [sum(rows) // len(rows), sum(cols) // len(cols)],
+                "position": {"row": min_r, "col": min_c},
+                "bbox": {"min_row": min_r, "min_col": min_c, "max_row": max_r, "max_col": max_c},
+                "center": {"row": sum(rows) // len(rows), "col": sum(cols) // len(cols)},
                 "_cells": frozenset(cells),
             })
 
@@ -471,7 +471,7 @@ def grid_to_symbolic(grid: Grid, min_size: int = 2) -> dict:
         # Step 5: Holes (size >= 9, not background)
         if obj["size"] >= 9:
             bb = obj["bbox"]
-            holes = _detect_holes(obj["_cells"], grid, bb[0], bb[1], bb[2], bb[3])
+            holes = _detect_holes(obj["_cells"], grid, bb["min_row"], bb["min_col"], bb["max_row"], bb["max_col"])
             if holes is not None:
                 obj["holes"] = holes
 
@@ -486,8 +486,8 @@ def grid_to_symbolic(grid: Grid, min_size: int = 2) -> dict:
     relations = []
     for i, a in enumerate(fg_objects):
         for b in fg_objects[i+1:]:
-            ar, ac = a["center"]
-            br, bc = b["center"]
+            ar, ac = a["center"]["row"], a["center"]["col"]
+            br, bc = b["center"]["row"], b["center"]["col"]
             if ar < br - 5:
                 relations.append({"type": "above", "a": a["id"], "b": b["id"]})
             elif ar > br + 5:
@@ -498,8 +498,8 @@ def grid_to_symbolic(grid: Grid, min_size: int = 2) -> dict:
                 relations.append({"type": "right_of", "a": a["id"], "b": b["id"]})
 
             # Adjacent check
-            a_r1, a_c1, a_r2, a_c2 = a["bbox"]
-            b_r1, b_c1, b_r2, b_c2 = b["bbox"]
+            a_r1, a_c1, a_r2, a_c2 = a["bbox"]["min_row"], a["bbox"]["min_col"], a["bbox"]["max_row"], a["bbox"]["max_col"]
+            b_r1, b_c1, b_r2, b_c2 = b["bbox"]["min_row"], b["bbox"]["min_col"], b["bbox"]["max_row"], b["bbox"]["max_col"]
             if (abs(a_r2 - b_r1) <= 1 or abs(b_r2 - a_r1) <= 1) and not (a_c2 < b_c1 or b_c2 < a_c1):
                 relations.append({"type": "adjacent", "a": a["id"], "b": b["id"]})
             if (abs(a_c2 - b_c1) <= 1 or abs(b_c2 - a_c1) <= 1) and not (a_r2 < b_r1 or b_r2 < a_r1):
@@ -565,7 +565,7 @@ def diff_symbolic(prev: dict, curr: dict) -> list[dict]:
                 continue
             if abs(co["size"] - po["size"]) > max(po["size"], co["size"]) * 0.5:
                 continue
-            dist = abs(co["center"][0] - po["center"][0]) + abs(co["center"][1] - po["center"][1])
+            dist = abs(co["center"]["row"] - po["center"]["row"]) + abs(co["center"]["col"] - po["center"]["col"])
             if dist < best_dist:
                 best_dist = dist
                 best_match = i

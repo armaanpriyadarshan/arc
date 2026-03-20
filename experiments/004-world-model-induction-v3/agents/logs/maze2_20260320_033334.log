@@ -1,0 +1,205 @@
+03:33:34 | INFO | Logging to /Users/Alphastar/Documents/Code/Winter_2026/mandarins/experiments/arc-agi-setup/arc_agi_repo_collab/arc/synthetic_games/../experiments/004-world-model-induction-v3/agents/logs/maze2_20260320_033334.log
+03:33:34 | INFO | ============================================================
+03:33:35 | INFO | Bayesian Hypothesis Agent (v3) on maze2
+03:33:35 | INFO | ============================================================
+03:33:35 | INFO | [probe] ACTION1: 0 cells changed
+ACTION2: 18 cells changed
+  gray: center {'row': 16, 'col': 16}->{'row': 19, 'col': 16}
+  black: size 279->270
+ACTION3: 0 cells changed
+ACTION4: 0 cells changed
+03:33:50 | INFO | HTTP Request: POST https://api.openai.com/v1/responses "HTTP/1.1 200 OK"
+03:33:50 | INFO | [perceive] 1. **LAYOUT**
+- Small enclosed **puzzle-room / chamber** on a plain white background.
+- Main play area is a **light-gray square** roughly spanning **rows 12–48, cols 12–48**.
+- Inside it is a thick **black U-shaped / three-pronged wall structure**:
+  - a horizontal black base near the bottom,
+  - three vertical black pillars rising upward from that base,
+  - open space between the pillars.
+- The top is open; the structure does **not** touch the top edge of the gray room.
+
+2. **PLAYER**
+- Likely player object: the **small dark-gray square/cap** on top of the **right vertical pillar**.
+- Approximate position: **top-right interior**, around **rows 15–18, cols 31–33**.
+- Color: **dark gray**.
+- Shape/size: small **square/rectangular cap**, about **3×3 px**.
+
+3. **DIRECTIONS**  
+Assuming the player is the dark-gray cap on the right pillar:
+
+- **Up:**  
+  - Immediately above: **open gray floor/air**.  
+  - Distance to room boundary/top gray edge: about **3–4 cells**.  
+  - No object directly above.
+
+- **Down:**  
+  - Immediately below: **black pillar** (occupied/blocked).  
+  - The player sits directly on top of the right vertical wall segment.  
+  - So downward movement is blocked at **0 cells**.
+
+- **Left:**  
+  - Immediately left: mostly **open gray space** for several cells.  
+  - Next major obstacle: the **middle black pillar**, about **8–10 cells** left.  
+  - So left is open until that pillar.
+
+- **Right:**  
+  - Immediately right: **open gray space**.  
+  - Distance to the gray room’s right boundary: about **3–4 cells**.  
+  - No object before the boundary.
+
+4. **OBJECTS**  
+Distinct non-wall, non-floor objects:
+
+- **Dark-gray cap/object**
+  - Color: dark gray
+  - Position: **top-right interior**, on top of right pillar
+  - Approx coords: **rows 15–18, cols 31–33**
+  - Shape: small square
+  - Size: ~3×3
+
+- **Medium-gray cap/object**
+  - Color: medium gray
+  - Position: **top-left interior**, on top of left pillar
+  - Approx coords: **rows 16–18, cols 15–17**
+  - Shape: small square
+  - Size: ~3×3
+
+No other distinct non-wall objects are visible.
+
+5. **PATHS**
+- Open traversable area is the **light-gray interior** around and between the pillars.
+- Visible routes:
+  - **
+03:34:27 | INFO | HTTP Request: POST https://api.openai.com/v1/responses "HTTP/1.1 200 OK"
+03:34:27 | INFO | [cache] prompt=0 cached=0 (0%)
+03:34:27 | INFO | [journal] Turn 2: ACTION2 from the initial top-left position -> Gray 3x3 square moved downward from center [16,16] to [19,16]; nearby black 3x3 square at the original top-left pillar remained in place.
+03:34:27 | INFO | [rule+] The controllable entity is a small gray square that moves independently of similarly sized cap objects.
+03:34:27 | INFO | [falsified] The top-left 3x3 black square is the player; false because ACTION2 moved a separate gray square away while the black square stayed fixed.
+03:34:27 | INFO | [falsified] Assuming all movement directions were globally inactive except ACTION2; false because blockage at the initial perch likely caused the 0-change results.
+03:34:27 | INFO | ==================================================
+03:34:27 | INFO | TURN 2 | GOAL: Reach and make contact with the dark-gray cap on the right pillar to test whether touching caps changes the level and can increase score.
+03:34:27 | INFO |   STEP: Move right from the current left cap position across the open top corridor toward the dark-gray cap on the right pillar
+03:34:27 | INFO |   MODE: EXECUTE | 5 hypotheses
+03:34:27 | INFO | [observe] ACTION2 moved the gray 3x3 square from the top-left cap area down by 3 cells to [19,16], while the black square at [15,15] remained. This implies the movable gray square is the player and the black/other cap squares are environment objects. ACTION1, ACTION3, and ACTION4 from the prior position caused no change, likely because those directions were blocked there.
+03:34:27 | INFO |   [p=0.72|NAVIGATION] The gray square is the player and can move right along the open top corridor toward the dark-gray cap on the right pillar.
+03:34:27 | INFO |   [p=0.64|GAME_MECHANIC] Movement actions are cardinal but can be blocked by standing on pillar tops or room edges; changing position can open previously blocked directions.
+03:34:27 | INFO |   [p=0.58|OBJECT_INTERACTION] Touching one of the pillar-top caps triggers a change; the dark-gray cap is the next object to contact.
+03:34:27 | INFO | [actions] ['ACTION4', 'ACTION4', 'ACTION4', 'ACTION4', 'ACTION4', 'ACTION4', 'ACTION4', 'ACTION4']
+03:34:27 | INFO | #5 ACTION4: 0 cells changed score=0 [EXECUTE] Reach and make contact with the dark-gray cap on t…
+03:34:28 | INFO | #6 ACTION4: 0 cells changed score=0 [EXECUTE] Reach and make contact with the dark-gray cap on t…
+03:34:28 | INFO | #7 ACTION4: 0 cells changed score=0 [EXECUTE] Reach and make contact with the dark-gray cap on t…
+03:34:28 | INFO | #8 ACTION4: 0 cells changed score=0 [EXECUTE] Reach and make contact with the dark-gray cap on t…
+03:34:28 | INFO | #9 ACTION4: 0 cells changed score=0 [EXECUTE] Reach and make contact with the dark-gray cap on t…
+03:34:28 | INFO | #10 ACTION4: 0 cells changed score=0 [EXECUTE] Reach and make contact with the dark-gray cap on t…
+03:34:28 | INFO | #11 ACTION4: 0 cells changed score=0 [EXECUTE] Reach and make contact with the dark-gray cap on t…
+03:34:28 | INFO | #12 ACTION4: 0 cells changed score=0 [EXECUTE] Reach and make contact with the dark-gray cap on t…
+03:34:43 | INFO | HTTP Request: POST https://api.openai.com/v1/responses "HTTP/1.1 200 OK"
+03:34:43 | INFO | [perceive] 1. **LAYOUT**
+- Small enclosed **puzzle-room / chamber** on a plain white background.
+- The active play area is a **light-gray square** roughly spanning **rows 12–48, cols 12–48**.
+- Inside it is a thick **black U-shaped / three-pronged wall structure**:
+  - a **bottom horizontal bar**
+  - **three vertical pillars** rising upward from it: left, center, right
+- The top is open; this is not a maze with many branches, just a simple room with internal barriers.
+
+2. **PLAYER**
+- The likely player is the **smallest distinct object**, a **dark gray square** on top of the **right vertical pillar**.
+- Approximate position: **upper-right area of the gray room**, around **rows 15–18, cols 39–42**.
+- Color: **dark gray**.
+- There is also a similar gray square on the left pillar, but the right one is the more isolated candidate if one must be chosen.
+
+3. **DIRECTIONS**  
+Assuming the player is the **dark gray square on the right pillar**:
+
+- **Up:**  
+  - Immediately **open**.  
+  - Above the player is empty light-gray room space until the room’s top boundary, then white background.  
+  - Roughly **12–15 pixels/cells** to the top edge of the gray room.
+
+- **Down:**  
+  - Immediately **blocked/occupied by wall**: directly beneath the gray square is the **black right pillar**.  
+  - The black pillar continues downward to the bottom horizontal bar.  
+  - No traversable space directly below.
+
+- **Left:**  
+  - Immediately **open**.  
+  - There is a central open lane between the right pillar and the center pillar.  
+  - After about **9–12 cells**, the next obstacle is the **center black pillar**.  
+  - Farther left beyond that is another open lane and then the left pillar.
+
+- **Right:**  
+  - Immediately **open**.  
+  - Empty light-gray space extends to the room’s right boundary.  
+  - Roughly **4–7 cells** to the inner room edge / gray boundary; beyond that is white background.
+
+If instead the left gray square were the player, the directional relations are mirrored:
+- down blocked by left pillar,
+- right open then center pillar,
+- left open to room edge,
+- up open.
+
+4. **OBJECTS**  
+Distinct non-wall, non-floor objects:
+
+- **Gray square on left pillar**
+  - Color: **medium/dark gray**
+  - Position: **upper-left interior**, around **rows 17–20, cols 15–18**
+  - Shape: **small square**
+  - Size: about **3×3 to 4×4**
+
+- **Gray square on
+03:35:13 | INFO | HTTP Request: POST https://api.openai.com/v1/responses "HTTP/1.1 200 OK"
+03:35:13 | INFO | [cache] prompt=0 cached=0 (0%)
+03:35:13 | INFO | [journal] Turn 12: Repeated ACTION4 attempts from player position [19,16] -> 0 cells changed on each attempt; player did not move right from this row.
+03:35:13 | INFO | [falsified] Assuming the current row [19,16] has an open rightward corridor; false because many ACTION4 attempts from there produced no movement.
+03:35:13 | INFO | ==================================================
+03:35:13 | INFO | TURN 4 | GOAL: Find a traversable route from the gray player at [19,16] toward the dark-gray cap on the right pillar, because contacting that cap is the most specific available action likely to trigger progress or complete the level.
+03:35:13 | INFO |   STEP: Move up from [19,16] to get off the left pillar's blocked side and onto the top row where horizontal travel may be possible
+03:35:13 | INFO |   MODE: EXECUTE | 5 hypotheses
+03:35:13 | INFO | [observe] Recent repeated ACTION4 attempts caused 0 changes, so the assumed rightward corridor from [19,16] is likely blocked from this exact row. Earlier ACTION2 moved the gray square downward, confirming the player is the gray 3x3 object and that movement availability changes with position. From the current location, the best productive test is to move up and re-open the possibility of horizontal travel from the pillar top.
+03:35:13 | INFO |   [p=0.74|NAVIGATION] The player must first move up onto the top of the left pillar before horizontal movement toward the right cap becomes possible.
+03:35:13 | INFO |   [p=0.69|GAME_MECHANIC] Movement actions are cardinal but can be blocked by pillar geometry; zero-change actions reflect collision, not inactive controls.
+03:35:13 | INFO |   [p=0.57|OBJECT_INTERACTION] Touching the dark-gray cap on the right pillar triggers a change or completes the level.
+03:35:13 | INFO | [stale] Warning injected (unchanged=0, zero_changes=8)
+03:35:13 | INFO | [actions] ['ACTION1']
+03:35:13 | INFO | #13 ACTION1: 18 cells changed score=0 [EXECUTE] Find a traversable route from the gray player at […
+03:35:29 | INFO | HTTP Request: POST https://api.openai.com/v1/responses "HTTP/1.1 200 OK"
+03:35:29 | INFO | [perceive] 1. **LAYOUT**  
+   - Simple enclosed **puzzle-room / icon-like room** on a plain white background.  
+   - Main structure is a **light-gray square area** roughly centered, about rows **12–48** and cols **12–48**.  
+   - Inside it is a **black U-shaped base/wall** with **three vertical black prongs/posts** rising upward from the bottom region.  
+   - This is not an open field or maze; it is a **single compact chamber/object arrangement**.
+
+2. **PLAYER**  
+   - No clearly identifiable player sprite is visible.  
+   - The smallest distinct objects are **two small gray caps** on top of the left and right black posts.  
+   - If forced to pick a likely controllable/special object, the **small gray square on the left post top** is one candidate:
+     - Approximate position: **upper-middle-left of the gray room**, around **rows 15–18, cols 15–18**.
+     - Color: **medium gray**.
+   - However, this image looks more like a static symbol than a scene with a clear player.
+
+3. **DIRECTIONS**  
+   Assuming the reference point is the **left gray cap** (since no definite player exists), centered near about **(16,16)**:
+
+   - **Up:**  
+     - Immediately above is **open light-gray room/background** for a short distance.  
+     - The top boundary of the gray square is around **row 12**, so from the cap there is only a few pixels/cells of open space before the room edge/background transition.
+   - **Down:**  
+     - Immediately below is the **left black vertical post**; this direction is **occupied/blocked** almost at once.  
+     - The post continues downward to the black bottom bar around **row 40–41**.
+   - **Left:**  
+     - Mostly **open light-gray space** for a few cells until the left interior margin of the gray square.  
+     - Then beyond that is white background. No other object before the room edge.
+   - **Right:**  
+     - Open light-gray space until the **center black post**.  
+     - Distance from left post/cap to center post is roughly **12–14 columns**.  
+     - So right is **open for a moderate gap**, then **blocked by object**.
+
+   If instead using the **center of the room** near **(30,30)**:
+   - **Up:** blocked by the **center black post**.
+   - **Down:** blocked by the **bottom black horizontal bar**.
+   - **Left:** open corridor to the left interior channel until the left post.
+   - **Right:** open corridor to the right interior channel until the right post.
+
+4. **OBJECTS**  
+   Distinct non-wall, non-floor objects

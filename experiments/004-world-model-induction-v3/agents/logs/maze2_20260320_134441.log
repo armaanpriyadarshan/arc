@@ -1,0 +1,194 @@
+13:44:41 | INFO | Logging to /Users/Alphastar/Documents/Code/Winter_2026/mandarins/experiments/arc-agi-setup/arc_agi_repo_collab/arc/synthetic_games/../experiments/004-world-model-induction-v3/agents/logs/maze2_20260320_134441.log
+13:44:41 | INFO | ============================================================
+13:44:41 | INFO | Bayesian Hypothesis Agent (v3) on maze2
+13:44:41 | INFO | ============================================================
+13:44:44 | INFO | [probe] ACTION1: 0 cells changed
+ACTION2: 18 cells changed
+  gray: center {'row': 16, 'col': 16}->{'row': 19, 'col': 16}
+  black: size 279->270
+ACTION3: 0 cells changed
+ACTION4: 0 cells changed
+13:44:55 | INFO | HTTP Request: POST https://api.openai.com/v1/responses "HTTP/1.1 200 OK"
+13:44:55 | INFO | [perceive] 1. **LAYOUT**  
+   - A small **puzzle-room / enclosed chamber** scene.  
+   - The playable area is a **light-gray square room** roughly centered in the 64×64 image, spanning about **rows 12–44, cols 12–44**.  
+   - Inside it is a **black U-shaped wall structure** with **three vertical prongs/posts** rising from a shared bottom bar.  
+   - The surrounding area outside the room is plain white background.
+
+2. **PLAYER**  
+   - The likely player is the **small dark-gray square** near the **top of the left vertical prong**.  
+   - Approximate location: **rows 16–18, cols 15–17**.  
+   - Color: **dark gray**.  
+   - It sits directly **below a black cap** at the top of the left prong, making it the smallest distinct movable-looking object.
+
+3. **DIRECTIONS**  
+   Using the likely player center around **(row 17, col 16)**:
+
+   - **Up:**  
+     - Immediately **blocked / occupied by wall**.  
+     - A black segment is directly above, about **1–2 pixels/cells** away, at the top of the left prong.
+
+   - **Down:**  
+     - **Blocked very soon** by the same left vertical black wall/prong continuing downward.  
+     - The player appears embedded against or inside the left prong column; below it the black wall continues for roughly **20+ rows** until the bottom bar near **row 36**.
+
+   - **Left:**  
+     - **Open floor** inside the gray room for about **3 cells** until the room’s left boundary area.  
+     - Approximate left room wall at **col 12**.
+
+   - **Right:**  
+     - Immediately **blocked / occupied by wall** by the left prong’s black column.  
+     - The black vertical wall occupies roughly **cols 15–17**, so there is no clear rightward opening from the player’s exact position.
+
+4. **OBJECTS**  
+   Distinct non-wall, non-floor objects:
+
+   - **Dark-gray square/object**  
+     - Position: **upper-left interior**, attached to the left prong top.  
+     - Approx coords: **rows 16–18, cols 15–17**.  
+     - Shape: **small square/rectangle**.  
+     - Size: about **3×3**.
+
+   - **Medium-gray square/object**  
+     - Position: **upper-right interior**, attached to the right prong top.  
+     - Approx coords: **rows 15–17, cols 39–41**.  
+     - Shape: **small square/rectangle**.  
+     - Size: about **3×3**.
+
+   Structural but wall-like
+13:45:24 | INFO | HTTP Request: POST https://api.openai.com/v1/responses "HTTP/1.1 200 OK"
+13:45:24 | INFO | [cache] prompt=0 cached=0 (0%)
+13:45:24 | INFO | [journal] Turn 2: ACTION2 from the initial top-left prong position -> Gray 3x3 square moved downward by 3 cells from center [16,16] to [19,16]; black cell count dropped from 279 to 270.
+13:45:24 | INFO | [journal] Turn 1: ACTION1 from the initial position -> No cells changed; upward movement was blocked.
+13:45:24 | INFO | [journal] Turn 3: ACTION3 from the initial/top-left area -> No cells changed; left movement was blocked at that tested position.
+13:45:24 | INFO | [journal] Turn 4: ACTION4 from the initial/top-left area -> No cells changed; right movement was blocked at that tested position.
+13:45:24 | INFO | [rule+] The controllable entity is a small square object that moves in 3-cell increments on the grid.
+13:45:24 | INFO | [falsified] From the initial top-left position, moving up, left, or right did not work; only down was available there.
+13:45:24 | INFO | [falsified] The black square at the top-left was not the player; the moving object is the gray square that appeared lower after ACTION2.
+13:45:24 | INFO | ==================================================
+13:45:24 | INFO | TURN 2 | GOAL: Reach and touch the dark-gray square on the right prong, which is the only untested distinct object likely to increase score or trigger progress.
+13:45:24 | INFO |   STEP: Move right across the bottom corridor toward the right prong
+13:45:24 | INFO |   MODE: EXECUTE | 5 hypotheses
+13:45:24 | INFO | [observe] ACTION2 moved the gray 3x3 square from rows 15-17 to 18-20 while black cells decreased, indicating the gray square is the controllable avatar and moving down overwrites/replaces part of the black structure. ACTION1, ACTION3, and ACTION4 caused no change from tested positions, so up/left/right were blocked there.
+13:45:24 | INFO |   [p=0.8|NAVIGATION] The correct path is down the left prong, across the bottom corridor, then up the right prong because the prongs are connected only at the bottom.
+13:45:24 | INFO |   [p=0.62|VISUAL_PATTERN] The left-top start position and right-top dark-gray square are paired endpoints; matching square shapes imply start-to-goal traversal.
+13:45:24 | INFO |   [p=0.58|GOAL] This level is solved by moving the player from one marked prong top to the opposite marked prong top, not by collecting multiple items.
+13:45:24 | INFO | [actions] ['ACTION4', 'ACTION4', 'ACTION4', 'ACTION4', 'ACTION4']
+13:45:24 | INFO | #5 ACTION4: NO EFFECT (0 cells changed) score=0 [EXECUTE] Reach and touch the dark-gray square on the right …
+13:45:35 | INFO | HTTP Request: POST https://api.openai.com/v1/responses "HTTP/1.1 200 OK"
+13:45:35 | INFO | [perceive] 1. **LAYOUT**  
+   Small enclosed **puzzle-room / chamber** scene.  
+   - Background outside the room is white.  
+   - Main play area is a light-gray square roughly centered, about rows **12–48** and cols **12–48**.  
+   - Inside it is a thick black **U-shaped / three-pronged wall structure**:
+     - a horizontal black base near the lower part of the gray square,
+     - three vertical black pillars rising upward from that base: left, center, right.
+   - Traversable space appears to be the light-gray interior around and between the pillars.
+
+2. **PLAYER**  
+   Likely player is the **small dark-gray square/cap on top of the right pillar**.  
+   - Approx position: **upper-right interior** of the gray room, around **rows 15–18, cols 39–42**.  
+   - Color: **dark gray**.  
+   - It is small and distinct from the black walls.  
+   - There is a similar gray square on the left pillar, but the right one is more isolated/distinct as an object candidate.
+
+3. **DIRECTIONS**  
+   Assuming the player is the **gray square on the right pillar top**:
+
+   - **Up:**  
+     - Immediately above is **open light-gray space**.  
+     - The room’s top boundary is about **10–12 cells** above, near **row 12**.  
+     - So: **open**, then **wall/boundary**.
+
+   - **Down:**  
+     - Immediately below is the **black right vertical pillar**.  
+     - So: **blocked immediately** (distance ~1 cell).
+
+   - **Left:**  
+     - Immediate left is mostly **open light-gray space**.  
+     - After roughly **10–12 cells**, the **top of the center black pillar** is reached.  
+     - So: **open**, then **blocked by object/wall**.
+
+   - **Right:**  
+     - Immediate right is **open light-gray space**.  
+     - The gray room’s right boundary is about **4–6 cells** away.  
+     - So: **open**, then **wall/boundary**.
+
+   If instead the player were the left gray square, the local geometry is symmetric except that the center pillar would be to the right and the left room boundary would be nearby.
+
+4. **OBJECTS**  
+   Distinct non-wall, non-floor objects:
+
+   - **Gray square on left pillar**
+     - Color: **medium/dark gray**
+     - Position: **upper-left interior**, around **rows 18–21, cols 15–18**
+     - Shape: **small square**
+     - Size: about **4×4 px/cells**
+   
+   - **Gray square on right pillar**
+     - Color: **
+13:46:00 | INFO | HTTP Request: POST https://api.openai.com/v1/responses "HTTP/1.1 200 OK"
+13:46:00 | INFO | [cache] prompt=0 cached=0 (0%)
+13:46:00 | INFO | [journal] Turn 5: ACTION4 from gray square at [19,16] -> No cells changed; rightward movement was blocked from the current left-prong position.
+13:46:00 | INFO | [falsified] Attempting to move right from the current left-prong position [19,16] also failed, so horizontal crossing is not available yet at this height.
+13:46:00 | INFO | ==================================================
+13:46:00 | INFO | TURN 4 | GOAL: Advance along the only known traversable route by moving down the left prong toward the bottom corridor, so I can later cross to and touch the dark-gray square on the right prong.
+13:46:00 | INFO |   STEP: Move down from the current gray square position on the left prong
+13:46:00 | INFO |   MODE: EXECUTE | 5 hypotheses
+13:46:00 | INFO | [observe] The most recent attempted right move had no effect, so the current position on the left prong is still horizontally blocked. Earlier, only ACTION2 changed the scene: the gray 3x3 square moved down by 3 cells and black cells decreased, indicating downward progress along the prong is currently the only confirmed productive action.
+13:46:00 | INFO |   [p=0.78|NAVIGATION] The left prong remains traversable downward, and the route to the right prong requires descending first before any rightward crossing is possible.
+13:46:00 | INFO |   [p=0.62|VISUAL_PATTERN] The symmetric left gray square and right dark-gray square are paired endpoints; reaching the matching square on the opposite prong is the puzzle objective.
+13:46:00 | INFO |   [p=0.6|OBJECT_INTERACTION] Touching the dark-gray square on the right prong will complete the level or trigger progress.
+13:46:00 | INFO | [actions] ['ACTION2']
+13:46:00 | INFO | #6 ACTION2: 18 cells changed score=0 [EXECUTE] Advance along the only known traversable route by …
+13:46:11 | INFO | HTTP Request: POST https://api.openai.com/v1/responses "HTTP/1.1 200 OK"
+13:46:11 | INFO | [perceive] 1. **LAYOUT**
+- Simple enclosed **puzzle-room / icon-like room** rather than a maze.
+- A light-gray square play area occupies roughly **rows 12–44, cols 12–44**.
+- Inside it is a thick black **U-shaped boundary/path** with **three vertical prongs/posts** rising from the bottom bar:
+  - left post near col ~16
+  - middle post near col ~28
+  - right post near col ~40
+- The bottom is connected by a horizontal black bar around **row ~38–40** from about **col 16 to 40**.
+- The top is open; there is no enclosing top wall.
+
+2. **PLAYER**
+- The likely player is the **small small gray square/cap** on top of the **right vertical post**.
+- Approximate location: **rows 15–18, cols 39–42** (top-right area of the inner structure, but still within the gray room).
+- Color: **medium gray**.
+- Shape/size: small rectangular/square block, about **3–4 px tall and 3 px wide** in the 64×64 image.
+
+3. **DIRECTIONS**  
+From the likely player at the top of the right post:
+
+- **Up:**  
+  - Immediately above is **open light-gray floor/background**.  
+  - Traversable-looking space continues to the top edge of the gray room, about **3–4 pixels**, then beyond that white outer background.  
+  - No object directly above.
+
+- **Down:**  
+  - Immediately below is **blocked/occupied by the black right vertical post**.  
+  - The black post continues downward about **20+ pixels** until it meets the bottom horizontal black bar near **row 38–40**.
+
+- **Left:**  
+  - Immediately left is **open floor**.  
+  - The next major object is the **middle black vertical post**, about **10–12 pixels** to the left.  
+  - Beyond that, more open floor, then the **left post** farther left.
+
+- **Right:**  
+  - Immediately right is **open floor**.  
+  - The next wall-like boundary is the **right edge of the gray room**, about **3–4 pixels** away.  
+  - No other object between the player and that edge.
+
+4. **OBJECTS**  
+Distinct non-wall, non-floor objects:
+
+- **Gray cap/block on right post**
+  - Color: medium gray
+  - Position: **upper-right of center**, around **rows 15–18, cols 39–42**
+  - Shape: small rectangle/square
+  - Size: very small
+
+- **Gray cap/block on left post**
+  - Color: medium gray
+  - Position: **upper-left of center**, around **rows 18–22, cols 
