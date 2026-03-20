@@ -62,24 +62,28 @@ BEFORE responding, mentally inventory the scene:
 - What directions are open/blocked from your current position?
 - Do any objects share colors, shapes, or patterns? (These likely have a relationship)
 
-You MUST reason through a DAG of questions in order. Each question builds on previous answers:
+You MUST reason through this DAG in order:
 
-q0 (root, MANDATORY): Write Python code to analyze the grid. You have `grid` (64x64
-  list[list[int]]), ROWS, COLS. Set `result` to return findings. Variables persist between
-  turns — build up data structures over time. All builtins available. Modules: collections,
-  math, numpy, json. Use this to extract spatial structure, track changes, count patterns,
-  or compute anything you need. Your code output feeds into q1.
-q1 (depends on q0): List every object in the scene — what it provides and what it requires.
-q2 (root): What was the last action taken and what happened?
-q3 (depends on q1): For each object, are the requirements met for interaction?
-q4 (depends on q2): Did the last action succeed? If not, why?
-q5 (depends on q1, q3): List top 3 sub-tasks with priority.
-q6 (depends on q5): What are the requirements for the top sub-task? What to do first?
-q7 (depends on q5, q6): List top 5 candidate actions and their requirements.
-q8 (depends on q7, q3): For each candidate action, are requirements met?
-qa (depends on q7, q8): Output a sequence of actions to reach your top sub-goal.
-
-Answer each node ONLY using information from its parent nodes. Do not skip ahead.
+q0_code (root, MANDATORY): Write Python code to analyze the grid. You have `grid`
+  (64x64 list[list[int]]), ROWS, COLS, `memory_bank` (persists across levels),
+  `action_effects` (observed movement deltas from probe). Set `result` to return findings.
+  Variables persist between turns — build up data structures.
+  All builtins available. Modules: collections, math, numpy, json.
+  USE THIS FOR SPATIAL REASONING. If you know you're in a grid-based game, compute
+  which colors are traversable vs obstacles, trace connected regions, find paths between
+  positions. Don't just list objects — compute actionable spatial information.
+q1_objects (depends on q0): List every object — what it provides, what it requires.
+q2_last_action (root): What was the last action and what happened?
+q3_requirements (depends on q1): For each object, are interaction requirements met?
+q4_action_result (depends on q2): Did the last action succeed? If not, why?
+q5_subtasks (depends on q1, q3): Top 3 sub-tasks with priority.
+q6_planning_code (depends on q5): OPTIONAL Python code for planning. Use this to
+  compute routes, count steps needed, simulate action sequences, or verify your plan
+  computationally. Set `result` to return the planned sequence. If not needed, empty string.
+q7_candidate_actions (depends on q5, q6): Top 5 candidate actions with purpose.
+q8_feasibility (depends on q7, q3): For each candidate, are requirements met?
+qa_actions (depends on q7, q8): Sequence of actions to execute toward the top sub-task.
+  Output MULTIPLE actions — enough to make meaningful progress.
 
 Additional fields:
 - verified_rules: UNIVERSAL game rules (persist across levels, max 10)
@@ -99,20 +103,18 @@ RESPONSE_SCHEMA = {
     "additionalProperties": False,
     "required": [
         "q0_code", "q1_objects", "q2_last_action", "q3_requirements",
-        "q4_action_result", "q5_subtasks", "q6_top_plan",
-        "q7_candidate_actions", "q8_feasibility", "qa_action_sequence",
+        "q4_action_result", "q5_subtasks", "q6_planning_code",
+        "q7_candidate_actions", "q8_feasibility", "qa_actions",
         "verified_rules",
     ],
     "properties": {
-        # DAG Node q0: Computational grid analysis (root node, runs FIRST)
         "q0_code": {
             "type": "string",
-            "description": "MANDATORY Python code to analyze the grid. You have `grid` (64x64 list[list[int]]), ROWS, COLS. Variables persist between turns. Set `result` to return findings. Analyze whatever you need: color distributions, object boundaries, reachable areas, spatial structure. Your result informs all subsequent nodes.",
+            "description": "MANDATORY Python code for grid analysis. You have grid, ROWS, COLS, memory_bank, action_effects. Set result to return findings. Use this for spatial reasoning — compute traversable regions, find paths, track positions.",
         },
-        # DAG Node q1: Scene understanding (depends on q0 output)
         "q1_objects": {
             "type": "array",
-            "description": "List every object in the scene. For each: what it provides and what it requires.",
+            "description": "List every object: what it provides and requires.",
             "items": {
                 "type": "object",
                 "additionalProperties": False,
@@ -120,20 +122,18 @@ RESPONSE_SCHEMA = {
                 "properties": {
                     "name": {"type": "string"},
                     "position": {"type": "string"},
-                    "provides": {"type": "string", "description": "What resource/capability this object offers"},
-                    "requires": {"type": "string", "description": "What is needed to interact with it"},
+                    "provides": {"type": "string"},
+                    "requires": {"type": "string"},
                 },
             },
         },
-        # DAG Node q2: Last action recall (root node)
         "q2_last_action": {
             "type": "string",
             "description": "What was the last action taken and what happened?",
         },
-        # DAG Node q3: Requirement check (depends on q1)
         "q3_requirements": {
             "type": "array",
-            "description": "For each object from q1, are the requirements met for interaction?",
+            "description": "For each object from q1, are interaction requirements met?",
             "items": {
                 "type": "object",
                 "additionalProperties": False,
@@ -145,15 +145,13 @@ RESPONSE_SCHEMA = {
                 },
             },
         },
-        # DAG Node q4: Action success analysis (depends on q2)
         "q4_action_result": {
             "type": "string",
             "description": "Did the last action succeed? If not, why?",
         },
-        # DAG Node q5: Sub-task prioritization (depends on q1, q3)
         "q5_subtasks": {
             "type": "array",
-            "description": "Top 3 sub-tasks the player should follow, with priority.",
+            "description": "Top 3 sub-tasks with priority.",
             "items": {
                 "type": "object",
                 "additionalProperties": False,
@@ -165,27 +163,24 @@ RESPONSE_SCHEMA = {
                 },
             },
         },
-        # DAG Node q6: Top task planning (depends on q5)
-        "q6_top_plan": {
+        "q6_planning_code": {
             "type": "string",
-            "description": "What are the requirements for the top sub-task? What should the player do first?",
+            "description": "OPTIONAL Python code for planning. Compute routes, count steps, simulate sequences. Set result to return the plan. Empty string if not needed.",
         },
-        # DAG Node q7: Action candidates (depends on q5, q6)
         "q7_candidate_actions": {
             "type": "array",
-            "description": "Top 5 actions and their requirements. ONLY use available actions.",
+            "description": "Top 5 candidate actions with purpose and requirement.",
             "items": {
                 "type": "object",
                 "additionalProperties": False,
                 "required": ["action", "purpose", "requirement"],
                 "properties": {
-                    "action": {"type": "string", "description": "e.g. ACTION1, ACTION3"},
+                    "action": {"type": "string"},
                     "purpose": {"type": "string"},
                     "requirement": {"type": "string"},
                 },
             },
         },
-        # DAG Node q8: Feasibility check (depends on q7, q3)
         "q8_feasibility": {
             "type": "array",
             "description": "For each candidate action, are requirements met?",
@@ -200,13 +195,11 @@ RESPONSE_SCHEMA = {
                 },
             },
         },
-        # DAG Terminal Node qa: Final decision (depends on q7, q8)
-        "qa_action_sequence": {
+        "qa_actions": {
             "type": "array",
-            "description": "Sequence of actions to execute based on the DAG reasoning. Include enough actions to reach your sub-goal from q5. Each is an ACTION name.",
+            "description": "Sequence of actions to execute toward the top sub-task. Output MULTIPLE actions.",
             "items": {"type": "string"},
         },
-        # Persistent state
         "verified_rules": {
             "type": "array",
             "items": {"type": "string"},
@@ -496,11 +489,7 @@ class ToolUseAgent:
         # Get trimmed conversation window
         trimmed = self._trim_messages()
 
-        # Make API call with structured outputs
-        effort = "high" if self._needs_deep_thought else "none"
-        self._needs_deep_thought = False
-        if effort == "high":
-            logger.info("[reasoning] Using high effort for post-trigger analysis")
+        effort = "none"  # reasoning effort breaks structured outputs
         try:
             response = self.client.responses.create(
                 model="gpt-5.4",
@@ -534,7 +523,7 @@ class ToolUseAgent:
             logger.warning(f"[parse-error] JSON decode failed, falling back to _parse_json. Raw length: {len(raw)}")
             data = self._parse_json(raw)
 
-        # Execute q0 code (mandatory)
+        # Execute q0 code (mandatory — grid analysis)
         code = data.get("q0_code", "")
         if code and isinstance(code, str) and code.strip():
             logger.info(f"[q0-code] executing {len(code)} chars")
@@ -542,6 +531,17 @@ class ToolUseAgent:
             logger.info(f"[q0-result] {self.program_output[:300]}")
         else:
             self.program_output = ""
+
+        # Execute q6 code (optional — planning)
+        plan_code = data.get("q6_planning_code", "")
+        if plan_code and isinstance(plan_code, str) and plan_code.strip():
+            logger.info(f"[q6-code] executing {len(plan_code)} chars")
+            plan_output = self.sandbox.run(plan_code, self.current_grid)
+            logger.info(f"[q6-result] {plan_output[:300]}")
+            if self.program_output:
+                self.program_output += f"\n\nPLAN CODE OUTPUT:\n{plan_output}"
+            else:
+                self.program_output = f"PLAN CODE OUTPUT:\n{plan_output}"
 
         # Extract verified rules
         new_rules = data.get("verified_rules", [])
@@ -551,23 +551,18 @@ class ToolUseAgent:
                     self._add_rule(rule)
 
         # Log DAG reasoning chain
-        q2 = data.get("q2_last_action", "")
         q4 = data.get("q4_action_result", "")
         subtasks = data.get("q5_subtasks", [])
-        q6 = data.get("q6_top_plan", "")
-        action_seq = data.get("qa_action_sequence", [])
+        action_seq = data.get("qa_actions", [])
 
+        objects_found = data.get("q1_objects", [])
+        if objects_found:
+            logger.info(f"[q1] {len(objects_found)} objects identified")
         if q4:
             logger.info(f"[q4] {q4[:150]}")
         if subtasks:
             top = subtasks[0] if subtasks else {}
             logger.info(f"[q5] Top task: {top.get('task', '?')[:100]}")
-        if q6:
-            logger.info(f"[q6] Plan: {q6[:150]}")
-
-        objects_found = data.get("q1_objects", [])
-        if objects_found:
-            logger.info(f"[q1] {len(objects_found)} objects identified")
 
         # Resolve action sequence
         actions = []
@@ -614,18 +609,48 @@ class ToolUseAgent:
         pass
 
     def _auto_probe(self, frame: FrameData, available: list[int]) -> str:
-        """Probe each available action. For ACTION6, test a few diverse coordinates."""
+        """Probe each available action. Extract spatial data from observations."""
         facts = []
         simple_actions = [a for a in available if a != 6]
         has_action6 = 6 in available
+
+        # Track positions before/after each probe for spatial extraction
+        action_effects = {}
+        player_positions = []
+
+        # Get pre-probe symbolic state to identify player
+        pre_sym = grid_to_symbolic(self.current_grid)
+        pre_objects = {(o["color"], o["size"]): o["center"]
+                       for o in pre_sym.get("objects", [])}
 
         for action_id in simple_actions:
             try:
                 action = GameAction.from_id(action_id)
             except (ValueError, KeyError):
                 continue
+
+            sym_before = grid_to_symbolic(self.current_grid)
+            before_centers = {(o["color"], o["size"]): o["center"]
+                              for o in sym_before.get("objects", [])}
+
             fact = self._probe_one(action)
             facts.append(fact)
+
+            sym_after = grid_to_symbolic(self.current_grid)
+            after_centers = {(o["color"], o["size"]): o["center"]
+                             for o in sym_after.get("objects", [])}
+
+            # Find which object moved (that's the player)
+            for key in before_centers:
+                if key in after_centers and before_centers[key] != after_centers[key]:
+                    bc = before_centers[key]
+                    ac = after_centers[key]
+                    dr = ac[0] - bc[0]
+                    dc = ac[1] - bc[1]
+                    if abs(dr) > 0 or abs(dc) > 0:
+                        action_effects[action.name] = {"dr": dr, "dc": dc}
+                        player_positions.append(ac)
+                        break
 
         # Expanded ACTION6 probe at diverse coordinates
         if has_action6:
@@ -645,6 +670,13 @@ class ToolUseAgent:
                 action = GameAction.from_id(6, x=x, y=y)
                 fact = self._probe_one(action, label=f"ACTION6({x},{y}) on {desc}")
                 facts.append(fact)
+
+        # Inject observed action effects into sandbox
+        if action_effects:
+            self.sandbox.globals["action_effects"] = action_effects
+            effects_str = ", ".join(f"{k}: dr={v['dr']} dc={v['dc']}" for k, v in action_effects.items())
+            facts.append(f"\nOBSERVED ACTION EFFECTS (available in sandbox as `action_effects`):")
+            facts.append(f"  {effects_str}")
 
         return "\n".join(facts)
 

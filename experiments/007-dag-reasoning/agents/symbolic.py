@@ -14,7 +14,7 @@ COLOR_NAMES = {
 Grid = list[list[int]]
 
 
-def grid_to_symbolic(grid: Grid, min_size: int = 2) -> dict:
+def grid_to_symbolic(grid: Grid, min_size: int = 1) -> dict:
     """Convert grid to symbolic state with objects and relations."""
     h, w = len(grid), len(grid[0])
 
@@ -79,16 +79,17 @@ def grid_to_symbolic(grid: Grid, min_size: int = 2) -> dict:
                 "color_id": color,
                 "shape": shape,
                 "size": area,
-                "position": [min_r, min_c],
                 "bbox": [min_r, min_c, max_r, max_c],
-                "center": [sum(rows) // len(rows), sum(cols) // len(cols)],
+                "center": [round(sum(rows) / len(rows), 1), round(sum(cols) / len(cols), 1)],
             })
 
     # Sort: small interesting objects first, backgrounds last
     objects.sort(key=lambda o: (o["shape"] == "background", o["size"]))
 
-    # Compute relations between non-background objects
+    # Truncate and reassign IDs so they're consistent
     fg_objects = [o for o in objects if o["shape"] != "background"][:15]
+    for i, o in enumerate(fg_objects):
+        o["id"] = i + 1
     relations = []
     for i, a in enumerate(fg_objects):
         for b in fg_objects[i+1:]:
@@ -103,12 +104,12 @@ def grid_to_symbolic(grid: Grid, min_size: int = 2) -> dict:
             elif ac > bc + 5:
                 relations.append({"type": "right_of", "a": a["id"], "b": b["id"]})
 
-            # Adjacent check
+            # Adjacent check (touching or within 1 cell)
             a_r1, a_c1, a_r2, a_c2 = a["bbox"]
             b_r1, b_c1, b_r2, b_c2 = b["bbox"]
-            if (abs(a_r2 - b_r1) <= 1 or abs(b_r2 - a_r1) <= 1) and not (a_c2 < b_c1 or b_c2 < a_c1):
-                relations.append({"type": "adjacent", "a": a["id"], "b": b["id"]})
-            if (abs(a_c2 - b_c1) <= 1 or abs(b_c2 - a_c1) <= 1) and not (a_r2 < b_r1 or b_r2 < a_r1):
+            row_touch = (abs(a_r2 - b_r1) <= 1 or abs(b_r2 - a_r1) <= 1) and not (a_c2 < b_c1 or b_c2 < a_c1)
+            col_touch = (abs(a_c2 - b_c1) <= 1 or abs(b_c2 - a_c1) <= 1) and not (a_r2 < b_r1 or b_r2 < a_r1)
+            if row_touch or col_touch:
                 relations.append({"type": "adjacent", "a": a["id"], "b": b["id"]})
 
     # Count backgrounds
