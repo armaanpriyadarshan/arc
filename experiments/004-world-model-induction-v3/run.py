@@ -4,6 +4,7 @@ import argparse
 import logging
 import os
 import sys
+from datetime import datetime
 
 from dotenv import load_dotenv
 
@@ -21,7 +22,11 @@ def main() -> None:
     parser.add_argument("-a", "--agent", default="explorer", choices=AGENTS.keys())
     args = parser.parse_args()
 
-    log_file = os.path.join(os.path.dirname(__file__), "experiment.log")
+    # Create logs directory and timestamped log file
+    logs_dir = os.path.join(os.path.dirname(__file__), "logs")
+    os.makedirs(logs_dir, exist_ok=True)
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    log_file = os.path.join(logs_dir, f"{args.game}_{timestamp}.log")
 
     # Only configure our logger
     agent_logger = logging.getLogger("agents")
@@ -35,9 +40,12 @@ def main() -> None:
     fh = logging.FileHandler(log_file, mode="w")
     fh.setLevel(logging.DEBUG)
     fh.setFormatter(fmt)
+    fh.stream.reconfigure(line_buffering=True)
 
     agent_logger.addHandler(sh)
     agent_logger.addHandler(fh)
+
+    agent_logger.info(f"Logging to {log_file}")
 
     # Silence third-party noise
     for name in ("openai", "httpx", "httpcore", "arc_agi", "urllib3"):
