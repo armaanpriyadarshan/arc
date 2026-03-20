@@ -1,12 +1,12 @@
-"""Observe-act agent with Bayesian hypothesis tracking (v3).
+"""Observe-act agent with Bayesian hypothesis tracking (v4).
 
-Builds on v2 (auto-probe + structured hypotheses) with three major changes:
-1. Bayesian probabilities replace binary hypothesis status. Every hypothesis carries
-   a probability 0.0-1.0 and a tests[] list documenting what was tried.
-2. Expanded auto-probe for ACTION6: probes 3-5 diverse coordinates instead of one,
-   preventing premature dismissal of click-based mechanics.
-3. Stale hypothesis detection: warns when the top hypothesis hasn't changed for 5+
-   turns or when 3+ consecutive turns produce 0 cell changes.
+Builds on v3 with three reasoning improvements:
+1. Causal "why" reasoning: hypotheses must include a `mechanism` (causal chain) and
+   `predictions` (falsifiable consequences), not just claims and probabilities.
+2. Spatial reachability reasoning: wall-color generalization in CORE PRIORS so the
+   agent doesn't navigate toward targets enclosed by confirmed-impassable walls.
+3. Novelty bias: after a large change (>80 cells), exploration/navigation hypotheses
+   get a probability boost so the agent investigates effects before re-triggering.
 """
 
 import json
@@ -35,14 +35,6 @@ AVAILABLE ACTIONS:
 - ACTION7: Simple action (undo)
 
 Not all actions may be available in every game. Check available_actions.
-
-COORDINATE SYSTEM:
-- All object positions use {"row": R, "col": C} format.
-- Row increases DOWNWARD (row 0 = top edge, row 63 = bottom edge).
-- Col increases RIGHTWARD (col 0 = left edge, col 63 = right edge).
-- To go UP, DECREASE row. To go DOWN, INCREASE row. To go LEFT, DECREASE col. To go RIGHT, INCREASE col.
-- ACTION6 takes (x, y) coordinates where x=col and y=row — note the order is REVERSED from object positions.
-- Object "orientation" uses compass directions: N=up (decreasing row), E=right (increasing col), S=down, W=left.
 
 GOAL-FIRST THINKING:
 
@@ -75,6 +67,11 @@ OBJECTS AND PHYSICS:
   a nearby object, the nearby object is a remote trigger.
 - Solid objects don't overlap: BLOCKED means you hit a wall or obstacle. The boundary
   of your movement area IS the puzzle geometry.
+- Wall colors generalize: if you were BLOCKED trying to move through an object of a
+  certain color, ALL objects of that color are likely impassable walls. Before navigating
+  toward a target, check: is there a path that doesn't cross any objects of a confirmed-
+  wall color? If the target is enclosed by wall-colored objects with no gap, you CANNOT
+  reach it until those walls are removed by a trigger.
 
 AGENTS AND ENTITIES:
 - You control one entity (typically the smallest moving object). It moves when you
@@ -96,8 +93,12 @@ GEOMETRY AND SPACE:
   Rotations (90°, 180°) and reflections are common game mechanics.
 - Inside/outside: if an object is inside another's boundary, they likely have a
   containment relationship (key in a room, switch behind a gate).
-- Connectivity: can you reach an object from where you are? If not, you need to
-  find a path or remove an obstacle first.
+- Reachability: before navigating toward any target, trace a mental path from your
+  current position. What objects are between you and the target? If those objects are
+  the same color as objects that have blocked you before, the target is UNREACHABLE
+  until those walls are opened. Don't waste actions walking into walls you already know
+  are solid — look for triggers/switches that might open the path, or choose a
+  different reachable target.
 
 BEFORE generating hypotheses, you MUST fill in scene_inventory and untried.
 
@@ -136,6 +137,12 @@ Output JSON:
   {
     "category": "OBJECT_INTERACTION",
     "claim": "ACTION6 clicking on objects toggles their state",
+    "mechanism": "WHY: The game uses touch-activated remote triggers (consistent with CORE PRIOR: objects interact by CONTACT). The white object's distinctive color marks it as an interactable element, and its position at a junction suggests it controls access to the corridors beyond.",
+    "predictions": [
+      "Touching the white object again should cause another reconfiguration",
+      "The objects that changed last time should be the same ones affected next time",
+      "If this is a toggle, the original configuration should return on a second touch"
+    ],
     "probability": 0.4,
     "tests": [
       {"action": "ACTION6(32,15)", "result": "0 changes", "interpretation": "clicked on gridline, not on object"},
@@ -148,6 +155,15 @@ Output JSON:
   HYPOTHESIS RULES:
   - Every hypothesis must have a `probability` between 0.0 and 1.0. Update probabilities each turn based on new evidence. Never use 0.0 or 1.0 — there is always some uncertainty.
   - Every hypothesis must have a `tests` list documenting what was specifically tried and what happened. This is how you track whether your evidence is strong or weak.
+  - Every hypothesis must have a `mechanism` field explaining the CAUSAL CHAIN: what
+    physical process connects your action to the observed effect? "It's a switch" is NOT
+    a mechanism. "Contact triggers remote reconfiguration because the game uses
+    touch-activated triggers (consistent with CORE PRIOR: objects interact by CONTACT)"
+    IS a mechanism. Reference the CORE PRIORS to ground your reasoning.
+  - Every hypothesis must have a `predictions` list: 2+ specific, falsifiable consequences.
+    If your mechanism is correct, what ELSE must be true that you haven't observed yet?
+    Design your test_actions to check these predictions, not to re-confirm what you
+    already know.
   - Maintain at least 3 competing hypotheses at all times. If you only have one theory, you're not exploring enough. Generate alternatives even if they seem unlikely.
   - Prioritize testing the hypothesis with the highest uncertainty (probability closest to 0.5) — that's where you gain the most information. If you already have a high-confidence hypothesis (>0.8), test something else.
   - For parameterized actions (ACTION6), evidence from one coordinate does NOT generalize. You must test diverse targets: click on different colored objects, empty cells, edges, corners. Track each coordinate tested in the `tests` list. You need at least 3-5 diverse coordinate tests before drawing any conclusion about ACTION6's behavior.
@@ -307,6 +323,11 @@ IMPORTANT:
   same types of interactions (switches, gates, collectibles) in the new layout.
 - If you're stuck (repeated BLOCKED), you're probably missing a game mechanic, not a path.
   Look for objects you haven't interacted with yet.
+- NOVELTY RULE: After a significant change (many cells changed), do NOT re-interact
+  with the same trigger until you've taken novel actions to explore the effects. Try
+  actions and directions you haven't tried before — the change may have opened new
+  possibilities. Repeating the cause teaches you nothing; exploring after the change
+  does.
 
 INTERACTION JOURNAL:
 
@@ -407,10 +428,13 @@ class ToolUseAgent:
         self.journal_by_object: dict[str, list[dict]] = {}  # indexed by object for quick lookup
         self._pending_journal_prompt: str | None = None
 
+        # v4: novelty bias after large changes
+        self._novelty_boost_active = False
+
     def run(self) -> None:
         timer = time.time()
         logger.info("=" * 60)
-        logger.info(f"Bayesian Hypothesis Agent (v3) on {self.game_id}")
+        logger.info(f"Bayesian Hypothesis Agent (v4) on {self.game_id}")
         logger.info("=" * 60)
 
         frame = self._step(GameAction.RESET)
@@ -474,6 +498,7 @@ class ToolUseAgent:
                     self.blocked_tracker.clear()
                     self.dead_ends.clear()
                     self._large_change_pending = True
+                    self._novelty_boost_active = True
 
                 # v3: auto-detect significant interactions for journal
                 if changes > 80 and not blocked:
@@ -482,6 +507,9 @@ class ToolUseAgent:
                         "well beyond normal movement (~52 cells). Something significant happened. "
                         "You MUST record this in your interactions journal with specific details "
                         "about what changed. Look at the symbolic diff and the image carefully.\n"
+                        "\nNOVELTY PRIORITY: Since a major change just happened, take NOVEL actions to "
+                        "explore the effects — try directions and interactions you haven't tried before. "
+                        "Do NOT repeat the action that caused the change.\n"
                     )
 
                 # v3: track zero-change turns for stale detection
@@ -518,6 +546,7 @@ class ToolUseAgent:
                     self.blocked_tracker.clear()
                     self.dead_ends.clear()
                     self._large_change_pending = False
+                    self._novelty_boost_active = False
                     self._pending_journal_prompt = None
                     self.prev_symbolic = None
                     self.prev_image_grid = None
@@ -581,8 +610,8 @@ class ToolUseAgent:
         moving = [o for o in objects if o.get("size", 9999) < 50]
         if moving:
             moving.sort(key=lambda o: o.get("size", 9999))
-            c = moving[0].get("center", {"row": 32, "col": 32})
-            return f"({c['row']//10*10},{c['col']//10*10})"
+            c = moving[0].get("center", [32, 32])
+            return f"({c[0]//10*10},{c[1]//10*10})"
         return "(?,?)"
 
     def _add_rule(self, rule: str) -> None:
@@ -716,7 +745,7 @@ class ToolUseAgent:
         # Target 1: center of the largest non-background object
         if fg_objects:
             largest = max(fg_objects, key=lambda o: o.get("size", 0))
-            cr, cc = largest["center"]["row"], largest["center"]["col"]
+            cr, cc = largest["center"]
             targets.append((cc, cr, f"largest object ({largest['color']}, size={largest['size']})"))
 
         # Target 2: center of a different-colored object
@@ -724,7 +753,7 @@ class ToolUseAgent:
             first_color = fg_objects[0].get("color_id")
             for obj in fg_objects[1:]:
                 if obj.get("color_id") != first_color:
-                    cr, cc = obj["center"]["row"], obj["center"]["col"]
+                    cr, cc = obj["center"]
                     targets.append((cc, cr, f"different-colored object ({obj['color']}, size={obj['size']})"))
                     break
 
@@ -992,7 +1021,6 @@ class ToolUseAgent:
             + f"RECENT:\n{recent}\n\n"
             + changes_text
             + f"OBJECTS:\n{json.dumps(symbolic.get('objects', []), indent=1)}\n"
-            + f"SPATIAL RELATIONS:\n{json.dumps(symbolic.get('relations', []), indent=1)}\n"
         ))
 
         # v3: inject current plan into prompt (goal is visible via the plan)
@@ -1028,10 +1056,14 @@ class ToolUseAgent:
             '"observed": "specific result", "objects_involved": ["obj1"], '
             '"reversible": "unknown/yes/no", "useful": true/false}],\n'
             ' "hypotheses": [\n'
-            '   {"category": "GAME_MECHANIC", "claim": "...", "probability": 0.6, '
+            '   {"category": "GAME_MECHANIC", "claim": "...", '
+            '"mechanism": "WHY: causal chain referencing CORE PRIORS", '
+            '"predictions": ["falsifiable consequence 1", "falsifiable consequence 2"], '
+            '"probability": 0.6, '
             '"tests": [{"action": "...", "result": "...", "interpretation": "..."}], '
             '"test_actions": ["ACTION3","ACTION3","ACTION3"], "information_gain": "..."},\n'
-            '   {"category": "VISUAL_PATTERN", "claim": "...", "probability": 0.3, '
+            '   {"category": "VISUAL_PATTERN", "claim": "...", '
+            '"mechanism": "WHY: ...", "predictions": ["..."], "probability": 0.3, '
             '"tests": [...], "information_gain": "..."}\n'
             ' ],\n'
             ' "verified_rules": ["universal game mechanic you confirmed"],\n'
@@ -1130,14 +1162,25 @@ class ToolUseAgent:
         if goal:
             self.current_goal = goal
 
-        # v3: sort hypotheses by probability descending, find first with test_actions
+        # v4: sort hypotheses by probability descending with novelty boost
         raw_actions = []
         active_claim = ""
         if hypotheses:
-            # Sort by probability descending
+            # v4: novelty-aware sort key
+            def _hyp_sort_key(h):
+                prob = h.get("probability", 0.5)
+                if self._novelty_boost_active:
+                    category = h.get("category", "")
+                    if category == "NAVIGATION":
+                        prob += 0.15
+                    claim_lower = h.get("claim", "").lower()
+                    if any(w in claim_lower for w in ("explore", "investigate", "new", "changed", "opened")):
+                        prob += 0.10
+                return prob
+
             sorted_hyps = sorted(
                 [h for h in hypotheses if isinstance(h, dict)],
-                key=lambda h: h.get("probability", 0.5),
+                key=_hyp_sort_key,
                 reverse=True,
             )
 
@@ -1207,6 +1250,11 @@ class ToolUseAgent:
             single = data.get("action", "")
             if single:
                 raw_actions = [single]
+
+        # v4: clear novelty boost after action extraction (fires for exactly one LLM call)
+        if self._novelty_boost_active:
+            logger.info("[novelty] Boost active — exploration/navigation hypotheses prioritized")
+            self._novelty_boost_active = False
 
         # Extract verified rules
         new_rules = data.get("verified_rules", [])

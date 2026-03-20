@@ -355,9 +355,8 @@ def test_diff_symbolic_new_fields():
         "objects": [{
             "id": 1, "color": "green", "color_id": 14,
             "shape": "irregular", "size": 4,
-            "position": {"row": 10, "col": 10},
-            "bbox": {"min_row": 10, "min_col": 10, "max_row": 12, "max_col": 11},
-            "center": {"row": 11, "col": 10},
+            "position": [10, 10], "bbox": [10, 10, 12, 11],
+            "center": [11, 10],
             "subpattern": "L_shape",
             "orientation": "N",
             "rotation_id": "abc12345",
@@ -368,9 +367,8 @@ def test_diff_symbolic_new_fields():
         "objects": [{
             "id": 1, "color": "green", "color_id": 14,
             "shape": "irregular", "size": 4,
-            "position": {"row": 10, "col": 10},
-            "bbox": {"min_row": 10, "min_col": 10, "max_row": 12, "max_col": 11},
-            "center": {"row": 11, "col": 10},
+            "position": [10, 10], "bbox": [10, 10, 12, 11],
+            "center": [11, 10],
             "subpattern": "T_shape",
             "orientation": "E",
             "rotation_id": "def67890",

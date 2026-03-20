@@ -1,24 +1,13 @@
 """Dummy navigation agent — scripted movement with LLM perception logging.
 
-Executes a hardcoded optimal action sequence for ls20, derived from the
-game source code. No LLM for planning — GPT-5.4 is called purely as a
-describer at each step. Output is a single human-readable text log
-revealing perception accuracy without the noise of hypothesis-driven
-decision-making.
-
-ls20 level 1 layout (from source):
-  - Player ("pca", tag "caf") starts at (39, 45), 5x5 sprite
-  - White plus display ("kdj", tag "wex") at (3, 55), scale 2
-  - Movement: 5 units per action on a 5-unit tile grid
-  - Walls ("nlo", tag "jdd"): rows 10-11 (y=50,55) are fully walled
-  - The plus is a display element behind the wall — unreachable
-  - Closest approach: (19, 45) = 4 LEFTs from start, no walls in the way
-  - Interactable objects nearby: kdy ("bgt", rotator) at (19, 30)
-    reachable via column-6 corridor
+Executes scripted navigation toward the white plus in ls20. No LLM for
+planning — GPT-5.4 is called purely as a describer at each step. Output
+is a single human-readable text log revealing perception accuracy without
+the noise of hypothesis-driven decision-making.
 
 Usage:
     cd arc_agi_repo_collab/arc
-    uv run python synthetic_games/visual_agent_play.py --game ls20 --standalone \\
+    uv run python synthetic_games/visual_agent_play.py --game ls20 --standalone \
       --agent experiments/004-world-model-induction-v3/vision_testing/dummy_agent.py:DummyNavigationAgent
 """
 
@@ -48,41 +37,18 @@ ACTION_NAMES = {
     GameAction.ACTION4: "ACTION4 (right)",
     GameAction.ACTION5: "ACTION5 (spacebar)",
 }
-
-# Hardcoded optimal action sequences derived from ls20 game source.
-# Key: game_id. Value: list of (GameAction, description) tuples.
-#
-# ls20 level 1 (krg):
-#   Player at (39, 45). Plus display at (3, 55) behind wall.
-#   Closest approach: (19, 45) via 4× LEFT (no walls).
-#   Then navigate up through col-6 corridor to reach the rotation
-#   control (kdy "bgt") at (19, 30), which is the nearest interactable
-#   object that modifies the plus display.
-#
-#   Path: LEFT×4 → (19,45), UP → (19,40), LEFT → can't (wall at 14,40)
-#   So: LEFT→(34,45), UP→(34,40), UP→(34,35), UP→(34,30), UP→(34,25),
-#   LEFT×3→(19,25), DOWN→(19,30) = kdy rotator. 9 actions.
-LS20_ACTIONS = [
-    # Navigate from (39,45) toward plus via col-6 corridor to rotator
-    (GameAction.ACTION3, "LEFT to (34,45)"),
-    (GameAction.ACTION1, "UP to (34,40)"),
-    (GameAction.ACTION1, "UP to (34,35)"),
-    (GameAction.ACTION1, "UP to (34,30)"),
-    (GameAction.ACTION1, "UP to (34,25) — open corridor"),
-    (GameAction.ACTION3, "LEFT to (29,25)"),
-    (GameAction.ACTION3, "LEFT to (24,25)"),
-    (GameAction.ACTION3, "LEFT to (19,25)"),
-    (GameAction.ACTION2, "DOWN to (19,30) — kdy rotator"),
-    # Interact with the rotation control (modifies plus display)
-    (GameAction.ACTION5, "ACTION5 on rotator"),
-    # Continue toward plus display — closest approach at (19,45)
-    (GameAction.ACTION2, "DOWN to (19,35)"),
-    (GameAction.ACTION2, "DOWN to (19,40)"),
-    (GameAction.ACTION2, "DOWN to (19,45) — closest to plus"),
-    # Attempt to walk into the plus (will be BLOCKED by wall at y=50)
-    (GameAction.ACTION2, "DOWN toward plus (expect BLOCKED)"),
-    (GameAction.ACTION5, "ACTION5 near plus"),
-]
+ACTION_DIRS = {
+    GameAction.ACTION1: (-1, 0),
+    GameAction.ACTION2: (1, 0),
+    GameAction.ACTION3: (0, -1),
+    GameAction.ACTION4: (0, 1),
+}
+OPPOSITE = {
+    GameAction.ACTION1: GameAction.ACTION2,
+    GameAction.ACTION2: GameAction.ACTION1,
+    GameAction.ACTION3: GameAction.ACTION4,
+    GameAction.ACTION4: GameAction.ACTION3,
+}
 
 
 class DummyNavigationAgent(ToolUseAgent):
@@ -128,55 +94,23 @@ class DummyNavigationAgent(ToolUseAgent):
             self._cleanup()
             return
 
-        # Use hardcoded optimal path if available for this game
-        actions = LS20_ACTIONS if self.game_id == "ls20" else None
+        # Phase 1 — identify player
+        self._identify_player()
 
-        if actions is not None:
-            self._run_scripted(actions, frame)
-        else:
-            # Fallback: original discovery-based approach
-            self._identify_player()
-            self._find_white_plus()
-            if self._target is None:
-                self._log("\nNo white plus target found. Aborting.")
-                self._cleanup()
-                return
-            self._navigate(max_actions=30)
-            self._interact()
+        # Phase 2 — find white plus target
+        self._find_white_plus()
+        if self._target is None:
+            self._log("\nNo white plus target found. Aborting.")
+            self._cleanup()
+            return
+
+        # Phase 3 — navigate toward target
+        self._navigate(max_actions=30)
+
+        # Phase 4 — interact with target
+        self._interact()
 
         self._cleanup()
-
-    def _run_scripted(self, actions, frame):
-        """Execute a hardcoded action sequence with vision logging at each step."""
-        self._log(f"\n--- SCRIPTED PATH ({len(actions)} actions) ---")
-
-        # Capture initial state for vision description
-        self._prev_symbolic = grid_to_symbolic(self.current_grid)
-        self._prev_grid = [row[:] for row in self.current_grid]
-
-        for action, description in actions:
-            grid_before = [row[:] for row in self.current_grid]
-
-            frame = self._step(action)
-            self.current_grid = frame.frame[-1] if frame.frame else self.current_grid
-
-            changes = sum(
-                1
-                for r in range(len(grid_before))
-                for c in range(len(grid_before[0]))
-                if grid_before[r][c] != self.current_grid[r][c]
-            )
-            blocked = "BLOCKED" if changes == 0 else f"{changes} cells changed"
-
-            action_label = f"{ACTION_NAMES.get(action, action.name)} — {description} [{blocked}]"
-            self._describe_turn(action_label)
-
-            if frame.state == GameState.WIN:
-                self._log("\nWIN!")
-                break
-            if frame.state == GameState.GAME_OVER:
-                self._log("\nGAME OVER.")
-                break
 
     # ==================================================================
     # Phase 1: Player identification

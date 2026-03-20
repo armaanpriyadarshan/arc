@@ -1,0 +1,19 @@
+================================================================================
+VISION TEST RUN — ls20 — 2026-03-19 20:51:06
+================================================================================
+
+--- PLAYER IDENTIFICATION ---
+Took ACTION3 (left). Object that moved:
+  orange rectangle (size 10, color_id=12) at [45, 41] → [45, 36]
+Took ACTION4 (right) to restore position.
+Player color_id: 12 (orange)
+Player shape: rectangle, size: 10
+
+--- TARGET ---
+Target: white irregular (size 3) at [31, 21] (color_id=0)
+  Subpattern: corner
+Distance from player: 14 up, 15 left
+
+================================================================================
+NAVIGATION PHASE
+================================================================================

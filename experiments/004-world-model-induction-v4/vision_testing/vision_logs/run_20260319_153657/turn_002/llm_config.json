@@ -1,0 +1,5 @@
+{
+  "model": "gpt-5.4",
+  "temperature": 0.2,
+  "max_output_tokens": 2500
+}
