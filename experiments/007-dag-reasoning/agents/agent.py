@@ -461,7 +461,14 @@ class ToolUseAgent:
         if sym_changes:
             parts.append(f"\nCHANGES SINCE LAST ACTION:\n{json.dumps(sym_changes, indent=1)}")
 
-        parts.append(f"\nOBJECTS:\n{json.dumps(symbolic.get('objects', []), indent=1)}")
+        # Include full symbolic state — objects, relations, composites
+        sym_output = {
+            "objects": symbolic.get("objects", []),
+            "relations": symbolic.get("relations", []),
+        }
+        if "composites" in symbolic:
+            sym_output["composites"] = symbolic["composites"]
+        parts.append(f"\nSCENE (coordinates are [row, col], row=0 is top, col=0 is left):\n{json.dumps(sym_output, indent=1)}")
 
         text_content = "\n".join(parts)
 
