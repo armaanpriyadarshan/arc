@@ -1,10 +1,13 @@
-"""Observe-act agent with auto-probe, structured hypotheses, and program synthesis.
+"""Observe-act agent with auto-probe, structured hypotheses, program synthesis,
+and auto-populated persistent state.
 
-Same core as experiment 004 (GPT-5.4, symbolic state, symbolic diff, image).
-Addition:
-- Program synthesis: the model can write and execute Python code to analyze the
-  grid however it wants. Variables persist across calls so the model can build
-  up tracking structures, analysis tools, etc. over the course of a game.
+Builds on experiment 005 (sandbox + program synthesis). Key change: structured
+game state is auto-populated by code every turn instead of relying on the model
+to build tracking from scratch. Auto-populated variables in the sandbox:
+- action_log: full action history with outcomes
+- player_pos: approximate controllable object position
+- last_trigger: detailed cell-level diff on large changes
+- trigger_history: summary of all trigger events
 """
 
 import json
@@ -33,7 +36,10 @@ Each turn you receive:
 - What changed since your last plan
 - An image (side-by-side with previous frame, red = changed cells)
 - Your own notes from previous turns
-- Results of your last action plan (every action and its outcome)
+- A compact action summary (recent actions with outcomes)
+- A structured action log accessible via code (action_log variable)
+- Auto-computed player position (player_pos variable)
+- Trigger diff data when large changes occur (last_trigger variable)
 - Output from any code you ran last turn
 
 Output JSON:
@@ -64,6 +70,12 @@ Output JSON:
   `ROWS` (64), `COLS` (64). Set `result` to return data.
   All Python builtins available. Modules: collections, math, numpy (as np), json.
   Variables persist between turns — define functions and data structures that accumulate.
+  Your sandbox has auto-populated variables that persist across turns:
+    - action_log: list of all actions taken [{turn, action, blocked, cells_changed, large_change}, ...]
+    - player_pos: your current [row, col] position (auto-updated)
+    - last_trigger: details of the most recent large change (cells that changed, from/to colors)
+    - trigger_history: list of all trigger events [{turn, total_changed}, ...]
+  Use code to query these — e.g. "how many times was ACTION3 blocked?" or "what cells changed on the last trigger?"
 
 The test_actions sequence executes automatically, stopping on BLOCKED or unexpected events.
 
@@ -191,6 +203,40 @@ class ToolUseAgent:
                 if len(self.recent_actions) > 15:
                     self.recent_actions = self.recent_actions[-15:]
 
+                # --- Auto-populate action_log in sandbox ---
+                self.sandbox.globals.setdefault("action_log", []).append({
+                    "turn": self.action_counter,
+                    "action": action.name,
+                    "blocked": blocked,
+                    "cells_changed": changes,
+                    "large_change": changes > 100,
+                })
+
+                # --- Auto-compute player position ---
+                sym = grid_to_symbolic(self.current_grid)
+                small_objs = [o for o in sym.get("objects", []) if o["size"] < 50]
+                if small_objs:
+                    small_objs.sort(key=lambda o: o["size"])
+                    self.sandbox.globals["player_pos"] = small_objs[0]["center"]
+
+                # --- Auto-compute trigger diffs on large changes ---
+                if changes > 100:
+                    changed_cells = []
+                    for r in range(64):
+                        for c in range(64):
+                            if grid_before[r][c] != self.current_grid[r][c]:
+                                changed_cells.append((r, c, grid_before[r][c], self.current_grid[r][c]))
+                    self.sandbox.globals["last_trigger"] = {
+                        "turn": self.action_counter,
+                        "action": action.name,
+                        "total_changed": changes,
+                        "changed_cells": changed_cells[:200],  # cap to prevent bloat
+                    }
+                    self.sandbox.globals.setdefault("trigger_history", []).append({
+                        "turn": self.action_counter,
+                        "total_changed": changes,
+                    })
+
                 logger.info(f"#{self.action_counter} {result} score={frame.levels_completed}")
 
                 # Stop sequence on significant events
@@ -211,6 +257,10 @@ class ToolUseAgent:
                     self.prev_image_grid = None
                     self.recent_actions = [f"*** LEVEL {frame.levels_completed} ***"]
                     self.program_output = ""
+                    # Clear per-level sandbox state
+                    self.sandbox.globals["action_log"] = []
+                    self.sandbox.globals["trigger_history"] = []
+                    self.sandbox.globals.pop("last_trigger", None)
                     if self.verified_rules:
                         logger.info(f"[rules] {self.verified_rules}")
                     break
@@ -291,12 +341,12 @@ class ToolUseAgent:
                 if c.get("type") == "changed":
                     parts = []
                     if "center" in c:
-                        parts.append(f"center {c['center']['was']}→{c['center']['now']}")
+                        parts.append(f"center {c['center']['was']}->{c['center']['now']}")
                     if "size" in c:
-                        parts.append(f"size {c['size']['was']}→{c['size']['now']}")
+                        parts.append(f"size {c['size']['was']}->{c['size']['now']}")
                     change_summary.append(f"{c.get('color','?')}: {', '.join(parts)}")
                 elif c.get("type") == "background_size_changed":
-                    change_summary.append(f"background {c.get('color','?')}: size {c['size']['was']}→{c['size']['now']}")
+                    change_summary.append(f"background {c.get('color','?')}: size {c['size']['was']}->{c['size']['now']}")
 
             status = "BLOCKED" if blocked else f"{changes} cells changed"
             fact = f"{action.name}: {status}"
@@ -318,7 +368,26 @@ class ToolUseAgent:
 
         available = frame.available_actions or [1, 2, 3, 4]
         avail_str = ", ".join(f"ACTION{i}" for i in available)
-        recent = "\n".join(self.recent_actions[-10:]) if self.recent_actions else "(none)"
+
+        # Build compact action summary from log
+        log = self.sandbox.globals.get("action_log", [])
+        if log:
+            recent = log[-15:]  # last 15 actions
+            summary_lines = []
+            for entry in recent:
+                status = "BLOCKED" if entry["blocked"] else f"{entry['cells_changed']}ch"
+                if entry.get("large_change"):
+                    status += " TRIGGER"
+                summary_lines.append(f"#{entry['turn']} {entry['action']}: {status}")
+            action_summary = "\n".join(summary_lines)
+
+            # Stats
+            total = len(log)
+            blocked_count = sum(1 for e in log if e["blocked"])
+            triggers = sum(1 for e in log if e.get("large_change"))
+            action_summary += f"\n(Total: {total} actions, {blocked_count} blocked, {triggers} triggers)"
+        else:
+            action_summary = "(first turn)"
 
         symbolic = grid_to_symbolic(self.current_grid)
         sym_changes = diff_symbolic(self.prev_symbolic, symbolic) if self.prev_symbolic else []
@@ -342,7 +411,7 @@ class ToolUseAgent:
                 + (f"CURRENT HYPOTHESES:\n{self.hypothesis}\n\n" if self.hypothesis else "")
                 + (f"PROGRAM OUTPUT (from your last code):\n{self.program_output}\n\n"
                    if self.program_output else "")
-                + f"RECENT:\n{recent}\n\n"
+                + f"ACTION SUMMARY:\n{action_summary}\n\n"
                 + changes_text
                 + f"OBJECTS:\n{json.dumps(symbolic.get('objects', []), indent=1)}\n"
             ),
@@ -368,10 +437,11 @@ class ToolUseAgent:
             ' ],\n'
             ' "verified_rules": ["universal game mechanic you confirmed"],\n'
             ' "notes": "persistent notes for next turn",\n'
-            ' "code": "optional Python code to analyze the grid. You have `grid` (64x64 list[list[int]]), '
+            ' "code": "optional Python code to execute. You have `grid` (64x64 list[list[int]]), '
             'ROWS, COLS. Set `result` to return data. '
             'All Python builtins available. Imports: collections, math, numpy (as np), json. '
-            'Variables persist between turns — build up data structures over time."}'
+            'Variables persist between turns — build up data structures over time. '
+            'Auto-populated vars: action_log, player_pos, last_trigger, trigger_history."}'
         ))
 
         try:
