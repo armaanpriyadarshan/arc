@@ -54,6 +54,43 @@ Each turn you receive:
 - An image (side-by-side with previous frame, red = changed cells)
 - Your own notes from previous turns
 
+CORE PRIORS — use these as your default assumptions about the game world:
+
+OBJECTS AND PHYSICS:
+- Objects are cohesive: connected cells of the same color move as a unit. If part of
+  an object moved but the rest didn't, it's actually two separate objects.
+- Objects are persistent: they don't randomly appear or vanish. If an object appeared,
+  something CAUSED it (you triggered a switch, crossed a threshold, etc.). If an object
+  vanished, something removed it. Always ask: "what caused this change?"
+- Objects interact by CONTACT: walking into, clicking on, or standing adjacent to an
+  object is how you cause effects. If something changed far away after you touched
+  a nearby object, the nearby object is a remote trigger.
+- Solid objects don't overlap: BLOCKED means you hit a wall or obstacle. The boundary
+  of your movement area IS the puzzle geometry.
+
+AGENTS AND ENTITIES:
+- You control one entity (typically the smallest moving object). It moves when you
+  act; everything else is part of the environment.
+- Environment objects don't move on their own unless a timer/automation is running.
+  If something changes without your action, track it as a mechanic with a cycle.
+
+NUMBERS AND COUNTING:
+- Count objects that look similar — the number often matters (3 switches means 3
+  activations, 4 keys for 4 locks).
+- Track quantities that change: if a bar shrinks by 2 cells per move, calculate how
+  many moves remain before it runs out. Plan accordingly.
+- When you see a pattern that needs N steps, count the steps and commit to the plan.
+
+GEOMETRY AND SPACE:
+- Proximity matters: objects near each other are more likely to be related than
+  distant objects.
+- Symmetry is meaningful: if an object is symmetric, its orientation may matter.
+  Rotations (90°, 180°) and reflections are common game mechanics.
+- Inside/outside: if an object is inside another's boundary, they likely have a
+  containment relationship (key in a room, switch behind a gate).
+- Connectivity: can you reach an object from where you are? If not, you need to
+  find a path or remove an obstacle first.
+
 BEFORE generating hypotheses, you MUST fill in scene_inventory and untried.
 
 scene_inventory requires you to:
@@ -123,6 +160,12 @@ Output JSON:
 
   Each hypothesis must be tagged with its category, e.g.:
   {"category": "VISUAL_PATTERN", "claim": "The plus symbol rotates the door pattern; matching it to the corner symbol opens the door", "probability": 0.3, ...}
+
+  When generating hypotheses, apply the CORE PRIORS above:
+  - OBJECT_INTERACTION hypotheses should specify the CONTACT mechanism ("walking into X", "clicking X", "standing adjacent to X")
+  - GAME_MECHANIC hypotheses should explain CAUSATION ("X changed because I touched Y" not just "X changed")
+  - NAVIGATION hypotheses should consider CONNECTIVITY ("is there a path?") and PROXIMITY ("what's nearest?")
+  - VISUAL_PATTERN hypotheses should consider SYMMETRY and ROTATION, not just color matching
 
 PLANNING:
 
@@ -862,16 +905,25 @@ class ToolUseAgent:
             )
             logger.info(f"[reflection] Forced reflection injected at action {self.action_counter}")
 
+        # --- Prompt caching: content is ordered static-first so the OpenAI API
+        # can cache the longest possible prefix across turns.
+        # Layer 1 (static across all turns/levels/games): SYSTEM_PROMPT  ~4700 tok
+        # Layer 2 (static within a level): probe facts + verified rules  ~200-300 tok
+        # Layer 3 (changes every turn): score, warnings, dynamic context
         content = [
             input_text(SYSTEM_PROMPT),
+            # --- semi-static: changes only on level-up / new game ---
             input_text(
-                f"\nScore: {frame.levels_completed} | Deaths: {self.total_deaths} | "
-                f"Actions: {self.action_counter}/{self.MAX_ACTIONS}\n"
-                f"Available: {avail_str}\n\n"
-                f"ESTABLISHED FACTS (from probing this level):\n{self.probe_facts}\n\n"
+                f"\nESTABLISHED FACTS (from probing this level):\n{self.probe_facts}\n\n"
                 + (f"VERIFIED RULES (confirmed across levels — these are ground truth):\n"
                    + "\n".join(f"- {r}" for r in self.verified_rules) + "\n\n"
                    if self.verified_rules else "")
+            ),
+            # --- dynamic: changes every turn ---
+            input_text(
+                f"Score: {frame.levels_completed} | Deaths: {self.total_deaths} | "
+                f"Actions: {self.action_counter}/{self.MAX_ACTIONS}\n"
+                f"Available: {avail_str}\n\n"
                 + (f"DEAD ENDS (do NOT retry these — confirmed blocked multiple times):\n"
                    + "\n".join(f"- {d}" for d in self.dead_ends) + "\n\n"
                    if self.dead_ends else "")
@@ -953,7 +1005,7 @@ class ToolUseAgent:
 
         is_large_change = self._large_change_pending
         json_format = (
-            "\nRespond with JSON. You MUST fill in ALL fields, especially hypotheses with test_actions.\n"
+            "\nRespond with COMPACT JSON (no pretty-printing, no newlines). You MUST fill in ALL fields, especially hypotheses with test_actions.\n"
             '{"goal": "What you are trying to achieve RIGHT NOW to win",\n'
             ' "plan": {"mode": "explore/execute", '
             '"steps": [{"step": 1, "action": "...", "status": "current/completed/pending"}], '
@@ -991,9 +1043,22 @@ class ToolUseAgent:
                 "model": "gpt-5.4",
                 "input": [{"role": "user", "content": content}],
                 "temperature": 0.2,
-                "max_output_tokens": 3000 if is_large_change else 2500,
+                "max_output_tokens": 5000 if is_large_change else 4096,
+                "prompt_cache_retention": "24h",
             }
             response = self.client.responses.create(**create_kwargs)
+
+            # Log prompt cache hit rate
+            if hasattr(response, 'usage') and response.usage:
+                usage = response.usage
+                prompt_tok = getattr(usage, 'prompt_tokens', 0)
+                cached_tok = 0
+                details = getattr(usage, 'prompt_tokens_details', None)
+                if details:
+                    cached_tok = getattr(details, 'cached_tokens', 0)
+                pct = cached_tok * 100 // max(prompt_tok, 1)
+                logger.info(f"[cache] prompt={prompt_tok} cached={cached_tok} ({pct}%)")
+
             raw = response.output_text or ""
             if not raw and hasattr(response, 'output'):
                 for item in (response.output or []):
@@ -1006,12 +1071,15 @@ class ToolUseAgent:
                         break
             if not raw:
                 raw = "{}"
+            logger.debug(f"[raw-response] {raw[:500]}")
         except Exception as e:
             logger.warning(f"API error: {e}")
             time.sleep(2)
             return [GameAction.ACTION1]
 
         data = self._parse_json(raw)
+        if not data or data == {}:
+            logger.warning(f"[empty-response] Model returned empty/unparseable JSON. Raw (first 300 chars): {raw[:300]}")
 
         # v3: extract and accumulate interaction journal entries
         new_interactions = data.get("interactions", [])
