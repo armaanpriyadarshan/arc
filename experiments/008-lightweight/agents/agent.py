@@ -1,13 +1,12 @@
-"""Conversational sliding-window agent with auto-probe and program synthesis.
+"""Lightweight conversational agent — no DAG, no structured outputs.
 
-Same core as experiment 005 (GPT-5.4, symbolic state, symbolic diff, image,
-program synthesis, hypothesis-driven actions). Key architectural change:
+Tests whether a simple GPT-5.4 agent with low reasoning effort performs
+comparably to experiment 007's heavy DAG architecture. Same infrastructure
+(auto-probe, enhanced symbolic state, conversational sliding window,
+action history, sandbox) but with a minimal output format.
 
-Instead of building one massive prompt every turn and making a single API call,
-the agent maintains a CONVERSATION with the model using a sliding window of the
-last 10 messages. The model can reference its own prior reasoning without us
-re-injecting hypotheses/notes. System prompt goes via `instructions` parameter.
-Uses reasoning effort "high" and no temperature.
+If the bottleneck is strategic (wrong target) not tactical (bad routes),
+then all the DAG overhead is wasted.
 """
 
 import json
@@ -25,188 +24,26 @@ from .vision import grid_b64, diff_b64, input_text, input_image_b64
 
 logger = logging.getLogger(__name__)
 
-SYSTEM_PROMPT = """You are playing an unknown turn-based game on a 64x64 grid. Each cell is an integer 0-15 (colors).
-Your score (levels_completed) increases when you complete a level. GAME_OVER means you failed.
+SYSTEM_PROMPT = """You are playing an unknown turn-based game on a 64x64 grid. Each cell is 0-15 (colors).
+Score increases when you complete a level. GAME_OVER = failure.
 
-AVAILABLE ACTIONS:
-- ACTION1-ACTION4: Simple actions (typically directional movement)
-- ACTION5: Simple action (interact, select, rotate, etc.)
-- ACTION6: Complex action requiring x,y coordinates (0-63). This is a CLICK — different
-  coordinates may have completely different effects. You must test diverse targets.
-- ACTION7: Simple action (undo)
-Not all actions may be available in every game. Check available_actions.
+You have actions ACTION1-ACTION7. Not all may be available.
+ACTION6 requires x,y coordinates (0-63).
 
-You maintain a conversation — your prior reasoning is visible in the message history.
+You maintain a conversation — your prior reasoning is in message history.
 
-CORE PRIORS — default assumptions about the game world:
-
-OBJECTS AND PHYSICS:
-- Objects are cohesive: connected cells of the same color move as a unit.
-- Objects are persistent: they don't randomly appear/vanish. If something changed,
-  something CAUSED it. Always ask "what caused this change?"
-- Objects interact by CONTACT: walking into, clicking on, or standing adjacent.
-  If something changed far away after you touched a nearby object, it's a remote trigger.
-- Solid objects don't overlap: BLOCKED means you hit a wall or obstacle.
-
-NUMBERS AND COUNTING:
-- Count similar objects — the number often matters.
-- Track quantities that change: if a bar shrinks by 2 per move, calculate moves remaining.
-
-GEOMETRY:
-- Proximity matters: nearby objects are more likely related than distant ones.
-- Symmetry is meaningful: rotations (90°, 180°) and reflections are common mechanics.
-- Visual similarity between objects almost always means a gameplay relationship.
-
-BEFORE responding, mentally inventory the scene:
-- What objects exist? Where are they? Have you interacted with each one?
-- What directions are open/blocked from your current position?
-- Do any objects share colors, shapes, or patterns? (These likely have a relationship)
-
-You MUST reason through this DAG in order:
-
-q0_code (root, MANDATORY): Write Python code to analyze the grid. You have `grid`
-  (64x64 list[list[int]]), ROWS, COLS, `memory_bank` (persists across levels),
-  `action_effects` (observed movement deltas from probe). Set `result` to return findings.
-  Variables persist between turns — build up data structures.
-  All builtins available. Modules: collections, math, numpy, json.
-  USE THIS FOR SPATIAL REASONING. If you know you're in a grid-based game, compute
-  which colors are traversable vs obstacles, trace connected regions, find paths between
-  positions. Don't just list objects — compute actionable spatial information.
-q1_objects (depends on q0): List every object — what it provides, what it requires.
-q2_last_action (root): What was the last action and what happened?
-q3_requirements (depends on q1): For each object, are interaction requirements met?
-q4_action_result (depends on q2): Did the last action succeed? If not, why?
-q5_subtasks (depends on q1, q3): Top 3 sub-tasks with priority.
-q6_planning_code (depends on q5): Python code to PLAN AND VERIFY actions. Before
-  committing to actions, simulate them against the grid: check what cells your moves
-  would land on, whether those cells are traversable based on what you've learned.
-  Set `result` to return the verified plan. Don't guess — check the grid.
-q7_candidate_actions (depends on q5, q6): Top 5 candidate actions with purpose.
-q8_feasibility (depends on q7, q3): For each candidate, are requirements met?
-qa_actions (depends on q7, q8): Sequence of actions to execute toward the top sub-task.
-  Output MULTIPLE actions — enough to make meaningful progress.
-
-Additional fields:
-- verified_rules: UNIVERSAL game rules (persist across levels, max 10)
+Output JSON:
+- observation: what changed and why
+- goal: what you're doing RIGHT NOW to increase score
+- actions: list of actions to execute (e.g. ["ACTION1", "ACTION3", "ACTION3"])
+- verified_rules: universal game rules you've confirmed (max 10)
+- code: optional Python code. You have grid (64x64), ROWS, COLS, memory_bank, action_effects. Set result to return data.
 
 IMPORTANT:
-- After interacting with something, study the before/after image and symbolic diff.
-  What SPECIFICALLY changed? Build a causal model: "doing X causes Y."
-- Once you understand a mechanic, EXPLOIT it immediately. Don't re-test.
-- You have limited actions. Every action must gather information or make progress.
-- When you complete a level, layout changes but game MECHANICS carry over.
-- If repeated actions fail, your understanding of the game is wrong. Try something
-  fundamentally different."""
-
-
-RESPONSE_SCHEMA = {
-    "type": "object",
-    "additionalProperties": False,
-    "required": [
-        "q0_code", "q1_objects", "q2_last_action", "q3_requirements",
-        "q4_action_result", "q5_subtasks", "q6_planning_code",
-        "q7_candidate_actions", "q8_feasibility", "qa_actions",
-        "verified_rules",
-    ],
-    "properties": {
-        "q0_code": {
-            "type": "string",
-            "description": "MANDATORY Python code for grid analysis. You have grid, ROWS, COLS, memory_bank, action_effects. Set result to return findings. Use this for spatial reasoning — compute traversable regions, find paths, track positions.",
-        },
-        "q1_objects": {
-            "type": "array",
-            "description": "List every object: what it provides and requires.",
-            "items": {
-                "type": "object",
-                "additionalProperties": False,
-                "required": ["name", "position", "provides", "requires"],
-                "properties": {
-                    "name": {"type": "string"},
-                    "position": {"type": "string"},
-                    "provides": {"type": "string"},
-                    "requires": {"type": "string"},
-                },
-            },
-        },
-        "q2_last_action": {
-            "type": "string",
-            "description": "What was the last action taken and what happened?",
-        },
-        "q3_requirements": {
-            "type": "array",
-            "description": "For each object from q1, are interaction requirements met?",
-            "items": {
-                "type": "object",
-                "additionalProperties": False,
-                "required": ["object", "met", "reason"],
-                "properties": {
-                    "object": {"type": "string"},
-                    "met": {"type": "boolean"},
-                    "reason": {"type": "string"},
-                },
-            },
-        },
-        "q4_action_result": {
-            "type": "string",
-            "description": "Did the last action succeed? If not, why?",
-        },
-        "q5_subtasks": {
-            "type": "array",
-            "description": "Top 3 sub-tasks with priority.",
-            "items": {
-                "type": "object",
-                "additionalProperties": False,
-                "required": ["priority", "task", "rationale"],
-                "properties": {
-                    "priority": {"type": "integer"},
-                    "task": {"type": "string"},
-                    "rationale": {"type": "string"},
-                },
-            },
-        },
-        "q6_planning_code": {
-            "type": "string",
-            "description": "Python code to PLAN AND VERIFY your actions. Before committing to any action sequence, simulate it against the grid: check what grid values your planned moves would land on, whether those cells match known traversable colors, and whether your path is actually clear. Set result to return the verified plan. Empty string only if you have no actions to verify.",
-        },
-        "q7_candidate_actions": {
-            "type": "array",
-            "description": "Top 5 candidate actions with purpose and requirement.",
-            "items": {
-                "type": "object",
-                "additionalProperties": False,
-                "required": ["action", "purpose", "requirement"],
-                "properties": {
-                    "action": {"type": "string"},
-                    "purpose": {"type": "string"},
-                    "requirement": {"type": "string"},
-                },
-            },
-        },
-        "q8_feasibility": {
-            "type": "array",
-            "description": "For each candidate action, are requirements met?",
-            "items": {
-                "type": "object",
-                "additionalProperties": False,
-                "required": ["action", "feasible", "reason"],
-                "properties": {
-                    "action": {"type": "string"},
-                    "feasible": {"type": "boolean"},
-                    "reason": {"type": "string"},
-                },
-            },
-        },
-        "qa_actions": {
-            "type": "array",
-            "description": "Sequence of actions to execute toward the top sub-task. Output MULTIPLE actions.",
-            "items": {"type": "string"},
-        },
-        "verified_rules": {
-            "type": "array",
-            "items": {"type": "string"},
-        },
-    },
-}
+- Study what changed after each interaction. Build causal models.
+- Once you understand a mechanic, exploit it immediately.
+- If repeated actions fail, your understanding is wrong. Try something different.
+- Every action must gather info or make progress."""
 
 
 class ToolUseAgent:
@@ -232,20 +69,20 @@ class ToolUseAgent:
         self.verified_rules: list[str] = []
         self.max_rules = 10
         self.consecutive_blocked: int = 0
-        self.recent_actions: list[str] = []  # for circuit breaker only
-        self.action_log: list[dict] = []  # full action history
+        self.recent_actions: list[str] = []
+        self.action_log: list[dict] = []
         self.llm_calls: int = 0
-        self._needs_deep_thought = False  # high reasoning on next call
+        self._needs_image = False
 
-        # Program synthesis
+        # Program synthesis (optional — model can use it but doesn't have to)
         self.sandbox = Sandbox()
-        self.sandbox.globals["memory_bank"] = []  # persists across levels and deaths
+        self.sandbox.globals["memory_bank"] = []
         self.program_output: str = ""
 
     def run(self) -> None:
         timer = time.time()
         logger.info("=" * 60)
-        logger.info(f"Conversational Agent on {self.game_id}")
+        logger.info(f"Lightweight Agent on {self.game_id}")
         logger.info("=" * 60)
 
         frame = self._step(GameAction.RESET)
@@ -258,7 +95,7 @@ class ToolUseAgent:
         available = frame.available_actions or [1, 2, 3, 4]
         self.probe_facts = self._auto_probe(frame, available)
         logger.info(f"[probe] {self.probe_facts}")
-        self._needs_deep_thought = True  # first observation deserves high effort
+        self._needs_image = True
 
         # Main loop
         while self.action_counter < self.MAX_ACTIONS:
@@ -271,7 +108,6 @@ class ToolUseAgent:
                 logger.info(f"DIED #{self.total_deaths}")
                 self.recent_actions.append("DIED")
                 self.consecutive_blocked = 0
-                # Notify the model about the death via conversation
                 self._append_user_message(
                     f"DEATH #{self.total_deaths}. You hit GAME_OVER. "
                     f"The game has been reset. Reconsider your approach."
@@ -283,7 +119,7 @@ class ToolUseAgent:
                 self.prev_symbolic = None
                 continue
 
-            # Circuit breaker: if stuck, inject warning
+            # Circuit breaker
             if self.consecutive_blocked >= 5:
                 self.recent_actions.append(
                     f"*** STUCK: {self.consecutive_blocked} consecutive BLOCKED actions. "
@@ -295,7 +131,7 @@ class ToolUseAgent:
 
             actions = self._think_and_act(frame)
 
-            # Execute the action sequence, stopping on events
+            # Execute actions, stopping on events
             for action in actions:
                 if self.action_counter >= self.MAX_ACTIONS:
                     break
@@ -317,7 +153,6 @@ class ToolUseAgent:
                 else:
                     self.consecutive_blocked = 0
 
-                # Track full action history
                 self.action_log.append({
                     "turn": self.action_counter,
                     "action": action.name,
@@ -332,7 +167,7 @@ class ToolUseAgent:
 
                 logger.info(f"#{self.action_counter} {result} score={frame.levels_completed}")
 
-                # Stop sequence on significant events
+                # Stop on significant events
                 if frame.state in (GameState.WIN, GameState.GAME_OVER):
                     break
                 if blocked:
@@ -343,7 +178,6 @@ class ToolUseAgent:
                     avail = frame.available_actions or [1, 2, 3, 4]
                     self.probe_facts = self._auto_probe(frame, avail)
                     logger.info(f"[probe] {self.probe_facts}")
-                    # Clear conversation on level change — start fresh
                     self.messages = []
                     self.consecutive_blocked = 0
                     self.action_log = []
@@ -356,7 +190,7 @@ class ToolUseAgent:
                     break
                 if changes > 100:
                     self.prev_image_grid = grid_before
-                    self._needs_deep_thought = True
+                    self._needs_image = True
                     break
 
         elapsed = round(time.time() - timer, 2)
@@ -372,35 +206,21 @@ class ToolUseAgent:
         self._close()
 
     def _append_user_message(self, text: str, image_b64: str | None = None) -> None:
-        """Append a user message to the conversation history."""
-        content = []
-        content.append(input_text(text))
+        content = [input_text(text)]
         if image_b64:
             content.append(input_image_b64(image_b64))
         self.messages.append({"role": "user", "content": content})
 
     def _append_assistant_message(self, text: str) -> None:
-        """Append an assistant message to the conversation history."""
         self.messages.append({"role": "assistant", "content": text})
 
     def _trim_messages(self) -> list[dict]:
-        """Return a trimmed message window for the API call.
-
-        Rules:
-        - Always keep the FIRST user message (has probe facts)
-        - Keep the last MESSAGE_LIMIT messages
-        - Never start the window with an assistant message
-        """
         if len(self.messages) <= self.MESSAGE_LIMIT:
             return list(self.messages)
 
-        # Always keep the first user message
         first_msg = self.messages[0] if self.messages and self.messages[0]["role"] == "user" else None
-
-        # Take the tail
         tail = self.messages[-(self.MESSAGE_LIMIT - (1 if first_msg else 0)):]
 
-        # Ensure we don't start the tail with an assistant message
         while tail and tail[0]["role"] == "assistant":
             tail = tail[1:]
 
@@ -419,7 +239,7 @@ class ToolUseAgent:
         sym_changes = diff_symbolic(self.prev_symbolic, symbolic) if self.prev_symbolic else []
         self.prev_symbolic = symbolic
 
-        # Build compact user message — no notes/hypotheses, those live in conversation
+        # Build user message
         parts = []
         parts.append(
             f"Score: {frame.levels_completed} | Deaths: {self.total_deaths} | "
@@ -427,8 +247,7 @@ class ToolUseAgent:
             f"Available: {avail_str}"
         )
 
-        # Probe facts are in the first message (always kept by _trim_messages)
-        # Only include on the actual first turn
+        # Probe facts in first message only (preserved by _trim_messages)
         if not self.messages:
             parts.append(f"\nESTABLISHED FACTS:\n{self.probe_facts}")
 
@@ -438,12 +257,11 @@ class ToolUseAgent:
 
         parts.append(f"\nRECENT:\n{recent}")
 
-        # Compact action history summary (beyond the sliding window)
+        # Action history summary
         if self.action_log:
             total = len(self.action_log)
             blocked = sum(1 for a in self.action_log if a["blocked"])
             triggers = sum(1 for a in self.action_log if a["trigger"])
-            # Count actions per direction
             action_counts = {}
             blocked_counts = {}
             for a in self.action_log:
@@ -457,12 +275,12 @@ class ToolUseAgent:
             parts.append(f"\nACTION HISTORY:\n{summary}")
 
         if self.program_output:
-            parts.append(f"\nQ0 CODE OUTPUT:\n{self.program_output}")
+            parts.append(f"\nCODE OUTPUT:\n{self.program_output}")
 
         if sym_changes:
             parts.append(f"\nCHANGES SINCE LAST ACTION:\n{json.dumps(sym_changes, indent=1)}")
 
-        # Include full symbolic state — objects, relations, composites
+        # Symbolic state
         sym_output = {
             "objects": symbolic.get("objects", []),
             "relations": symbolic.get("relations", []),
@@ -473,20 +291,20 @@ class ToolUseAgent:
 
         text_content = "\n".join(parts)
 
-        # Only include image on first turn or after significant changes
-        send_image = not self.messages or self._needs_deep_thought
+        # Image on first turn or after triggers
+        send_image = not self.messages or self._needs_image
+        image_b64 = None
         if send_image:
             if self.prev_image_grid:
                 image_b64 = diff_b64(self.prev_image_grid, self.current_grid)
             else:
                 image_b64 = grid_b64(self.current_grid)
             self.prev_image_grid = self.current_grid
+            self._needs_image = False
 
-        # Append user message to conversation
-        user_content = [
-            input_text(text_content),
-        ]
-        if send_image:
+        # Build user content
+        user_content = [input_text(text_content)]
+        if send_image and image_b64:
             if len(self.messages) > 1:
                 user_content.append(input_text("Side-by-side (PREVIOUS vs CURRENT, red = changed):"))
             else:
@@ -494,26 +312,16 @@ class ToolUseAgent:
             user_content.append(input_image_b64(image_b64))
 
         self.messages.append({"role": "user", "content": user_content})
-
-        # Get trimmed conversation window
         trimmed = self._trim_messages()
 
-        effort = "none"  # reasoning effort breaks structured outputs
+        # GPT-5.4 call — simple, no structured outputs, low reasoning
         try:
             response = self.client.responses.create(
                 model="gpt-5.4",
                 instructions=SYSTEM_PROMPT,
                 input=trimmed,
-                reasoning={"effort": effort},
-                max_output_tokens=8000,
-                text={
-                    "format": {
-                        "type": "json_schema",
-                        "name": "agent_response",
-                        "strict": True,
-                        "schema": RESPONSE_SCHEMA,
-                    }
-                },
+                reasoning={"effort": "low"},
+                max_output_tokens=2000,
             )
             raw = response.output_text or "{}"
         except Exception as e:
@@ -521,36 +329,19 @@ class ToolUseAgent:
             time.sleep(2)
             return [GameAction.ACTION1]
 
-        # Append assistant response to conversation
         self._append_assistant_message(raw)
 
-        # Parse response — structured outputs should guarantee valid JSON,
-        # but output may be truncated if it exceeds max_output_tokens
-        try:
-            data = json.loads(raw)
-        except (json.JSONDecodeError, ValueError):
-            logger.warning(f"[parse-error] JSON decode failed, falling back to _parse_json. Raw length: {len(raw)}")
-            data = self._parse_json(raw)
+        # Parse JSON from response
+        data = self._parse_json(raw)
 
-        # Execute q0 code (mandatory — grid analysis)
-        code = data.get("q0_code", "")
+        # Execute optional code
+        code = data.get("code", "")
         if code and isinstance(code, str) and code.strip():
-            logger.info(f"[q0-code] executing {len(code)} chars")
+            logger.info(f"[code] executing {len(code)} chars")
             self.program_output = self.sandbox.run(code, self.current_grid)
-            logger.info(f"[q0-result] {self.program_output[:300]}")
+            logger.info(f"[code-result] {self.program_output[:300]}")
         else:
             self.program_output = ""
-
-        # Execute q6 code (optional — planning)
-        plan_code = data.get("q6_planning_code", "")
-        if plan_code and isinstance(plan_code, str) and plan_code.strip():
-            logger.info(f"[q6-code] executing {len(plan_code)} chars")
-            plan_output = self.sandbox.run(plan_code, self.current_grid)
-            logger.info(f"[q6-result] {plan_output[:300]}")
-            if self.program_output:
-                self.program_output += f"\n\nPLAN CODE OUTPUT:\n{plan_output}"
-            else:
-                self.program_output = f"PLAN CODE OUTPUT:\n{plan_output}"
 
         # Extract verified rules
         new_rules = data.get("verified_rules", [])
@@ -559,21 +350,16 @@ class ToolUseAgent:
                 if isinstance(rule, str) and rule:
                     self._add_rule(rule)
 
-        # Log DAG reasoning chain
-        q4 = data.get("q4_action_result", "")
-        subtasks = data.get("q5_subtasks", [])
-        action_seq = data.get("qa_actions", [])
+        # Log
+        obs = data.get("observation", "")
+        goal = data.get("goal", "")
+        action_seq = data.get("actions", [])
+        if obs:
+            logger.info(f"[obs] {obs[:150]}")
+        if goal:
+            logger.info(f"[goal] {goal[:150]}")
 
-        objects_found = data.get("q1_objects", [])
-        if objects_found:
-            logger.info(f"[q1] {len(objects_found)} objects identified")
-        if q4:
-            logger.info(f"[q4] {q4[:150]}")
-        if subtasks:
-            top = subtasks[0] if subtasks else {}
-            logger.info(f"[q5] Top task: {top.get('task', '?')[:100]}")
-
-        # Resolve action sequence
+        # Resolve actions
         actions = []
         for action_name in action_seq:
             if not isinstance(action_name, str):
@@ -587,7 +373,7 @@ class ToolUseAgent:
         if not actions:
             actions = [GameAction.ACTION1]
 
-        logger.info(f"[qa] {len(actions)} actions: {[a.name for a in actions]}")
+        logger.info(f"[actions] {len(actions)} actions: {[a.name for a in actions]}")
         return actions
 
     def _add_rule(self, rule: str) -> None:
@@ -612,9 +398,7 @@ class ToolUseAgent:
         logger.info(f"[rule+] {rule}")
 
     def _promote_on_level_up(self) -> None:
-        """On level-up, promote high-confidence knowledge to verified rules."""
-        # The DAG doesn't have explicit hypothesis confirmation, but verified_rules
-        # are already extracted each turn. Nothing extra needed here.
+        """On level-up, nothing extra needed — verified_rules persist."""
         pass
 
     def _auto_probe(self, frame: FrameData, available: list[int]) -> str:
@@ -623,11 +407,8 @@ class ToolUseAgent:
         simple_actions = [a for a in available if a != 6]
         has_action6 = 6 in available
 
-        # Track positions before/after each probe for spatial extraction
         action_effects = {}
-        player_positions = []
 
-        # Get pre-probe symbolic state to identify player
         pre_sym = grid_to_symbolic(self.current_grid)
         pre_objects = {(o["color"], o["size"]): o["center"]
                        for o in pre_sym.get("objects", [])}
@@ -649,7 +430,6 @@ class ToolUseAgent:
             after_centers = {(o["color"], o["size"]): o["center"]
                              for o in sym_after.get("objects", [])}
 
-            # Find which object moved (that's the player)
             for key in before_centers:
                 if key in after_centers and before_centers[key] != after_centers[key]:
                     bc = before_centers[key]
@@ -658,10 +438,9 @@ class ToolUseAgent:
                     dc = ac["col"] - bc["col"]
                     if abs(dr) > 0 or abs(dc) > 0:
                         action_effects[action.name] = {"dr": dr, "dc": dc}
-                        player_positions.append(ac)
                         break
 
-        # Expanded ACTION6 probe at diverse coordinates
+        # ACTION6 probe
         if has_action6:
             symbolic = grid_to_symbolic(self.current_grid)
             fg = symbolic.get("objects", [])
@@ -680,7 +459,7 @@ class ToolUseAgent:
                 fact = self._probe_one(action, label=f"ACTION6({x},{y}) on {desc}")
                 facts.append(fact)
 
-        # Inject observed action effects into sandbox
+        # Inject action effects into sandbox
         if action_effects:
             self.sandbox.globals["action_effects"] = action_effects
             effects_str = ", ".join(f"{k}: dr={v['dr']} dc={v['dc']}" for k, v in action_effects.items())
@@ -690,7 +469,6 @@ class ToolUseAgent:
         return "\n".join(facts)
 
     def _probe_one(self, action: GameAction, label: str = "") -> str:
-        """Probe a single action and return a fact string."""
         grid_before = self.current_grid
         sym_before = grid_to_symbolic(grid_before)
 

@@ -1,0 +1,21 @@
+2026-03-20 21:02:56,990 | INFO | ============================================================
+2026-03-20 21:02:56,990 | INFO | Lightweight Agent on ls20
+2026-03-20 21:02:56,990 | INFO | ============================================================
+2026-03-20 21:02:58,408 | INFO | [probe] ACTION1: 52 cells changed
+  orange: center {'row': 45.5, 'col': 36.0}->{'row': 40.5, 'col': 36.0}
+  blue: center {'row': 48.0, 'col': 36.0}->{'row': 43.0, 'col': 36.0}
+ACTION2: 52 cells changed
+  dark_gray: center {'row': 61.5, 'col': 13.0}->{'row': 61.5, 'col': 13.5}, size 2->4
+  orange: center {'row': 40.5, 'col': 36.0}->{'row': 45.5, 'col': 36.0}
+  blue: center {'row': 43.0, 'col': 36.0}->{'row': 48.0, 'col': 36.0}
+ACTION3: 52 cells changed
+  dark_gray: center {'row': 61.5, 'col': 13.5}->{'row': 61.5, 'col': 14.0}, size 4->6
+  orange: center {'row': 45.5, 'col': 36.0}->{'row': 45.5, 'col': 31.0}
+  blue: center {'row': 48.0, 'col': 36.0}->{'row': 48.0, 'col': 31.0}
+ACTION4: 52 cells changed
+  dark_gray: center {'row': 61.5, 'col': 14.0}->{'row': 61.5, 'col': 14.5}, size 6->8
+  orange: center {'row': 45.5, 'col': 31.0}->{'row': 45.5, 'col': 36.0}
+  blue: center {'row': 48.0, 'col': 31.0}->{'row': 48.0, 'col': 36.0}
+
+OBSERVED ACTION EFFECTS (available in sandbox as `action_effects`):
+  ACTION1: dr=-5.0 dc=0.0, ACTION2: dr=5.0 dc=0.0, ACTION3: dr=0.0 dc=-5.0, ACTION4: dr=0.0 dc=5.0
