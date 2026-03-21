@@ -1,12 +1,14 @@
-"""Lightweight conversational agent — no DAG, no structured outputs.
+"""Text grid agent — raw grid as compact text + two-phase observe-then-act.
 
-Tests whether a simple GPT-5.4 agent with low reasoning effort performs
-comparably to experiment 007's heavy DAG architecture. Same infrastructure
-(auto-probe, enhanced symbolic state, conversational sliding window,
-action history, sandbox) but with a minimal output format.
+Builds on experiment 008's lightweight conversational agent but adds:
+1. Sampled text grid (every 5th cell, 13x13) — model sees actual cell values
+   at movement resolution, plus symbolic objects for detail.
+2. Two-phase observe-then-act in ONE API call — observation + analysis fields
+   separate perception from decision-making without doubling cost.
+3. Cleaner action output format.
 
-If the bottleneck is strategic (wrong target) not tactical (bad routes),
-then all the DAG overhead is wasted.
+Everything else from 008 is preserved: sliding window, GPT-5.4 low reasoning,
+auto-probe, enhanced symbolic state, action history, sandbox, circuit breaker.
 """
 
 import json
@@ -46,14 +48,12 @@ Reason through these steps IN ORDER:
    NOT caused by your specific action.
 2. OBSERVE: What objects exist? What changed?
 3. STRATEGIZE: Top 2-3 sub-tasks to increase score.
-4. SPATIAL CODE: Write Python code that RENDERS an ASCII map of your surroundings
-   and answers spatial questions. Your code should:
-   - Determine which colors are traversable vs obstacles (use probe_observations)
-   - Render a text map (~20x20 area around you) using characters like
-     . for traversable, # for walls, @ for your position, * for targets
-   - Check which directions are open from your current position
-   - Verify your planned actions land on traversable cells
-   Include the ASCII map in your result so you can see the layout.
+4. SPATIAL CODE: Write Python code to answer:
+   - What colors are traversable vs obstacles? (use probe_observations)
+   - From my current position, which directions have open cells?
+   - What's between me and my target? Is the path clear?
+   Build yourself a text map or reachability analysis if helpful.
+   Set result to your findings + verified action sequence.
 
 Output JSON:
 - reflect: expectations vs reality, wrong assumptions
@@ -71,6 +71,21 @@ IMPORTANT:
   changes with effects caused by specific interactions.
 - Once you understand a mechanic, exploit it immediately.
 - If repeated actions produce no novel changes, your approach is wrong."""
+
+
+def _sample_grid(grid: list[list[int]], step: int = 5) -> str:
+    """Sample grid at every `step`-th cell to produce a compact text representation.
+
+    With step=5 on a 64x64 grid, produces a 13x13 sampled grid (positions 0,5,10,...,60).
+    """
+    rows = range(0, len(grid), step)
+    cols = range(0, len(grid[0]), step) if grid else range(0)
+    lines = []
+    for r in rows:
+        line = " ".join(str(grid[r][c]).rjust(2) for c in cols)
+        lines.append(line)
+    size = f"{len(list(rows))}x{len(list(cols))}"
+    return f"GRID (sampled every {step} cells, {size}):\n" + "\n".join(lines)
 
 
 class ToolUseAgent:
@@ -109,7 +124,7 @@ class ToolUseAgent:
     def run(self) -> None:
         timer = time.time()
         logger.info("=" * 60)
-        logger.info(f"Lightweight Agent on {self.game_id}")
+        logger.info(f"Text Grid Agent on {self.game_id}")
         logger.info("=" * 60)
 
         frame = self._step(GameAction.RESET)
@@ -302,12 +317,16 @@ class ToolUseAgent:
             parts.append(f"\nACTION HISTORY:\n{summary}")
 
         if self.program_output:
-            parts.append(f"\nSPATIAL CODE OUTPUT:\n{self.program_output}")
+            parts.append(f"\nCODE OUTPUT:\n{self.program_output}")
 
         if sym_changes:
             parts.append(f"\nCHANGES SINCE LAST ACTION:\n{json.dumps(sym_changes, indent=1)}")
 
-        # Symbolic state
+        # Change 1: Sampled text grid
+        sampled = _sample_grid(self.current_grid, step=5)
+        parts.append(f"\n{sampled}")
+
+        # Symbolic state (objects + relations, kept alongside sampled grid)
         sym_output = {
             "objects": symbolic.get("objects", []),
             "relations": symbolic.get("relations", []),
@@ -362,7 +381,7 @@ class ToolUseAgent:
         data = self._parse_json(raw)
 
         # Execute spatial_code (mandatory spatial analysis + verification)
-        code = data.get("spatial_code", "") or data.get("code", "")
+        code = data.get("spatial_code", "")
         if code and isinstance(code, str) and code.strip():
             logger.info(f"[spatial] executing {len(code)} chars")
             self.program_output = self.sandbox.run(code, self.current_grid)
@@ -377,7 +396,7 @@ class ToolUseAgent:
                 if isinstance(rule, str) and rule:
                     self._add_rule(rule)
 
-        # Log condensed DAG steps
+        # Log (including new analysis field)
         reflect = data.get("reflect", "")
         observe = data.get("observe", "")
         strategize = data.get("strategize", "")
@@ -497,18 +516,14 @@ class ToolUseAgent:
             facts.append(f"  {effects_str}")
 
         # Build raw probe observations for the sandbox
-        # Get current player position from symbolic state
-        cur_sym = grid_to_symbolic(self.current_grid)
-        small_objs = [o for o in cur_sym.get("objects", []) if o["size"] < 50]
-        if small_objs:
-            small_objs.sort(key=lambda o: o["size"])
-            cur_pos = small_objs[0]["center"]
-        else:
-            cur_pos = {"row": 32, "col": 32}
-
+        # Record what colors were encountered during movement
         probe_obs = []
         for eff_name, eff in action_effects.items():
-            landed_r, landed_c = int(cur_pos["row"]), int(cur_pos["col"])
+            pos = player_positions[-1] if player_positions else {"row": 32, "col": 32}
+            # The position BEFORE this action's move
+            prev_r = pos["row"] - eff["dr"]
+            prev_c = pos["col"] - eff["dc"]
+            landed_r, landed_c = int(pos["row"]), int(pos["col"])
             if 0 <= landed_r < 64 and 0 <= landed_c < 64:
                 landed_color = self.current_grid[landed_r][landed_c]
             else:
@@ -516,7 +531,8 @@ class ToolUseAgent:
             probe_obs.append({
                 "action": eff_name,
                 "success": True,
-                "player_pos": {"row": cur_pos["row"], "col": cur_pos["col"]},
+                "from": {"row": prev_r, "col": prev_c},
+                "to": {"row": pos["row"], "col": pos["col"]},
                 "landed_on_color": landed_color,
                 "dr": eff["dr"], "dc": eff["dc"],
             })
