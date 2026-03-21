@@ -1,0 +1,5 @@
+game_id: ls20
+guid: cb260d93-bca8-47ea-b6da-fea79f2c4282
+replay_url: https://three.arcprize.org/replay/ls20/cb260d93-bca8-47ea-b6da-fea79f2c4282
+scorecard_id: 7363b9cd-5cad-4dc1-9ca1-01a822904bef
+command: run.py --game ls20 --visual

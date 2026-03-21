@@ -143,11 +143,31 @@ def run_agent(agent_cls, label: str, max_actions: int = 10):
 
     agent._think_and_act = timed_think
 
+    # Instrument _step for per-action progress
+    original_step = agent._step
+    run_start = [None]  # mutable container for closure
+
+    def tracked_step(action, reasoning=""):
+        result = original_step(action, reasoning=reasoning)
+        elapsed = time.perf_counter() - run_start[0]
+        act_num = agent.action_counter
+        state = result.state.name if hasattr(result.state, 'name') else str(result.state)
+        model_info = ""
+        if hasattr(agent, 'model_calls'):
+            model_info = f" | models={dict(agent.model_calls)}"
+        print(f"  [{label}] action {act_num:>2}/{max_actions}"
+              f" | {elapsed:>6.1f}s | llm={agent.llm_calls}"
+              f" | state={state}{model_info}")
+        return result
+
+    agent._step = tracked_step
+
     print(f"\n{'='*60}")
     print(f"Running {label} ({max_actions} max actions)")
     print(f"{'='*60}")
 
     t_start = time.perf_counter()
+    run_start[0] = t_start
     agent.run()
     t_total = time.perf_counter() - t_start
 

@@ -1,0 +1,24 @@
+2026-03-21 13:06:12,890 | INFO | Game: ls20 (ls20)
+2026-03-21 13:06:12,890 | INFO | Model: openai/gpt-5.4
+2026-03-21 13:06:12,891 | INFO | Max actions: 500
+2026-03-21 13:06:12,891 | INFO | Logs: /Users/Alphastar/Documents/Code/Winter_2026/mandarins/experiments/arc-agi-setup/arc_agi_repo_collab/arc/experiments/010-llm-tool-calling/logs/ls20_20260321_130612
+2026-03-21 13:06:12,893 | INFO | Scorecard: 966f9757-e024-4aa8-bb74-21cb9b580107
+2026-03-21 13:06:13,134 | INFO | using Docker sandbox: rgb-agent/opencode-sandbox:latest
+2026-03-21 13:06:13,137 | INFO | Analyzer: OpenCodeAgent (model=openai/gpt-5.4, plan_size=10)
+2026-03-21 13:06:13,348 | ERROR | [ls20 Run 1] Exception: 'NoneType' object has no attribute 'reset'
+Traceback (most recent call last):
+  File "/Users/Alphastar/Documents/Code/Winter_2026/mandarins/experiments/arc-agi-setup/arc_agi_repo_collab/arc/experiments/010-llm-tool-calling/RGB-Agent/rgb_agent/environment/runner.py", line 141, in run
+    observation = _run_with_retries(
+        self.env.reset,
+        task={"game_id": self.game_id, "max_actions": self.max_actions_per_game, "tags": self.tags},
+    )
+  File "/Users/Alphastar/Documents/Code/Winter_2026/mandarins/experiments/arc-agi-setup/arc_agi_repo_collab/arc/experiments/010-llm-tool-calling/RGB-Agent/rgb_agent/environment/runner.py", line 35, in _run_with_retries
+    return func(*args, **kwargs)
+  File "/Users/Alphastar/Documents/Code/Winter_2026/mandarins/experiments/arc-agi-setup/arc_agi_repo_collab/arc/experiments/010-llm-tool-calling/run.py", line 77, in reset
+    result = self._env.reset(**kwargs)
+  File "/Users/Alphastar/Documents/Code/Winter_2026/mandarins/experiments/arc-agi-setup/arc_agi_repo_collab/arc/experiments/010-llm-tool-calling/RGB-Agent/rgb_agent/environment/arcagi3.py", line 73, in reset
+    obs = self._env.reset()
+          ^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'reset'
+2026-03-21 13:06:13,560 | INFO | Final: status=ERROR score=0 actions=0
+2026-03-21 13:06:13,599 | INFO | Scorecard closed: score=0.0
