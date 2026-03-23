@@ -65,3 +65,40 @@
 2026-03-21 13:22:50,647 | INFO | queue exhausted at action 16 — firing analyzer
 2026-03-21 13:22:50,647 | INFO | analyzer attempt 1/5 action=16 nudge=True
 2026-03-21 13:22:50,674 | INFO | exec oc_dfd99bebf1fe model=openai/gpt-5.4 session=ses_2edf76c00ffeiExsKx6Esj34fJ
+2026-03-21 13:23:53,097 | INFO | action=16 OK (2770 chars)
+2026-03-21 13:23:53,099 | INFO | loaded 2-step plan: ['ACTION2', 'ACTION4'] — From the current state, ACTION4 is blocked because rows 40-44 immediately to the right of the block 
+2026-03-21 13:23:53,099 | INFO | analyzer at action 16: loaded action plan (388 chars)
+2026-03-21 13:23:53,102 | INFO | queue drain -> ACTION2 (plan step 1/2, 1 remaining)
+2026-03-21 13:23:53,112 | INFO | queue drain -> ACTION4 (plan step 2/2, 0 remaining)
+2026-03-21 13:23:53,122 | INFO | queue empty — need new plan from analyzer
+2026-03-21 13:23:53,122 | INFO | queue exhausted at action 18 — firing analyzer
+2026-03-21 13:23:53,124 | INFO | analyzer attempt 1/5 action=18 nudge=True
+2026-03-21 13:23:53,176 | INFO | exec oc_dfd99bebf1fe model=openai/gpt-5.4 session=ses_2edf76c00ffeiExsKx6Esj34fJ
+2026-03-21 13:24:49,080 | INFO | recovered 2374 chars via session export
+2026-03-21 13:24:49,081 | INFO | action=18 OK (2374 chars)
+2026-03-21 13:24:49,081 | INFO | loaded 3-step plan: ['ACTION4', 'ACTION4', 'ACTION1'] — The block is currently at rows 45-49, cols 24-28. From there, ACTION1 would be blocked because rows 
+2026-03-21 13:24:49,082 | INFO | analyzer at action 18: loaded action plan (388 chars)
+2026-03-21 13:24:49,085 | INFO | queue drain -> ACTION4 (plan step 1/3, 2 remaining)
+2026-03-21 13:24:49,096 | INFO | queue drain -> ACTION4 (plan step 2/3, 1 remaining)
+2026-03-21 13:24:49,103 | INFO | queue drain -> ACTION1 (plan step 3/3, 0 remaining)
+2026-03-21 13:24:49,111 | INFO | queue empty — need new plan from analyzer
+2026-03-21 13:24:49,111 | INFO | queue exhausted at action 21 — firing analyzer
+2026-03-21 13:24:49,111 | INFO | analyzer attempt 1/5 action=21 nudge=True
+2026-03-21 13:24:49,174 | INFO | exec oc_dfd99bebf1fe model=openai/gpt-5.4 session=ses_2edf76c00ffeiExsKx6Esj34fJ
+2026-03-21 13:27:29,463 | INFO | recovered 2745 chars via session export
+2026-03-21 13:27:29,464 | INFO | action=21 OK (2745 chars)
+2026-03-21 13:27:29,465 | INFO | loaded 3-step plan: ['ACTION1', 'ACTION1', 'ACTION1'] — The agent followed the previous plan exactly and successfully opened the east-side vertical route: t
+2026-03-21 13:27:29,465 | INFO | analyzer at action 21: loaded action plan (438 chars)
+2026-03-21 13:27:29,470 | INFO | queue drain -> ACTION1 (plan step 1/3, 2 remaining)
+2026-03-21 13:27:29,485 | INFO | queue drain -> ACTION1 (plan step 2/3, 1 remaining)
+2026-03-21 13:27:29,492 | INFO | queue drain -> ACTION1 (plan step 3/3, 0 remaining)
+2026-03-21 13:27:29,499 | INFO | queue empty — need new plan from analyzer
+2026-03-21 13:27:29,499 | INFO | queue exhausted at action 24 — firing analyzer
+2026-03-21 13:27:29,499 | INFO | analyzer attempt 1/5 action=24 nudge=True
+2026-03-21 13:27:29,546 | INFO | exec oc_dfd99bebf1fe model=openai/gpt-5.4 session=ses_2edf76c00ffeiExsKx6Esj34fJ
+2026-03-21 13:28:26,973 | INFO | stopping container: oc_dfd99bebf1fe
+2026-03-21 13:28:30,249 | INFO | recovered 2745 chars via session export
+2026-03-21 13:28:30,250 | WARNING | action=24 failed: rc=137, hint_len=2745
+2026-03-21 13:28:30,250 | WARNING | analyzer returned None at action 24
+2026-03-21 13:28:30,250 | WARNING | analyzer attempt 1/5 failed
+2026-03-21 13:28:30,250 | INFO | analyzer attempt 2/5 action=24 nudge=True

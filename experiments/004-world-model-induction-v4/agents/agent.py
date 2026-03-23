@@ -41,7 +41,7 @@ GOAL-FIRST THINKING:
 Every turn, your FIRST output must be a clear GOAL answering: "What specific thing am I
 trying to do RIGHT NOW that will increase my score?"
 
-GOOD goals: "Navigate to the white switch at [31,21] and interact with it"
+GOOD goals: "Navigate to the distinct colored object at [row, col] and interact with it to test if it's a trigger"
 BAD goals: "Explore the map" (too vague), "Test hypotheses" (not actionable)
 
 Your PLAN is 2-5 concrete steps to achieve the goal. Hypotheses SUPPORT the goal —
@@ -119,17 +119,17 @@ It is a LOGIC ERROR to list something as untried and not have a hypothesis about
 Output JSON:
 - scene_inventory: {
     "objects": [
-      {"description": "black plus symbol", "position": [25, 38], "color": "black", "interacted": false}
+      {"description": "small colored marker", "position": [15, 30], "color": "green", "interacted": false}
     ],
     "open_directions": ["up", "left"],
     "blocked_directions": ["right", "down"],
     "visual_correspondences": [
-      "The symbol inside the door (top) resembles the symbol in the bottom-left corner — same purple color, similar shape"
+      "The shape near the gate (top) has the same color and form as the shape in the corner — possible lock/key relationship"
     ]
   }
 - untried: {
     "directions_not_explored": ["up"],
-    "objects_not_interacted": ["black plus symbol", "door with purple symbol"],
+    "objects_not_interacted": ["small colored marker", "gate structure"],
     "action_types_not_tested": ["ACTION5"]
   }
 - observation: what changed and what it means
@@ -137,18 +137,18 @@ Output JSON:
   {
     "category": "OBJECT_INTERACTION",
     "claim": "ACTION6 clicking on objects toggles their state",
-    "mechanism": "WHY: The game uses touch-activated remote triggers (consistent with CORE PRIOR: objects interact by CONTACT). The white object's distinctive color marks it as an interactable element, and its position at a junction suggests it controls access to the corridors beyond.",
+    "mechanism": "WHY: The game uses touch-activated triggers (consistent with CORE PRIOR: objects interact by CONTACT). The distinct object's unique color marks it as interactable, and its position near a junction suggests it controls access to the area beyond.",
     "predictions": [
-      "Touching the white object again should cause another reconfiguration",
+      "Touching the object again should cause another state change",
       "The objects that changed last time should be the same ones affected next time",
-      "If this is a toggle, the original configuration should return on a second touch"
+      "If this is a toggle, the original state should return on a second touch"
     ],
     "probability": 0.4,
     "tests": [
-      {"action": "ACTION6(32,15)", "result": "0 changes", "interpretation": "clicked on gridline, not on object"},
-      {"action": "ACTION6(12,8)", "result": "4 changes, red cell toggled", "interpretation": "clicking on grid cells toggles color"}
+      {"action": "ACTION6(20,10)", "result": "0 changes", "interpretation": "clicked on empty space, not on object"},
+      {"action": "ACTION6(15,30)", "result": "4 changes, nearby cell toggled", "interpretation": "clicking on objects toggles state"}
     ],
-    "test_actions": ["ACTION6", 25, 36],
+    "test_actions": ["ACTION6", 15, 30],
     "information_gain": "high — only tested empty space so far, never clicked an object"
   }
 
@@ -183,7 +183,7 @@ Output JSON:
   If all your hypotheses are in the same category (e.g., all NAVIGATION), you are FAILING to explore the hypothesis space. Force yourself to generate at least one hypothesis in a different category.
 
   Each hypothesis must be tagged with its category, e.g.:
-  {"category": "VISUAL_PATTERN", "claim": "The plus symbol rotates the door pattern; matching it to the corner symbol opens the door", "probability": 0.3, ...}
+  {"category": "VISUAL_PATTERN", "claim": "Interacting with the trigger object cycles the indicator; matching it to the reference pattern opens the gate", "probability": 0.3, ...}
 
   When generating hypotheses, apply the CORE PRIORS above:
   - OBJECT_INTERACTION hypotheses should specify the CONTACT mechanism ("walking into X", "clicking X", "standing adjacent to X")
@@ -202,37 +202,37 @@ EXECUTE mode: You've figured out enough to act. You have a concrete plan and you
 Your JSON output must include a "plan" field:
 
 {
-  "goal": "Match the display pattern to the target pattern in the bottom-left, then reach the door",
+  "goal": "Interact with the trigger object to change the indicator, then reach the gate",
   "plan": {
     "mode": "execute",
     "steps": [
-      {"step": 1, "action": "Navigate to the plus symbol at [25, 38]", "status": "completed"},
-      {"step": 2, "action": "Activate the plus (walk into it or ACTION5)", "status": "current"},
-      {"step": 3, "action": "Check if display now matches target", "status": "pending"},
-      {"step": 4, "action": "If not matched, activate plus again", "status": "pending"},
-      {"step": 5, "action": "If matched, navigate to the door at [32, 12]", "status": "pending"}
+      {"step": 1, "action": "Navigate to the trigger object at [15, 30]", "status": "completed"},
+      {"step": 2, "action": "Activate it (walk into it or ACTION5)", "status": "current"},
+      {"step": 3, "action": "Check if indicator now matches reference", "status": "pending"},
+      {"step": 4, "action": "If not matched, activate trigger again", "status": "pending"},
+      {"step": 5, "action": "If matched, navigate to the gate at [40, 20]", "status": "pending"}
     ],
     "abort_conditions": [
-      "Display doesn't change after activating plus",
-      "Door doesn't open after display matches target",
+      "Indicator doesn't change after activation",
+      "Gate doesn't open after indicator matches reference",
       "GAME_OVER"
     ],
-    "supporting_hypotheses": ["plus controls orientation (0.7)", "goal is to match display to target (0.65)"]
+    "supporting_hypotheses": ["trigger controls indicator state (0.7)", "goal is to match indicator to reference (0.65)"]
   }
 }
 
 Or when still exploring:
 
 {
-  "goal": "Determine what the plus symbol does",
+  "goal": "Determine what the distinct object does when interacted with",
   "plan": {
     "mode": "explore",
     "steps": [
-      {"step": 1, "action": "Navigate to plus symbol", "status": "current"},
+      {"step": 1, "action": "Navigate to the distinct object", "status": "current"},
       {"step": 2, "action": "Activate it and observe changes", "status": "pending"}
     ],
-    "abort_conditions": ["Discover the plus is not interactable"],
-    "supporting_hypotheses": ["plus is an interactable object (0.5)"]
+    "abort_conditions": ["Discover the object is not interactable"],
+    "supporting_hypotheses": ["object is interactable based on its unique appearance (0.5)"]
   }
 }
 
@@ -264,16 +264,16 @@ RULES FOR PLANNING:
 
 5. OVERLAPPING HYPOTHESES ARE FINE:
    - If multiple hypotheses point in the same direction, that's convergent evidence — it strengthens the plan.
-   - Don't treat overlap as redundancy. Three hypotheses saying "interact with plus to change display" at 0.7, 0.6, 0.5 is STRONGER than one hypothesis at 0.7.
+   - Don't treat overlap as redundancy. Three hypotheses saying "interact with trigger to change indicator" at 0.7, 0.6, 0.5 is STRONGER than one hypothesis at 0.7.
    - Use the supporting_hypotheses field to list which hypotheses back your plan.
    - If hypotheses disagree, pick the higher-probability one, commit to it, and test it. Only switch if you find direct contradictory evidence — not just because you're uncertain.
 
 CONNECTING PLANS TO ACTIONS:
 
 When in EXECUTE mode, your test_actions MUST correspond to your current plan step.
-- If current step is "Navigate to plus symbol at [25, 38]", your test_actions should be movement actions toward that position.
-- If current step is "Activate the plus", your test_actions should be ACTION5 or walking into it.
-- If current step is "Check if display matches target", you don't need test_actions — just observe the symbolic state and image.
+- If current step is "Navigate to the trigger object at [15, 30]", your test_actions should be movement actions toward that position.
+- If current step is "Activate the trigger", your test_actions should be ACTION5 or walking into it.
+- If current step is "Check if indicator matches reference", you don't need test_actions — just observe the symbolic state and image.
 
 Do NOT output test_actions that are unrelated to your current plan step while in execute mode.
 If you find yourself wanting to do something off-plan, either:
@@ -282,10 +282,10 @@ If you find yourself wanting to do something off-plan, either:
 
 - verified_rules: list of UNIVERSAL game rules you've confirmed (persist across levels, max 10).
   ONLY include rules about game MECHANICS — NOT positions, corridors, or level-specific layouts.
-  BAD: "The white object at [31,21] is a switch" (position-specific)
+  BAD: "The object at [15,30] is a switch" (position-specific)
   BAD: "Moving right is blocked from x=40" (level-specific)
-  GOOD: "Touching white objects triggers remote reconfiguration of other objects"
-  GOOD: "When a trigger is activated, some colored objects MOVE/ROTATE to new positions"
+  GOOD: "Touching distinctly-colored objects triggers remote changes to other objects"
+  GOOD: "When a trigger is activated, some objects change position or state"
 - falsified: list of approaches/beliefs that turned out to be WRONG. These persist for this level
   so you don't repeat the same mistakes. Be specific about what failed and why.
 - cause_effect: (include when a large change just happened) describe what you did, what changed
@@ -336,9 +336,9 @@ Every time you interact with an object or try something new and observe a result
 "interactions": [
   {
     "turn": 12,
-    "action": "Walked into plus symbol at [25, 38]",
-    "observed": "Purple shape inside the door rotated 90° clockwise. Display changed from L-facing-right to L-facing-down.",
-    "objects_involved": ["plus symbol", "door display"],
+    "action": "Walked into distinct object at [15, 30]",
+    "observed": "Shape near the gate changed orientation. Indicator shifted from one configuration to another.",
+    "objects_involved": ["trigger object", "indicator panel"],
     "reversible": "unknown",
     "useful": true
   }
@@ -346,8 +346,8 @@ Every time you interact with an object or try something new and observe a result
 
 Rules for the interaction journal:
 - Record EVERY interaction where something non-trivial happened (cells changed beyond normal movement, objects appeared/disappeared/changed, score changed).
-- Record interactions where NOTHING happened too, if you expected something — e.g., "Walked into door at [32,12], nothing happened. Door may require display to match target first."
-- Be SPECIFIC about what changed. Not "something changed" but "the purple L-shape rotated 90° clockwise" or "the yellow bar decreased by 2 cells."
+- Record interactions where NOTHING happened too, if you expected something — e.g., "Walked into gate at [40,20], nothing happened. Gate may require indicator to match reference first."
+- Be SPECIFIC about what changed. Not "something changed" but "the shape near the gate changed orientation" or "the colored bar decreased by 2 cells."
 - Each entry is a FACT, not a hypothesis. Only record what you directly observed.
 - The "useful" flag marks interactions that revealed a game mechanic. These get highlighted.
 
@@ -357,11 +357,11 @@ USING YOUR JOURNAL IN PLANS:
 
 When forming a plan in EXECUTE mode, your plan steps should be directly informed by journal entries. For example:
 
-- Journal says "Walking into plus rotated the display 90°"
-- Target display shows a specific orientation
-- Therefore plan: "Activate plus N times until display matches target, then go to door"
+- Journal says "Walking into trigger changed the indicator by one step"
+- Reference shows a specific target state
+- Therefore plan: "Activate trigger N times until indicator matches reference, then go to gate"
 
-If your journal tells you HOW a mechanic works, your plan should USE that knowledge with specific expected outcomes. Don't just "go interact with the plus" — say "activate the plus 2 more times (I need 180° more rotation based on turn 12 observation)."
+If your journal tells you HOW a mechanic works, your plan should USE that knowledge with specific expected outcomes. Don't just "go interact with the trigger" — say "activate the trigger 2 more times (I need 2 more state changes based on turn 12 observation)."
 
 A plan that ignores your journal entries is a BAD plan. Before finalizing a plan, check: does this plan use everything I've learned?"""
 
