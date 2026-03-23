@@ -1,0 +1,19 @@
+21:25:54 | INFO | Logging to /Users/Alphastar/Documents/Code/Winter_2026/mandarins/experiments/arc-agi-setup/arc_agi_repo_collab/arc/synthetic_games/../experiments/004-world-model-induction-v5/agents/logs/vc33_20260322_212554.log
+21:25:55 | INFO | Successfully fetched 3 environment(s) from API
+21:25:55 | INFO | Created new scorecard: 8282d62d-de70-45ef-959b-cfb08ea67511
+21:25:55 | INFO | Successfully fetched metadata for game vc33
+21:25:55 | INFO | Successfully loaded game class Vc33 from environment_files/vc33/9851e02b/vc33.py
+21:25:55 | INFO | ============================================================
+21:25:55 | INFO | Bayesian Hypothesis Agent (v5) on vc33
+21:25:55 | INFO | ============================================================
+21:25:56 | INFO | [probe] ACTION6 at (47,13) [largest object (white, size=848)]: BLOCKED
+  pink: size 64->63
+ACTION6 at (61,25) [different-colored object (blue, size=16)]: BLOCKED
+  pink: center {'row': 0, 'col': 31}->{'row': 0, 'col': 30}, size 63->61
+ACTION6 at (32,32) [background cell (dark_gray)]: BLOCKED
+  near_black: center {'row': 0, 'col': 62}->{'row': 0, 'col': 61}, size 3->4
+  pink: center {'row': 0, 'col': 30}->{'row': 0, 'col': 29}, size 61->60
+ACTION6 at (0,0) [grid corner (0,0)]: BLOCKED
+  near_black: size 4->5
+  pink: size 60->59
+21:25:56 | INFO | [model] gpt-5.4
