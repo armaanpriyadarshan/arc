@@ -1,0 +1,5 @@
+game_id: ls20
+guid: a774e1de-3c04-496e-af2a-4a38d822ae7d
+replay_url: https://three.arcprize.org/replay/ls20/a774e1de-3c04-496e-af2a-4a38d822ae7d
+scorecard_id: db4f0546-ee3a-4e6c-bdec-173306965b71
+command: run_codex.py --game ls20 --visual --model gpt-5.4

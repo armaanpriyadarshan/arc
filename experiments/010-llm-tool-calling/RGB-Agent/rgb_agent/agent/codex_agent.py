@@ -25,12 +25,20 @@ log = logging.getLogger(__name__)
 
 
 class _CodexEventStreamParser:
-    """Parses JSONL events from `codex exec --json` and writes to an analyzer log."""
+    """Parses JSONL events from `codex exec --json`.
+
+    Codex emits these event types:
+      thread.started  — {thread_id}
+      turn.started    — turn begins
+      item.started    — {item: {id, type, command?, status?}}
+      item.completed  — {item: {id, type, text?, command?, aggregated_output?, exit_code?}}
+      turn.completed  — {usage: {input_tokens, output_tokens, cached_input_tokens}}
+    """
 
     def __init__(self, f: IO[str]):
         self._f = f
         self.accumulated_text = ""
-        self.session_id: str | None = None
+        self.thread_id: str | None = None
 
     def _write(self, label: str, content: str) -> None:
         if content:
@@ -40,125 +48,46 @@ class _CodexEventStreamParser:
     def handle(self, event: dict) -> None:
         etype = event.get("type", "")
 
-        # Try to capture session ID from various possible locations
-        for key in ("session_id", "sessionId", "id"):
-            sid = event.get(key)
-            if isinstance(sid, str) and len(sid) > 8 and not self.session_id:
-                self.session_id = sid
+        if etype == "thread.started":
+            self.thread_id = event.get("thread_id")
 
-        if etype == "message":
-            role = event.get("role", "")
-            content = event.get("content", [])
-            if role == "assistant":
-                if isinstance(content, str):
-                    self.accumulated_text += content
-                    self._write("ASSISTANT", content)
-                elif isinstance(content, list):
-                    for block in content:
-                        if isinstance(block, dict):
-                            btype = block.get("type", "")
-                            if btype == "text":
-                                text = block.get("text", "")
-                                self.accumulated_text += text
-                                self._write("ASSISTANT", text)
-                            elif btype in ("thinking", "reasoning"):
-                                self._write("THINKING", block.get("text", ""))
-                        elif isinstance(block, str):
-                            self.accumulated_text += block
-                            self._write("ASSISTANT", block)
+        elif etype == "turn.started":
+            pass  # no useful data
 
-        elif etype == "function_call":
-            name = event.get("name", "?")
-            args = event.get("arguments", event.get("call_id", ""))
-            self._write(f"TOOL CALL: {name}", str(args)[:4000])
+        elif etype == "item.started":
+            item = event.get("item", {})
+            itype = item.get("type", "")
+            if itype == "command_execution":
+                cmd = item.get("command", "")
+                self._write("TOOL CALL: shell", cmd[:4000])
 
-        elif etype == "function_call_output":
-            output = event.get("output", "")
-            is_error = event.get("status", "") == "incomplete"
-            label = "TOOL RESULT ERROR" if is_error else "TOOL RESULT"
-            self._write(label, str(output)[:4000])
+        elif etype == "item.completed":
+            item = event.get("item", {})
+            itype = item.get("type", "")
+            if itype == "agent_message":
+                text = item.get("text", "")
+                if text:
+                    self.accumulated_text += text + "\n"
+                    self._write("ASSISTANT", text)
+            elif itype == "command_execution":
+                output = item.get("aggregated_output", "")
+                exit_code = item.get("exit_code")
+                if exit_code is not None and exit_code != 0:
+                    self._write("TOOL RESULT ERROR", f"exit_code={exit_code}\n{str(output)[:4000]}")
+                else:
+                    self._write("TOOL RESULT", str(output)[:4000])
+
+        elif etype == "turn.completed":
+            usage = event.get("usage", {})
+            input_t = usage.get("input_tokens", 0)
+            output_t = usage.get("output_tokens", 0)
+            cached = usage.get("cached_input_tokens", 0)
+            self._write("RESULT", f"input_tokens={input_t} (cached={cached}) output_tokens={output_t}")
 
         elif etype == "error":
             msg = event.get("message", event.get("error", str(event)))
             self._write("ERROR", str(msg))
             log.error("Codex error: %s", msg)
-            if any(kw in str(msg).lower() for kw in ("overflow", "too long", "context")):
-                self.session_id = None
-
-        elif etype in ("text", "text_delta"):
-            text = event.get("text", event.get("delta", ""))
-            if text:
-                self.accumulated_text += text
-                self._write("ASSISTANT", text)
-
-        elif etype in ("reasoning", "thinking"):
-            text = event.get("text", "")
-            self._write("THINKING", text)
-
-        elif etype == "tool_use":
-            part = event.get("part", event)
-            name = part.get("tool", part.get("name", "?"))
-            state = part.get("state", {})
-            status = state.get("status", "") if isinstance(state, dict) else str(state)
-            if status in ("running", "completed", "done", ""):
-                input_data = (state.get("input", {}) if isinstance(state, dict)
-                              else part.get("input", part.get("arguments", {})))
-                input_str = json.dumps(input_data, indent=2) if isinstance(input_data, dict) else str(input_data)
-                self._write(f"TOOL CALL: {name}", input_str)
-            if status in ("completed", "done"):
-                output = (state.get("output", state.get("result", ""))
-                          if isinstance(state, dict) else "")
-                is_error = (state.get("is_error", False) if isinstance(state, dict) else False)
-                label = "TOOL RESULT ERROR" if is_error else "TOOL RESULT"
-                self._write(label, str(output)[:4000])
-
-        elif etype == "step_start":
-            sid = event.get("sessionID", event.get("session_id"))
-            if sid and not self.session_id:
-                self.session_id = sid
-
-        elif etype in ("step_finish", "result"):
-            cost = event.get("cost", event.get("total_cost_usd",
-                             event.get("part", {}).get("cost") if isinstance(event.get("part"), dict) else None))
-            if cost is not None:
-                self._write("RESULT", f"cost=${cost}")
-            result_text = event.get("result", "").strip() if isinstance(event.get("result"), str) else ""
-            if result_text and not self.accumulated_text.strip():
-                self.accumulated_text = result_text
-
-        elif etype == "assistant":
-            for block in event.get("message", {}).get("content", []):
-                if not isinstance(block, dict):
-                    continue
-                btype = block.get("type")
-                if btype == "thinking":
-                    self._write("THINKING", block.get("thinking", block.get("text", "")))
-                elif btype == "text":
-                    text = block["text"]
-                    self.accumulated_text += text
-                    self._write("ASSISTANT", text)
-                elif btype == "tool_use":
-                    self._write(f"TOOL CALL: {block.get('name', '?')}",
-                                json.dumps(block.get("input", {}), indent=2))
-
-        elif etype == "user":
-            for block in event.get("message", {}).get("content", []):
-                if not isinstance(block, dict):
-                    continue
-                if block.get("type") == "tool_result":
-                    content = block.get("content", "")
-                    if isinstance(content, list):
-                        text = "\n".join(
-                            c.get("text", "") for c in content
-                            if isinstance(c, dict) and c.get("type") == "text"
-                        )
-                    elif isinstance(content, str):
-                        text = content
-                    else:
-                        text = str(content)
-                    is_error = block.get("is_error", False)
-                    label = "TOOL RESULT ERROR" if is_error else "TOOL RESULT"
-                    self._write(label, text[:4000])
 
         else:
             self._f.write(f"[RAW:{etype}] {json.dumps(event)[:500]}\n")
@@ -265,25 +194,30 @@ class CodexAgent:
             if retry_nudge:
                 prompt += f"\n\n{retry_nudge}"
 
-            # Build command
-            cmd = ["codex", "exec"]
-
+            # Build command — resume accepts a limited set of flags
             if self._resume_session and not is_first:
-                cmd.extend(["resume", "--last"])
+                cmd = [
+                    "codex", "exec", "resume", "--last",
+                    "--json",
+                    "--output-last-message", str(output_file),
+                    "--full-auto",
+                    prompt,
+                ]
+            else:
+                cmd = [
+                    "codex", "exec",
+                    "--json",
+                    "-o", str(output_file),
+                    "--full-auto",
+                    "--sandbox", "workspace-write",
+                    "-C", str(workspace),
+                    "--model", self._model,
+                    "--skip-git-repo-check",
+                    prompt,
+                ]
 
-            cmd.extend([
-                "--json",
-                "-o", str(output_file),
-                "--full-auto",
-                "--sandbox", "workspace-write",
-                "-C", str(workspace),
-                "--model", self._model,
-                "--skip-git-repo-check",
-                prompt,
-            ])
-
-            log.info("exec codex model=%s is_first=%s action=%d",
-                     self._model, is_first, action_num)
+            log.info("exec codex model=%s is_first=%s resume=%s action=%d",
+                     self._model, is_first, not is_first and self._resume_session, action_num)
 
             proc = subprocess.Popen(
                 cmd,

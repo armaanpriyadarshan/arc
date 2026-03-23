@@ -10,5 +10,5 @@ dependencies = [
     "requests>=2.31",
     "python-dotenv>=1.2.2",
     "numpy>=2.0.0",
-    "pygame>=2.5.0",
+    "pygame-ce>=2.5.0",
 ]

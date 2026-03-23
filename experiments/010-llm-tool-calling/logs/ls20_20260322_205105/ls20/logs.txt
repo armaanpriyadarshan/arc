@@ -1,0 +1,1296 @@
+
+================================================================================
+Action 0 | Level 1 | Attempt 1 | INITIAL STATE
+Score: 0 | State: NOT_FINISHED
+================================================================================
+
+[INITIAL BOARD STATE]
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhhhhhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOOOOOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOOOOOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOfffOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOOOfOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOfOfOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOOOOOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOOOOOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhhhhhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhh$hhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhh8$$hhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhh8hhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhhhhhhhhhhh-----hhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhhhhhhhhhhh-----hhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhhhhhhhhhhhfffffhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhhhhhhhhhhhfffffhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhhhhhhhhhhhfffffhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOOOOOOOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOOOOOOOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffffffOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffffffOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffOOOOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffOOOOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffOOffOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffOOffOOqOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+qOOOOOOOOOOqOGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGOnnOnnOnn
+qOOOOOOOOOOqOGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGOnnOnnOnn
+qqqqqqqqqqqqOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+
+
+================================================================================
+Action 1 | Level 1 | Attempt 1 | Plan Step 1/3
+Score: 0 | State: NOT_FINISHED
+================================================================================
+
+[OBSERVATION_PHASE]
+[Queued plan step 1/3]
+
+
+[STRATEGIC ANALYSIS FROM LOG REVIEW]
+The log at `/var/folders/qz/wpwrlrhs6zs9pgh2dgvchbxw0000gp/T/codex_workspace_ls0c8fbu/logs.txt` only contains one recorded state: `Action 0`, `Score: 0`, `State: NOT_FINISHED`. There are no post-action snapshots and no score increases, so the agent has not yet demonstrated any successful interaction pattern; the right interpretation is that this is effectively an untouched level and we need to choose the first probe carefully.
+
+Assuming zero-based `(row, col)` coordinates from the Python parse, the most important feature is the unique 5-tile `$/8` cluster centered at `(32,21)`, with companion tiles at `(31,21)`, `(32,20)`, `(32,22)`, and `(33,21)`. That is the only obviously active entity on the board, embedded inside a large connected `h` region. The connected `h` region runs down and right to a clear choke point: a `-----` barrier at rows `45-46`, cols `34-38`, with the nearest reachable approach tile at `(45,33)` and the center of the barrier at `(45,36)`. Directly below that barrier is a 3x5 `f` patch at rows `47-49`, cols `34-38`, which strongly suggests the barrier is gating access to an objective, resource, or hazard. By contrast, the top `f` room around rows `11-13`, cols `35-37` is enclosed by `O` and looks secondary, and the large `G` band at rows `61-62`, cols `13-54` is too distant and structurally separated to be the first target. The best hypothesis is: the central `$/8` cluster is the controllable focus, the dash block is the nearest mechanism worth testing, and the lower `G` zone is likely a later destination after unlocking or traversing that gate. What has not worked yet is simple progression: there is no evidence of solved subgoals, no score change, and no proof that random movement toward the distant `G` region would help. The right next step is to probe the local control piece first, then the nearest gate, and stop early to observe whether clicks trigger selection, pathing, or state change.
+**Current State:**
+Score: 0
+Step: 0
+
+**Current Matrix** 64x64 (ASCII characters):
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhhhhhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOOOOOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOOOOOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOfffOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOOOfOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOfOfOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOOOOOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOOOOOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhhhhhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhh$hhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhh8$$hhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhh8hhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhhhhhhhhhhh-----hhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhhhhhhhhhhh-----hhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhhhhhhhhhhhfffffhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhhhhhhhhhhhfffffhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhhhhhhhhhhhfffffhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOOOOOOOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOOOOOOOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffffffOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffffffOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffOOOOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffOOOOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffOOffOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffOOffOOqOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+qOOOOOOOOOOqOGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGOnnOnnOnn
+qOOOOOOOOOOqOGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGOnnOnnOnn
+qqqqqqqqqqqqOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+
+[Executing pre-planned action (step 1/3) — no model call]
+
+
+[OBSERVATION_RESPONSE]
+[Pre-planned action step 1/3]
+
+[ACTION_PHASE]
+[Queued plan step 1/3 — no model call]
+
+[ACTION_RESPONSE]
+Tool Call: ACTION6({"x": 32, "y": 21})
+Content: Executing pre-planned action (plan step 1/3)
+
+[POST-ACTION BOARD STATE]
+Score: 0
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhhhhhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOOOOOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOOOOOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOfffOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOOOfOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOfOfOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOOOOOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOOOOOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhhhhhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhh$hhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhh8$$hhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhh8hhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhhhhhhhhhhh-----hhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhhhhhhhhhhh-----hhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhhhhhhhhhhhfffffhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhhhhhhhhhhhfffffhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhhhhhhhhhhhfffffhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOOOOOOOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOOOOOOOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffffffOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffffffOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffOOOOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffOOOOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffOOffOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffOOffOOqOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+qOOOOOOOOOOqOGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGOnnOnnOnn
+qOOOOOOOOOOqOGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGOnnOnnOnn
+qqqqqqqqqqqqOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+
+
+================================================================================
+Action 2 | Level 1 | Attempt 1 | Plan Step 2/3
+Score: 0 | State: NOT_FINISHED
+================================================================================
+
+[OBSERVATION_PHASE]
+[Queued plan step 2/3]
+
+
+[CURRENT PLAN]
+Treat `(32,21)` as the primary controllable/interactive tile and test it first. Then probe the nearest meaningful choke point by clicking the approach tile `(45,33)` and the gate center `(45,36)`; this should reveal whether the game is selection-based, pathfinding-based, or gate-toggle based before spending turns on long movement.
+**Recent History:**
+
+Step 0: ACTION6(x=32, y=21, val=0,comp_size=3), Score=0 NO STATE CHANGE
+  Changes: (no change)
+
+**From Current State, Already Tried:**
+
+- click_val0_comp7: no change
+**Current State:**
+Score: 0
+Step: 1
+
+**Current Matrix** 64x64 (ASCII characters):
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhhhhhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOOOOOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOOOOOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOfffOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOOOfOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOfOfOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOOOOOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOOOOOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhhhhhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhh$hhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhh8$$hhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhh8hhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhhhhhhhhhhh-----hhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhhhhhhhhhhh-----hhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhhhhhhhhhhhfffffhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhhhhhhhhhhhfffffhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhhhhhhhhhhhfffffhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOOOOOOOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOOOOOOOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffffffOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffffffOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffOOOOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffOOOOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffOOffOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffOOffOOqOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+qOOOOOOOOOOqOGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGOnnOnnOnn
+qOOOOOOOOOOqOGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGOnnOnnOnn
+qqqqqqqqqqqqOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+
+[Executing pre-planned action (step 2/3) — no model call]
+
+
+[OBSERVATION_RESPONSE]
+[Pre-planned action step 2/3]
+
+[ACTION_PHASE]
+[Queued plan step 2/3 — no model call]
+
+[ACTION_RESPONSE]
+Tool Call: ACTION6({"x": 45, "y": 33})
+Content: Executing pre-planned action (plan step 2/3)
+
+[POST-ACTION BOARD STATE]
+Score: 0
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhhhhhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOOOOOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOOOOOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOfffOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOOOfOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOfOfOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOOOOOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOOOOOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhhhhhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhh$hhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhh8$$hhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhh8hhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhhhhhhhhhhh-----hhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhhhhhhhhhhh-----hhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhhhhhhhhhhhfffffhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhhhhhhhhhhhfffffhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhhhhhhhhhhhfffffhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOOOOOOOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOOOOOOOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffffffOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffffffOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffOOOOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffOOOOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffOOffOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffOOffOOqOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+qOOOOOOOOOOqOGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGOnnOnnOnn
+qOOOOOOOOOOqOGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGOnnOnnOnn
+qqqqqqqqqqqqOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+
+
+================================================================================
+Action 3 | Level 1 | Attempt 1 | Plan Step 3/3
+Score: 0 | State: NOT_FINISHED
+================================================================================
+
+[OBSERVATION_PHASE]
+[Queued plan step 3/3]
+
+
+[CURRENT PLAN]
+Treat `(32,21)` as the primary controllable/interactive tile and test it first. Then probe the nearest meaningful choke point by clicking the approach tile `(45,33)` and the gate center `(45,36)`; this should reveal whether the game is selection-based, pathfinding-based, or gate-toggle based before spending turns on long movement.
+**Recent History:**
+
+Step 0: ACTION6(x=32, y=21, val=0,comp_size=3), Score=0 NO STATE CHANGE
+  Changes: (no change)
+
+Step 1: ACTION6(x=45, y=33, val=3,comp_size=892), Score=0 NO STATE CHANGE
+  Changes: (no change)
+
+**From Current State, Already Tried:**
+
+- click_val0_comp7: no change
+- click_val3_comp2: no change
+**Current State:**
+Score: 0
+Step: 2
+
+**Current Matrix** 64x64 (ASCII characters):
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhhhhhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOOOOOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOOOOOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOfffOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOOOfOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOfOfOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOOOOOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOOOOOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhhhhhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhh$hhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhh8$$hhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhh8hhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhhhhhhhhhhh-----hhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhhhhhhhhhhh-----hhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhhhhhhhhhhhfffffhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhhhhhhhhhhhfffffhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhhhhhhhhhhhfffffhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOOOOOOOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOOOOOOOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffffffOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffffffOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffOOOOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffOOOOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffOOffOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffOOffOOqOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+qOOOOOOOOOOqOGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGOnnOnnOnn
+qOOOOOOOOOOqOGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGOnnOnnOnn
+qqqqqqqqqqqqOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+
+[Executing pre-planned action (step 3/3) — no model call]
+
+
+[OBSERVATION_RESPONSE]
+[Pre-planned action step 3/3]
+
+[ACTION_PHASE]
+[Queued plan step 3/3 — no model call]
+
+[ACTION_RESPONSE]
+Tool Call: ACTION6({"x": 45, "y": 36})
+Content: Executing pre-planned action (plan step 3/3)
+
+[POST-ACTION BOARD STATE]
+Score: 0
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhhhhhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOOOOOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOOOOOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOfffOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOOOfOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOfOfOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOOOOOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOOOOOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhhhhhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhh$hhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhh8$$hhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhh8hhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhhhhhhhhhhh-----hhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhhhhhhhhhhh-----hhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhhhhhhhhhhhfffffhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhhhhhhhhhhhfffffhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhhhhhhhhhhhfffffhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOOOOOOOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOOOOOOOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffffffOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffffffOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffOOOOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffOOOOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffOOffOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffOOffOOqOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+qOOOOOOOOOOqOGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGOnnOnnOnn
+qOOOOOOOOOOqOGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGOnnOnnOnn
+qqqqqqqqqqqqOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+
+
+================================================================================
+Action 4 | Level 1 | Attempt 1 | Plan Step 1/4
+Score: 0 | State: NOT_FINISHED
+================================================================================
+
+[OBSERVATION_PHASE]
+[Queued plan step 1/4]
+
+
+[STRATEGIC ANALYSIS FROM LOG REVIEW]
+The run is still in pure reconnaissance mode. Programmatic board comparison shows the initial board and all three post-action boards are identical 64x64 matrices, with `Score: 0` throughout, so nothing has been solved and none of the three clicks caused any state change. The three tested clicks were: the center of the `$/8` cluster at `(32,21)`, the left approach tile to the gate at `(45,33)`, and the gate body at `(45,36)`; all produced `NO STATE CHANGE`. That is the strongest pattern in the log: `ACTION6` has not yet demonstrated any effect on this level.
+
+The board has one especially meaningful structure: a 5-cell `$/8` cluster at `(31,21)`, `(32,20)`, `(32,21)`, `(32,22)`, `(33,21)`. It sits inside the only huge traversable-looking mass, the `h` component of size 892. Just southeast of that region is a rectangular internal `q` void spanning roughly rows `30-44`, cols `24-33`, which blocks a direct eastward route. The nearest structured objective is still the 2x5 `-` barrier at rows `45-46`, cols `34-38`, with the `f` patch immediately below it at rows `47-49`, cols `34-38`; the shortest passable route from the cluster to the barrier approach is effectively south first, then east, reaching `(45,33)` by following the `h` corridor down column `20` and then across row `45`. The distant `G` band at rows `61-62`, cols `13-54` and the `n` blocks at `(61-62,56-63)` look like later-stage areas, not first probes.
+
+What has worked: log analysis identified the important geometry and ruled out three click hypotheses. What has not worked: clicking the probable avatar cluster, clicking ordinary `h`, and clicking the gate itself. The practical conclusion is that this level is more likely driven by `ACTION1-4` movement than by free clicking, or clicking only matters after entering a different state. Since the cluster is surrounded by safe `h` on all sides, the next high-value test is to map the movement controls with a single cycle of the four move actions. Even if the first movement succeeds, the next few moves are still valuable because they reveal direction mapping and whether the cluster is actually the controllable actor.
+**Recent History:**
+
+Step 0: ACTION6(x=32, y=21, val=0,comp_size=3), Score=0 NO STATE CHANGE
+  Changes: (no change)
+
+Step 1: ACTION6(x=45, y=33, val=3,comp_size=892), Score=0 NO STATE CHANGE
+  Changes: (no change)
+
+Step 2: ACTION6(x=45, y=36, val=12,comp_size=10), Score=0 NO STATE CHANGE
+  Changes: (no change)
+
+**From Current State, Already Tried:**
+
+- click_val0_comp7: no change
+- click_val3_comp2: no change
+- click_val12_comp10: no change
+**Current State:**
+Score: 0
+Step: 3
+
+**Current Matrix** 64x64 (ASCII characters):
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhhhhhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOOOOOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOOOOOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOfffOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOOOfOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOfOfOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOOOOOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOOOOOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhhhhhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhh$hhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhh8$$hhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhh8hhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhhhhhhhhhhh-----hhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhhhhhhhhhhh-----hhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhhhhhhhhhhhfffffhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhhhhhhhhhhhfffffhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhhhhhhhhhhhfffffhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOOOOOOOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOOOOOOOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffffffOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffffffOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffOOOOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffOOOOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffOOffOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffOOffOOqOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+qOOOOOOOOOOqOGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGOnnOnnOnn
+qOOOOOOOOOOqOGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGOnnOnnOnn
+qqqqqqqqqqqqOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+
+[Executing pre-planned action (step 1/4) — no model call]
+
+
+[OBSERVATION_RESPONSE]
+[Pre-planned action step 1/4]
+
+[ACTION_PHASE]
+[Queued plan step 1/4 — no model call]
+
+[ACTION_RESPONSE]
+Tool Call: ACTION1({})
+Content: Executing pre-planned action (plan step 1/4)
+
+[POST-ACTION BOARD STATE]
+Score: 0
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhhhhhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOOOOOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOOOOOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOfffOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOOOfOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOfOfOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOOOOOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOOOOOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhhhhhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhh$hhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhh8$$hhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhh8hhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhqqqqqqqqqq-----hhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhqqqqqqqqqq-----hhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqfffffhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqfffffhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqfffffhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOOOOOOOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOOOOOOOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffffffOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffffffOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffOOOOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffOOOOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffOOffOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffOOffOOqOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+qOOOOOOOOOOqOhGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGOnnOnnOnn
+qOOOOOOOOOOqOhGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGOnnOnnOnn
+qqqqqqqqqqqqOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+
+
+================================================================================
+Action 5 | Level 1 | Attempt 1 | Plan Step 2/4
+Score: 0 | State: NOT_FINISHED
+================================================================================
+
+[OBSERVATION_PHASE]
+[Queued plan step 2/4]
+
+
+[CURRENT PLAN]
+Stop spending turns on clicks for now; they have produced zero board change on the avatar, terrain, and gate. Use one short cycle of `ACTION1-4` to discover which action moves the central `$/8` cluster off its start near `(32,21)`, then re-analyze immediately before committing to the south-then-east route toward `(45,33)` and the gate.
+**Recent History:**
+
+Step 0: ACTION6(x=32, y=21, val=0,comp_size=3), Score=0 NO STATE CHANGE
+  Changes: (no change)
+
+Step 1: ACTION6(x=45, y=33, val=3,comp_size=892), Score=0 NO STATE CHANGE
+  Changes: (no change)
+
+Step 2: ACTION6(x=45, y=36, val=12,comp_size=10), Score=0 NO STATE CHANGE
+  Changes: (no change)
+
+Step 3: ACTION1, Score=0
+  Changes: 3->9: (42,34), (42,35), (42,36), (42,37), (42,38), (43,34), (43,35), (43,36), (43,37), (43,38), (44,34), (44,35), (44,36), (44,37), (44,38); 3->12: (40,34), (40,35), (40,36), (40,37), (40,38), (41,34), (41,35), (41,36), (41,37), (41,38); 9->3: (47,34), (47,35), (47,36), (47,37), (47,38), (48,34), (48,35), (48,36), (48,37), (48,38), (49,34), (49,35), (49,36), (49,37), (49,38); 11->3: (61,13), (62,13); 12->3: (45,34), (45,35), (45,36), (45,37), (45,38), (46,34), (46,35), (46,36), (46,37), (46,38)
+
+**Current State:**
+Score: 0
+Step: 4
+
+**Current Matrix** 64x64 (ASCII characters):
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhhhhhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOOOOOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOOOOOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOfffOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOOOfOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOfOfOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOOOOOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOOOOOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhhhhhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhh$hhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhh8$$hhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhh8hhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhqqqqqqqqqq-----hhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhqqqqqqqqqq-----hhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqfffffhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqfffffhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqfffffhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOOOOOOOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOOOOOOOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffffffOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffffffOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffOOOOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffOOOOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffOOffOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffOOffOOqOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+qOOOOOOOOOOqOhGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGOnnOnnOnn
+qOOOOOOOOOOqOhGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGOnnOnnOnn
+qqqqqqqqqqqqOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+
+[Executing pre-planned action (step 2/4) — no model call]
+
+
+[OBSERVATION_RESPONSE]
+[Pre-planned action step 2/4]
+
+[ACTION_PHASE]
+[Queued plan step 2/4 — no model call]
+
+[ACTION_RESPONSE]
+Tool Call: ACTION2({})
+Content: Executing pre-planned action (plan step 2/4)
+
+[POST-ACTION BOARD STATE]
+Score: 0
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhhhhhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOOOOOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOOOOOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOfffOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOOOfOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOfOfOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOOOOOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOOOOOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhhhhhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhh$hhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhh8$$hhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhh8hhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhhhhhhhhhhh-----hhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhhhhhhhhhhh-----hhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhhhhhhhhhhhfffffhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhhhhhhhhhhhfffffhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhhhhhhhhhhhfffffhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOOOOOOOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOOOOOOOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffffffOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffffffOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffOOOOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffOOOOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffOOffOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffOOffOOqOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+qOOOOOOOOOOqOhhGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGOnnOnnOnn
+qOOOOOOOOOOqOhhGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGOnnOnnOnn
+qqqqqqqqqqqqOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+
+
+================================================================================
+Action 6 | Level 1 | Attempt 1 | Plan Step 3/4
+Score: 0 | State: NOT_FINISHED
+================================================================================
+
+[OBSERVATION_PHASE]
+[Queued plan step 3/4]
+
+
+[CURRENT PLAN]
+Stop spending turns on clicks for now; they have produced zero board change on the avatar, terrain, and gate. Use one short cycle of `ACTION1-4` to discover which action moves the central `$/8` cluster off its start near `(32,21)`, then re-analyze immediately before committing to the south-then-east route toward `(45,33)` and the gate.
+**Recent History:**
+
+Step 0: ACTION6(x=32, y=21, val=0,comp_size=3), Score=0 NO STATE CHANGE
+  Changes: (no change)
+
+Step 1: ACTION6(x=45, y=33, val=3,comp_size=892), Score=0 NO STATE CHANGE
+  Changes: (no change)
+
+Step 2: ACTION6(x=45, y=36, val=12,comp_size=10), Score=0 NO STATE CHANGE
+  Changes: (no change)
+
+Step 3: ACTION1, Score=0
+  Changes: 3->9: (42,34), (42,35), (42,36), (42,37), (42,38), (43,34), (43,35), (43,36), (43,37), (43,38), (44,34), (44,35), (44,36), (44,37), (44,38); 3->12: (40,34), (40,35), (40,36), (40,37), (40,38), (41,34), (41,35), (41,36), (41,37), (41,38); 9->3: (47,34), (47,35), (47,36), (47,37), (47,38), (48,34), (48,35), (48,36), (48,37), (48,38), (49,34), (49,35), (49,36), (49,37), (49,38); 11->3: (61,13), (62,13); 12->3: (45,34), (45,35), (45,36), (45,37), (45,38), (46,34), (46,35), (46,36), (46,37), (46,38)
+
+Step 4: ACTION2, Score=0
+  Changes: 3->9: (47,34), (47,35), (47,36), (47,37), (47,38), (48,34), (48,35), (48,36), (48,37), (48,38), (49,34), (49,35), (49,36), (49,37), (49,38); 3->12: (45,34), (45,35), (45,36), (45,37), (45,38), (46,34), (46,35), (46,36), (46,37), (46,38); 9->3: (42,34), (42,35), (42,36), (42,37), (42,38), (43,34), (43,35), (43,36), (43,37), (43,38), (44,34), (44,35), (44,36), (44,37), (44,38); 11->3: (61,14), (62,14); 12->3: (40,34), (40,35), (40,36), (40,37), (40,38), (41,34), (41,35), (41,36), (41,37), (41,38)
+
+**Current State:**
+Score: 0
+Step: 5
+
+**Current Matrix** 64x64 (ASCII characters):
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhhhhhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOOOOOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOOOOOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOfffOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOOOfOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOfOfOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOOOOOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOOOOOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhhhhhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhh$hhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhh8$$hhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhh8hhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhhhhhhhhhhh-----hhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhhhhhhhhhhh-----hhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhhhhhhhhhhhfffffhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhhhhhhhhhhhfffffhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhhhhhhhhhhhfffffhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOOOOOOOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOOOOOOOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffffffOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffffffOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffOOOOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffOOOOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffOOffOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffOOffOOqOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+qOOOOOOOOOOqOhhGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGOnnOnnOnn
+qOOOOOOOOOOqOhhGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGOnnOnnOnn
+qqqqqqqqqqqqOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+
+[Executing pre-planned action (step 3/4) — no model call]
+
+
+[OBSERVATION_RESPONSE]
+[Pre-planned action step 3/4]
+
+[ACTION_PHASE]
+[Queued plan step 3/4 — no model call]
+
+[ACTION_RESPONSE]
+Tool Call: ACTION3({})
+Content: Executing pre-planned action (plan step 3/4)
+
+[POST-ACTION BOARD STATE]
+Score: 0
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhhhhhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOOOOOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOOOOOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOfffOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOOOfOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOfOfOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOOOOOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOOOOOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhhhhhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhh$hhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhh8$$hhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhh8hhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhhhhhh-----hhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhhhhhh-----hhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhhhhhhfffffhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhhhhhhfffffhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhhhhhhfffffhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOOOOOOOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOOOOOOOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffffffOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffffffOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffOOOOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffOOOOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffOOffOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffOOffOOqOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+qOOOOOOOOOOqOhhhGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGOnnOnnOnn
+qOOOOOOOOOOqOhhhGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGOnnOnnOnn
+qqqqqqqqqqqqOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+
+
+================================================================================
+Action 7 | Level 1 | Attempt 1 | Plan Step 4/4
+Score: 0 | State: NOT_FINISHED
+================================================================================
+
+[OBSERVATION_PHASE]
+[Queued plan step 4/4]
+
+
+[CURRENT PLAN]
+Stop spending turns on clicks for now; they have produced zero board change on the avatar, terrain, and gate. Use one short cycle of `ACTION1-4` to discover which action moves the central `$/8` cluster off its start near `(32,21)`, then re-analyze immediately before committing to the south-then-east route toward `(45,33)` and the gate.
+**Recent History:**
+
+Step 1: ACTION6(x=45, y=33, val=3,comp_size=892), Score=0 NO STATE CHANGE
+  Changes: (no change)
+
+Step 2: ACTION6(x=45, y=36, val=12,comp_size=10), Score=0 NO STATE CHANGE
+  Changes: (no change)
+
+Step 3: ACTION1, Score=0
+  Changes: 3->9: (42,34), (42,35), (42,36), (42,37), (42,38), (43,34), (43,35), (43,36), (43,37), (43,38), (44,34), (44,35), (44,36), (44,37), (44,38); 3->12: (40,34), (40,35), (40,36), (40,37), (40,38), (41,34), (41,35), (41,36), (41,37), (41,38); 9->3: (47,34), (47,35), (47,36), (47,37), (47,38), (48,34), (48,35), (48,36), (48,37), (48,38), (49,34), (49,35), (49,36), (49,37), (49,38); 11->3: (61,13), (62,13); 12->3: (45,34), (45,35), (45,36), (45,37), (45,38), (46,34), (46,35), (46,36), (46,37), (46,38)
+
+Step 4: ACTION2, Score=0
+  Changes: 3->9: (47,34), (47,35), (47,36), (47,37), (47,38), (48,34), (48,35), (48,36), (48,37), (48,38), (49,34), (49,35), (49,36), (49,37), (49,38); 3->12: (45,34), (45,35), (45,36), (45,37), (45,38), (46,34), (46,35), (46,36), (46,37), (46,38); 9->3: (42,34), (42,35), (42,36), (42,37), (42,38), (43,34), (43,35), (43,36), (43,37), (43,38), (44,34), (44,35), (44,36), (44,37), (44,38); 11->3: (61,14), (62,14); 12->3: (40,34), (40,35), (40,36), (40,37), (40,38), (41,34), (41,35), (41,36), (41,37), (41,38)
+
+Step 5: ACTION3, Score=0
+  Changes: 3->9: (47,29), (47,30), (47,31), (47,32), (47,33), (48,29), (48,30), (48,31), (48,32), (48,33), (49,29), (49,30), (49,31), (49,32), (49,33); 3->12: (45,29), (45,30), (45,31), (45,32), (45,33), (46,29), (46,30), (46,31), (46,32), (46,33); 9->3: (47,34), (47,35), (47,36), (47,37), (47,38), (48,34), (48,35), (48,36), (48,37), (48,38), (49,34), (49,35), (49,36), (49,37), (49,38); 11->3: (61,15), (62,15); 12->3: (45,34), (45,35), (45,36), (45,37), (45,38), (46,34), (46,35), (46,36), (46,37), (46,38)
+
+**Current State:**
+Score: 0
+Step: 6
+
+**Current Matrix** 64x64 (ASCII characters):
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhhhhhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOOOOOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOOOOOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOfffOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOOOfOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOfOfOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOOOOOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOOOOOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhhhhhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhh$hhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhh8$$hhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhh8hhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhhhhhh-----hhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhhhhhh-----hhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhhhhhhfffffhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhhhhhhfffffhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhhhhhhfffffhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOOOOOOOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOOOOOOOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffffffOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffffffOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffOOOOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffOOOOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffOOffOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffOOffOOqOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+qOOOOOOOOOOqOhhhGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGOnnOnnOnn
+qOOOOOOOOOOqOhhhGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGOnnOnnOnn
+qqqqqqqqqqqqOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+
+[Executing pre-planned action (step 4/4) — no model call]
+
+
+[OBSERVATION_RESPONSE]
+[Pre-planned action step 4/4]
+
+[ACTION_PHASE]
+[Queued plan step 4/4 — no model call]
+
+[ACTION_RESPONSE]
+Tool Call: ACTION4({})
+Content: Executing pre-planned action (plan step 4/4)
+
+[POST-ACTION BOARD STATE]
+Score: 0
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhhhhhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOOOOOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOOOOOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOfffOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOOOfOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOfOfOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOOOOOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhOOOOOOOhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhhhhhqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhh$hhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhh8$$hhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhh8hhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqhhhhhhhhhhhhhhhqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhqqqqqqqqqqhhhhhhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhhhhhhhhhhh-----hhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhhhhhhhhhhh-----hhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhhhhhhhhhhhfffffhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhhhhhhhhhhhfffffhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqhhhhhhhhhhhhhhhfffffhhhhhhhhhhhhhhhqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+OOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOOOOOOOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOOOOOOOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffffffOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffffffOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffOOOOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffOOOOOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffOOffOOqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq
+qOOffOOffOOqOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+qOOOOOOOOOOqOhhhhGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGOnnOnnOnn
+qOOOOOOOOOOqOhhhhGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGOnnOnnOnn
+qqqqqqqqqqqqOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+

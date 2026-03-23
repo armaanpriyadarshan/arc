@@ -16,6 +16,7 @@ from concurrent.futures import ThreadPoolExecutor
 from arcengine import FrameData, GameAction, GameState
 from openai import OpenAI
 
+from .run_log import RunLog, RESPONSES_TOOLS, CHAT_TOOLS
 from .symbolic import grid_to_symbolic, diff_symbolic
 from .vision import grid_b64, diff_b64, input_text, input_image_b64
 
@@ -362,7 +363,35 @@ When forming a plan in EXECUTE mode, your plan steps should be directly informed
 
 If your journal tells you HOW a mechanic works, your plan should USE that knowledge with specific expected outcomes. Don't just "go interact with the trigger" — say "activate the trigger 2 more times (I need 2 more state changes based on turn 12 observation)."
 
-A plan that ignores your journal entries is a BAD plan. Before finalizing a plan, check: does this plan use everything I've learned?"""
+A plan that ignores your journal entries is a BAD plan. Before finalizing a plan, check: does this plan use everything I've learned?
+
+SELF-READING LOG TOOLS:
+
+You have access to two tools that let you query your own game history:
+
+1. read_log(offset, limit): Read lines from your turn-by-turn log.
+   - offset: starting line number (1-based, default 1)
+   - limit: number of lines to return (default 100, max 200)
+   Use this to re-read earlier turns you may have forgotten.
+
+2. grep_log(pattern, context_lines): Search your log for a pattern.
+   - pattern: text or regex to search for
+   - context_lines: lines of context around each match (default 2)
+   Use this to find specific events, objects, or hypotheses from earlier turns.
+
+WHEN TO USE THESE TOOLS:
+- When you need to recall what happened in a specific earlier turn
+- When you want to find all turns where a specific object or color was involved
+- When checking if you already tested a particular hypothesis or action
+- When entering a new level and want to review mechanics from previous levels
+- When your notes are getting stale and you need to refresh your memory
+
+RULES:
+- Tool calls are FREE — they do not cost game actions.
+- You can make up to 3 tool calls per turn before your final JSON response.
+- Call tools BEFORE producing your final JSON output.
+- The log contains your observations, hypotheses, actions, and results from every prior turn.
+- Each turn is marked with === TURN N === ... === END TURN N === for easy searching."""
 
 
 def _action_label(action: GameAction) -> str:
@@ -445,11 +474,17 @@ class ToolUseAgent:
         # v5: tiered model routing
         self.model_calls: dict[str, int] = {"gpt-5.4": 0, "gpt-4o": 0}
 
+        # v5: self-reading log tools
+        self.run_log = RunLog()
+        self.total_tool_calls = 0
+        self._pending_log_entry: dict | None = None
+
     def run(self) -> None:
         timer = time.time()
         logger.info("=" * 60)
         logger.info(f"Bayesian Hypothesis Agent (v5) on {self.game_id}")
         logger.info("=" * 60)
+        self.run_log.write_header(self.game_id, self.MAX_ACTIONS)
 
         frame = self._step(GameAction.RESET)
         self.current_grid = frame.frame[-1] if frame.frame else []
@@ -461,6 +496,7 @@ class ToolUseAgent:
         available = frame.available_actions or [1, 2, 3, 4]
         self.probe_facts = self._auto_probe(frame, available)
         logger.info(f"[probe] {self.probe_facts}")
+        self.run_log.write_probe(self.probe_facts)
 
         # Main loop
         while self.action_counter < self.MAX_ACTIONS:
@@ -471,6 +507,7 @@ class ToolUseAgent:
             if frame.state == GameState.GAME_OVER:
                 self.total_deaths += 1
                 logger.info(f"DIED #{self.total_deaths}")
+                self.run_log.write_event("DEATH", f"Death #{self.total_deaths}")
                 self.recent_actions.append("DIED")
                 frame = self._step(GameAction.RESET)
                 self.action_counter += 1
@@ -570,10 +607,12 @@ class ToolUseAgent:
                 if frame.levels_completed > score_before:
                     batch_clean = False
                     logger.info(f"[level-up] Level {frame.levels_completed}! Re-probing new layout.")
+                    self.run_log.write_event("LEVEL_UP", f"Level {frame.levels_completed}")
                     self._promote_high_probability_hypotheses()
                     avail = frame.available_actions or [1, 2, 3, 4]
                     self.probe_facts = self._auto_probe(frame, avail)
                     logger.info(f"[probe] {self.probe_facts}")
+                    self.run_log.write_probe(self.probe_facts)
                     self.hypothesis = ""
                     self.notes = ""
                     self.falsified = []
@@ -625,18 +664,36 @@ class ToolUseAgent:
                 self._repeat_actions = None
                 self._repeat_count = 0
 
+            # Finalize pending run-log entry with action results
+            if self._pending_log_entry is not None:
+                n_actions = len(self._pending_log_entry.get("actions_taken", []))
+                self._pending_log_entry["action_results"] = list(
+                    self.recent_actions[-n_actions:]
+                ) if n_actions else []
+                self.run_log.write_turn(**self._pending_log_entry)
+                self._pending_log_entry = None
+
         elapsed = round(time.time() - timer, 2)
         logger.info("=" * 60)
         logger.info(
             f"FINISHED: actions={self.action_counter} state={frame.state.name} "
             f"score={frame.levels_completed} deaths={self.total_deaths} "
-            f"llm_calls={self.llm_calls} models={self.model_calls} time={elapsed}s"
+            f"llm_calls={self.llm_calls} tool_calls={self.total_tool_calls} "
+            f"models={self.model_calls} time={elapsed}s"
         )
         logger.info(f"Hypothesis: {self.hypothesis}")
         logger.info(f"Notes: {self.notes}")
         if self.verified_rules:
             logger.info(f"Verified rules: {self.verified_rules}")
         logger.info("=" * 60)
+
+        # Flush agent-readable log to disk
+        log_dir = os.path.join(os.path.dirname(__file__), "..", "logs")
+        if os.path.isdir(log_dir):
+            agent_log_path = os.path.join(log_dir, f"{self.game_id}_agent.log")
+            self.run_log.flush_to_disk(agent_log_path)
+            logger.info(f"Agent log written to {agent_log_path}")
+
         self._close()
 
     def _get_nearby_object_journal(self, symbolic_state: dict) -> str:
@@ -933,6 +990,144 @@ class ToolUseAgent:
                 chat_content.append(item)
         return chat_content
 
+    def _dispatch_tool(self, name: str, args: dict) -> str:
+        """Execute a log tool call and return the result string."""
+        if name == "read_log":
+            return self.run_log.read_lines(
+                offset=args.get("offset", 1),
+                limit=min(args.get("limit", 100), 200),
+            )
+        elif name == "grep_log":
+            return self.run_log.grep(
+                pattern=args["pattern"],
+                context_lines=args.get("context_lines", 2),
+            )
+        return f"Unknown tool: {name}"
+
+    def _call_with_tools(self, content: list[dict], model: str,
+                         is_large_change: bool) -> str:
+        """Make an API call with tool support. Returns the final text response.
+
+        Handles up to 3 rounds of tool calls before extracting the text output.
+        Works with both the Responses API (gpt-5.4) and Chat Completions (gpt-4o).
+        """
+        MAX_TOOL_ROUNDS = 3
+        tool_calls_made = 0
+
+        if model == "gpt-5.4":
+            create_kwargs = {
+                "model": "gpt-5.4",
+                "input": [{"role": "user", "content": content}],
+                "tools": RESPONSES_TOOLS,
+                "temperature": 0.2,
+                "max_output_tokens": 5000 if is_large_change else 4096,
+                "prompt_cache_retention": "24h",
+            }
+            response = self.client.responses.create(**create_kwargs)
+
+            # Log prompt cache hit rate
+            if hasattr(response, 'usage') and response.usage:
+                usage = response.usage
+                prompt_tok = getattr(usage, 'prompt_tokens', 0)
+                cached_tok = 0
+                details = getattr(usage, 'prompt_tokens_details', None)
+                if details:
+                    cached_tok = getattr(details, 'cached_tokens', 0)
+                pct = cached_tok * 100 // max(prompt_tok, 1)
+                logger.info(f"[cache] prompt={prompt_tok} cached={cached_tok} ({pct}%)")
+
+            # Tool call loop
+            while tool_calls_made < MAX_TOOL_ROUNDS:
+                func_calls = [
+                    item for item in (response.output or [])
+                    if getattr(item, 'type', None) == "function_call"
+                ]
+                if not func_calls:
+                    break
+
+                tool_results = []
+                for fc in func_calls:
+                    args = json.loads(fc.arguments)
+                    result = self._dispatch_tool(fc.name, args)
+                    logger.info(
+                        f"[tool] {fc.name}({args}) -> {len(result)} chars"
+                    )
+                    tool_results.append({
+                        "type": "function_call_output",
+                        "call_id": fc.call_id,
+                        "output": result,
+                    })
+                    tool_calls_made += 1
+
+                response = self.client.responses.create(
+                    model="gpt-5.4",
+                    previous_response_id=response.id,
+                    input=tool_results,
+                    tools=RESPONSES_TOOLS,
+                    temperature=0.2,
+                    max_output_tokens=5000 if is_large_change else 4096,
+                )
+
+            raw = response.output_text or ""
+            if not raw and hasattr(response, 'output'):
+                for item in (response.output or []):
+                    if hasattr(item, 'content'):
+                        for block in (item.content or []):
+                            if hasattr(block, 'text') and block.text:
+                                raw = block.text
+                                break
+                    if raw:
+                        break
+        else:
+            # gpt-4o: Chat Completions API
+            chat_content = self._convert_to_chat_format(content)
+            messages: list[dict] = [{"role": "user", "content": chat_content}]
+            create_kwargs = {
+                "model": "gpt-4o",
+                "messages": messages,
+                "tools": CHAT_TOOLS,
+                "temperature": 0.2,
+                "max_tokens": 4096,
+            }
+            response = self.client.chat.completions.create(**create_kwargs)
+            msg = response.choices[0].message
+
+            # Tool call loop
+            while msg.tool_calls and tool_calls_made < MAX_TOOL_ROUNDS:
+                messages.append(msg)
+                for tc in msg.tool_calls:
+                    args = json.loads(tc.function.arguments)
+                    result = self._dispatch_tool(tc.function.name, args)
+                    logger.info(
+                        f"[tool] {tc.function.name}({args}) -> {len(result)} chars"
+                    )
+                    messages.append({
+                        "role": "tool",
+                        "tool_call_id": tc.id,
+                        "content": result,
+                    })
+                    tool_calls_made += 1
+
+                response = self.client.chat.completions.create(
+                    model="gpt-4o",
+                    messages=messages,
+                    tools=CHAT_TOOLS,
+                    temperature=0.2,
+                    max_tokens=4096,
+                )
+                msg = response.choices[0].message
+
+            raw = msg.content or ""
+
+        self.total_tool_calls += tool_calls_made
+        if tool_calls_made > 0:
+            logger.info(f"[tools] {tool_calls_made} tool call(s) this turn")
+
+        if not raw:
+            raw = "{}"
+        logger.debug(f"[raw-response] {raw[:500]}")
+        return raw
+
     def _think_and_act(self, frame: FrameData) -> list[GameAction]:
         self.llm_calls += 1
 
@@ -1216,52 +1411,7 @@ class ToolUseAgent:
         logger.info(f"[model] {model}")
 
         try:
-            if model == "gpt-5.4":
-                create_kwargs = {
-                    "model": "gpt-5.4",
-                    "input": [{"role": "user", "content": content}],
-                    "temperature": 0.2,
-                    "max_output_tokens": 5000 if is_large_change else 4096,
-                    "prompt_cache_retention": "24h",
-                }
-                response = self.client.responses.create(**create_kwargs)
-
-                # Log prompt cache hit rate
-                if hasattr(response, 'usage') and response.usage:
-                    usage = response.usage
-                    prompt_tok = getattr(usage, 'prompt_tokens', 0)
-                    cached_tok = 0
-                    details = getattr(usage, 'prompt_tokens_details', None)
-                    if details:
-                        cached_tok = getattr(details, 'cached_tokens', 0)
-                    pct = cached_tok * 100 // max(prompt_tok, 1)
-                    logger.info(f"[cache] prompt={prompt_tok} cached={cached_tok} ({pct}%)")
-
-                raw = response.output_text or ""
-                if not raw and hasattr(response, 'output'):
-                    for item in (response.output or []):
-                        if hasattr(item, 'content'):
-                            for block in (item.content or []):
-                                if hasattr(block, 'text') and block.text:
-                                    raw = block.text
-                                    break
-                        if raw:
-                            break
-            else:
-                # gpt-4o: Chat Completions API
-                chat_content = self._convert_to_chat_format(content)
-                create_kwargs = {
-                    "model": "gpt-4o",
-                    "messages": [{"role": "user", "content": chat_content}],
-                    "temperature": 0.2,
-                    "max_tokens": 4096,
-                }
-                response = self.client.chat.completions.create(**create_kwargs)
-                raw = response.choices[0].message.content or ""
-
-            if not raw:
-                raw = "{}"
-            logger.debug(f"[raw-response] {raw[:500]}")
+            raw = self._call_with_tools(content, model, is_large_change)
         except Exception as e:
             logger.warning(f"API error ({model}): {e}")
             time.sleep(2)
@@ -1496,6 +1646,23 @@ class ToolUseAgent:
             logger.info(f"[fallback] No valid actions from LLM, using {fallback.name}")
 
         logger.info(f"[actions] {[_action_label(a) for a in actions]}")
+
+        # Store pending log entry (finalized in run() after action execution)
+        self._pending_log_entry = {
+            "turn": self.llm_calls,
+            "action_count": self.action_counter,
+            "score": frame.levels_completed,
+            "mode": mode_str,
+            "goal": self.current_goal,
+            "plan_step": current_step_desc,
+            "observation": obs,
+            "hypotheses": self.hypothesis,
+            "actions_taken": [_action_label(a) for a in actions],
+            "action_results": [],  # filled by run() after execution
+            "interactions": new_interactions,
+            "notes": notes,
+        }
+
         return actions
 
     def _resolve_actions(

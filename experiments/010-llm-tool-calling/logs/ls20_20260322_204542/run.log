@@ -1,0 +1,7 @@
+2026-03-22 20:45:42,214 | INFO | Game: ls20 (ls20)
+2026-03-22 20:45:42,214 | INFO | Model: gpt-5.4
+2026-03-22 20:45:42,214 | INFO | Max actions: 500
+2026-03-22 20:45:42,214 | INFO | Logs: /Users/Alphastar/Documents/Code/Winter_2026/mandarins/experiments/arc-agi-setup/arc_agi_repo_collab/arc/experiments/010-llm-tool-calling/logs/ls20_20260322_204542
+2026-03-22 20:45:42,379 | INFO | Scorecard: 922bae87-2479-4bb2-97c6-60100b2db9aa
+2026-03-22 20:45:42,381 | INFO | using Codex CLI (native, no Docker)
+2026-03-22 20:45:42,381 | INFO | Analyzer: CodexAgent (model=gpt-5.4, plan_size=10)

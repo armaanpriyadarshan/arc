@@ -31,15 +31,18 @@ import traceback
 from datetime import datetime
 from pathlib import Path
 
-import numpy as np
-from dotenv import load_dotenv
-
 # ---------------------------------------------------------------------------
 # Paths and env
 # ---------------------------------------------------------------------------
 
 _HERE = Path(__file__).resolve().parent
 _PROJECT_ROOT = _HERE.parent.parent
+
+# Add RGB-Agent to sys.path so rgb_agent package is importable
+sys.path.insert(0, str(_HERE / "RGB-Agent"))
+
+import numpy as np
+from dotenv import load_dotenv
 
 load_dotenv(_HERE / ".env")
 load_dotenv(_PROJECT_ROOT / ".env")
