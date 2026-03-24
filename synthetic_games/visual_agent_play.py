@@ -186,9 +186,8 @@ def _run_standalone(args, pygame):
     except ImportError:
         pass
 
-    # Enable logging — console + file in a logs/ dir next to the agent source
+    # Enable console logging — file logging is handled by the agent internally
     import logging
-    from datetime import datetime
 
     fmt = logging.Formatter("%(asctime)s | %(levelname)s | %(message)s",
                             datefmt="%H:%M:%S")
@@ -199,22 +198,6 @@ def _run_standalone(args, pygame):
     sh.setLevel(logging.INFO)
     sh.setFormatter(fmt)
     root.addHandler(sh)
-
-    # File handler: logs/ folder next to the agent .py file
-    agent_src = args.agent.split(":")[0]  # e.g. "experiments/.../agent.py"
-    agent_dir = os.path.dirname(os.path.join(_HERE, "..", agent_src))
-    logs_dir = os.path.join(agent_dir, "logs")
-    os.makedirs(logs_dir, exist_ok=True)
-    ts = datetime.now().strftime("%Y%m%d_%H%M%S")
-    log_file = os.path.join(logs_dir, f"{args.game}_{ts}.log")
-
-    fh = logging.FileHandler(log_file, mode="w")
-    fh.setLevel(logging.DEBUG)
-    fh.setFormatter(fmt)
-    fh.stream.reconfigure(line_buffering=True)
-    root.addHandler(fh)
-
-    logging.info(f"Logging to {log_file}")
 
     agent_cls = _load_custom_agent(args.agent)
 

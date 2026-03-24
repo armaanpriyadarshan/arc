@@ -18,9 +18,11 @@ from openai import OpenAI
 
 from .run_log import RunLog, RESPONSES_TOOLS, CHAT_TOOLS
 from .symbolic import grid_to_symbolic, diff_symbolic
-from .vision import grid_b64, diff_b64, input_text, input_image_b64
+from .vision import (grid_b64, diff_b64, input_text, input_image_b64,
+                     grid_to_image, side_by_side)
 
 logger = logging.getLogger(__name__)
+vision_logger = logging.getLogger("agents.vision")
 
 SYSTEM_PROMPT = """You are playing an unknown turn-based game on a 64x64 grid. Each cell is an integer 0-15 (colors).
 Your score (levels_completed) increases when you complete a level. GAME_OVER means you failed.
@@ -31,7 +33,7 @@ AVAILABLE ACTIONS:
 - ACTION3: Simple action (typically mapped to LEFT)
 - ACTION4: Simple action (typically mapped to RIGHT)
 - ACTION5: Simple action (interact, select, rotate, attach/detach, etc.)
-- ACTION6: Complex action requiring x,y coordinates (0-63 range). This is a CLICK — different coordinates may have completely different effects. You must explore the coordinate space, not just test one spot.
+- ACTION6: Complex action requiring x,y coordinates (0-63 range). This is usually a CLICK — different coordinates may have completely different effects. You must explore the coordinate space, not just test one spot.
 - ACTION7: Simple action (undo)
 
 Not all actions may be available in every game. Check available_actions.
@@ -51,7 +53,10 @@ Each turn you receive:
 - Established facts from initial probing (what each action does)
 - Symbolic state of objects on the grid
 - What changed since the last action
-- An image (side-by-side with previous frame, red = changed cells)
+- An image (side-by-side with previous frame). On the CURRENT side, cells that
+  changed since the previous frame are outlined in bright red. These red outlines
+  are DIFF MARKERS, NOT game objects. Do not interpret them as colored entities,
+  pads, or structures — they only indicate which cells changed.
 - Your own notes from previous turns
 
 CORE PRIORS — use these as your default assumptions about the game world:
@@ -472,17 +477,87 @@ class ToolUseAgent:
         self._thread_pool = ThreadPoolExecutor(max_workers=2)
 
         # v5: tiered model routing
-        self.model_calls: dict[str, int] = {"gpt-5.4": 0, "gpt-4o": 0}
+        self.model_calls: dict[str, int] = {"gpt-5.4": 0}
 
         # v5: self-reading log tools
         self.run_log = RunLog()
         self.total_tool_calls = 0
         self._pending_log_entry: dict | None = None
 
+        # Vision log: LLM observation carried from _think_and_act to action loop
+        self._last_llm_observation: str = ""
+
+        # File handlers added by _setup_logging, cleaned up in _close
+        self._log_handlers: list[logging.Handler] = []
+
+    def _setup_logging(self) -> None:
+        """Wire up file-based logging into the run directory.
+
+        Adds file handlers to the ``agents`` logger (run.log) and the
+        ``agents.vision`` logger (vision.log).  Also ensures a console
+        handler exists so output is visible regardless of entry point.
+        """
+        fmt = logging.Formatter("%(asctime)s | %(levelname)s | %(message)s")
+
+        agents_logger = logging.getLogger("agents")
+        agents_logger.setLevel(logging.INFO)
+
+        # Console handler — only add if neither 'agents' nor root already has one
+        has_console = any(
+            isinstance(h, logging.StreamHandler) and not isinstance(h, logging.FileHandler)
+            for h in agents_logger.handlers + logging.getLogger().handlers
+        )
+        if not has_console:
+            import sys
+            sh = logging.StreamHandler(sys.stdout)
+            sh.setLevel(logging.INFO)
+            sh.setFormatter(fmt)
+            agents_logger.addHandler(sh)
+            self._log_handlers.append(sh)
+
+        # run.log file handler
+        run_log_path = os.path.join(self._run_dir, "run.log")
+        fh = logging.FileHandler(run_log_path, mode="w")
+        fh.setLevel(logging.DEBUG)
+        fh.setFormatter(fmt)
+        fh.stream.reconfigure(line_buffering=True)
+        agents_logger.addHandler(fh)
+        self._log_handlers.append(fh)
+
+        # vision.log file handler
+        vision_log_path = os.path.join(self._run_dir, "vision.log")
+        vl = logging.getLogger("agents.vision")
+        vl.setLevel(logging.INFO)
+        vl.propagate = False
+        vfh = logging.FileHandler(vision_log_path, mode="w")
+        vfh.setLevel(logging.INFO)
+        vfh.setFormatter(logging.Formatter("%(asctime)s | %(message)s"))
+        vfh.stream.reconfigure(line_buffering=True)
+        vl.addHandler(vfh)
+        self._log_handlers.append(vfh)
+
+        # Silence third-party noise
+        for name in ("openai", "httpx", "httpcore", "arc_agi", "urllib3"):
+            logging.getLogger(name).setLevel(logging.WARNING)
+
     def run(self) -> None:
         timer = time.time()
+
+        # --- Create per-run directory and set up all file logging ---
+        from datetime import datetime
+        log_dir = os.path.join(os.path.dirname(__file__), "logs")
+        os.makedirs(log_dir, exist_ok=True)
+        ts = datetime.now().strftime("%Y%m%d_%H%M%S")
+        self._run_dir = os.path.join(log_dir, f"{self.game_id}_{ts}")
+        os.makedirs(self._run_dir, exist_ok=True)
+        self._vision_frames_dir = os.path.join(self._run_dir, "frames")
+        os.makedirs(self._vision_frames_dir, exist_ok=True)
+
+        self._setup_logging()
+
         logger.info("=" * 60)
         logger.info(f"Bayesian Hypothesis Agent (v5) on {self.game_id}")
+        logger.info(f"Run directory: {self._run_dir}")
         logger.info("=" * 60)
         self.run_log.write_header(self.game_id, self.MAX_ACTIONS)
 
@@ -551,6 +626,13 @@ class ToolUseAgent:
 
                 label = _action_label(action)
                 result = f"{label}: {'BLOCKED' if blocked else f'{changes} cells changed'}"
+
+                # Vision log: describe what the agent sees after this action
+                self._log_vision(
+                    label, grid_before, changes, blocked, frame,
+                    llm_observation=self._last_llm_observation,
+                )
+                self._last_llm_observation = ""  # only attach to first action in batch
 
                 # Track blocked directions by region
                 if blocked:
@@ -688,9 +770,8 @@ class ToolUseAgent:
         logger.info("=" * 60)
 
         # Flush agent-readable log to disk
-        log_dir = os.path.join(os.path.dirname(__file__), "..", "logs")
-        if os.path.isdir(log_dir):
-            agent_log_path = os.path.join(log_dir, f"{self.game_id}_agent.log")
+        if hasattr(self, "_run_dir") and os.path.isdir(self._run_dir):
+            agent_log_path = os.path.join(self._run_dir, "agent.log")
             self.run_log.flush_to_disk(agent_log_path)
             logger.info(f"Agent log written to {agent_log_path}")
 
@@ -725,6 +806,86 @@ class ToolUseAgent:
             c = moving[0].get("center", {"row": 32, "col": 32})
             return f"({c['row']//10*10},{c['col']//10*10})"
         return "(?,?)"
+
+    def _log_vision(self, action_label: str, grid_before: list[list[int]],
+                    changes: int, blocked: bool, frame: FrameData,
+                    llm_observation: str = "") -> None:
+        """Log a structured description of what the agent sees after an action."""
+        symbolic = grid_to_symbolic(self.current_grid)
+        sym_changes = diff_symbolic(
+            grid_to_symbolic(grid_before) if changes > 0 else None,
+            symbolic,
+        )
+
+        lines = [
+            f"=== ACTION #{self.action_counter}: {action_label} ===",
+            f"Result: {'BLOCKED' if blocked else f'{changes} cells changed'}",
+            f"Score: {frame.levels_completed} | State: {frame.state.name} | "
+            f"Actions used: {self.action_counter}/{self.MAX_ACTIONS}",
+        ]
+
+        # Objects visible
+        objects = symbolic.get("objects", [])
+        if objects:
+            lines.append("")
+            lines.append("VISIBLE OBJECTS:")
+            for obj in objects:
+                center = obj.get("center", {})
+                r, c = center.get("row", "?"), center.get("col", "?")
+                color = obj.get("color", "?")
+                size = obj.get("size", "?")
+                shape = obj.get("shape", "")
+                shape_str = f", {shape}" if shape else ""
+                lines.append(f"  - {color} (size {size}{shape_str}) at ({r}, {c})")
+
+        # Changes
+        if sym_changes:
+            lines.append("")
+            lines.append("CHANGES:")
+            for sc in sym_changes[:10]:
+                ctype = sc.get("type", "?")
+                color = sc.get("color", "?")
+                if ctype == "changed":
+                    parts = []
+                    if "center" in sc:
+                        parts.append(f"center {sc['center']['was']}->{sc['center']['now']}")
+                    if "size" in sc:
+                        parts.append(f"size {sc['size']['was']}->{sc['size']['now']}")
+                    lines.append(f"  - {color} {ctype}: {', '.join(parts)}")
+                elif ctype == "background_size_changed":
+                    lines.append(f"  - bg {color}: size {sc['size']['was']}->{sc['size']['now']}")
+                else:
+                    lines.append(f"  - {color}: {ctype}")
+
+        # Spatial relations
+        relations = symbolic.get("relations", [])
+        if relations:
+            lines.append("")
+            lines.append("SPATIAL RELATIONS:")
+            for rel in relations[:8]:
+                if isinstance(rel, dict):
+                    lines.append(f"  - {rel.get('a', '?')} {rel.get('type', '?')} {rel.get('b', '?')}")
+                else:
+                    lines.append(f"  - {rel}")
+
+        # LLM observation (when available)
+        if llm_observation:
+            lines.append("")
+            lines.append(f"LLM OBSERVATION: {llm_observation}")
+
+        lines.append("")
+        vision_logger.info("\n".join(lines))
+
+        # Save diff PNG to frames subfolder
+        if hasattr(self, "_vision_frames_dir"):
+            safe_label = action_label.replace("(", "_").replace(")", "").replace(",", "_")
+            filename = f"action_{self.action_counter:03d}_{safe_label}.png"
+            filepath = os.path.join(self._vision_frames_dir, filename)
+            if changes > 0:
+                img = side_by_side(grid_before, self.current_grid)
+            else:
+                img = grid_to_image(self.current_grid)
+            img.save(filepath, format="PNG", optimize=True)
 
     def _add_rule(self, rule: str) -> None:
         import re
@@ -959,19 +1120,7 @@ class ToolUseAgent:
 
     def _choose_model(self, is_large_change: bool, reflection_prompt: str,
                       stale_warning: str, diversity_nudge: str) -> str:
-        """Route to gpt-4o for routine EXECUTE turns, GPT-5.4 otherwise."""
-        in_execute = (
-            self.current_plan
-            and isinstance(self.current_plan, dict)
-            and self.current_plan.get("mode", "").lower() == "execute"
-        )
-        if (in_execute
-                and not is_large_change
-                and not reflection_prompt
-                and not stale_warning
-                and not diversity_nudge
-                and self.action_counter >= 5):
-            return "gpt-4o"
+        """Always use GPT-5.4 for best spatial reasoning."""
         return "gpt-5.4"
 
     @staticmethod
@@ -1443,6 +1592,7 @@ class ToolUseAgent:
                     )
 
         obs = data.get("observation", "")
+        self._last_llm_observation = obs
         hypotheses = data.get("hypotheses", [])
         notes = data.get("notes", "")
 
@@ -1771,6 +1921,16 @@ class ToolUseAgent:
         # v5: shut down thread pool
         if self._thread_pool:
             self._thread_pool.shutdown(wait=False)
+
+        # Remove file handlers we added so they don't accumulate
+        agents_logger = logging.getLogger("agents")
+        vision_log = logging.getLogger("agents.vision")
+        for h in self._log_handlers:
+            agents_logger.removeHandler(h)
+            vision_log.removeHandler(h)
+            h.close()
+        self._log_handlers.clear()
+
         if not self.scorecard_id or not self.arcade:
             return
         scorecard = self.arcade.close_scorecard(self.scorecard_id)

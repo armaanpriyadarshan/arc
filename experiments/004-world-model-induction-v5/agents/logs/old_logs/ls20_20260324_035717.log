@@ -1,0 +1,28 @@
+03:57:17 | INFO | Logging to /Users/Alphastar/Documents/Code/Winter_2026/mandarins/experiments/arc-agi-setup/arc_agi_repo_collab/arc/synthetic_games/../experiments/004-world-model-induction-v5/agents/logs/ls20_20260324_035717.log
+03:57:19 | INFO | Successfully fetched 3 environment(s) from API
+03:57:19 | INFO | Created new scorecard: 556ab811-d3f3-4dfb-b752-8d5ad3067115
+03:57:19 | INFO | Successfully fetched metadata for game ls20
+03:57:19 | INFO | Successfully loaded game class Ls20 from environment_files/ls20/9607627b/ls20.py
+03:57:19 | INFO | ============================================================
+03:57:19 | INFO | Bayesian Hypothesis Agent (v5) on ls20
+03:57:19 | INFO | ============================================================
+03:57:20 | INFO | [probe] ACTION1: 52 cells changed
+  orange: center {'row': 45, 'col': 36}->{'row': 40, 'col': 36}
+  blue: center {'row': 48, 'col': 36}->{'row': 43, 'col': 36}
+  yellow: center {'row': 61, 'col': 33}->{'row': 61, 'col': 34}, size 84->82
+ACTION2: 52 cells changed
+  dark_gray: size 2->4
+  orange: center {'row': 40, 'col': 36}->{'row': 45, 'col': 36}
+  blue: center {'row': 43, 'col': 36}->{'row': 48, 'col': 36}
+  yellow: size 82->80
+ACTION3: 52 cells changed
+  dark_gray: center {'row': 61, 'col': 13}->{'row': 61, 'col': 14}, size 4->6
+  orange: center {'row': 45, 'col': 36}->{'row': 45, 'col': 31}
+  blue: center {'row': 48, 'col': 36}->{'row': 48, 'col': 31}
+  yellow: center {'row': 61, 'col': 34}->{'row': 61, 'col': 35}, size 80->78
+ACTION4: 52 cells changed
+  dark_gray: size 6->8
+  orange: center {'row': 45, 'col': 31}->{'row': 45, 'col': 36}
+  blue: center {'row': 48, 'col': 31}->{'row': 48, 'col': 36}
+  yellow: size 78->76
+03:57:20 | INFO | [model] gpt-5.4
