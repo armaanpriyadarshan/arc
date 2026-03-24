@@ -479,6 +479,15 @@ def _grid_to_symbolic_impl(grid: Grid, min_size: int = 2) -> dict:
                 "_cells": frozenset(cells),
             })
 
+    # --- Suppress background-color fragments ---
+    # If any connected component of a color exceeds the background threshold,
+    # smaller fragments of that same color are almost certainly floor/corridor
+    # pieces split by the player or walls — not meaningful foreground objects.
+    bg_colors = {obj["color_id"] for obj in objects if obj["shape"] == "background"}
+    for obj in objects:
+        if obj["shape"] != "background" and obj["color_id"] in bg_colors:
+            obj["shape"] = "background"
+
     # --- Enhance foreground objects (Steps 2-6) ---
     for obj in objects:
         if obj["shape"] == "background":
