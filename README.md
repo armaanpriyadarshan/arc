@@ -62,20 +62,20 @@ Each experiment is a complete, self-contained folder with its own `run.py`, `pyp
 
 ## Experiment Timeline
 
-| # | Experiment | Key Idea | Best Score |
-|---|-----------|----------|-----------|
-| 001 | staged-explorer-v1 | Code-only perception | 0 |
-| 002 | redesigned-vlm | VLM with multiple approaches | 1 (once) |
-| 003 | observe-act-gpt54 | GPT-5.4 observe-act loop | 1 |
-| 004-v2 | world-model-induction | Auto-probe + hypotheses + symbolic state | 1 |
-| 004-v5 | performance-optimized | Tool calling + batch repeat + parallel ops | **1 (19 actions!)** |
-| 005 | program-synthesis | Optional code sandbox | 0 |
-| 006 | persistent-state | Auto-populated action log in sandbox | 0 |
-| 007 | dag-reasoning | 10-node DAG with structured outputs | 1 |
-| 008 | lightweight | Simple fast agent, low reasoning | 1 |
-| 009 | opal | New approach | 1 |
-| 010 | rgb-style | RGB-Agent port with GPT-5.4 | 0 |
-| 011 | claude-code | v5 logic with Claude Code CLI | TBD |
+| # | Experiment | Key Idea |
+|---|-----------|----------|
+| 001 | staged-explorer-v1 | Code-only perception |
+| 002 | redesigned-vlm | VLM with multiple approaches |
+| 003 | observe-act-gpt54 | GPT-5.4 observe-act loop |
+| 004-v2 | world-model-induction | Auto-probe + hypotheses + symbolic state |
+| 004-v5 | performance-optimized | Tool calling + batch repeat + parallel ops (level 1 in 19 actions) |
+| 005 | program-synthesis | Optional code sandbox |
+| 006 | persistent-state | Auto-populated action log in sandbox |
+| 007 | dag-reasoning | 10-node DAG with structured outputs |
+| 008 | lightweight | Simple fast agent, low reasoning |
+| 009 | opal | New approach |
+| 010 | rgb-style | RGB-Agent port with GPT-5.4 |
+| 011 | claude-code | v5 logic with Claude Code CLI |
 
 ## Models Used
 
@@ -110,6 +110,33 @@ uv run main.py --agent=guidedllm --game=ls20
 cd RGB-Agent
 cd docker/opencode-sandbox && bash build.sh && cd ../..
 uv run rgb-swarm --game ls20 --model openai/gpt-5.2 --max-actions 200
+```
+
+## Synthetic Games
+
+12 custom games in `synthetic_games/` for controlled testing. Same 64x64 grid, 16 colors, and ACTION1-7 interface as real ARC-AGI-3 games.
+
+| # | Game | Mechanics |
+|---|------|-----------|
+| 01 | Courier | Navigation, colored package delivery, locked doors, fuel management |
+| 02 | Wiring | Click-to-place wires, signal propagation, color mixing |
+| 03 | Alchemist | Ingredient collection, hidden recipe discovery, crafting |
+| 04 | Mirror Maze | Rotate mirrors to reflect colored beams to matching receptors |
+| 05 | Terraformer | Place terrain with chain reactions (lava+water=stone, grass spreads) |
+| 06 | Conductor | Toggle track switches to route trains to colored stations |
+| 07 | Architect | Place tetrominoes with gravity/rotation to fill a target silhouette |
+| 08 | Cipher | Deduce hidden transformation rules from input-output examples |
+| 09 | Ecosystem | Place species, simulate interactions to hit population targets |
+| 10 | Shapeshifter | Shift between forms with different abilities to solve gated puzzles |
+| 11 | Maze | Pure navigation (baseline) |
+| 12 | Maze2 | Navigation with dead-ends (baseline) |
+
+```bash
+# Watch an agent play visually
+uv run python synthetic_games/visual_agent_play.py --game courier --agent random --seed 0
+
+# Headless run across all games
+uv run python synthetic_games/play.py --game all --agent random --seed 42
 ```
 
 ## Key Findings
