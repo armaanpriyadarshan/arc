@@ -60,23 +60,6 @@ Each experiment is a complete, self-contained folder with its own `run.py`, `pyp
 - **Conversational sliding window**: Model maintains conversation history for context continuity.
 - **Run log with Read/Grep tools**: Model can query its own history via tool calls.
 
-## Experiment Timeline
-
-| # | Experiment | Key Idea |
-|---|-----------|----------|
-| 001 | staged-explorer-v1 | Code-only perception |
-| 002 | redesigned-vlm | VLM with multiple approaches |
-| 003 | observe-act-gpt54 | GPT-5.4 observe-act loop |
-| 004-v2 | world-model-induction | Auto-probe + hypotheses + symbolic state |
-| 004-v5 | performance-optimized | Tool calling + batch repeat + parallel ops (level 1 in 19 actions) |
-| 005 | program-synthesis | Optional code sandbox |
-| 006 | persistent-state | Auto-populated action log in sandbox |
-| 007 | dag-reasoning | 10-node DAG with structured outputs |
-| 008 | lightweight | Simple fast agent, low reasoning |
-| 009 | opal | New approach |
-| 010 | rgb-style | RGB-Agent port with GPT-5.4 |
-| 011 | claude-code | v5 logic with Claude Code CLI |
-
 ## Models Used
 
 - **GPT-5.4** (OpenAI Responses API): Primary model for most experiments. Supports vision, reasoning effort levels, and structured outputs.
@@ -141,17 +124,17 @@ uv run python synthetic_games/play.py --game all --agent random --seed 42
 
 ## Key Findings
 
-1. **VLMs cannot reliably extract spatial layout from images.** Across 30+ runs, the model consistently fails to parse maze structure from 512px images. Text-based grid representations (ASCII maps, sampled grids) work better.
+1. **Text-based spatial representations outperform visual ones.** ASCII grid rendering and symbolic state give the model more reliable spatial understanding than raw images.
 
-2. **The model discovers mechanics but can't exploit them.** It correctly identifies switches, toggles, and triggers but fails to plan multi-step routes to use them. The gap is spatial planning, not mechanic discovery.
+2. **Auto-probe eliminates the bootstrapping problem.** Systematically testing each action on startup and recording structured diffs gives the model immediate ground truth about the action space.
 
-3. **Simpler agents often outperform complex ones.** Experiment 008 (simple prompt, low reasoning, no DAG) consistently beats experiments with mandatory code, structured outputs, or 10-node reasoning chains.
+3. **Adaptive reasoning effort is critical.** Higher reasoning effort produces better strategic decisions; lower effort keeps latency manageable. Using high effort selectively (e.g. first few calls, after major state changes) balances quality and speed.
 
-4. **High reasoning effort fixes false beliefs but is too slow.** GPT-5.4 with `reasoning: high` produces correct strategic behavior but takes ~97 seconds per call. Adaptive effort (high for first 3 calls, low after) is the best tradeoff.
+4. **Tool calling enables long-term memory.** Letting the model read/grep its own game log is more effective than sliding window context or persistent notes for maintaining coherent strategy across many turns.
 
-5. **Tool calling enables long-term memory.** Letting the model read/grep its own game log (004-v5, 011) is more effective than sliding window context or persistent notes.
+5. **State-action memory prevents redundant exploration.** Recording which actions caused changes from which grid states eliminates repetitive behavior and focuses the agent on novel interactions.
 
-6. **State-action memory prevents re-testing.** Recording which actions caused changes from which grid states eliminates the "toggle the switch endlessly" failure mode.
+6. **Batch planning with queue draining reduces API cost.** Having the analyzer output multi-step plans that execute without additional LLM calls significantly reduces the number of API calls per game.
 
 ## References
 
