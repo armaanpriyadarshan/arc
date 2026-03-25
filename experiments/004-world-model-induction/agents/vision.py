@@ -54,7 +54,7 @@ def diff_highlight_image(before: Grid, after: Grid) -> Image.Image:
             if before[y][x] != after[y][x]:
                 x1, y1 = x * SCALE, y * SCALE
                 x2, y2 = x1 + SCALE - 1, y1 + SCALE - 1
-                draw.rectangle([x1, y1, x2, y2], outline=(255, 0, 0), width=2)
+                draw.rectangle([x1, y1, x2, y2], outline=(255, 0, 0), width=1)
     return img
 
 
