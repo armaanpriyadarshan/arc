@@ -96,6 +96,14 @@ Available actions: ACTION1-4 (moves), ACTION5 (interact), ACTION6 (click at x,y)
 Each action MUST be a JSON object: {{"action": "ACTION6", "x": <col>, "y": <row>}} for clicks, {{"action": "ACTION1"}} for moves.
 Plan 1-{plan_size} actions. Shorter plans (3-5 steps) are strongly preferred
 because the agent can re-evaluate sooner.
+
+CRITICAL INTERACTION RULE: In most grid games, you interact with objects by
+MOVING ONTO them (ACTION1-4), not by clicking (ACTION6) or using ACTION5.
+If you see an interesting object, try walking into it first before trying other actions.
+
+YOU MUST END YOUR RESPONSE WITH THE [ACTIONS] SECTION. If you omit it, the agent
+cannot take any actions and the turn is wasted. Always include [ACTIONS] even if
+you are uncertain — a best-guess plan is better than no plan.
 """
 
 
@@ -131,7 +139,7 @@ class ClaudeCodeAnalyzer:
             "--dangerously-skip-permissions",
             "-p", prompt,
             "--allowedTools", "Read,Grep,Bash",
-            "--max-turns", "10",
+            "--max-turns", "20",
             "--output-format", "text",
         ]
 
@@ -167,8 +175,11 @@ class ClaudeCodeAnalyzer:
                 return None
 
             logger.info(
-                "[claude-code] Got response (%d chars)", len(output),
+                "[claude-code] Got response (%d chars): %s",
+                len(output), output[:500],
             )
+            if result.stderr:
+                logger.info("[claude-code] stderr: %s", result.stderr.strip()[:300])
             return output
 
         except subprocess.TimeoutExpired:

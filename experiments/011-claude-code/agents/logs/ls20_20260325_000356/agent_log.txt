@@ -1,0 +1,48 @@
+=== GAME: ls20 | MAX_ACTIONS=200 ===
+
+=== PROBE RESULTS ===
+  ACTION1: 52 cells changed
+    orange: center {'row': 45, 'col': 36}->{'row': 40, 'col': 36}
+    blue: center {'row': 48, 'col': 36}->{'row': 43, 'col': 36}
+    yellow: center {'row': 61, 'col': 33}->{'row': 61, 'col': 34}, size 84->82
+    dark_gray: 
+  ACTION2: 52 cells changed
+    dark_gray: size 2->4
+    orange: center {'row': 40, 'col': 36}->{'row': 45, 'col': 36}
+    blue: center {'row': 43, 'col': 36}->{'row': 48, 'col': 36}
+    yellow: size 82->80
+    dark_gray: 
+  ACTION3: 52 cells changed
+    dark_gray: center {'row': 61, 'col': 13}->{'row': 61, 'col': 14}, size 4->6
+    orange: center {'row': 45, 'col': 36}->{'row': 45, 'col': 31}
+    blue: center {'row': 48, 'col': 36}->{'row': 48, 'col': 31}
+    yellow: center {'row': 61, 'col': 34}->{'row': 61, 'col': 35}, size 80->78
+    dark_gray: 
+  ACTION4: 52 cells changed
+    dark_gray: size 6->8
+    orange: center {'row': 45, 'col': 31}->{'row': 45, 'col': 36}
+    blue: center {'row': 48, 'col': 31}->{'row': 48, 'col': 36}
+    yellow: size 78->76
+    dark_gray:
+=== END PROBE ===
+
+*** STATE_SNAPSHOT: Score=0 | Actions=4/200 | Deaths=0
+Objects:
+  white (size 3, irregular) at (31, 21)
+  blue (size 4, square) at (59, 7)
+  red (size 4, square) at (61, 56)
+  red (size 4, square) at (61, 59)
+  red (size 4, square) at (61, 62)
+  blue (size 5, irregular) at (11, 36)
+  dark_gray (size 8, rectangle) at (61, 14)
+  orange (size 10, rectangle) at (45, 36)
+  blue (size 15, rectangle) at (48, 36)
+  blue (size 20, irregular) at (56, 4)
+  black (size 43, irregular) at (12, 35)
+  black (size 76, irregular) at (57, 5)
+  yellow (size 76, rectangle) at (61, 35)
+  black (size 112, irregular) at (61, 38)
+  black (size 208, rectangle) at (25, 1)
+  dark_gray (size 892, irregular) at (34, 35)
+ ***
+

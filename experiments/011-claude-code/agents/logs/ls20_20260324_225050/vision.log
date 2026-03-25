@@ -1,0 +1,1301 @@
+2026-03-24 22:52:12,419 | === ACTION #5: ACTION1 ===
+Result: 52 cells changed
+Score: 0 | State: NOT_FINISHED | Actions used: 5/200
+
+VISIBLE OBJECTS:
+  - white (size 3, irregular) at (31, 21)
+  - blue (size 4, square) at (59, 7)
+  - red (size 4, square) at (61, 56)
+  - red (size 4, square) at (61, 59)
+  - red (size 4, square) at (61, 62)
+  - blue (size 5, irregular) at (11, 36)
+  - orange (size 10, rectangle) at (40, 36)
+  - dark_gray (size 10, rectangle) at (61, 15)
+  - blue (size 15, rectangle) at (43, 36)
+  - blue (size 20, irregular) at (56, 4)
+  - black (size 43, irregular) at (12, 35)
+  - yellow (size 74, rectangle) at (61, 36)
+  - black (size 76, irregular) at (57, 5)
+  - black (size 112, irregular) at (61, 38)
+  - black (size 208, rectangle) at (25, 1)
+  - dark_gray (size 892, irregular) at (34, 35)
+
+CHANGES:
+  - dark_gray changed: center {'row': 61, 'col': 14}->{'row': 61, 'col': 15}, size 8->10
+  - orange changed: center {'row': 45, 'col': 36}->{'row': 40, 'col': 36}
+  - blue changed: center {'row': 48, 'col': 36}->{'row': 43, 'col': 36}
+  - yellow changed: center {'row': 61, 'col': 35}->{'row': 61, 'col': 36}, size 76->74
+  - dark_gray changed: 
+
+2026-03-24 22:52:12,657 | === ACTION #6: ACTION1 ===
+Result: 52 cells changed
+Score: 0 | State: NOT_FINISHED | Actions used: 6/200
+
+VISIBLE OBJECTS:
+  - white (size 3, irregular) at (31, 21)
+  - blue (size 4, square) at (59, 7)
+  - red (size 4, square) at (61, 56)
+  - red (size 4, square) at (61, 59)
+  - red (size 4, square) at (61, 62)
+  - blue (size 5, irregular) at (11, 36)
+  - orange (size 10, rectangle) at (35, 36)
+  - dark_gray (size 12, rectangle) at (61, 15)
+  - blue (size 15, rectangle) at (38, 36)
+  - blue (size 20, irregular) at (56, 4)
+  - black (size 43, irregular) at (12, 35)
+  - yellow (size 72, rectangle) at (61, 36)
+  - black (size 76, irregular) at (57, 5)
+  - black (size 112, irregular) at (61, 38)
+  - black (size 208, rectangle) at (25, 1)
+  - dark_gray (size 892, irregular) at (34, 35)
+
+CHANGES:
+  - orange changed: center {'row': 40, 'col': 36}->{'row': 35, 'col': 36}
+  - dark_gray changed: size 10->12
+  - blue changed: center {'row': 43, 'col': 36}->{'row': 38, 'col': 36}
+  - yellow changed: size 74->72
+  - dark_gray changed: 
+
+2026-03-24 22:52:12,917 | === ACTION #7: ACTION1 ===
+Result: 52 cells changed
+Score: 0 | State: NOT_FINISHED | Actions used: 7/200
+
+VISIBLE OBJECTS:
+  - white (size 3, irregular) at (31, 21)
+  - blue (size 4, square) at (59, 7)
+  - red (size 4, square) at (61, 56)
+  - red (size 4, square) at (61, 59)
+  - red (size 4, square) at (61, 62)
+  - blue (size 5, irregular) at (11, 36)
+  - orange (size 10, rectangle) at (30, 36)
+  - dark_gray (size 14, rectangle) at (61, 16)
+  - blue (size 15, rectangle) at (33, 36)
+  - blue (size 20, irregular) at (56, 4)
+  - black (size 43, irregular) at (12, 35)
+  - yellow (size 70, rectangle) at (61, 37)
+  - black (size 76, irregular) at (57, 5)
+  - black (size 112, irregular) at (61, 38)
+  - black (size 208, rectangle) at (25, 1)
+  - dark_gray (size 892, irregular) at (34, 35)
+
+CHANGES:
+  - orange changed: center {'row': 35, 'col': 36}->{'row': 30, 'col': 36}
+  - dark_gray changed: center {'row': 61, 'col': 15}->{'row': 61, 'col': 16}, size 12->14
+  - blue changed: center {'row': 38, 'col': 36}->{'row': 33, 'col': 36}
+  - yellow changed: center {'row': 61, 'col': 36}->{'row': 61, 'col': 37}, size 72->70
+  - dark_gray changed: 
+
+2026-03-24 22:52:13,163 | === ACTION #8: ACTION3 ===
+Result: BLOCKED
+Score: 0 | State: NOT_FINISHED | Actions used: 8/200
+
+VISIBLE OBJECTS:
+  - white (size 3, irregular) at (31, 21)
+  - blue (size 4, square) at (59, 7)
+  - red (size 4, square) at (61, 56)
+  - red (size 4, square) at (61, 59)
+  - red (size 4, square) at (61, 62)
+  - blue (size 5, irregular) at (11, 36)
+  - orange (size 10, rectangle) at (30, 36)
+  - blue (size 15, rectangle) at (33, 36)
+  - dark_gray (size 16, rectangle) at (61, 16)
+  - blue (size 20, irregular) at (56, 4)
+  - black (size 43, irregular) at (12, 35)
+  - yellow (size 68, rectangle) at (61, 37)
+  - black (size 76, irregular) at (57, 5)
+  - black (size 112, irregular) at (61, 38)
+  - black (size 208, rectangle) at (25, 1)
+  - dark_gray (size 892, irregular) at (34, 35)
+
+CHANGES:
+  - dark_gray changed: size 14->16
+  - yellow changed: size 70->68
+
+2026-03-24 22:52:13,299 | === ACTION #9: ACTION3 ===
+Result: BLOCKED
+Score: 0 | State: NOT_FINISHED | Actions used: 9/200
+
+VISIBLE OBJECTS:
+  - white (size 3, irregular) at (31, 21)
+  - blue (size 4, square) at (59, 7)
+  - red (size 4, square) at (61, 56)
+  - red (size 4, square) at (61, 59)
+  - red (size 4, square) at (61, 62)
+  - blue (size 5, irregular) at (11, 36)
+  - orange (size 10, rectangle) at (30, 36)
+  - blue (size 15, rectangle) at (33, 36)
+  - dark_gray (size 18, rectangle) at (61, 17)
+  - blue (size 20, irregular) at (56, 4)
+  - black (size 43, irregular) at (12, 35)
+  - yellow (size 66, rectangle) at (61, 38)
+  - black (size 76, irregular) at (57, 5)
+  - black (size 112, irregular) at (61, 38)
+  - black (size 208, rectangle) at (25, 1)
+  - dark_gray (size 892, irregular) at (34, 35)
+
+CHANGES:
+  - dark_gray changed: center {'row': 61, 'col': 16}->{'row': 61, 'col': 17}, size 16->18
+  - yellow changed: center {'row': 61, 'col': 37}->{'row': 61, 'col': 38}, size 68->66
+
+2026-03-24 22:54:04,325 | === ACTION #10: ACTION1 ===
+Result: 52 cells changed
+Score: 0 | State: NOT_FINISHED | Actions used: 10/200
+
+VISIBLE OBJECTS:
+  - white (size 3, irregular) at (31, 21)
+  - blue (size 4, square) at (59, 7)
+  - red (size 4, square) at (61, 56)
+  - red (size 4, square) at (61, 59)
+  - red (size 4, square) at (61, 62)
+  - blue (size 5, irregular) at (11, 36)
+  - orange (size 10, rectangle) at (25, 36)
+  - blue (size 15, rectangle) at (28, 36)
+  - blue (size 20, irregular) at (56, 4)
+  - dark_gray (size 20, rectangle) at (61, 17)
+  - black (size 43, irregular) at (12, 35)
+  - yellow (size 64, rectangle) at (61, 38)
+  - dark_gray (size 72, sparse_cluster) at (16, 36)
+  - black (size 76, irregular) at (57, 5)
+  - black (size 112, irregular) at (61, 38)
+  - black (size 208, rectangle) at (25, 1)
+  - dark_gray (size 820, irregular) at (36, 35)
+
+CHANGES:
+  - orange changed: center {'row': 30, 'col': 36}->{'row': 25, 'col': 36}
+  - blue changed: center {'row': 33, 'col': 36}->{'row': 28, 'col': 36}
+  - dark_gray changed: size 18->20
+  - yellow changed: size 66->64
+  - dark_gray changed: center {'row': 34, 'col': 35}->{'row': 36, 'col': 35}, size 892->820
+  - dark_gray: appeared
+
+2026-03-24 22:54:04,457 | === ACTION #11: ACTION3 ===
+Result: 52 cells changed
+Score: 0 | State: NOT_FINISHED | Actions used: 11/200
+
+VISIBLE OBJECTS:
+  - white (size 3, irregular) at (31, 21)
+  - blue (size 4, square) at (59, 7)
+  - red (size 4, square) at (61, 56)
+  - red (size 4, square) at (61, 59)
+  - red (size 4, square) at (61, 62)
+  - blue (size 5, irregular) at (11, 36)
+  - orange (size 10, rectangle) at (25, 31)
+  - blue (size 15, rectangle) at (28, 31)
+  - blue (size 20, irregular) at (56, 4)
+  - dark_gray (size 22, rectangle) at (61, 18)
+  - black (size 43, irregular) at (12, 35)
+  - yellow (size 62, rectangle) at (61, 39)
+  - black (size 76, irregular) at (57, 5)
+  - black (size 112, irregular) at (61, 38)
+  - black (size 208, rectangle) at (25, 1)
+  - dark_gray (size 892, irregular) at (35, 35)
+
+CHANGES:
+  - orange changed: center {'row': 25, 'col': 36}->{'row': 25, 'col': 31}
+  - blue changed: center {'row': 28, 'col': 36}->{'row': 28, 'col': 31}
+  - dark_gray changed: center {'row': 61, 'col': 17}->{'row': 61, 'col': 18}, size 20->22
+  - yellow changed: center {'row': 61, 'col': 38}->{'row': 61, 'col': 39}, size 64->62
+  - dark_gray: disappeared
+  - dark_gray changed: center {'row': 36, 'col': 35}->{'row': 35, 'col': 35}, size 820->892
+
+2026-03-24 22:54:04,724 | === ACTION #12: ACTION3 ===
+Result: 52 cells changed
+Score: 0 | State: NOT_FINISHED | Actions used: 12/200
+
+VISIBLE OBJECTS:
+  - white (size 3, irregular) at (31, 21)
+  - blue (size 4, square) at (59, 7)
+  - red (size 4, square) at (61, 56)
+  - red (size 4, square) at (61, 59)
+  - red (size 4, square) at (61, 62)
+  - blue (size 5, irregular) at (11, 36)
+  - orange (size 10, rectangle) at (25, 26)
+  - blue (size 15, rectangle) at (28, 26)
+  - blue (size 20, irregular) at (56, 4)
+  - dark_gray (size 24, rectangle) at (61, 18)
+  - black (size 43, irregular) at (12, 35)
+  - yellow (size 60, rectangle) at (61, 39)
+  - black (size 76, irregular) at (57, 5)
+  - black (size 112, irregular) at (61, 38)
+  - black (size 208, rectangle) at (25, 1)
+  - dark_gray (size 892, irregular) at (35, 35)
+
+CHANGES:
+  - orange changed: center {'row': 25, 'col': 31}->{'row': 25, 'col': 26}
+  - blue changed: center {'row': 28, 'col': 31}->{'row': 28, 'col': 26}
+  - dark_gray changed: size 22->24
+  - yellow changed: size 62->60
+  - dark_gray changed: 
+
+2026-03-24 22:54:04,987 | === ACTION #13: ACTION3 ===
+Result: 52 cells changed
+Score: 0 | State: NOT_FINISHED | Actions used: 13/200
+
+VISIBLE OBJECTS:
+  - white (size 3, irregular) at (31, 21)
+  - blue (size 4, square) at (59, 7)
+  - red (size 4, square) at (61, 56)
+  - red (size 4, square) at (61, 59)
+  - red (size 4, square) at (61, 62)
+  - blue (size 5, irregular) at (11, 36)
+  - orange (size 10, rectangle) at (25, 21)
+  - blue (size 15, rectangle) at (28, 21)
+  - blue (size 20, irregular) at (56, 4)
+  - dark_gray (size 26, rectangle) at (61, 19)
+  - black (size 43, irregular) at (12, 35)
+  - yellow (size 58, rectangle) at (61, 40)
+  - black (size 76, irregular) at (57, 5)
+  - black (size 112, irregular) at (61, 38)
+  - black (size 208, rectangle) at (25, 1)
+  - dark_gray (size 892, irregular) at (35, 35)
+
+CHANGES:
+  - orange changed: center {'row': 25, 'col': 26}->{'row': 25, 'col': 21}
+  - blue changed: center {'row': 28, 'col': 26}->{'row': 28, 'col': 21}
+  - dark_gray changed: center {'row': 61, 'col': 18}->{'row': 61, 'col': 19}, size 24->26
+  - yellow changed: center {'row': 61, 'col': 39}->{'row': 61, 'col': 40}, size 60->58
+  - dark_gray changed: 
+
+2026-03-24 22:56:04,432 | === ACTION #14: ACTION2 ===
+Result: 58 cells changed
+Score: 0 | State: NOT_FINISHED | Actions used: 14/200
+
+VISIBLE OBJECTS:
+  - blue (size 4, square) at (59, 3)
+  - red (size 4, square) at (61, 56)
+  - red (size 4, square) at (61, 59)
+  - red (size 4, square) at (61, 62)
+  - blue (size 5, irregular) at (11, 36)
+  - orange (size 10, rectangle) at (30, 21)
+  - blue (size 15, rectangle) at (33, 21)
+  - blue (size 20, irregular) at (56, 6)
+  - dark_gray (size 26, rectangle) at (61, 19)
+  - black (size 43, irregular) at (12, 35)
+  - yellow (size 58, rectangle) at (61, 40)
+  - black (size 76, irregular) at (57, 5)
+  - black (size 112, irregular) at (61, 38)
+  - black (size 208, rectangle) at (25, 1)
+  - dark_gray (size 897, irregular) at (34, 35)
+
+CHANGES:
+  - white: disappeared
+  - blue changed: center {'row': 59, 'col': 7}->{'row': 59, 'col': 3}
+  - orange changed: center {'row': 25, 'col': 21}->{'row': 30, 'col': 21}
+  - blue changed: center {'row': 28, 'col': 21}->{'row': 33, 'col': 21}
+  - blue changed: center {'row': 56, 'col': 4}->{'row': 56, 'col': 6}
+  - dark_gray changed: center {'row': 35, 'col': 35}->{'row': 34, 'col': 35}, size 892->897
+
+2026-03-24 22:56:04,560 | === ACTION #15: ACTION5 ===
+Result: 0 cells changed
+Score: 0 | State: NOT_FINISHED | Actions used: 15/200
+
+VISIBLE OBJECTS:
+  - blue (size 4, square) at (59, 3)
+  - red (size 4, square) at (61, 56)
+  - red (size 4, square) at (61, 59)
+  - red (size 4, square) at (61, 62)
+  - blue (size 5, irregular) at (11, 36)
+  - orange (size 10, rectangle) at (30, 21)
+  - blue (size 15, rectangle) at (33, 21)
+  - blue (size 20, irregular) at (56, 6)
+  - dark_gray (size 26, rectangle) at (61, 19)
+  - black (size 43, irregular) at (12, 35)
+  - yellow (size 58, rectangle) at (61, 40)
+  - black (size 76, irregular) at (57, 5)
+  - black (size 112, irregular) at (61, 38)
+  - black (size 208, rectangle) at (25, 1)
+  - dark_gray (size 897, irregular) at (34, 35)
+
+2026-03-24 22:56:04,793 | === ACTION #16: ACTION2 ===
+Result: 52 cells changed
+Score: 0 | State: NOT_FINISHED | Actions used: 16/200
+
+VISIBLE OBJECTS:
+  - white (size 3, irregular) at (31, 21)
+  - blue (size 4, square) at (59, 3)
+  - red (size 4, square) at (61, 56)
+  - red (size 4, square) at (61, 59)
+  - red (size 4, square) at (61, 62)
+  - blue (size 5, irregular) at (11, 36)
+  - orange (size 10, rectangle) at (35, 21)
+  - blue (size 15, rectangle) at (38, 21)
+  - blue (size 20, irregular) at (56, 6)
+  - dark_gray (size 28, rectangle) at (61, 19)
+  - black (size 43, irregular) at (12, 35)
+  - yellow (size 56, rectangle) at (61, 40)
+  - black (size 76, irregular) at (57, 5)
+  - black (size 112, irregular) at (61, 38)
+  - black (size 208, rectangle) at (25, 1)
+  - dark_gray (size 892, irregular) at (34, 35)
+
+CHANGES:
+  - orange changed: center {'row': 30, 'col': 21}->{'row': 35, 'col': 21}
+  - blue changed: center {'row': 33, 'col': 21}->{'row': 38, 'col': 21}
+  - dark_gray changed: size 26->28
+  - yellow changed: size 58->56
+  - dark_gray changed: size 897->892
+  - white: appeared
+
+2026-03-24 22:58:21,897 | === ACTION #17: ACTION4 ===
+Result: 52 cells changed
+Score: 0 | State: NOT_FINISHED | Actions used: 17/200
+
+VISIBLE OBJECTS:
+  - white (size 3, irregular) at (31, 21)
+  - blue (size 4, square) at (59, 3)
+  - red (size 4, square) at (61, 56)
+  - red (size 4, square) at (61, 59)
+  - red (size 4, square) at (61, 62)
+  - blue (size 5, irregular) at (11, 36)
+  - orange (size 10, rectangle) at (35, 26)
+  - blue (size 15, rectangle) at (38, 26)
+  - blue (size 20, irregular) at (56, 6)
+  - dark_gray (size 30, rectangle) at (61, 20)
+  - black (size 43, irregular) at (12, 35)
+  - yellow (size 54, rectangle) at (61, 41)
+  - black (size 76, irregular) at (57, 5)
+  - black (size 112, irregular) at (61, 38)
+  - black (size 208, rectangle) at (25, 1)
+  - dark_gray (size 892, irregular) at (34, 35)
+
+CHANGES:
+  - orange changed: center {'row': 35, 'col': 21}->{'row': 35, 'col': 26}
+  - blue changed: center {'row': 38, 'col': 21}->{'row': 38, 'col': 26}
+  - dark_gray changed: center {'row': 61, 'col': 19}->{'row': 61, 'col': 20}, size 28->30
+  - yellow changed: center {'row': 61, 'col': 40}->{'row': 61, 'col': 41}, size 56->54
+  - dark_gray changed: 
+
+2026-03-24 22:58:22,149 | === ACTION #18: ACTION4 ===
+Result: BLOCKED
+Score: 0 | State: NOT_FINISHED | Actions used: 18/200
+
+VISIBLE OBJECTS:
+  - white (size 3, irregular) at (31, 21)
+  - blue (size 4, square) at (59, 3)
+  - red (size 4, square) at (61, 56)
+  - red (size 4, square) at (61, 59)
+  - red (size 4, square) at (61, 62)
+  - blue (size 5, irregular) at (11, 36)
+  - orange (size 10, rectangle) at (35, 26)
+  - blue (size 15, rectangle) at (38, 26)
+  - blue (size 20, irregular) at (56, 6)
+  - dark_gray (size 32, rectangle) at (61, 20)
+  - black (size 43, irregular) at (12, 35)
+  - yellow (size 52, rectangle) at (61, 41)
+  - black (size 76, irregular) at (57, 5)
+  - black (size 112, irregular) at (61, 38)
+  - black (size 208, rectangle) at (25, 1)
+  - dark_gray (size 892, irregular) at (34, 35)
+
+CHANGES:
+  - dark_gray changed: size 30->32
+  - yellow changed: size 54->52
+
+2026-03-24 22:58:22,417 | === ACTION #19: ACTION4 ===
+Result: BLOCKED
+Score: 0 | State: NOT_FINISHED | Actions used: 19/200
+
+VISIBLE OBJECTS:
+  - white (size 3, irregular) at (31, 21)
+  - blue (size 4, square) at (59, 3)
+  - red (size 4, square) at (61, 56)
+  - red (size 4, square) at (61, 59)
+  - red (size 4, square) at (61, 62)
+  - blue (size 5, irregular) at (11, 36)
+  - orange (size 10, rectangle) at (35, 26)
+  - blue (size 15, rectangle) at (38, 26)
+  - blue (size 20, irregular) at (56, 6)
+  - dark_gray (size 34, rectangle) at (61, 21)
+  - black (size 43, irregular) at (12, 35)
+  - yellow (size 50, rectangle) at (61, 42)
+  - black (size 76, irregular) at (57, 5)
+  - black (size 112, irregular) at (61, 38)
+  - black (size 208, rectangle) at (25, 1)
+  - dark_gray (size 892, irregular) at (34, 35)
+
+CHANGES:
+  - dark_gray changed: center {'row': 61, 'col': 20}->{'row': 61, 'col': 21}, size 32->34
+  - yellow changed: center {'row': 61, 'col': 41}->{'row': 61, 'col': 42}, size 52->50
+
+2026-03-24 22:58:22,669 | === ACTION #20: ACTION4 ===
+Result: BLOCKED
+Score: 0 | State: NOT_FINISHED | Actions used: 20/200
+
+VISIBLE OBJECTS:
+  - white (size 3, irregular) at (31, 21)
+  - blue (size 4, square) at (59, 3)
+  - red (size 4, square) at (61, 56)
+  - red (size 4, square) at (61, 59)
+  - red (size 4, square) at (61, 62)
+  - blue (size 5, irregular) at (11, 36)
+  - orange (size 10, rectangle) at (35, 26)
+  - blue (size 15, rectangle) at (38, 26)
+  - blue (size 20, irregular) at (56, 6)
+  - dark_gray (size 36, rectangle) at (61, 21)
+  - black (size 43, irregular) at (12, 35)
+  - yellow (size 48, rectangle) at (61, 42)
+  - black (size 76, irregular) at (57, 5)
+  - black (size 112, irregular) at (61, 38)
+  - black (size 208, rectangle) at (25, 1)
+  - dark_gray (size 892, irregular) at (34, 35)
+
+CHANGES:
+  - dark_gray changed: size 34->36
+  - yellow changed: size 50->48
+
+2026-03-24 23:00:31,572 | === ACTION #21: ACTION2 ===
+Result: BLOCKED
+Score: 0 | State: NOT_FINISHED | Actions used: 21/200
+
+VISIBLE OBJECTS:
+  - white (size 3, irregular) at (31, 21)
+  - blue (size 4, square) at (59, 3)
+  - red (size 4, square) at (61, 56)
+  - red (size 4, square) at (61, 59)
+  - red (size 4, square) at (61, 62)
+  - blue (size 5, irregular) at (11, 36)
+  - orange (size 10, rectangle) at (35, 26)
+  - blue (size 15, rectangle) at (38, 26)
+  - blue (size 20, irregular) at (56, 6)
+  - dark_gray (size 38, rectangle) at (61, 22)
+  - black (size 43, irregular) at (12, 35)
+  - yellow (size 46, rectangle) at (61, 43)
+  - black (size 76, irregular) at (57, 5)
+  - black (size 112, irregular) at (61, 38)
+  - black (size 208, rectangle) at (25, 1)
+  - dark_gray (size 892, irregular) at (34, 35)
+
+CHANGES:
+  - dark_gray changed: center {'row': 61, 'col': 21}->{'row': 61, 'col': 22}, size 36->38
+  - yellow changed: center {'row': 61, 'col': 42}->{'row': 61, 'col': 43}, size 48->46
+
+2026-03-24 23:00:31,708 | === ACTION #22: ACTION2 ===
+Result: BLOCKED
+Score: 0 | State: NOT_FINISHED | Actions used: 22/200
+
+VISIBLE OBJECTS:
+  - white (size 3, irregular) at (31, 21)
+  - blue (size 4, square) at (59, 3)
+  - red (size 4, square) at (61, 56)
+  - red (size 4, square) at (61, 59)
+  - red (size 4, square) at (61, 62)
+  - blue (size 5, irregular) at (11, 36)
+  - orange (size 10, rectangle) at (35, 26)
+  - blue (size 15, rectangle) at (38, 26)
+  - blue (size 20, irregular) at (56, 6)
+  - dark_gray (size 40, rectangle) at (61, 22)
+  - black (size 43, irregular) at (12, 35)
+  - yellow (size 44, rectangle) at (61, 43)
+  - black (size 76, irregular) at (57, 5)
+  - black (size 112, irregular) at (61, 38)
+  - black (size 208, rectangle) at (25, 1)
+  - dark_gray (size 892, irregular) at (34, 35)
+
+CHANGES:
+  - dark_gray changed: size 38->40
+  - yellow changed: size 46->44
+
+2026-03-24 23:00:31,967 | === ACTION #23: ACTION4 ===
+Result: BLOCKED
+Score: 0 | State: NOT_FINISHED | Actions used: 23/200
+
+VISIBLE OBJECTS:
+  - white (size 3, irregular) at (31, 21)
+  - blue (size 4, square) at (59, 3)
+  - red (size 4, square) at (61, 56)
+  - red (size 4, square) at (61, 59)
+  - red (size 4, square) at (61, 62)
+  - blue (size 5, irregular) at (11, 36)
+  - orange (size 10, rectangle) at (35, 26)
+  - blue (size 15, rectangle) at (38, 26)
+  - blue (size 20, irregular) at (56, 6)
+  - dark_gray (size 42, rectangle) at (61, 23)
+  - yellow (size 42, rectangle) at (61, 44)
+  - black (size 43, irregular) at (12, 35)
+  - black (size 76, irregular) at (57, 5)
+  - black (size 112, irregular) at (61, 38)
+  - black (size 208, rectangle) at (25, 1)
+  - dark_gray (size 892, irregular) at (34, 35)
+
+CHANGES:
+  - dark_gray changed: center {'row': 61, 'col': 22}->{'row': 61, 'col': 23}, size 40->42
+  - yellow changed: center {'row': 61, 'col': 43}->{'row': 61, 'col': 44}, size 44->42
+
+2026-03-24 23:00:32,218 | === ACTION #24: ACTION2 ===
+Result: BLOCKED
+Score: 0 | State: NOT_FINISHED | Actions used: 24/200
+
+VISIBLE OBJECTS:
+  - white (size 3, irregular) at (31, 21)
+  - blue (size 4, square) at (59, 3)
+  - red (size 4, square) at (61, 56)
+  - red (size 4, square) at (61, 59)
+  - red (size 4, square) at (61, 62)
+  - blue (size 5, irregular) at (11, 36)
+  - orange (size 10, rectangle) at (35, 26)
+  - blue (size 15, rectangle) at (38, 26)
+  - blue (size 20, irregular) at (56, 6)
+  - yellow (size 40, rectangle) at (61, 44)
+  - black (size 43, irregular) at (12, 35)
+  - dark_gray (size 44, rectangle) at (61, 23)
+  - black (size 76, irregular) at (57, 5)
+  - black (size 112, irregular) at (61, 38)
+  - black (size 208, rectangle) at (25, 1)
+  - dark_gray (size 892, irregular) at (34, 35)
+
+CHANGES:
+  - dark_gray changed: size 42->44
+  - yellow changed: size 42->40
+
+2026-03-24 23:00:32,467 | === ACTION #25: ACTION4 ===
+Result: BLOCKED
+Score: 0 | State: NOT_FINISHED | Actions used: 25/200
+
+VISIBLE OBJECTS:
+  - white (size 3, irregular) at (31, 21)
+  - blue (size 4, square) at (59, 3)
+  - red (size 4, square) at (61, 56)
+  - red (size 4, square) at (61, 59)
+  - red (size 4, square) at (61, 62)
+  - blue (size 5, irregular) at (11, 36)
+  - orange (size 10, rectangle) at (35, 26)
+  - blue (size 15, rectangle) at (38, 26)
+  - blue (size 20, irregular) at (56, 6)
+  - yellow (size 38, rectangle) at (61, 45)
+  - black (size 43, irregular) at (12, 35)
+  - dark_gray (size 46, rectangle) at (61, 24)
+  - black (size 76, irregular) at (57, 5)
+  - black (size 112, irregular) at (61, 38)
+  - black (size 208, rectangle) at (25, 1)
+  - dark_gray (size 892, irregular) at (34, 35)
+
+CHANGES:
+  - yellow changed: center {'row': 61, 'col': 44}->{'row': 61, 'col': 45}, size 40->38
+  - dark_gray changed: center {'row': 61, 'col': 23}->{'row': 61, 'col': 24}, size 44->46
+
+2026-03-24 23:05:09,547 | === ACTION #26: ACTION1 ===
+Result: 52 cells changed
+Score: 0 | State: NOT_FINISHED | Actions used: 26/200
+
+VISIBLE OBJECTS:
+  - white (size 3, irregular) at (31, 21)
+  - blue (size 4, square) at (59, 3)
+  - red (size 4, square) at (61, 56)
+  - red (size 4, square) at (61, 59)
+  - red (size 4, square) at (61, 62)
+  - blue (size 5, irregular) at (11, 36)
+  - orange (size 10, rectangle) at (30, 26)
+  - blue (size 15, rectangle) at (33, 26)
+  - blue (size 20, irregular) at (56, 6)
+  - yellow (size 36, rectangle) at (61, 45)
+  - black (size 43, irregular) at (12, 35)
+  - dark_gray (size 48, rectangle) at (61, 24)
+  - black (size 76, irregular) at (57, 5)
+  - black (size 112, irregular) at (61, 38)
+  - black (size 208, rectangle) at (25, 1)
+  - dark_gray (size 892, irregular) at (34, 35)
+
+CHANGES:
+  - orange changed: center {'row': 35, 'col': 26}->{'row': 30, 'col': 26}
+  - blue changed: center {'row': 38, 'col': 26}->{'row': 33, 'col': 26}
+  - yellow changed: size 38->36
+  - dark_gray changed: size 46->48
+  - dark_gray changed: 
+
+2026-03-24 23:05:09,798 | === ACTION #27: ACTION1 ===
+Result: 52 cells changed
+Score: 0 | State: NOT_FINISHED | Actions used: 27/200
+
+VISIBLE OBJECTS:
+  - white (size 3, irregular) at (31, 21)
+  - blue (size 4, square) at (59, 3)
+  - red (size 4, square) at (61, 56)
+  - red (size 4, square) at (61, 59)
+  - red (size 4, square) at (61, 62)
+  - blue (size 5, irregular) at (11, 36)
+  - orange (size 10, rectangle) at (25, 26)
+  - blue (size 15, rectangle) at (28, 26)
+  - blue (size 20, irregular) at (56, 6)
+  - yellow (size 34, rectangle) at (61, 46)
+  - black (size 43, irregular) at (12, 35)
+  - dark_gray (size 50, rectangle) at (61, 25)
+  - black (size 76, irregular) at (57, 5)
+  - black (size 112, irregular) at (61, 38)
+  - black (size 208, rectangle) at (25, 1)
+  - dark_gray (size 892, irregular) at (35, 35)
+
+CHANGES:
+  - orange changed: center {'row': 30, 'col': 26}->{'row': 25, 'col': 26}
+  - blue changed: center {'row': 33, 'col': 26}->{'row': 28, 'col': 26}
+  - yellow changed: center {'row': 61, 'col': 45}->{'row': 61, 'col': 46}, size 36->34
+  - dark_gray changed: center {'row': 61, 'col': 24}->{'row': 61, 'col': 25}, size 48->50
+  - dark_gray changed: center {'row': 34, 'col': 35}->{'row': 35, 'col': 35}
+
+2026-03-24 23:05:10,039 | === ACTION #28: ACTION4 ===
+Result: 52 cells changed
+Score: 0 | State: NOT_FINISHED | Actions used: 28/200
+
+VISIBLE OBJECTS:
+  - white (size 3, irregular) at (31, 21)
+  - blue (size 4, square) at (59, 3)
+  - red (size 4, square) at (61, 56)
+  - red (size 4, square) at (61, 59)
+  - red (size 4, square) at (61, 62)
+  - blue (size 5, irregular) at (11, 36)
+  - orange (size 10, rectangle) at (25, 31)
+  - blue (size 15, rectangle) at (28, 31)
+  - blue (size 20, irregular) at (56, 6)
+  - yellow (size 32, rectangle) at (61, 46)
+  - black (size 43, irregular) at (12, 35)
+  - dark_gray (size 52, rectangle) at (61, 25)
+  - black (size 76, irregular) at (57, 5)
+  - black (size 112, irregular) at (61, 38)
+  - black (size 208, rectangle) at (25, 1)
+  - dark_gray (size 892, irregular) at (35, 35)
+
+CHANGES:
+  - orange changed: center {'row': 25, 'col': 26}->{'row': 25, 'col': 31}
+  - blue changed: center {'row': 28, 'col': 26}->{'row': 28, 'col': 31}
+  - yellow changed: size 34->32
+  - dark_gray changed: size 50->52
+  - dark_gray changed: 
+
+2026-03-24 23:05:10,183 | === ACTION #29: ACTION4 ===
+Result: 52 cells changed
+Score: 0 | State: NOT_FINISHED | Actions used: 29/200
+
+VISIBLE OBJECTS:
+  - white (size 3, irregular) at (31, 21)
+  - blue (size 4, square) at (59, 3)
+  - red (size 4, square) at (61, 56)
+  - red (size 4, square) at (61, 59)
+  - red (size 4, square) at (61, 62)
+  - blue (size 5, irregular) at (11, 36)
+  - orange (size 10, rectangle) at (25, 36)
+  - blue (size 15, rectangle) at (28, 36)
+  - blue (size 20, irregular) at (56, 6)
+  - yellow (size 30, rectangle) at (61, 47)
+  - black (size 43, irregular) at (12, 35)
+  - dark_gray (size 54, rectangle) at (61, 26)
+  - dark_gray (size 72, sparse_cluster) at (16, 36)
+  - black (size 76, irregular) at (57, 5)
+  - black (size 112, irregular) at (61, 38)
+  - black (size 208, rectangle) at (25, 1)
+  - dark_gray (size 820, irregular) at (36, 35)
+
+CHANGES:
+  - orange changed: center {'row': 25, 'col': 31}->{'row': 25, 'col': 36}
+  - blue changed: center {'row': 28, 'col': 31}->{'row': 28, 'col': 36}
+  - yellow changed: center {'row': 61, 'col': 46}->{'row': 61, 'col': 47}, size 32->30
+  - dark_gray changed: center {'row': 61, 'col': 25}->{'row': 61, 'col': 26}, size 52->54
+  - dark_gray changed: center {'row': 35, 'col': 35}->{'row': 36, 'col': 35}, size 892->820
+  - dark_gray: appeared
+
+2026-03-24 23:05:10,434 | === ACTION #30: ACTION4 ===
+Result: 52 cells changed
+Score: 0 | State: NOT_FINISHED | Actions used: 30/200
+
+VISIBLE OBJECTS:
+  - white (size 3, irregular) at (31, 21)
+  - blue (size 4, square) at (59, 3)
+  - red (size 4, square) at (61, 56)
+  - red (size 4, square) at (61, 59)
+  - red (size 4, square) at (61, 62)
+  - blue (size 5, irregular) at (11, 36)
+  - orange (size 10, rectangle) at (25, 41)
+  - blue (size 15, rectangle) at (28, 41)
+  - blue (size 20, irregular) at (56, 6)
+  - yellow (size 28, rectangle) at (61, 47)
+  - black (size 43, irregular) at (12, 35)
+  - dark_gray (size 56, rectangle) at (61, 26)
+  - black (size 76, irregular) at (57, 5)
+  - black (size 112, irregular) at (61, 38)
+  - black (size 208, rectangle) at (25, 1)
+  - dark_gray (size 892, irregular) at (35, 34)
+
+CHANGES:
+  - orange changed: center {'row': 25, 'col': 36}->{'row': 25, 'col': 41}
+  - blue changed: center {'row': 28, 'col': 36}->{'row': 28, 'col': 41}
+  - yellow changed: size 30->28
+  - dark_gray changed: size 54->56
+  - dark_gray: disappeared
+  - dark_gray changed: center {'row': 36, 'col': 35}->{'row': 35, 'col': 34}, size 820->892
+
+2026-03-24 23:07:38,720 | === ACTION #31: ACTION4 ===
+Result: 52 cells changed
+Score: 0 | State: NOT_FINISHED | Actions used: 31/200
+
+VISIBLE OBJECTS:
+  - white (size 3, irregular) at (31, 21)
+  - blue (size 4, square) at (59, 3)
+  - red (size 4, square) at (61, 56)
+  - red (size 4, square) at (61, 59)
+  - red (size 4, square) at (61, 62)
+  - blue (size 5, irregular) at (11, 36)
+  - orange (size 10, rectangle) at (25, 46)
+  - blue (size 15, rectangle) at (28, 46)
+  - blue (size 20, irregular) at (56, 6)
+  - yellow (size 26, rectangle) at (61, 48)
+  - black (size 43, irregular) at (12, 35)
+  - dark_gray (size 58, rectangle) at (61, 27)
+  - black (size 76, irregular) at (57, 5)
+  - black (size 112, irregular) at (61, 38)
+  - black (size 208, rectangle) at (25, 1)
+  - dark_gray (size 892, irregular) at (35, 34)
+
+CHANGES:
+  - orange changed: center {'row': 25, 'col': 41}->{'row': 25, 'col': 46}
+  - blue changed: center {'row': 28, 'col': 41}->{'row': 28, 'col': 46}
+  - yellow changed: center {'row': 61, 'col': 47}->{'row': 61, 'col': 48}, size 28->26
+  - dark_gray changed: center {'row': 61, 'col': 26}->{'row': 61, 'col': 27}, size 56->58
+  - dark_gray changed: 
+
+2026-03-24 23:07:38,857 | === ACTION #32: ACTION4 ===
+Result: 52 cells changed
+Score: 0 | State: NOT_FINISHED | Actions used: 32/200
+
+VISIBLE OBJECTS:
+  - white (size 3, irregular) at (31, 21)
+  - blue (size 4, square) at (59, 3)
+  - red (size 4, square) at (61, 56)
+  - red (size 4, square) at (61, 59)
+  - red (size 4, square) at (61, 62)
+  - blue (size 5, irregular) at (11, 36)
+  - orange (size 10, rectangle) at (25, 51)
+  - blue (size 15, rectangle) at (28, 51)
+  - blue (size 20, irregular) at (56, 6)
+  - yellow (size 24, rectangle) at (61, 48)
+  - black (size 43, irregular) at (12, 35)
+  - dark_gray (size 60, rectangle) at (61, 27)
+  - black (size 76, irregular) at (57, 5)
+  - black (size 112, irregular) at (61, 38)
+  - black (size 208, rectangle) at (25, 1)
+  - dark_gray (size 892, irregular) at (35, 34)
+
+CHANGES:
+  - orange changed: center {'row': 25, 'col': 46}->{'row': 25, 'col': 51}
+  - blue changed: center {'row': 28, 'col': 46}->{'row': 28, 'col': 51}
+  - yellow changed: size 26->24
+  - dark_gray changed: size 58->60
+  - dark_gray changed: 
+
+2026-03-24 23:07:39,115 | === ACTION #33: ACTION4 ===
+Result: BLOCKED
+Score: 0 | State: NOT_FINISHED | Actions used: 33/200
+
+VISIBLE OBJECTS:
+  - white (size 3, irregular) at (31, 21)
+  - blue (size 4, square) at (59, 3)
+  - red (size 4, square) at (61, 56)
+  - red (size 4, square) at (61, 59)
+  - red (size 4, square) at (61, 62)
+  - blue (size 5, irregular) at (11, 36)
+  - orange (size 10, rectangle) at (25, 51)
+  - blue (size 15, rectangle) at (28, 51)
+  - blue (size 20, irregular) at (56, 6)
+  - yellow (size 22, rectangle) at (61, 49)
+  - black (size 43, irregular) at (12, 35)
+  - dark_gray (size 62, rectangle) at (61, 28)
+  - black (size 76, irregular) at (57, 5)
+  - black (size 112, irregular) at (61, 38)
+  - black (size 208, rectangle) at (25, 1)
+  - dark_gray (size 892, irregular) at (35, 34)
+
+CHANGES:
+  - yellow changed: center {'row': 61, 'col': 48}->{'row': 61, 'col': 49}, size 24->22
+  - dark_gray changed: center {'row': 61, 'col': 27}->{'row': 61, 'col': 28}, size 60->62
+
+2026-03-24 23:07:39,367 | === ACTION #34: ACTION2 ===
+Result: 52 cells changed
+Score: 0 | State: NOT_FINISHED | Actions used: 34/200
+
+VISIBLE OBJECTS:
+  - white (size 3, irregular) at (31, 21)
+  - blue (size 4, square) at (59, 3)
+  - red (size 4, square) at (61, 56)
+  - red (size 4, square) at (61, 59)
+  - red (size 4, square) at (61, 62)
+  - blue (size 5, irregular) at (11, 36)
+  - orange (size 10, rectangle) at (30, 51)
+  - blue (size 15, rectangle) at (33, 51)
+  - blue (size 20, irregular) at (56, 6)
+  - yellow (size 20, rectangle) at (61, 49)
+  - black (size 43, irregular) at (12, 35)
+  - dark_gray (size 64, rectangle) at (61, 28)
+  - black (size 76, irregular) at (57, 5)
+  - black (size 112, irregular) at (61, 38)
+  - black (size 208, rectangle) at (25, 1)
+  - dark_gray (size 892, irregular) at (34, 34)
+
+CHANGES:
+  - orange changed: center {'row': 25, 'col': 51}->{'row': 30, 'col': 51}
+  - blue changed: center {'row': 28, 'col': 51}->{'row': 33, 'col': 51}
+  - yellow changed: size 22->20
+  - dark_gray changed: size 62->64
+  - dark_gray changed: center {'row': 35, 'col': 34}->{'row': 34, 'col': 34}
+
+2026-03-24 23:07:39,628 | === ACTION #35: ACTION2 ===
+Result: 52 cells changed
+Score: 0 | State: NOT_FINISHED | Actions used: 35/200
+
+VISIBLE OBJECTS:
+  - white (size 3, irregular) at (31, 21)
+  - blue (size 4, square) at (59, 3)
+  - red (size 4, square) at (61, 56)
+  - red (size 4, square) at (61, 59)
+  - red (size 4, square) at (61, 62)
+  - blue (size 5, irregular) at (11, 36)
+  - orange (size 10, rectangle) at (35, 51)
+  - blue (size 15, rectangle) at (38, 51)
+  - yellow (size 18, rectangle) at (61, 50)
+  - blue (size 20, irregular) at (56, 6)
+  - black (size 43, irregular) at (12, 35)
+  - dark_gray (size 66, rectangle) at (61, 29)
+  - black (size 76, irregular) at (57, 5)
+  - black (size 112, irregular) at (61, 38)
+  - black (size 208, rectangle) at (25, 1)
+  - dark_gray (size 892, irregular) at (34, 34)
+
+CHANGES:
+  - orange changed: center {'row': 30, 'col': 51}->{'row': 35, 'col': 51}
+  - blue changed: center {'row': 33, 'col': 51}->{'row': 38, 'col': 51}
+  - yellow changed: center {'row': 61, 'col': 49}->{'row': 61, 'col': 50}, size 20->18
+  - dark_gray changed: center {'row': 61, 'col': 28}->{'row': 61, 'col': 29}, size 64->66
+  - dark_gray changed: 
+
+2026-03-24 23:14:18,330 | === ACTION #36: ACTION4 ===
+Result: BLOCKED
+Score: 0 | State: NOT_FINISHED | Actions used: 36/200
+
+VISIBLE OBJECTS:
+  - white (size 3, irregular) at (31, 21)
+  - blue (size 4, square) at (59, 3)
+  - red (size 4, square) at (61, 56)
+  - red (size 4, square) at (61, 59)
+  - red (size 4, square) at (61, 62)
+  - blue (size 5, irregular) at (11, 36)
+  - orange (size 10, rectangle) at (35, 51)
+  - blue (size 15, rectangle) at (38, 51)
+  - yellow (size 16, rectangle) at (61, 50)
+  - blue (size 20, irregular) at (56, 6)
+  - black (size 43, irregular) at (12, 35)
+  - dark_gray (size 68, rectangle) at (61, 29)
+  - black (size 76, irregular) at (57, 5)
+  - black (size 112, irregular) at (61, 38)
+  - black (size 208, rectangle) at (25, 1)
+  - dark_gray (size 892, irregular) at (34, 34)
+
+CHANGES:
+  - yellow changed: size 18->16
+  - dark_gray changed: size 66->68
+
+2026-03-24 23:14:18,460 | === ACTION #37: ACTION2 ===
+Result: 52 cells changed
+Score: 0 | State: NOT_FINISHED | Actions used: 37/200
+
+VISIBLE OBJECTS:
+  - white (size 3, irregular) at (31, 21)
+  - blue (size 4, square) at (59, 3)
+  - red (size 4, square) at (61, 56)
+  - red (size 4, square) at (61, 59)
+  - red (size 4, square) at (61, 62)
+  - blue (size 5, irregular) at (11, 36)
+  - orange (size 10, rectangle) at (40, 51)
+  - yellow (size 14, rectangle) at (61, 51)
+  - blue (size 15, rectangle) at (43, 51)
+  - blue (size 20, irregular) at (56, 6)
+  - black (size 43, irregular) at (12, 35)
+  - dark_gray (size 70, rectangle) at (61, 30)
+  - black (size 76, irregular) at (57, 5)
+  - black (size 112, irregular) at (61, 38)
+  - black (size 208, rectangle) at (25, 1)
+  - dark_gray (size 892, irregular) at (34, 34)
+
+CHANGES:
+  - orange changed: center {'row': 35, 'col': 51}->{'row': 40, 'col': 51}
+  - blue changed: center {'row': 38, 'col': 51}->{'row': 43, 'col': 51}
+  - yellow changed: center {'row': 61, 'col': 50}->{'row': 61, 'col': 51}, size 16->14
+  - dark_gray changed: center {'row': 61, 'col': 29}->{'row': 61, 'col': 30}, size 68->70
+  - dark_gray changed: 
+
+2026-03-24 23:14:18,707 | === ACTION #38: ACTION2 ===
+Result: 52 cells changed
+Score: 0 | State: NOT_FINISHED | Actions used: 38/200
+
+VISIBLE OBJECTS:
+  - white (size 3, irregular) at (31, 21)
+  - blue (size 4, square) at (59, 3)
+  - red (size 4, square) at (61, 56)
+  - red (size 4, square) at (61, 59)
+  - red (size 4, square) at (61, 62)
+  - blue (size 5, irregular) at (11, 36)
+  - orange (size 10, rectangle) at (45, 51)
+  - yellow (size 12, rectangle) at (61, 51)
+  - blue (size 15, rectangle) at (48, 51)
+  - blue (size 20, irregular) at (56, 6)
+  - black (size 43, irregular) at (12, 35)
+  - dark_gray (size 72, rectangle) at (61, 30)
+  - black (size 76, irregular) at (57, 5)
+  - black (size 112, irregular) at (61, 38)
+  - black (size 208, rectangle) at (25, 1)
+  - dark_gray (size 892, irregular) at (34, 34)
+
+CHANGES:
+  - orange changed: center {'row': 40, 'col': 51}->{'row': 45, 'col': 51}
+  - yellow changed: size 14->12
+  - blue changed: center {'row': 43, 'col': 51}->{'row': 48, 'col': 51}
+  - dark_gray changed: size 70->72
+  - dark_gray changed: 
+
+2026-03-24 23:14:18,950 | === ACTION #39: ACTION2 ===
+Result: BLOCKED
+Score: 0 | State: NOT_FINISHED | Actions used: 39/200
+
+VISIBLE OBJECTS:
+  - white (size 3, irregular) at (31, 21)
+  - blue (size 4, square) at (59, 3)
+  - red (size 4, square) at (61, 56)
+  - red (size 4, square) at (61, 59)
+  - red (size 4, square) at (61, 62)
+  - blue (size 5, irregular) at (11, 36)
+  - orange (size 10, rectangle) at (45, 51)
+  - yellow (size 10, rectangle) at (61, 52)
+  - blue (size 15, rectangle) at (48, 51)
+  - blue (size 20, irregular) at (56, 6)
+  - black (size 43, irregular) at (12, 35)
+  - dark_gray (size 74, rectangle) at (61, 31)
+  - black (size 76, irregular) at (57, 5)
+  - black (size 112, irregular) at (61, 38)
+  - black (size 208, rectangle) at (25, 1)
+  - dark_gray (size 892, irregular) at (34, 34)
+
+CHANGES:
+  - yellow changed: center {'row': 61, 'col': 51}->{'row': 61, 'col': 52}, size 12->10
+  - dark_gray changed: center {'row': 61, 'col': 30}->{'row': 61, 'col': 31}, size 72->74
+
+2026-03-24 23:14:19,083 | === ACTION #40: ACTION2 ===
+Result: BLOCKED
+Score: 0 | State: NOT_FINISHED | Actions used: 40/200
+
+VISIBLE OBJECTS:
+  - white (size 3, irregular) at (31, 21)
+  - blue (size 4, square) at (59, 3)
+  - red (size 4, square) at (61, 56)
+  - red (size 4, square) at (61, 59)
+  - red (size 4, square) at (61, 62)
+  - blue (size 5, irregular) at (11, 36)
+  - yellow (size 8, rectangle) at (61, 52)
+  - orange (size 10, rectangle) at (45, 51)
+  - blue (size 15, rectangle) at (48, 51)
+  - blue (size 20, irregular) at (56, 6)
+  - black (size 43, irregular) at (12, 35)
+  - black (size 76, irregular) at (57, 5)
+  - dark_gray (size 76, rectangle) at (61, 31)
+  - black (size 112, irregular) at (61, 38)
+  - black (size 208, rectangle) at (25, 1)
+  - dark_gray (size 892, irregular) at (34, 34)
+
+CHANGES:
+  - yellow changed: size 10->8
+  - dark_gray changed: size 74->76
+
+2026-03-24 23:18:45,503 | === ACTION #41: RESET ===
+Result: 134 cells changed
+Score: 0 | State: NOT_FINISHED | Actions used: 41/200
+
+VISIBLE OBJECTS:
+  - white (size 3, irregular) at (31, 21)
+  - blue (size 4, square) at (59, 7)
+  - red (size 4, square) at (61, 56)
+  - red (size 4, square) at (61, 59)
+  - red (size 4, square) at (61, 62)
+  - blue (size 5, irregular) at (11, 36)
+  - orange (size 10, rectangle) at (45, 36)
+  - blue (size 15, rectangle) at (48, 36)
+  - blue (size 20, irregular) at (56, 4)
+  - black (size 43, irregular) at (12, 35)
+  - black (size 76, irregular) at (57, 5)
+  - yellow (size 84, rectangle) at (61, 33)
+  - black (size 112, irregular) at (61, 38)
+  - black (size 208, rectangle) at (25, 1)
+  - dark_gray (size 892, irregular) at (34, 35)
+
+CHANGES:
+  - blue changed: center {'row': 59, 'col': 3}->{'row': 59, 'col': 7}
+  - yellow: disappeared
+  - orange changed: center {'row': 45, 'col': 51}->{'row': 45, 'col': 36}
+  - blue changed: center {'row': 48, 'col': 51}->{'row': 48, 'col': 36}
+  - blue changed: center {'row': 56, 'col': 6}->{'row': 56, 'col': 4}
+  - dark_gray: disappeared
+  - dark_gray changed: center {'row': 34, 'col': 34}->{'row': 34, 'col': 35}
+  - yellow: appeared
+
+2026-03-24 23:24:09,220 | === ACTION #42: ACTION2 ===
+Result: BLOCKED
+Score: 0 | State: NOT_FINISHED | Actions used: 42/200
+
+VISIBLE OBJECTS:
+  - dark_gray (size 2, vertical_line) at (61, 13)
+  - white (size 3, irregular) at (31, 21)
+  - blue (size 4, square) at (59, 7)
+  - red (size 4, square) at (61, 56)
+  - red (size 4, square) at (61, 59)
+  - red (size 4, square) at (61, 62)
+  - blue (size 5, irregular) at (11, 36)
+  - orange (size 10, rectangle) at (45, 36)
+  - blue (size 15, rectangle) at (48, 36)
+  - blue (size 20, irregular) at (56, 4)
+  - black (size 43, irregular) at (12, 35)
+  - black (size 76, irregular) at (57, 5)
+  - yellow (size 82, rectangle) at (61, 34)
+  - black (size 112, irregular) at (61, 38)
+  - black (size 208, rectangle) at (25, 1)
+  - dark_gray (size 892, irregular) at (34, 35)
+
+CHANGES:
+  - yellow changed: center {'row': 61, 'col': 33}->{'row': 61, 'col': 34}, size 84->82
+  - dark_gray: appeared
+
+2026-03-24 23:24:09,350 | === ACTION #43: ACTION2 ===
+Result: BLOCKED
+Score: 0 | State: NOT_FINISHED | Actions used: 43/200
+
+VISIBLE OBJECTS:
+  - white (size 3, irregular) at (31, 21)
+  - blue (size 4, square) at (59, 7)
+  - dark_gray (size 4, square) at (61, 13)
+  - red (size 4, square) at (61, 56)
+  - red (size 4, square) at (61, 59)
+  - red (size 4, square) at (61, 62)
+  - blue (size 5, irregular) at (11, 36)
+  - orange (size 10, rectangle) at (45, 36)
+  - blue (size 15, rectangle) at (48, 36)
+  - blue (size 20, irregular) at (56, 4)
+  - black (size 43, irregular) at (12, 35)
+  - black (size 76, irregular) at (57, 5)
+  - yellow (size 80, rectangle) at (61, 34)
+  - black (size 112, irregular) at (61, 38)
+  - black (size 208, rectangle) at (25, 1)
+  - dark_gray (size 892, irregular) at (34, 35)
+
+CHANGES:
+  - dark_gray changed: size 2->4
+  - yellow changed: size 82->80
+
+2026-03-24 23:24:09,605 | === ACTION #44: ACTION2 ===
+Result: BLOCKED
+Score: 0 | State: NOT_FINISHED | Actions used: 44/200
+
+VISIBLE OBJECTS:
+  - white (size 3, irregular) at (31, 21)
+  - blue (size 4, square) at (59, 7)
+  - red (size 4, square) at (61, 56)
+  - red (size 4, square) at (61, 59)
+  - red (size 4, square) at (61, 62)
+  - blue (size 5, irregular) at (11, 36)
+  - dark_gray (size 6, rectangle) at (61, 14)
+  - orange (size 10, rectangle) at (45, 36)
+  - blue (size 15, rectangle) at (48, 36)
+  - blue (size 20, irregular) at (56, 4)
+  - black (size 43, irregular) at (12, 35)
+  - black (size 76, irregular) at (57, 5)
+  - yellow (size 78, rectangle) at (61, 35)
+  - black (size 112, irregular) at (61, 38)
+  - black (size 208, rectangle) at (25, 1)
+  - dark_gray (size 892, irregular) at (34, 35)
+
+CHANGES:
+  - dark_gray changed: center {'row': 61, 'col': 13}->{'row': 61, 'col': 14}, size 4->6
+  - yellow changed: center {'row': 61, 'col': 34}->{'row': 61, 'col': 35}, size 80->78
+
+2026-03-24 23:24:09,865 | === ACTION #45: ACTION4 ===
+Result: 52 cells changed
+Score: 0 | State: NOT_FINISHED | Actions used: 45/200
+
+VISIBLE OBJECTS:
+  - white (size 3, irregular) at (31, 21)
+  - blue (size 4, square) at (59, 7)
+  - red (size 4, square) at (61, 56)
+  - red (size 4, square) at (61, 59)
+  - red (size 4, square) at (61, 62)
+  - blue (size 5, irregular) at (11, 36)
+  - dark_gray (size 8, rectangle) at (61, 14)
+  - orange (size 10, rectangle) at (45, 41)
+  - blue (size 15, rectangle) at (48, 41)
+  - blue (size 20, irregular) at (56, 4)
+  - black (size 43, irregular) at (12, 35)
+  - black (size 76, irregular) at (57, 5)
+  - yellow (size 76, rectangle) at (61, 35)
+  - black (size 112, irregular) at (61, 38)
+  - black (size 208, rectangle) at (25, 1)
+  - dark_gray (size 892, irregular) at (34, 34)
+
+CHANGES:
+  - dark_gray changed: size 6->8
+  - orange changed: center {'row': 45, 'col': 36}->{'row': 45, 'col': 41}
+  - blue changed: center {'row': 48, 'col': 36}->{'row': 48, 'col': 41}
+  - yellow changed: size 78->76
+  - dark_gray changed: center {'row': 34, 'col': 35}->{'row': 34, 'col': 34}
+
+2026-03-24 23:24:10,104 | === ACTION #46: ACTION4 ===
+Result: 52 cells changed
+Score: 0 | State: NOT_FINISHED | Actions used: 46/200
+
+VISIBLE OBJECTS:
+  - white (size 3, irregular) at (31, 21)
+  - blue (size 4, square) at (59, 7)
+  - red (size 4, square) at (61, 56)
+  - red (size 4, square) at (61, 59)
+  - red (size 4, square) at (61, 62)
+  - blue (size 5, irregular) at (11, 36)
+  - orange (size 10, rectangle) at (45, 46)
+  - dark_gray (size 10, rectangle) at (61, 15)
+  - blue (size 15, rectangle) at (48, 46)
+  - blue (size 20, irregular) at (56, 4)
+  - black (size 43, irregular) at (12, 35)
+  - yellow (size 74, rectangle) at (61, 36)
+  - black (size 76, irregular) at (57, 5)
+  - black (size 112, irregular) at (61, 38)
+  - black (size 208, rectangle) at (25, 1)
+  - dark_gray (size 892, irregular) at (34, 34)
+
+CHANGES:
+  - dark_gray changed: center {'row': 61, 'col': 14}->{'row': 61, 'col': 15}, size 8->10
+  - orange changed: center {'row': 45, 'col': 41}->{'row': 45, 'col': 46}
+  - blue changed: center {'row': 48, 'col': 41}->{'row': 48, 'col': 46}
+  - yellow changed: center {'row': 61, 'col': 35}->{'row': 61, 'col': 36}, size 76->74
+  - dark_gray changed: 
+
+2026-03-24 23:32:54,278 | === ACTION #47: ACTION2 ===
+Result: BLOCKED
+Score: 0 | State: NOT_FINISHED | Actions used: 47/200
+
+VISIBLE OBJECTS:
+  - white (size 3, irregular) at (31, 21)
+  - blue (size 4, square) at (59, 7)
+  - red (size 4, square) at (61, 56)
+  - red (size 4, square) at (61, 59)
+  - red (size 4, square) at (61, 62)
+  - blue (size 5, irregular) at (11, 36)
+  - orange (size 10, rectangle) at (45, 46)
+  - dark_gray (size 12, rectangle) at (61, 15)
+  - blue (size 15, rectangle) at (48, 46)
+  - blue (size 20, irregular) at (56, 4)
+  - black (size 43, irregular) at (12, 35)
+  - yellow (size 72, rectangle) at (61, 36)
+  - black (size 76, irregular) at (57, 5)
+  - black (size 112, irregular) at (61, 38)
+  - black (size 208, rectangle) at (25, 1)
+  - dark_gray (size 892, irregular) at (34, 34)
+
+CHANGES:
+  - dark_gray changed: size 10->12
+  - yellow changed: size 74->72
+
+2026-03-24 23:32:54,415 | === ACTION #48: ACTION2 ===
+Result: BLOCKED
+Score: 0 | State: NOT_FINISHED | Actions used: 48/200
+
+VISIBLE OBJECTS:
+  - white (size 3, irregular) at (31, 21)
+  - blue (size 4, square) at (59, 7)
+  - red (size 4, square) at (61, 56)
+  - red (size 4, square) at (61, 59)
+  - red (size 4, square) at (61, 62)
+  - blue (size 5, irregular) at (11, 36)
+  - orange (size 10, rectangle) at (45, 46)
+  - dark_gray (size 14, rectangle) at (61, 16)
+  - blue (size 15, rectangle) at (48, 46)
+  - blue (size 20, irregular) at (56, 4)
+  - black (size 43, irregular) at (12, 35)
+  - yellow (size 70, rectangle) at (61, 37)
+  - black (size 76, irregular) at (57, 5)
+  - black (size 112, irregular) at (61, 38)
+  - black (size 208, rectangle) at (25, 1)
+  - dark_gray (size 892, irregular) at (34, 34)
+
+CHANGES:
+  - dark_gray changed: center {'row': 61, 'col': 15}->{'row': 61, 'col': 16}, size 12->14
+  - yellow changed: center {'row': 61, 'col': 36}->{'row': 61, 'col': 37}, size 72->70
+
+2026-03-24 23:32:54,663 | === ACTION #49: ACTION2 ===
+Result: BLOCKED
+Score: 0 | State: NOT_FINISHED | Actions used: 49/200
+
+VISIBLE OBJECTS:
+  - white (size 3, irregular) at (31, 21)
+  - blue (size 4, square) at (59, 7)
+  - red (size 4, square) at (61, 56)
+  - red (size 4, square) at (61, 59)
+  - red (size 4, square) at (61, 62)
+  - blue (size 5, irregular) at (11, 36)
+  - orange (size 10, rectangle) at (45, 46)
+  - blue (size 15, rectangle) at (48, 46)
+  - dark_gray (size 16, rectangle) at (61, 16)
+  - blue (size 20, irregular) at (56, 4)
+  - black (size 43, irregular) at (12, 35)
+  - yellow (size 68, rectangle) at (61, 37)
+  - black (size 76, irregular) at (57, 5)
+  - black (size 112, irregular) at (61, 38)
+  - black (size 208, rectangle) at (25, 1)
+  - dark_gray (size 892, irregular) at (34, 34)
+
+CHANGES:
+  - dark_gray changed: size 14->16
+  - yellow changed: size 70->68
+
+2026-03-24 23:32:54,930 | === ACTION #50: ACTION4 ===
+Result: 52 cells changed
+Score: 0 | State: NOT_FINISHED | Actions used: 50/200
+
+VISIBLE OBJECTS:
+  - white (size 3, irregular) at (31, 21)
+  - blue (size 4, square) at (59, 7)
+  - red (size 4, square) at (61, 56)
+  - red (size 4, square) at (61, 59)
+  - red (size 4, square) at (61, 62)
+  - blue (size 5, irregular) at (11, 36)
+  - orange (size 10, rectangle) at (45, 51)
+  - blue (size 15, rectangle) at (48, 51)
+  - dark_gray (size 18, rectangle) at (61, 17)
+  - blue (size 20, irregular) at (56, 4)
+  - black (size 43, irregular) at (12, 35)
+  - yellow (size 66, rectangle) at (61, 38)
+  - black (size 76, irregular) at (57, 5)
+  - black (size 112, irregular) at (61, 38)
+  - black (size 208, rectangle) at (25, 1)
+  - dark_gray (size 892, irregular) at (34, 34)
+
+CHANGES:
+  - orange changed: center {'row': 45, 'col': 46}->{'row': 45, 'col': 51}
+  - blue changed: center {'row': 48, 'col': 46}->{'row': 48, 'col': 51}
+  - dark_gray changed: center {'row': 61, 'col': 16}->{'row': 61, 'col': 17}, size 16->18
+  - yellow changed: center {'row': 61, 'col': 37}->{'row': 61, 'col': 38}, size 68->66
+  - dark_gray changed: 
+
+2026-03-24 23:32:55,214 | === ACTION #51: ACTION4 ===
+Result: BLOCKED
+Score: 0 | State: NOT_FINISHED | Actions used: 51/200
+
+VISIBLE OBJECTS:
+  - white (size 3, irregular) at (31, 21)
+  - blue (size 4, square) at (59, 7)
+  - red (size 4, square) at (61, 56)
+  - red (size 4, square) at (61, 59)
+  - red (size 4, square) at (61, 62)
+  - blue (size 5, irregular) at (11, 36)
+  - orange (size 10, rectangle) at (45, 51)
+  - blue (size 15, rectangle) at (48, 51)
+  - blue (size 20, irregular) at (56, 4)
+  - dark_gray (size 20, rectangle) at (61, 17)
+  - black (size 43, irregular) at (12, 35)
+  - yellow (size 64, rectangle) at (61, 38)
+  - black (size 76, irregular) at (57, 5)
+  - black (size 112, irregular) at (61, 38)
+  - black (size 208, rectangle) at (25, 1)
+  - dark_gray (size 892, irregular) at (34, 34)
+
+CHANGES:
+  - dark_gray changed: size 18->20
+  - yellow changed: size 66->64
+

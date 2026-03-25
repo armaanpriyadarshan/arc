@@ -150,8 +150,11 @@ class ActionQueue:
 
 _RETRY_NUDGE = (
     "CRITICAL: Your previous response was missing the [ACTIONS] section. "
-    "You MUST end your response with an [ACTIONS] section containing a JSON action plan. "
-    "Do NOT write actions to a file — output them directly in your response text."
+    "You MUST end your response with EXACTLY this format:\n\n"
+    "[ACTIONS]\n"
+    '{"plan": [{"action": "ACTION1"}, {"action": "ACTION3"}], "reasoning": "why"}\n\n'
+    "Do NOT skip this section. Do NOT write actions to a file. "
+    "Output the [ACTIONS] section directly in your response text RIGHT NOW."
 )
 
 
@@ -539,10 +542,35 @@ class ClaudeCodeAgent:
             )
             return False
 
+        # Fallback: scan the entire response for any JSON action plan
         logger.warning(
-            "analyzer at action %d: response but NO [ACTIONS] section",
+            "analyzer at action %d: no [ACTIONS] section, trying fallback JSON extraction",
             action_num,
         )
+        # Look for {"plan": [...]} or [{"action": "..."}] anywhere in the response
+        import json as _json
+        for start_char in ("{", "["):
+            idx = raw.find(start_char)
+            while idx >= 0:
+                try:
+                    decoder = _json.JSONDecoder()
+                    parsed, end = decoder.raw_decode(raw, idx)
+                    # Check if it looks like an action plan
+                    if isinstance(parsed, dict) and "plan" in parsed:
+                        if self._queue.load(raw[idx:idx+end]):
+                            logger.info("analyzer at action %d: recovered plan via fallback extraction", action_num)
+                            self._flush_log()
+                            return True
+                    elif isinstance(parsed, list) and parsed and isinstance(parsed[0], dict) and "action" in parsed[0]:
+                        if self._queue.load(raw[idx:idx+end]):
+                            logger.info("analyzer at action %d: recovered plan via fallback extraction", action_num)
+                            self._flush_log()
+                            return True
+                except (_json.JSONDecodeError, ValueError):
+                    pass
+                idx = raw.find(start_char, idx + 1)
+
+        logger.warning("analyzer at action %d: no action plan found anywhere in response", action_num)
         return False
 
     def _write_current_state_to_log(self, frame: FrameData) -> None:

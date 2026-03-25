@@ -1,0 +1,1863 @@
+=== GAME: ls20 | MAX_ACTIONS=200 ===
+
+=== PROBE RESULTS ===
+  ACTION1: 52 cells changed
+    orange: center {'row': 45, 'col': 36}->{'row': 40, 'col': 36}
+    blue: center {'row': 48, 'col': 36}->{'row': 43, 'col': 36}
+    yellow: center {'row': 61, 'col': 33}->{'row': 61, 'col': 34}, size 84->82
+    dark_gray: 
+  ACTION2: 52 cells changed
+    dark_gray: size 2->4
+    orange: center {'row': 40, 'col': 36}->{'row': 45, 'col': 36}
+    blue: center {'row': 43, 'col': 36}->{'row': 48, 'col': 36}
+    yellow: size 82->80
+    dark_gray: 
+  ACTION3: 52 cells changed
+    dark_gray: center {'row': 61, 'col': 13}->{'row': 61, 'col': 14}, size 4->6
+    orange: center {'row': 45, 'col': 36}->{'row': 45, 'col': 31}
+    blue: center {'row': 48, 'col': 36}->{'row': 48, 'col': 31}
+    yellow: center {'row': 61, 'col': 34}->{'row': 61, 'col': 35}, size 80->78
+    dark_gray: 
+  ACTION4: 52 cells changed
+    dark_gray: size 6->8
+    orange: center {'row': 45, 'col': 31}->{'row': 45, 'col': 36}
+    blue: center {'row': 48, 'col': 31}->{'row': 48, 'col': 36}
+    yellow: size 78->76
+    dark_gray:
+=== END PROBE ===
+
+*** STATE_SNAPSHOT: Score=0 | Actions=4/200 | Deaths=0
+Objects:
+  white (size 3, irregular) at (31, 21)
+  blue (size 4, square) at (59, 7)
+  red (size 4, square) at (61, 56)
+  red (size 4, square) at (61, 59)
+  red (size 4, square) at (61, 62)
+  blue (size 5, irregular) at (11, 36)
+  dark_gray (size 8, rectangle) at (61, 14)
+  orange (size 10, rectangle) at (45, 36)
+  blue (size 15, rectangle) at (48, 36)
+  blue (size 20, irregular) at (56, 4)
+  black (size 43, irregular) at (12, 35)
+  black (size 76, irregular) at (57, 5)
+  yellow (size 76, rectangle) at (61, 35)
+  black (size 112, irregular) at (61, 38)
+  black (size 208, rectangle) at (25, 1)
+  dark_gray (size 892, irregular) at (34, 35)
+ ***
+
+*** ANALYZER: Call #1 at action 4 (3042 chars response) ***
+
+*** PLAN: Navigate to the white object at (31, 21) — it's the closest unique target and likely a pickup or goal. Move 3 times up then 3 times left. Observe what happens on contact to understand the game's objec ***
+
+=== TURN 5 | ACTIONS=5 | SCORE=0 | MODE=QUEUE ===
+GOAL: (none)
+STEP: 1/5
+OBSERVATION: ACTION1: 52 cells changed
+ACTIONS: ['ACTION1']
+RESULTS:
+  ACTION1: 52 cells changed
+NOTES: Changes: 52 cells
+Symbolic Diff:
+Objects:
+  white (size 3, irregular) at (31, 21)
+  blue (size 4, square) at (59, 7)
+  red (size 4, square) at (61, 56)
+  red (size 4, square) at (61, 59)
+  red (size 4, square) at (61, 62)
+  blue (size 5, irregular) at (11, 36)
+  orange (size 10, rectangle) at (40, 36)
+  dark_gray (size 10, rectangle) at (61, 15)
+  blue (size 15, rectangle) at (43, 36)
+  blue (size 20, irregular) at (56, 4)
+  black (size 43, irregular) at (12, 35)
+  yellow (size 74, rectangle) at (61, 36)
+  black (size 76, irregular) at (57, 5)
+  black (size 112, irregular) at (61, 38)
+  black (size 208, rectangle) at (25, 1)
+  dark_gray (size 892, irregular) at (34, 35)
+
+=== END TURN 5 ===
+
+=== TURN 6 | ACTIONS=6 | SCORE=0 | MODE=QUEUE ===
+GOAL: (none)
+STEP: 2/5
+OBSERVATION: ACTION1: 52 cells changed
+ACTIONS: ['ACTION1']
+RESULTS:
+  ACTION1: 52 cells changed
+NOTES: Changes: 52 cells
+Symbolic Diff:
+  orange: center {'row': 40, 'col': 36}->{'row': 35, 'col': 36}
+  dark_gray: size 10->12
+  blue: center {'row': 43, 'col': 36}->{'row': 38, 'col': 36}
+  yellow: size 74->72
+  dark_gray: 
+Objects:
+  white (size 3, irregular) at (31, 21)
+  blue (size 4, square) at (59, 7)
+  red (size 4, square) at (61, 56)
+  red (size 4, square) at (61, 59)
+  red (size 4, square) at (61, 62)
+  blue (size 5, irregular) at (11, 36)
+  orange (size 10, rectangle) at (35, 36)
+  dark_gray (size 12, rectangle) at (61, 15)
+  blue (size 15, rectangle) at (38, 36)
+  blue (size 20, irregular) at (56, 4)
+  black (size 43, irregular) at (12, 35)
+  yellow (size 72, rectangle) at (61, 36)
+  black (size 76, irregular) at (57, 5)
+  black (size 112, irregular) at (61, 38)
+  black (size 208, rectangle) at (25, 1)
+  dark_gray (size 892, irregular) at (34, 35)
+
+=== END TURN 6 ===
+
+=== TURN 7 | ACTIONS=7 | SCORE=0 | MODE=QUEUE ===
+GOAL: (none)
+STEP: 3/5
+OBSERVATION: ACTION1: 52 cells changed
+ACTIONS: ['ACTION1']
+RESULTS:
+  ACTION1: 52 cells changed
+NOTES: Changes: 52 cells
+Symbolic Diff:
+  orange: center {'row': 35, 'col': 36}->{'row': 30, 'col': 36}
+  dark_gray: center {'row': 61, 'col': 15}->{'row': 61, 'col': 16}, size 12->14
+  blue: center {'row': 38, 'col': 36}->{'row': 33, 'col': 36}
+  yellow: center {'row': 61, 'col': 36}->{'row': 61, 'col': 37}, size 72->70
+  dark_gray: 
+Objects:
+  white (size 3, irregular) at (31, 21)
+  blue (size 4, square) at (59, 7)
+  red (size 4, square) at (61, 56)
+  red (size 4, square) at (61, 59)
+  red (size 4, square) at (61, 62)
+  blue (size 5, irregular) at (11, 36)
+  orange (size 10, rectangle) at (30, 36)
+  dark_gray (size 14, rectangle) at (61, 16)
+  blue (size 15, rectangle) at (33, 36)
+  blue (size 20, irregular) at (56, 4)
+  black (size 43, irregular) at (12, 35)
+  yellow (size 70, rectangle) at (61, 37)
+  black (size 76, irregular) at (57, 5)
+  black (size 112, irregular) at (61, 38)
+  black (size 208, rectangle) at (25, 1)
+  dark_gray (size 892, irregular) at (34, 35)
+
+=== END TURN 7 ===
+
+=== TURN 8 | ACTIONS=8 | SCORE=0 | MODE=QUEUE ===
+GOAL: (none)
+STEP: 4/5
+OBSERVATION: ACTION3: BLOCKED
+ACTIONS: ['ACTION3']
+RESULTS:
+  ACTION3: BLOCKED
+NOTES: Changes: 2 cells
+Symbolic Diff:
+  dark_gray: size 14->16
+  yellow: size 70->68
+Objects:
+  white (size 3, irregular) at (31, 21)
+  blue (size 4, square) at (59, 7)
+  red (size 4, square) at (61, 56)
+  red (size 4, square) at (61, 59)
+  red (size 4, square) at (61, 62)
+  blue (size 5, irregular) at (11, 36)
+  orange (size 10, rectangle) at (30, 36)
+  blue (size 15, rectangle) at (33, 36)
+  dark_gray (size 16, rectangle) at (61, 16)
+  blue (size 20, irregular) at (56, 4)
+  black (size 43, irregular) at (12, 35)
+  yellow (size 68, rectangle) at (61, 37)
+  black (size 76, irregular) at (57, 5)
+  black (size 112, irregular) at (61, 38)
+  black (size 208, rectangle) at (25, 1)
+  dark_gray (size 892, irregular) at (34, 35)
+
+=== END TURN 8 ===
+
+=== TURN 9 | ACTIONS=9 | SCORE=0 | MODE=QUEUE ===
+GOAL: (none)
+STEP: 5/5
+OBSERVATION: ACTION3: BLOCKED
+ACTIONS: ['ACTION3']
+RESULTS:
+  ACTION3: BLOCKED
+NOTES: Changes: 2 cells
+Symbolic Diff:
+  dark_gray: center {'row': 61, 'col': 16}->{'row': 61, 'col': 17}, size 16->18
+  yellow: center {'row': 61, 'col': 37}->{'row': 61, 'col': 38}, size 68->66
+Objects:
+  white (size 3, irregular) at (31, 21)
+  blue (size 4, square) at (59, 7)
+  red (size 4, square) at (61, 56)
+  red (size 4, square) at (61, 59)
+  red (size 4, square) at (61, 62)
+  blue (size 5, irregular) at (11, 36)
+  orange (size 10, rectangle) at (30, 36)
+  blue (size 15, rectangle) at (33, 36)
+  dark_gray (size 18, rectangle) at (61, 17)
+  blue (size 20, irregular) at (56, 4)
+  black (size 43, irregular) at (12, 35)
+  yellow (size 66, rectangle) at (61, 38)
+  black (size 76, irregular) at (57, 5)
+  black (size 112, irregular) at (61, 38)
+  black (size 208, rectangle) at (25, 1)
+  dark_gray (size 892, irregular) at (34, 35)
+
+=== END TURN 9 ===
+
+*** STATE_SNAPSHOT: Score=0 | Actions=9/200 | Deaths=0
+Objects:
+  white (size 3, irregular) at (31, 21)
+  blue (size 4, square) at (59, 7)
+  red (size 4, square) at (61, 56)
+  red (size 4, square) at (61, 59)
+  red (size 4, square) at (61, 62)
+  blue (size 5, irregular) at (11, 36)
+  orange (size 10, rectangle) at (30, 36)
+  blue (size 15, rectangle) at (33, 36)
+  dark_gray (size 18, rectangle) at (61, 17)
+  blue (size 20, irregular) at (56, 4)
+  black (size 43, irregular) at (12, 35)
+  yellow (size 66, rectangle) at (61, 38)
+  black (size 76, irregular) at (57, 5)
+  black (size 112, irregular) at (61, 38)
+  black (size 208, rectangle) at (25, 1)
+  dark_gray (size 892, irregular) at (34, 35)
+ ***
+
+*** ANALYZER: Call #2 at action 9 (2283 chars response) ***
+
+*** PLAN: Move up once more to row ~25 to try to get above whatever is blocking leftward movement, then attempt left. If left works, continue left toward the white object at col 21. If still blocked, we need to ***
+
+=== TURN 10 | ACTIONS=10 | SCORE=0 | MODE=QUEUE ===
+GOAL: (none)
+STEP: 1/4
+OBSERVATION: ACTION1: 52 cells changed
+ACTIONS: ['ACTION1']
+RESULTS:
+  ACTION1: 52 cells changed
+NOTES: Changes: 52 cells
+Symbolic Diff:
+  orange: center {'row': 30, 'col': 36}->{'row': 25, 'col': 36}
+  blue: center {'row': 33, 'col': 36}->{'row': 28, 'col': 36}
+  dark_gray: size 18->20
+  yellow: size 66->64
+  dark_gray: center {'row': 34, 'col': 35}->{'row': 36, 'col': 35}, size 892->820
+Objects:
+  white (size 3, irregular) at (31, 21)
+  blue (size 4, square) at (59, 7)
+  red (size 4, square) at (61, 56)
+  red (size 4, square) at (61, 59)
+  red (size 4, square) at (61, 62)
+  blue (size 5, irregular) at (11, 36)
+  orange (size 10, rectangle) at (25, 36)
+  blue (size 15, rectangle) at (28, 36)
+  blue (size 20, irregular) at (56, 4)
+  dark_gray (size 20, rectangle) at (61, 17)
+  black (size 43, irregular) at (12, 35)
+  yellow (size 64, rectangle) at (61, 38)
+  dark_gray (size 72, sparse_cluster) at (16, 36)
+  black (size 76, irregular) at (57, 5)
+  black (size 112, irregular) at (61, 38)
+  black (size 208, rectangle) at (25, 1)
+  dark_gray (size 820, irregular) at (36, 35)
+
+=== END TURN 10 ===
+
+=== TURN 11 | ACTIONS=11 | SCORE=0 | MODE=QUEUE ===
+GOAL: (none)
+STEP: 2/4
+OBSERVATION: ACTION3: 52 cells changed
+ACTIONS: ['ACTION3']
+RESULTS:
+  ACTION3: 52 cells changed
+NOTES: Changes: 52 cells
+Symbolic Diff:
+  orange: center {'row': 25, 'col': 36}->{'row': 25, 'col': 31}
+  blue: center {'row': 28, 'col': 36}->{'row': 28, 'col': 31}
+  dark_gray: center {'row': 61, 'col': 17}->{'row': 61, 'col': 18}, size 20->22
+  yellow: center {'row': 61, 'col': 38}->{'row': 61, 'col': 39}, size 64->62
+  dark_gray: disappeared
+Objects:
+  white (size 3, irregular) at (31, 21)
+  blue (size 4, square) at (59, 7)
+  red (size 4, square) at (61, 56)
+  red (size 4, square) at (61, 59)
+  red (size 4, square) at (61, 62)
+  blue (size 5, irregular) at (11, 36)
+  orange (size 10, rectangle) at (25, 31)
+  blue (size 15, rectangle) at (28, 31)
+  blue (size 20, irregular) at (56, 4)
+  dark_gray (size 22, rectangle) at (61, 18)
+  black (size 43, irregular) at (12, 35)
+  yellow (size 62, rectangle) at (61, 39)
+  black (size 76, irregular) at (57, 5)
+  black (size 112, irregular) at (61, 38)
+  black (size 208, rectangle) at (25, 1)
+  dark_gray (size 892, irregular) at (35, 35)
+
+=== END TURN 11 ===
+
+=== TURN 12 | ACTIONS=12 | SCORE=0 | MODE=QUEUE ===
+GOAL: (none)
+STEP: 3/4
+OBSERVATION: ACTION3: 52 cells changed
+ACTIONS: ['ACTION3']
+RESULTS:
+  ACTION3: 52 cells changed
+NOTES: Changes: 52 cells
+Symbolic Diff:
+  orange: center {'row': 25, 'col': 31}->{'row': 25, 'col': 26}
+  blue: center {'row': 28, 'col': 31}->{'row': 28, 'col': 26}
+  dark_gray: size 22->24
+  yellow: size 62->60
+  dark_gray: 
+Objects:
+  white (size 3, irregular) at (31, 21)
+  blue (size 4, square) at (59, 7)
+  red (size 4, square) at (61, 56)
+  red (size 4, square) at (61, 59)
+  red (size 4, square) at (61, 62)
+  blue (size 5, irregular) at (11, 36)
+  orange (size 10, rectangle) at (25, 26)
+  blue (size 15, rectangle) at (28, 26)
+  blue (size 20, irregular) at (56, 4)
+  dark_gray (size 24, rectangle) at (61, 18)
+  black (size 43, irregular) at (12, 35)
+  yellow (size 60, rectangle) at (61, 39)
+  black (size 76, irregular) at (57, 5)
+  black (size 112, irregular) at (61, 38)
+  black (size 208, rectangle) at (25, 1)
+  dark_gray (size 892, irregular) at (35, 35)
+
+=== END TURN 12 ===
+
+=== TURN 13 | ACTIONS=13 | SCORE=0 | MODE=QUEUE ===
+GOAL: (none)
+STEP: 4/4
+OBSERVATION: ACTION3: 52 cells changed
+ACTIONS: ['ACTION3']
+RESULTS:
+  ACTION3: 52 cells changed
+NOTES: Changes: 52 cells
+Symbolic Diff:
+  orange: center {'row': 25, 'col': 26}->{'row': 25, 'col': 21}
+  blue: center {'row': 28, 'col': 26}->{'row': 28, 'col': 21}
+  dark_gray: center {'row': 61, 'col': 18}->{'row': 61, 'col': 19}, size 24->26
+  yellow: center {'row': 61, 'col': 39}->{'row': 61, 'col': 40}, size 60->58
+  dark_gray: 
+Objects:
+  white (size 3, irregular) at (31, 21)
+  blue (size 4, square) at (59, 7)
+  red (size 4, square) at (61, 56)
+  red (size 4, square) at (61, 59)
+  red (size 4, square) at (61, 62)
+  blue (size 5, irregular) at (11, 36)
+  orange (size 10, rectangle) at (25, 21)
+  blue (size 15, rectangle) at (28, 21)
+  blue (size 20, irregular) at (56, 4)
+  dark_gray (size 26, rectangle) at (61, 19)
+  black (size 43, irregular) at (12, 35)
+  yellow (size 58, rectangle) at (61, 40)
+  black (size 76, irregular) at (57, 5)
+  black (size 112, irregular) at (61, 38)
+  black (size 208, rectangle) at (25, 1)
+  dark_gray (size 892, irregular) at (35, 35)
+
+=== END TURN 13 ===
+
+*** STATE_SNAPSHOT: Score=0 | Actions=13/200 | Deaths=0
+Objects:
+  white (size 3, irregular) at (31, 21)
+  blue (size 4, square) at (59, 7)
+  red (size 4, square) at (61, 56)
+  red (size 4, square) at (61, 59)
+  red (size 4, square) at (61, 62)
+  blue (size 5, irregular) at (11, 36)
+  orange (size 10, rectangle) at (25, 21)
+  blue (size 15, rectangle) at (28, 21)
+  blue (size 20, irregular) at (56, 4)
+  dark_gray (size 26, rectangle) at (61, 19)
+  black (size 43, irregular) at (12, 35)
+  yellow (size 58, rectangle) at (61, 40)
+  black (size 76, irregular) at (57, 5)
+  black (size 112, irregular) at (61, 38)
+  black (size 208, rectangle) at (25, 1)
+  dark_gray (size 892, irregular) at (35, 35)
+ ***
+
+*** ANALYZER: Call #3 at action 13 (2874 chars response) ***
+
+*** PLAN: Move down once to get adjacent to the white object at (31,21). Try interacting with it via ACTION5. If nothing scores, move toward the red squares at the bottom-right — they look like the actual goal  ***
+
+=== TURN 14 | ACTIONS=14 | SCORE=0 | MODE=QUEUE ===
+GOAL: (none)
+STEP: 1/3
+OBSERVATION: ACTION2: 58 cells changed
+ACTIONS: ['ACTION2']
+RESULTS:
+  ACTION2: 58 cells changed
+NOTES: Changes: 58 cells
+Symbolic Diff:
+  white: disappeared
+  blue: center {'row': 59, 'col': 7}->{'row': 59, 'col': 3}
+  orange: center {'row': 25, 'col': 21}->{'row': 30, 'col': 21}
+  blue: center {'row': 28, 'col': 21}->{'row': 33, 'col': 21}
+  blue: center {'row': 56, 'col': 4}->{'row': 56, 'col': 6}
+Objects:
+  blue (size 4, square) at (59, 3)
+  red (size 4, square) at (61, 56)
+  red (size 4, square) at (61, 59)
+  red (size 4, square) at (61, 62)
+  blue (size 5, irregular) at (11, 36)
+  orange (size 10, rectangle) at (30, 21)
+  blue (size 15, rectangle) at (33, 21)
+  blue (size 20, irregular) at (56, 6)
+  dark_gray (size 26, rectangle) at (61, 19)
+  black (size 43, irregular) at (12, 35)
+  yellow (size 58, rectangle) at (61, 40)
+  black (size 76, irregular) at (57, 5)
+  black (size 112, irregular) at (61, 38)
+  black (size 208, rectangle) at (25, 1)
+  dark_gray (size 897, irregular) at (34, 35)
+
+=== END TURN 14 ===
+
+=== TURN 15 | ACTIONS=15 | SCORE=0 | MODE=QUEUE ===
+GOAL: (none)
+STEP: 2/3
+OBSERVATION: ACTION5: 0 cells changed
+ACTIONS: ['ACTION5']
+RESULTS:
+  ACTION5: 0 cells changed
+NOTES: Changes: 0 cells
+Symbolic Diff:
+Objects:
+  blue (size 4, square) at (59, 3)
+  red (size 4, square) at (61, 56)
+  red (size 4, square) at (61, 59)
+  red (size 4, square) at (61, 62)
+  blue (size 5, irregular) at (11, 36)
+  orange (size 10, rectangle) at (30, 21)
+  blue (size 15, rectangle) at (33, 21)
+  blue (size 20, irregular) at (56, 6)
+  dark_gray (size 26, rectangle) at (61, 19)
+  black (size 43, irregular) at (12, 35)
+  yellow (size 58, rectangle) at (61, 40)
+  black (size 76, irregular) at (57, 5)
+  black (size 112, irregular) at (61, 38)
+  black (size 208, rectangle) at (25, 1)
+  dark_gray (size 897, irregular) at (34, 35)
+
+=== END TURN 15 ===
+
+=== TURN 16 | ACTIONS=16 | SCORE=0 | MODE=QUEUE ===
+GOAL: (none)
+STEP: 3/3
+OBSERVATION: ACTION2: 52 cells changed
+ACTIONS: ['ACTION2']
+RESULTS:
+  ACTION2: 52 cells changed
+NOTES: Changes: 52 cells
+Symbolic Diff:
+  orange: center {'row': 30, 'col': 21}->{'row': 35, 'col': 21}
+  blue: center {'row': 33, 'col': 21}->{'row': 38, 'col': 21}
+  dark_gray: size 26->28
+  yellow: size 58->56
+  dark_gray: size 897->892
+Objects:
+  white (size 3, irregular) at (31, 21)
+  blue (size 4, square) at (59, 3)
+  red (size 4, square) at (61, 56)
+  red (size 4, square) at (61, 59)
+  red (size 4, square) at (61, 62)
+  blue (size 5, irregular) at (11, 36)
+  orange (size 10, rectangle) at (35, 21)
+  blue (size 15, rectangle) at (38, 21)
+  blue (size 20, irregular) at (56, 6)
+  dark_gray (size 28, rectangle) at (61, 19)
+  black (size 43, irregular) at (12, 35)
+  yellow (size 56, rectangle) at (61, 40)
+  black (size 76, irregular) at (57, 5)
+  black (size 112, irregular) at (61, 38)
+  black (size 208, rectangle) at (25, 1)
+  dark_gray (size 892, irregular) at (34, 35)
+
+=== END TURN 16 ===
+
+*** STATE_SNAPSHOT: Score=0 | Actions=16/200 | Deaths=0
+Objects:
+  white (size 3, irregular) at (31, 21)
+  blue (size 4, square) at (59, 3)
+  red (size 4, square) at (61, 56)
+  red (size 4, square) at (61, 59)
+  red (size 4, square) at (61, 62)
+  blue (size 5, irregular) at (11, 36)
+  orange (size 10, rectangle) at (35, 21)
+  blue (size 15, rectangle) at (38, 21)
+  blue (size 20, irregular) at (56, 6)
+  dark_gray (size 28, rectangle) at (61, 19)
+  black (size 43, irregular) at (12, 35)
+  yellow (size 56, rectangle) at (61, 40)
+  black (size 76, irregular) at (57, 5)
+  black (size 112, irregular) at (61, 38)
+  black (size 208, rectangle) at (25, 1)
+  dark_gray (size 892, irregular) at (34, 35)
+ ***
+
+*** ANALYZER: Call #4 at action 16 (3080 chars response) ***
+
+*** PLAN: Head toward the red squares at the bottom-right corner — they're the most plausible goal objects and we've exhausted the white object interaction. Move right first (ACTION4 x4) to get to the right sid ***
+
+=== TURN 17 | ACTIONS=17 | SCORE=0 | MODE=QUEUE ===
+GOAL: (none)
+STEP: 1/4
+OBSERVATION: ACTION4: 52 cells changed
+ACTIONS: ['ACTION4']
+RESULTS:
+  ACTION4: 52 cells changed
+NOTES: Changes: 52 cells
+Symbolic Diff:
+  orange: center {'row': 35, 'col': 21}->{'row': 35, 'col': 26}
+  blue: center {'row': 38, 'col': 21}->{'row': 38, 'col': 26}
+  dark_gray: center {'row': 61, 'col': 19}->{'row': 61, 'col': 20}, size 28->30
+  yellow: center {'row': 61, 'col': 40}->{'row': 61, 'col': 41}, size 56->54
+  dark_gray: 
+Objects:
+  white (size 3, irregular) at (31, 21)
+  blue (size 4, square) at (59, 3)
+  red (size 4, square) at (61, 56)
+  red (size 4, square) at (61, 59)
+  red (size 4, square) at (61, 62)
+  blue (size 5, irregular) at (11, 36)
+  orange (size 10, rectangle) at (35, 26)
+  blue (size 15, rectangle) at (38, 26)
+  blue (size 20, irregular) at (56, 6)
+  dark_gray (size 30, rectangle) at (61, 20)
+  black (size 43, irregular) at (12, 35)
+  yellow (size 54, rectangle) at (61, 41)
+  black (size 76, irregular) at (57, 5)
+  black (size 112, irregular) at (61, 38)
+  black (size 208, rectangle) at (25, 1)
+  dark_gray (size 892, irregular) at (34, 35)
+
+=== END TURN 17 ===
+
+=== TURN 18 | ACTIONS=18 | SCORE=0 | MODE=QUEUE ===
+GOAL: (none)
+STEP: 2/4
+OBSERVATION: ACTION4: BLOCKED
+ACTIONS: ['ACTION4']
+RESULTS:
+  ACTION4: BLOCKED
+NOTES: Changes: 2 cells
+Symbolic Diff:
+  dark_gray: size 30->32
+  yellow: size 54->52
+Objects:
+  white (size 3, irregular) at (31, 21)
+  blue (size 4, square) at (59, 3)
+  red (size 4, square) at (61, 56)
+  red (size 4, square) at (61, 59)
+  red (size 4, square) at (61, 62)
+  blue (size 5, irregular) at (11, 36)
+  orange (size 10, rectangle) at (35, 26)
+  blue (size 15, rectangle) at (38, 26)
+  blue (size 20, irregular) at (56, 6)
+  dark_gray (size 32, rectangle) at (61, 20)
+  black (size 43, irregular) at (12, 35)
+  yellow (size 52, rectangle) at (61, 41)
+  black (size 76, irregular) at (57, 5)
+  black (size 112, irregular) at (61, 38)
+  black (size 208, rectangle) at (25, 1)
+  dark_gray (size 892, irregular) at (34, 35)
+
+=== END TURN 18 ===
+
+=== TURN 19 | ACTIONS=19 | SCORE=0 | MODE=QUEUE ===
+GOAL: (none)
+STEP: 3/4
+OBSERVATION: ACTION4: BLOCKED
+ACTIONS: ['ACTION4']
+RESULTS:
+  ACTION4: BLOCKED
+NOTES: Changes: 2 cells
+Symbolic Diff:
+  dark_gray: center {'row': 61, 'col': 20}->{'row': 61, 'col': 21}, size 32->34
+  yellow: center {'row': 61, 'col': 41}->{'row': 61, 'col': 42}, size 52->50
+Objects:
+  white (size 3, irregular) at (31, 21)
+  blue (size 4, square) at (59, 3)
+  red (size 4, square) at (61, 56)
+  red (size 4, square) at (61, 59)
+  red (size 4, square) at (61, 62)
+  blue (size 5, irregular) at (11, 36)
+  orange (size 10, rectangle) at (35, 26)
+  blue (size 15, rectangle) at (38, 26)
+  blue (size 20, irregular) at (56, 6)
+  dark_gray (size 34, rectangle) at (61, 21)
+  black (size 43, irregular) at (12, 35)
+  yellow (size 50, rectangle) at (61, 42)
+  black (size 76, irregular) at (57, 5)
+  black (size 112, irregular) at (61, 38)
+  black (size 208, rectangle) at (25, 1)
+  dark_gray (size 892, irregular) at (34, 35)
+
+=== END TURN 19 ===
+
+=== TURN 20 | ACTIONS=20 | SCORE=0 | MODE=QUEUE ===
+GOAL: (none)
+STEP: 4/4
+OBSERVATION: ACTION4: BLOCKED
+ACTIONS: ['ACTION4']
+RESULTS:
+  ACTION4: BLOCKED
+NOTES: Changes: 2 cells
+Symbolic Diff:
+  dark_gray: size 34->36
+  yellow: size 50->48
+Objects:
+  white (size 3, irregular) at (31, 21)
+  blue (size 4, square) at (59, 3)
+  red (size 4, square) at (61, 56)
+  red (size 4, square) at (61, 59)
+  red (size 4, square) at (61, 62)
+  blue (size 5, irregular) at (11, 36)
+  orange (size 10, rectangle) at (35, 26)
+  blue (size 15, rectangle) at (38, 26)
+  blue (size 20, irregular) at (56, 6)
+  dark_gray (size 36, rectangle) at (61, 21)
+  black (size 43, irregular) at (12, 35)
+  yellow (size 48, rectangle) at (61, 42)
+  black (size 76, irregular) at (57, 5)
+  black (size 112, irregular) at (61, 38)
+  black (size 208, rectangle) at (25, 1)
+  dark_gray (size 892, irregular) at (34, 35)
+
+=== END TURN 20 ===
+
+*** STATE_SNAPSHOT: Score=0 | Actions=20/200 | Deaths=0
+Objects:
+  white (size 3, irregular) at (31, 21)
+  blue (size 4, square) at (59, 3)
+  red (size 4, square) at (61, 56)
+  red (size 4, square) at (61, 59)
+  red (size 4, square) at (61, 62)
+  blue (size 5, irregular) at (11, 36)
+  orange (size 10, rectangle) at (35, 26)
+  blue (size 15, rectangle) at (38, 26)
+  blue (size 20, irregular) at (56, 6)
+  dark_gray (size 36, rectangle) at (61, 21)
+  black (size 43, irregular) at (12, 35)
+  yellow (size 48, rectangle) at (61, 42)
+  black (size 76, irregular) at (57, 5)
+  black (size 112, irregular) at (61, 38)
+  black (size 208, rectangle) at (25, 1)
+  dark_gray (size 892, irregular) at (34, 35)
+ ***
+
+*** ANALYZER: Call #5 at action 20 (3056 chars response) ***
+
+*** PLAN: Move down (ACTION2) to escape the blocked zone and get toward row 60. After 2-3 downward moves, test rightward movement (ACTION4). The goal is to path around the dark_gray wall and reach the red squar ***
+
+=== TURN 21 | ACTIONS=21 | SCORE=0 | MODE=QUEUE ===
+GOAL: (none)
+STEP: 1/5
+OBSERVATION: ACTION2: BLOCKED
+ACTIONS: ['ACTION2']
+RESULTS:
+  ACTION2: BLOCKED
+NOTES: Changes: 2 cells
+Symbolic Diff:
+  dark_gray: center {'row': 61, 'col': 21}->{'row': 61, 'col': 22}, size 36->38
+  yellow: center {'row': 61, 'col': 42}->{'row': 61, 'col': 43}, size 48->46
+Objects:
+  white (size 3, irregular) at (31, 21)
+  blue (size 4, square) at (59, 3)
+  red (size 4, square) at (61, 56)
+  red (size 4, square) at (61, 59)
+  red (size 4, square) at (61, 62)
+  blue (size 5, irregular) at (11, 36)
+  orange (size 10, rectangle) at (35, 26)
+  blue (size 15, rectangle) at (38, 26)
+  blue (size 20, irregular) at (56, 6)
+  dark_gray (size 38, rectangle) at (61, 22)
+  black (size 43, irregular) at (12, 35)
+  yellow (size 46, rectangle) at (61, 43)
+  black (size 76, irregular) at (57, 5)
+  black (size 112, irregular) at (61, 38)
+  black (size 208, rectangle) at (25, 1)
+  dark_gray (size 892, irregular) at (34, 35)
+
+=== END TURN 21 ===
+
+=== TURN 22 | ACTIONS=22 | SCORE=0 | MODE=QUEUE ===
+GOAL: (none)
+STEP: 2/5
+OBSERVATION: ACTION2: BLOCKED
+ACTIONS: ['ACTION2']
+RESULTS:
+  ACTION2: BLOCKED
+NOTES: Changes: 2 cells
+Symbolic Diff:
+  dark_gray: size 38->40
+  yellow: size 46->44
+Objects:
+  white (size 3, irregular) at (31, 21)
+  blue (size 4, square) at (59, 3)
+  red (size 4, square) at (61, 56)
+  red (size 4, square) at (61, 59)
+  red (size 4, square) at (61, 62)
+  blue (size 5, irregular) at (11, 36)
+  orange (size 10, rectangle) at (35, 26)
+  blue (size 15, rectangle) at (38, 26)
+  blue (size 20, irregular) at (56, 6)
+  dark_gray (size 40, rectangle) at (61, 22)
+  black (size 43, irregular) at (12, 35)
+  yellow (size 44, rectangle) at (61, 43)
+  black (size 76, irregular) at (57, 5)
+  black (size 112, irregular) at (61, 38)
+  black (size 208, rectangle) at (25, 1)
+  dark_gray (size 892, irregular) at (34, 35)
+
+=== END TURN 22 ===
+
+=== TURN 23 | ACTIONS=23 | SCORE=0 | MODE=QUEUE ===
+GOAL: (none)
+STEP: 3/5
+OBSERVATION: ACTION4: BLOCKED
+ACTIONS: ['ACTION4']
+RESULTS:
+  ACTION4: BLOCKED
+NOTES: Changes: 2 cells
+Symbolic Diff:
+  dark_gray: center {'row': 61, 'col': 22}->{'row': 61, 'col': 23}, size 40->42
+  yellow: center {'row': 61, 'col': 43}->{'row': 61, 'col': 44}, size 44->42
+Objects:
+  white (size 3, irregular) at (31, 21)
+  blue (size 4, square) at (59, 3)
+  red (size 4, square) at (61, 56)
+  red (size 4, square) at (61, 59)
+  red (size 4, square) at (61, 62)
+  blue (size 5, irregular) at (11, 36)
+  orange (size 10, rectangle) at (35, 26)
+  blue (size 15, rectangle) at (38, 26)
+  blue (size 20, irregular) at (56, 6)
+  dark_gray (size 42, rectangle) at (61, 23)
+  yellow (size 42, rectangle) at (61, 44)
+  black (size 43, irregular) at (12, 35)
+  black (size 76, irregular) at (57, 5)
+  black (size 112, irregular) at (61, 38)
+  black (size 208, rectangle) at (25, 1)
+  dark_gray (size 892, irregular) at (34, 35)
+
+=== END TURN 23 ===
+
+=== TURN 24 | ACTIONS=24 | SCORE=0 | MODE=QUEUE ===
+GOAL: (none)
+STEP: 4/5
+OBSERVATION: ACTION2: BLOCKED
+ACTIONS: ['ACTION2']
+RESULTS:
+  ACTION2: BLOCKED
+NOTES: Changes: 2 cells
+Symbolic Diff:
+  dark_gray: size 42->44
+  yellow: size 42->40
+Objects:
+  white (size 3, irregular) at (31, 21)
+  blue (size 4, square) at (59, 3)
+  red (size 4, square) at (61, 56)
+  red (size 4, square) at (61, 59)
+  red (size 4, square) at (61, 62)
+  blue (size 5, irregular) at (11, 36)
+  orange (size 10, rectangle) at (35, 26)
+  blue (size 15, rectangle) at (38, 26)
+  blue (size 20, irregular) at (56, 6)
+  yellow (size 40, rectangle) at (61, 44)
+  black (size 43, irregular) at (12, 35)
+  dark_gray (size 44, rectangle) at (61, 23)
+  black (size 76, irregular) at (57, 5)
+  black (size 112, irregular) at (61, 38)
+  black (size 208, rectangle) at (25, 1)
+  dark_gray (size 892, irregular) at (34, 35)
+
+=== END TURN 24 ===
+
+=== TURN 25 | ACTIONS=25 | SCORE=0 | MODE=QUEUE ===
+GOAL: (none)
+STEP: 5/5
+OBSERVATION: ACTION4: BLOCKED
+ACTIONS: ['ACTION4']
+RESULTS:
+  ACTION4: BLOCKED
+NOTES: Changes: 2 cells
+Symbolic Diff:
+  yellow: center {'row': 61, 'col': 44}->{'row': 61, 'col': 45}, size 40->38
+  dark_gray: center {'row': 61, 'col': 23}->{'row': 61, 'col': 24}, size 44->46
+Objects:
+  white (size 3, irregular) at (31, 21)
+  blue (size 4, square) at (59, 3)
+  red (size 4, square) at (61, 56)
+  red (size 4, square) at (61, 59)
+  red (size 4, square) at (61, 62)
+  blue (size 5, irregular) at (11, 36)
+  orange (size 10, rectangle) at (35, 26)
+  blue (size 15, rectangle) at (38, 26)
+  blue (size 20, irregular) at (56, 6)
+  yellow (size 38, rectangle) at (61, 45)
+  black (size 43, irregular) at (12, 35)
+  dark_gray (size 46, rectangle) at (61, 24)
+  black (size 76, irregular) at (57, 5)
+  black (size 112, irregular) at (61, 38)
+  black (size 208, rectangle) at (25, 1)
+  dark_gray (size 892, irregular) at (34, 35)
+
+=== END TURN 25 ===
+
+*** STATE_SNAPSHOT: Score=0 | Actions=25/200 | Deaths=0
+Objects:
+  white (size 3, irregular) at (31, 21)
+  blue (size 4, square) at (59, 3)
+  red (size 4, square) at (61, 56)
+  red (size 4, square) at (61, 59)
+  red (size 4, square) at (61, 62)
+  blue (size 5, irregular) at (11, 36)
+  orange (size 10, rectangle) at (35, 26)
+  blue (size 15, rectangle) at (38, 26)
+  blue (size 20, irregular) at (56, 6)
+  yellow (size 38, rectangle) at (61, 45)
+  black (size 43, irregular) at (12, 35)
+  dark_gray (size 46, rectangle) at (61, 24)
+  black (size 76, irregular) at (57, 5)
+  black (size 112, irregular) at (61, 38)
+  black (size 208, rectangle) at (25, 1)
+  dark_gray (size 892, irregular) at (34, 35)
+ ***
+
+*** ANALYZER: Call #6 at action 25 (29 chars response) ***
+
+*** ANALYZER: Call #7 at action 25 (2117 chars response) ***
+
+*** PLAN: Immediately try ACTION1 (up) to escape the stuck position. If it works, go right (ACTION4) several times to pass the wall, then down (ACTION2) toward the red goals at row 61. Every action counts — the ***
+
+=== TURN 26 | ACTIONS=26 | SCORE=0 | MODE=QUEUE ===
+GOAL: (none)
+STEP: 1/5
+OBSERVATION: ACTION1: 52 cells changed
+ACTIONS: ['ACTION1']
+RESULTS:
+  ACTION1: 52 cells changed
+NOTES: Changes: 52 cells
+Symbolic Diff:
+  orange: center {'row': 35, 'col': 26}->{'row': 30, 'col': 26}
+  blue: center {'row': 38, 'col': 26}->{'row': 33, 'col': 26}
+  yellow: size 38->36
+  dark_gray: size 46->48
+  dark_gray: 
+Objects:
+  white (size 3, irregular) at (31, 21)
+  blue (size 4, square) at (59, 3)
+  red (size 4, square) at (61, 56)
+  red (size 4, square) at (61, 59)
+  red (size 4, square) at (61, 62)
+  blue (size 5, irregular) at (11, 36)
+  orange (size 10, rectangle) at (30, 26)
+  blue (size 15, rectangle) at (33, 26)
+  blue (size 20, irregular) at (56, 6)
+  yellow (size 36, rectangle) at (61, 45)
+  black (size 43, irregular) at (12, 35)
+  dark_gray (size 48, rectangle) at (61, 24)
+  black (size 76, irregular) at (57, 5)
+  black (size 112, irregular) at (61, 38)
+  black (size 208, rectangle) at (25, 1)
+  dark_gray (size 892, irregular) at (34, 35)
+
+=== END TURN 26 ===
+
+=== TURN 27 | ACTIONS=27 | SCORE=0 | MODE=QUEUE ===
+GOAL: (none)
+STEP: 2/5
+OBSERVATION: ACTION1: 52 cells changed
+ACTIONS: ['ACTION1']
+RESULTS:
+  ACTION1: 52 cells changed
+NOTES: Changes: 52 cells
+Symbolic Diff:
+  orange: center {'row': 30, 'col': 26}->{'row': 25, 'col': 26}
+  blue: center {'row': 33, 'col': 26}->{'row': 28, 'col': 26}
+  yellow: center {'row': 61, 'col': 45}->{'row': 61, 'col': 46}, size 36->34
+  dark_gray: center {'row': 61, 'col': 24}->{'row': 61, 'col': 25}, size 48->50
+  dark_gray: center {'row': 34, 'col': 35}->{'row': 35, 'col': 35}
+Objects:
+  white (size 3, irregular) at (31, 21)
+  blue (size 4, square) at (59, 3)
+  red (size 4, square) at (61, 56)
+  red (size 4, square) at (61, 59)
+  red (size 4, square) at (61, 62)
+  blue (size 5, irregular) at (11, 36)
+  orange (size 10, rectangle) at (25, 26)
+  blue (size 15, rectangle) at (28, 26)
+  blue (size 20, irregular) at (56, 6)
+  yellow (size 34, rectangle) at (61, 46)
+  black (size 43, irregular) at (12, 35)
+  dark_gray (size 50, rectangle) at (61, 25)
+  black (size 76, irregular) at (57, 5)
+  black (size 112, irregular) at (61, 38)
+  black (size 208, rectangle) at (25, 1)
+  dark_gray (size 892, irregular) at (35, 35)
+
+=== END TURN 27 ===
+
+=== TURN 28 | ACTIONS=28 | SCORE=0 | MODE=QUEUE ===
+GOAL: (none)
+STEP: 3/5
+OBSERVATION: ACTION4: 52 cells changed
+ACTIONS: ['ACTION4']
+RESULTS:
+  ACTION4: 52 cells changed
+NOTES: Changes: 52 cells
+Symbolic Diff:
+  orange: center {'row': 25, 'col': 26}->{'row': 25, 'col': 31}
+  blue: center {'row': 28, 'col': 26}->{'row': 28, 'col': 31}
+  yellow: size 34->32
+  dark_gray: size 50->52
+  dark_gray: 
+Objects:
+  white (size 3, irregular) at (31, 21)
+  blue (size 4, square) at (59, 3)
+  red (size 4, square) at (61, 56)
+  red (size 4, square) at (61, 59)
+  red (size 4, square) at (61, 62)
+  blue (size 5, irregular) at (11, 36)
+  orange (size 10, rectangle) at (25, 31)
+  blue (size 15, rectangle) at (28, 31)
+  blue (size 20, irregular) at (56, 6)
+  yellow (size 32, rectangle) at (61, 46)
+  black (size 43, irregular) at (12, 35)
+  dark_gray (size 52, rectangle) at (61, 25)
+  black (size 76, irregular) at (57, 5)
+  black (size 112, irregular) at (61, 38)
+  black (size 208, rectangle) at (25, 1)
+  dark_gray (size 892, irregular) at (35, 35)
+
+=== END TURN 28 ===
+
+=== TURN 29 | ACTIONS=29 | SCORE=0 | MODE=QUEUE ===
+GOAL: (none)
+STEP: 4/5
+OBSERVATION: ACTION4: 52 cells changed
+ACTIONS: ['ACTION4']
+RESULTS:
+  ACTION4: 52 cells changed
+NOTES: Changes: 52 cells
+Symbolic Diff:
+  orange: center {'row': 25, 'col': 31}->{'row': 25, 'col': 36}
+  blue: center {'row': 28, 'col': 31}->{'row': 28, 'col': 36}
+  yellow: center {'row': 61, 'col': 46}->{'row': 61, 'col': 47}, size 32->30
+  dark_gray: center {'row': 61, 'col': 25}->{'row': 61, 'col': 26}, size 52->54
+  dark_gray: center {'row': 35, 'col': 35}->{'row': 36, 'col': 35}, size 892->820
+Objects:
+  white (size 3, irregular) at (31, 21)
+  blue (size 4, square) at (59, 3)
+  red (size 4, square) at (61, 56)
+  red (size 4, square) at (61, 59)
+  red (size 4, square) at (61, 62)
+  blue (size 5, irregular) at (11, 36)
+  orange (size 10, rectangle) at (25, 36)
+  blue (size 15, rectangle) at (28, 36)
+  blue (size 20, irregular) at (56, 6)
+  yellow (size 30, rectangle) at (61, 47)
+  black (size 43, irregular) at (12, 35)
+  dark_gray (size 54, rectangle) at (61, 26)
+  dark_gray (size 72, sparse_cluster) at (16, 36)
+  black (size 76, irregular) at (57, 5)
+  black (size 112, irregular) at (61, 38)
+  black (size 208, rectangle) at (25, 1)
+  dark_gray (size 820, irregular) at (36, 35)
+
+=== END TURN 29 ===
+
+=== TURN 30 | ACTIONS=30 | SCORE=0 | MODE=QUEUE ===
+GOAL: (none)
+STEP: 5/5
+OBSERVATION: ACTION4: 52 cells changed
+ACTIONS: ['ACTION4']
+RESULTS:
+  ACTION4: 52 cells changed
+NOTES: Changes: 52 cells
+Symbolic Diff:
+  orange: center {'row': 25, 'col': 36}->{'row': 25, 'col': 41}
+  blue: center {'row': 28, 'col': 36}->{'row': 28, 'col': 41}
+  yellow: size 30->28
+  dark_gray: size 54->56
+  dark_gray: disappeared
+Objects:
+  white (size 3, irregular) at (31, 21)
+  blue (size 4, square) at (59, 3)
+  red (size 4, square) at (61, 56)
+  red (size 4, square) at (61, 59)
+  red (size 4, square) at (61, 62)
+  blue (size 5, irregular) at (11, 36)
+  orange (size 10, rectangle) at (25, 41)
+  blue (size 15, rectangle) at (28, 41)
+  blue (size 20, irregular) at (56, 6)
+  yellow (size 28, rectangle) at (61, 47)
+  black (size 43, irregular) at (12, 35)
+  dark_gray (size 56, rectangle) at (61, 26)
+  black (size 76, irregular) at (57, 5)
+  black (size 112, irregular) at (61, 38)
+  black (size 208, rectangle) at (25, 1)
+  dark_gray (size 892, irregular) at (35, 34)
+
+=== END TURN 30 ===
+
+*** STATE_SNAPSHOT: Score=0 | Actions=30/200 | Deaths=0
+Objects:
+  white (size 3, irregular) at (31, 21)
+  blue (size 4, square) at (59, 3)
+  red (size 4, square) at (61, 56)
+  red (size 4, square) at (61, 59)
+  red (size 4, square) at (61, 62)
+  blue (size 5, irregular) at (11, 36)
+  orange (size 10, rectangle) at (25, 41)
+  blue (size 15, rectangle) at (28, 41)
+  blue (size 20, irregular) at (56, 6)
+  yellow (size 28, rectangle) at (61, 47)
+  black (size 43, irregular) at (12, 35)
+  dark_gray (size 56, rectangle) at (61, 26)
+  black (size 76, irregular) at (57, 5)
+  black (size 112, irregular) at (61, 38)
+  black (size 208, rectangle) at (25, 1)
+  dark_gray (size 892, irregular) at (35, 34)
+ ***
+
+*** ANALYZER: Call #8 at action 30 (2928 chars response) ***
+
+*** PLAN: Go right 3 times to col 56 (clearing the central obstacle), then go down 7-8 times to reach row 61 and the red targets. This is a 10-11 action path with 3-4 actions of margin before yellow depletion.  ***
+
+=== TURN 31 | ACTIONS=31 | SCORE=0 | MODE=QUEUE ===
+GOAL: (none)
+STEP: 1/5
+OBSERVATION: ACTION4: 52 cells changed
+ACTIONS: ['ACTION4']
+RESULTS:
+  ACTION4: 52 cells changed
+NOTES: Changes: 52 cells
+Symbolic Diff:
+  orange: center {'row': 25, 'col': 41}->{'row': 25, 'col': 46}
+  blue: center {'row': 28, 'col': 41}->{'row': 28, 'col': 46}
+  yellow: center {'row': 61, 'col': 47}->{'row': 61, 'col': 48}, size 28->26
+  dark_gray: center {'row': 61, 'col': 26}->{'row': 61, 'col': 27}, size 56->58
+  dark_gray: 
+Objects:
+  white (size 3, irregular) at (31, 21)
+  blue (size 4, square) at (59, 3)
+  red (size 4, square) at (61, 56)
+  red (size 4, square) at (61, 59)
+  red (size 4, square) at (61, 62)
+  blue (size 5, irregular) at (11, 36)
+  orange (size 10, rectangle) at (25, 46)
+  blue (size 15, rectangle) at (28, 46)
+  blue (size 20, irregular) at (56, 6)
+  yellow (size 26, rectangle) at (61, 48)
+  black (size 43, irregular) at (12, 35)
+  dark_gray (size 58, rectangle) at (61, 27)
+  black (size 76, irregular) at (57, 5)
+  black (size 112, irregular) at (61, 38)
+  black (size 208, rectangle) at (25, 1)
+  dark_gray (size 892, irregular) at (35, 34)
+
+=== END TURN 31 ===
+
+=== TURN 32 | ACTIONS=32 | SCORE=0 | MODE=QUEUE ===
+GOAL: (none)
+STEP: 2/5
+OBSERVATION: ACTION4: 52 cells changed
+ACTIONS: ['ACTION4']
+RESULTS:
+  ACTION4: 52 cells changed
+NOTES: Changes: 52 cells
+Symbolic Diff:
+  orange: center {'row': 25, 'col': 46}->{'row': 25, 'col': 51}
+  blue: center {'row': 28, 'col': 46}->{'row': 28, 'col': 51}
+  yellow: size 26->24
+  dark_gray: size 58->60
+  dark_gray: 
+Objects:
+  white (size 3, irregular) at (31, 21)
+  blue (size 4, square) at (59, 3)
+  red (size 4, square) at (61, 56)
+  red (size 4, square) at (61, 59)
+  red (size 4, square) at (61, 62)
+  blue (size 5, irregular) at (11, 36)
+  orange (size 10, rectangle) at (25, 51)
+  blue (size 15, rectangle) at (28, 51)
+  blue (size 20, irregular) at (56, 6)
+  yellow (size 24, rectangle) at (61, 48)
+  black (size 43, irregular) at (12, 35)
+  dark_gray (size 60, rectangle) at (61, 27)
+  black (size 76, irregular) at (57, 5)
+  black (size 112, irregular) at (61, 38)
+  black (size 208, rectangle) at (25, 1)
+  dark_gray (size 892, irregular) at (35, 34)
+
+=== END TURN 32 ===
+
+=== TURN 33 | ACTIONS=33 | SCORE=0 | MODE=QUEUE ===
+GOAL: (none)
+STEP: 3/5
+OBSERVATION: ACTION4: BLOCKED
+ACTIONS: ['ACTION4']
+RESULTS:
+  ACTION4: BLOCKED
+NOTES: Changes: 2 cells
+Symbolic Diff:
+  yellow: center {'row': 61, 'col': 48}->{'row': 61, 'col': 49}, size 24->22
+  dark_gray: center {'row': 61, 'col': 27}->{'row': 61, 'col': 28}, size 60->62
+Objects:
+  white (size 3, irregular) at (31, 21)
+  blue (size 4, square) at (59, 3)
+  red (size 4, square) at (61, 56)
+  red (size 4, square) at (61, 59)
+  red (size 4, square) at (61, 62)
+  blue (size 5, irregular) at (11, 36)
+  orange (size 10, rectangle) at (25, 51)
+  blue (size 15, rectangle) at (28, 51)
+  blue (size 20, irregular) at (56, 6)
+  yellow (size 22, rectangle) at (61, 49)
+  black (size 43, irregular) at (12, 35)
+  dark_gray (size 62, rectangle) at (61, 28)
+  black (size 76, irregular) at (57, 5)
+  black (size 112, irregular) at (61, 38)
+  black (size 208, rectangle) at (25, 1)
+  dark_gray (size 892, irregular) at (35, 34)
+
+=== END TURN 33 ===
+
+=== TURN 34 | ACTIONS=34 | SCORE=0 | MODE=QUEUE ===
+GOAL: (none)
+STEP: 4/5
+OBSERVATION: ACTION2: 52 cells changed
+ACTIONS: ['ACTION2']
+RESULTS:
+  ACTION2: 52 cells changed
+NOTES: Changes: 52 cells
+Symbolic Diff:
+  orange: center {'row': 25, 'col': 51}->{'row': 30, 'col': 51}
+  blue: center {'row': 28, 'col': 51}->{'row': 33, 'col': 51}
+  yellow: size 22->20
+  dark_gray: size 62->64
+  dark_gray: center {'row': 35, 'col': 34}->{'row': 34, 'col': 34}
+Objects:
+  white (size 3, irregular) at (31, 21)
+  blue (size 4, square) at (59, 3)
+  red (size 4, square) at (61, 56)
+  red (size 4, square) at (61, 59)
+  red (size 4, square) at (61, 62)
+  blue (size 5, irregular) at (11, 36)
+  orange (size 10, rectangle) at (30, 51)
+  blue (size 15, rectangle) at (33, 51)
+  blue (size 20, irregular) at (56, 6)
+  yellow (size 20, rectangle) at (61, 49)
+  black (size 43, irregular) at (12, 35)
+  dark_gray (size 64, rectangle) at (61, 28)
+  black (size 76, irregular) at (57, 5)
+  black (size 112, irregular) at (61, 38)
+  black (size 208, rectangle) at (25, 1)
+  dark_gray (size 892, irregular) at (34, 34)
+
+=== END TURN 34 ===
+
+=== TURN 35 | ACTIONS=35 | SCORE=0 | MODE=QUEUE ===
+GOAL: (none)
+STEP: 5/5
+OBSERVATION: ACTION2: 52 cells changed
+ACTIONS: ['ACTION2']
+RESULTS:
+  ACTION2: 52 cells changed
+NOTES: Changes: 52 cells
+Symbolic Diff:
+  orange: center {'row': 30, 'col': 51}->{'row': 35, 'col': 51}
+  blue: center {'row': 33, 'col': 51}->{'row': 38, 'col': 51}
+  yellow: center {'row': 61, 'col': 49}->{'row': 61, 'col': 50}, size 20->18
+  dark_gray: center {'row': 61, 'col': 28}->{'row': 61, 'col': 29}, size 64->66
+  dark_gray: 
+Objects:
+  white (size 3, irregular) at (31, 21)
+  blue (size 4, square) at (59, 3)
+  red (size 4, square) at (61, 56)
+  red (size 4, square) at (61, 59)
+  red (size 4, square) at (61, 62)
+  blue (size 5, irregular) at (11, 36)
+  orange (size 10, rectangle) at (35, 51)
+  blue (size 15, rectangle) at (38, 51)
+  yellow (size 18, rectangle) at (61, 50)
+  blue (size 20, irregular) at (56, 6)
+  black (size 43, irregular) at (12, 35)
+  dark_gray (size 66, rectangle) at (61, 29)
+  black (size 76, irregular) at (57, 5)
+  black (size 112, irregular) at (61, 38)
+  black (size 208, rectangle) at (25, 1)
+  dark_gray (size 892, irregular) at (34, 34)
+
+=== END TURN 35 ===
+
+*** STATE_SNAPSHOT: Score=0 | Actions=35/200 | Deaths=0
+Objects:
+  white (size 3, irregular) at (31, 21)
+  blue (size 4, square) at (59, 3)
+  red (size 4, square) at (61, 56)
+  red (size 4, square) at (61, 59)
+  red (size 4, square) at (61, 62)
+  blue (size 5, irregular) at (11, 36)
+  orange (size 10, rectangle) at (35, 51)
+  blue (size 15, rectangle) at (38, 51)
+  yellow (size 18, rectangle) at (61, 50)
+  blue (size 20, irregular) at (56, 6)
+  black (size 43, irregular) at (12, 35)
+  dark_gray (size 66, rectangle) at (61, 29)
+  black (size 76, irregular) at (57, 5)
+  black (size 112, irregular) at (61, 38)
+  black (size 208, rectangle) at (25, 1)
+  dark_gray (size 892, irregular) at (34, 34)
+ ***
+
+*** ANALYZER: Call #9 at action 35 (29 chars response) ***
+
+*** ANALYZER: Call #10 at action 35 (29 chars response) ***
+
+*** ANALYZER: Call #11 at action 35 (2761 chars response) ***
+
+*** PLAN: Try moving RIGHT first from (35,51) — if it works we're aligned at col 56 with the first red target and only need 5 down moves. If blocked, immediately pivot to going DOWN repeatedly (5 moves to row 6 ***
+
+=== TURN 36 | ACTIONS=36 | SCORE=0 | MODE=QUEUE ===
+GOAL: (none)
+STEP: 1/5
+OBSERVATION: ACTION4: BLOCKED
+ACTIONS: ['ACTION4']
+RESULTS:
+  ACTION4: BLOCKED
+NOTES: Changes: 2 cells
+Symbolic Diff:
+  yellow: size 18->16
+  dark_gray: size 66->68
+Objects:
+  white (size 3, irregular) at (31, 21)
+  blue (size 4, square) at (59, 3)
+  red (size 4, square) at (61, 56)
+  red (size 4, square) at (61, 59)
+  red (size 4, square) at (61, 62)
+  blue (size 5, irregular) at (11, 36)
+  orange (size 10, rectangle) at (35, 51)
+  blue (size 15, rectangle) at (38, 51)
+  yellow (size 16, rectangle) at (61, 50)
+  blue (size 20, irregular) at (56, 6)
+  black (size 43, irregular) at (12, 35)
+  dark_gray (size 68, rectangle) at (61, 29)
+  black (size 76, irregular) at (57, 5)
+  black (size 112, irregular) at (61, 38)
+  black (size 208, rectangle) at (25, 1)
+  dark_gray (size 892, irregular) at (34, 34)
+
+=== END TURN 36 ===
+
+=== TURN 37 | ACTIONS=37 | SCORE=0 | MODE=QUEUE ===
+GOAL: (none)
+STEP: 2/5
+OBSERVATION: ACTION2: 52 cells changed
+ACTIONS: ['ACTION2']
+RESULTS:
+  ACTION2: 52 cells changed
+NOTES: Changes: 52 cells
+Symbolic Diff:
+  orange: center {'row': 35, 'col': 51}->{'row': 40, 'col': 51}
+  blue: center {'row': 38, 'col': 51}->{'row': 43, 'col': 51}
+  yellow: center {'row': 61, 'col': 50}->{'row': 61, 'col': 51}, size 16->14
+  dark_gray: center {'row': 61, 'col': 29}->{'row': 61, 'col': 30}, size 68->70
+  dark_gray: 
+Objects:
+  white (size 3, irregular) at (31, 21)
+  blue (size 4, square) at (59, 3)
+  red (size 4, square) at (61, 56)
+  red (size 4, square) at (61, 59)
+  red (size 4, square) at (61, 62)
+  blue (size 5, irregular) at (11, 36)
+  orange (size 10, rectangle) at (40, 51)
+  yellow (size 14, rectangle) at (61, 51)
+  blue (size 15, rectangle) at (43, 51)
+  blue (size 20, irregular) at (56, 6)
+  black (size 43, irregular) at (12, 35)
+  dark_gray (size 70, rectangle) at (61, 30)
+  black (size 76, irregular) at (57, 5)
+  black (size 112, irregular) at (61, 38)
+  black (size 208, rectangle) at (25, 1)
+  dark_gray (size 892, irregular) at (34, 34)
+
+=== END TURN 37 ===
+
+=== TURN 38 | ACTIONS=38 | SCORE=0 | MODE=QUEUE ===
+GOAL: (none)
+STEP: 3/5
+OBSERVATION: ACTION2: 52 cells changed
+ACTIONS: ['ACTION2']
+RESULTS:
+  ACTION2: 52 cells changed
+NOTES: Changes: 52 cells
+Symbolic Diff:
+  orange: center {'row': 40, 'col': 51}->{'row': 45, 'col': 51}
+  yellow: size 14->12
+  blue: center {'row': 43, 'col': 51}->{'row': 48, 'col': 51}
+  dark_gray: size 70->72
+  dark_gray: 
+Objects:
+  white (size 3, irregular) at (31, 21)
+  blue (size 4, square) at (59, 3)
+  red (size 4, square) at (61, 56)
+  red (size 4, square) at (61, 59)
+  red (size 4, square) at (61, 62)
+  blue (size 5, irregular) at (11, 36)
+  orange (size 10, rectangle) at (45, 51)
+  yellow (size 12, rectangle) at (61, 51)
+  blue (size 15, rectangle) at (48, 51)
+  blue (size 20, irregular) at (56, 6)
+  black (size 43, irregular) at (12, 35)
+  dark_gray (size 72, rectangle) at (61, 30)
+  black (size 76, irregular) at (57, 5)
+  black (size 112, irregular) at (61, 38)
+  black (size 208, rectangle) at (25, 1)
+  dark_gray (size 892, irregular) at (34, 34)
+
+=== END TURN 38 ===
+
+=== TURN 39 | ACTIONS=39 | SCORE=0 | MODE=QUEUE ===
+GOAL: (none)
+STEP: 4/5
+OBSERVATION: ACTION2: BLOCKED
+ACTIONS: ['ACTION2']
+RESULTS:
+  ACTION2: BLOCKED
+NOTES: Changes: 2 cells
+Symbolic Diff:
+  yellow: center {'row': 61, 'col': 51}->{'row': 61, 'col': 52}, size 12->10
+  dark_gray: center {'row': 61, 'col': 30}->{'row': 61, 'col': 31}, size 72->74
+Objects:
+  white (size 3, irregular) at (31, 21)
+  blue (size 4, square) at (59, 3)
+  red (size 4, square) at (61, 56)
+  red (size 4, square) at (61, 59)
+  red (size 4, square) at (61, 62)
+  blue (size 5, irregular) at (11, 36)
+  orange (size 10, rectangle) at (45, 51)
+  yellow (size 10, rectangle) at (61, 52)
+  blue (size 15, rectangle) at (48, 51)
+  blue (size 20, irregular) at (56, 6)
+  black (size 43, irregular) at (12, 35)
+  dark_gray (size 74, rectangle) at (61, 31)
+  black (size 76, irregular) at (57, 5)
+  black (size 112, irregular) at (61, 38)
+  black (size 208, rectangle) at (25, 1)
+  dark_gray (size 892, irregular) at (34, 34)
+
+=== END TURN 39 ===
+
+=== TURN 40 | ACTIONS=40 | SCORE=0 | MODE=QUEUE ===
+GOAL: (none)
+STEP: 5/5
+OBSERVATION: ACTION2: BLOCKED
+ACTIONS: ['ACTION2']
+RESULTS:
+  ACTION2: BLOCKED
+NOTES: Changes: 2 cells
+Symbolic Diff:
+  yellow: size 10->8
+  dark_gray: size 74->76
+Objects:
+  white (size 3, irregular) at (31, 21)
+  blue (size 4, square) at (59, 3)
+  red (size 4, square) at (61, 56)
+  red (size 4, square) at (61, 59)
+  red (size 4, square) at (61, 62)
+  blue (size 5, irregular) at (11, 36)
+  yellow (size 8, rectangle) at (61, 52)
+  orange (size 10, rectangle) at (45, 51)
+  blue (size 15, rectangle) at (48, 51)
+  blue (size 20, irregular) at (56, 6)
+  black (size 43, irregular) at (12, 35)
+  black (size 76, irregular) at (57, 5)
+  dark_gray (size 76, rectangle) at (61, 31)
+  black (size 112, irregular) at (61, 38)
+  black (size 208, rectangle) at (25, 1)
+  dark_gray (size 892, irregular) at (34, 34)
+
+=== END TURN 40 ===
+
+*** STATE_SNAPSHOT: Score=0 | Actions=40/200 | Deaths=0
+Objects:
+  white (size 3, irregular) at (31, 21)
+  blue (size 4, square) at (59, 3)
+  red (size 4, square) at (61, 56)
+  red (size 4, square) at (61, 59)
+  red (size 4, square) at (61, 62)
+  blue (size 5, irregular) at (11, 36)
+  yellow (size 8, rectangle) at (61, 52)
+  orange (size 10, rectangle) at (45, 51)
+  blue (size 15, rectangle) at (48, 51)
+  blue (size 20, irregular) at (56, 6)
+  black (size 43, irregular) at (12, 35)
+  black (size 76, irregular) at (57, 5)
+  dark_gray (size 76, rectangle) at (61, 31)
+  black (size 112, irregular) at (61, 38)
+  black (size 208, rectangle) at (25, 1)
+  dark_gray (size 892, irregular) at (34, 34)
+ ***
+
+*** ANALYZER: Call #12 at action 40 (29 chars response) ***
+
+*** ANALYZER: Call #13 at action 40 (3183 chars response) ***
+
+*** PLAN: RESET the game immediately to get a fresh timer. After reset, the piece returns to ~(45, 36). Try going DOWN first (to row 55-60 if possible) before heading RIGHT toward the red targets at col 56+. Th ***
+
+=== TURN 41 | ACTIONS=41 | SCORE=0 | MODE=QUEUE ===
+GOAL: (none)
+STEP: 1/5
+OBSERVATION: RESET: 134 cells changed
+ACTIONS: ['RESET']
+RESULTS:
+  RESET: 134 cells changed
+NOTES: Changes: 134 cells
+Symbolic Diff:
+  blue: center {'row': 59, 'col': 3}->{'row': 59, 'col': 7}
+  yellow: disappeared
+  orange: center {'row': 45, 'col': 51}->{'row': 45, 'col': 36}
+  blue: center {'row': 48, 'col': 51}->{'row': 48, 'col': 36}
+  blue: center {'row': 56, 'col': 6}->{'row': 56, 'col': 4}
+Objects:
+  white (size 3, irregular) at (31, 21)
+  blue (size 4, square) at (59, 7)
+  red (size 4, square) at (61, 56)
+  red (size 4, square) at (61, 59)
+  red (size 4, square) at (61, 62)
+  blue (size 5, irregular) at (11, 36)
+  orange (size 10, rectangle) at (45, 36)
+  blue (size 15, rectangle) at (48, 36)
+  blue (size 20, irregular) at (56, 4)
+  black (size 43, irregular) at (12, 35)
+  black (size 76, irregular) at (57, 5)
+  yellow (size 84, rectangle) at (61, 33)
+  black (size 112, irregular) at (61, 38)
+  black (size 208, rectangle) at (25, 1)
+  dark_gray (size 892, irregular) at (34, 35)
+
+=== END TURN 41 ===
+
+*** STATE_SNAPSHOT: Score=0 | Actions=41/200 | Deaths=0
+Objects:
+  white (size 3, irregular) at (31, 21)
+  blue (size 4, square) at (59, 7)
+  red (size 4, square) at (61, 56)
+  red (size 4, square) at (61, 59)
+  red (size 4, square) at (61, 62)
+  blue (size 5, irregular) at (11, 36)
+  orange (size 10, rectangle) at (45, 36)
+  blue (size 15, rectangle) at (48, 36)
+  blue (size 20, irregular) at (56, 4)
+  black (size 43, irregular) at (12, 35)
+  black (size 76, irregular) at (57, 5)
+  yellow (size 84, rectangle) at (61, 33)
+  black (size 112, irregular) at (61, 38)
+  black (size 208, rectangle) at (25, 1)
+  dark_gray (size 892, irregular) at (34, 35)
+ ***
+
+*** ANALYZER: Call #14 at action 41 (29 chars response) ***
+
+*** ANALYZER: Call #15 at action 41 (29 chars response) ***
+
+*** ANALYZER: Call #16 at action 41 (2568 chars response) ***
+
+*** PLAN: Go DOWN from (45,36) to test the untested downward path toward row 60. If successful, continue down to row ~60, then go RIGHT toward the red targets at col 56. If DOWN is blocked, go RIGHT 2 steps fir ***
+
+=== TURN 42 | ACTIONS=42 | SCORE=0 | MODE=QUEUE ===
+GOAL: (none)
+STEP: 1/5
+OBSERVATION: ACTION2: BLOCKED
+ACTIONS: ['ACTION2']
+RESULTS:
+  ACTION2: BLOCKED
+NOTES: Changes: 2 cells
+Symbolic Diff:
+  yellow: center {'row': 61, 'col': 33}->{'row': 61, 'col': 34}, size 84->82
+  dark_gray: appeared
+Objects:
+  dark_gray (size 2, vertical_line) at (61, 13)
+  white (size 3, irregular) at (31, 21)
+  blue (size 4, square) at (59, 7)
+  red (size 4, square) at (61, 56)
+  red (size 4, square) at (61, 59)
+  red (size 4, square) at (61, 62)
+  blue (size 5, irregular) at (11, 36)
+  orange (size 10, rectangle) at (45, 36)
+  blue (size 15, rectangle) at (48, 36)
+  blue (size 20, irregular) at (56, 4)
+  black (size 43, irregular) at (12, 35)
+  black (size 76, irregular) at (57, 5)
+  yellow (size 82, rectangle) at (61, 34)
+  black (size 112, irregular) at (61, 38)
+  black (size 208, rectangle) at (25, 1)
+  dark_gray (size 892, irregular) at (34, 35)
+
+=== END TURN 42 ===
+
+=== TURN 43 | ACTIONS=43 | SCORE=0 | MODE=QUEUE ===
+GOAL: (none)
+STEP: 2/5
+OBSERVATION: ACTION2: BLOCKED
+ACTIONS: ['ACTION2']
+RESULTS:
+  ACTION2: BLOCKED
+NOTES: Changes: 2 cells
+Symbolic Diff:
+  dark_gray: size 2->4
+  yellow: size 82->80
+Objects:
+  white (size 3, irregular) at (31, 21)
+  blue (size 4, square) at (59, 7)
+  dark_gray (size 4, square) at (61, 13)
+  red (size 4, square) at (61, 56)
+  red (size 4, square) at (61, 59)
+  red (size 4, square) at (61, 62)
+  blue (size 5, irregular) at (11, 36)
+  orange (size 10, rectangle) at (45, 36)
+  blue (size 15, rectangle) at (48, 36)
+  blue (size 20, irregular) at (56, 4)
+  black (size 43, irregular) at (12, 35)
+  black (size 76, irregular) at (57, 5)
+  yellow (size 80, rectangle) at (61, 34)
+  black (size 112, irregular) at (61, 38)
+  black (size 208, rectangle) at (25, 1)
+  dark_gray (size 892, irregular) at (34, 35)
+
+=== END TURN 43 ===
+
+=== TURN 44 | ACTIONS=44 | SCORE=0 | MODE=QUEUE ===
+GOAL: (none)
+STEP: 3/5
+OBSERVATION: ACTION2: BLOCKED
+ACTIONS: ['ACTION2']
+RESULTS:
+  ACTION2: BLOCKED
+NOTES: Changes: 2 cells
+Symbolic Diff:
+  dark_gray: center {'row': 61, 'col': 13}->{'row': 61, 'col': 14}, size 4->6
+  yellow: center {'row': 61, 'col': 34}->{'row': 61, 'col': 35}, size 80->78
+Objects:
+  white (size 3, irregular) at (31, 21)
+  blue (size 4, square) at (59, 7)
+  red (size 4, square) at (61, 56)
+  red (size 4, square) at (61, 59)
+  red (size 4, square) at (61, 62)
+  blue (size 5, irregular) at (11, 36)
+  dark_gray (size 6, rectangle) at (61, 14)
+  orange (size 10, rectangle) at (45, 36)
+  blue (size 15, rectangle) at (48, 36)
+  blue (size 20, irregular) at (56, 4)
+  black (size 43, irregular) at (12, 35)
+  black (size 76, irregular) at (57, 5)
+  yellow (size 78, rectangle) at (61, 35)
+  black (size 112, irregular) at (61, 38)
+  black (size 208, rectangle) at (25, 1)
+  dark_gray (size 892, irregular) at (34, 35)
+
+=== END TURN 44 ===
+
+=== TURN 45 | ACTIONS=45 | SCORE=0 | MODE=QUEUE ===
+GOAL: (none)
+STEP: 4/5
+OBSERVATION: ACTION4: 52 cells changed
+ACTIONS: ['ACTION4']
+RESULTS:
+  ACTION4: 52 cells changed
+NOTES: Changes: 52 cells
+Symbolic Diff:
+  dark_gray: size 6->8
+  orange: center {'row': 45, 'col': 36}->{'row': 45, 'col': 41}
+  blue: center {'row': 48, 'col': 36}->{'row': 48, 'col': 41}
+  yellow: size 78->76
+  dark_gray: center {'row': 34, 'col': 35}->{'row': 34, 'col': 34}
+Objects:
+  white (size 3, irregular) at (31, 21)
+  blue (size 4, square) at (59, 7)
+  red (size 4, square) at (61, 56)
+  red (size 4, square) at (61, 59)
+  red (size 4, square) at (61, 62)
+  blue (size 5, irregular) at (11, 36)
+  dark_gray (size 8, rectangle) at (61, 14)
+  orange (size 10, rectangle) at (45, 41)
+  blue (size 15, rectangle) at (48, 41)
+  blue (size 20, irregular) at (56, 4)
+  black (size 43, irregular) at (12, 35)
+  black (size 76, irregular) at (57, 5)
+  yellow (size 76, rectangle) at (61, 35)
+  black (size 112, irregular) at (61, 38)
+  black (size 208, rectangle) at (25, 1)
+  dark_gray (size 892, irregular) at (34, 34)
+
+=== END TURN 45 ===
+
+=== TURN 46 | ACTIONS=46 | SCORE=0 | MODE=QUEUE ===
+GOAL: (none)
+STEP: 5/5
+OBSERVATION: ACTION4: 52 cells changed
+ACTIONS: ['ACTION4']
+RESULTS:
+  ACTION4: 52 cells changed
+NOTES: Changes: 52 cells
+Symbolic Diff:
+  dark_gray: center {'row': 61, 'col': 14}->{'row': 61, 'col': 15}, size 8->10
+  orange: center {'row': 45, 'col': 41}->{'row': 45, 'col': 46}
+  blue: center {'row': 48, 'col': 41}->{'row': 48, 'col': 46}
+  yellow: center {'row': 61, 'col': 35}->{'row': 61, 'col': 36}, size 76->74
+  dark_gray: 
+Objects:
+  white (size 3, irregular) at (31, 21)
+  blue (size 4, square) at (59, 7)
+  red (size 4, square) at (61, 56)
+  red (size 4, square) at (61, 59)
+  red (size 4, square) at (61, 62)
+  blue (size 5, irregular) at (11, 36)
+  orange (size 10, rectangle) at (45, 46)
+  dark_gray (size 10, rectangle) at (61, 15)
+  blue (size 15, rectangle) at (48, 46)
+  blue (size 20, irregular) at (56, 4)
+  black (size 43, irregular) at (12, 35)
+  yellow (size 74, rectangle) at (61, 36)
+  black (size 76, irregular) at (57, 5)
+  black (size 112, irregular) at (61, 38)
+  black (size 208, rectangle) at (25, 1)
+  dark_gray (size 892, irregular) at (34, 34)
+
+=== END TURN 46 ===
+
+*** STATE_SNAPSHOT: Score=0 | Actions=46/200 | Deaths=0
+Objects:
+  white (size 3, irregular) at (31, 21)
+  blue (size 4, square) at (59, 7)
+  red (size 4, square) at (61, 56)
+  red (size 4, square) at (61, 59)
+  red (size 4, square) at (61, 62)
+  blue (size 5, irregular) at (11, 36)
+  orange (size 10, rectangle) at (45, 46)
+  dark_gray (size 10, rectangle) at (61, 15)
+  blue (size 15, rectangle) at (48, 46)
+  blue (size 20, irregular) at (56, 4)
+  black (size 43, irregular) at (12, 35)
+  yellow (size 74, rectangle) at (61, 36)
+  black (size 76, irregular) at (57, 5)
+  black (size 112, irregular) at (61, 38)
+  black (size 208, rectangle) at (25, 1)
+  dark_gray (size 892, irregular) at (34, 34)
+ ***
+
+*** ANALYZER: Call #17 at action 46 (29 chars response) ***
+
+*** ANALYZER: Call #18 at action 46 (29 chars response) ***
+
+*** ANALYZER: Call #19 at action 46 (29 chars response) ***
+
+*** ANALYZER: Call #20 at action 46 (2399 chars response) ***
+
+*** PLAN: Test DOWN from current position (45, 46). If successful, continue DOWN toward row 60, then pivot RIGHT toward the red targets at cols 56-62. If DOWN is blocked, step LEFT to (45, 41) and try DOWN agai ***
+
+=== TURN 47 | ACTIONS=47 | SCORE=0 | MODE=QUEUE ===
+GOAL: (none)
+STEP: 1/5
+OBSERVATION: ACTION2: BLOCKED
+ACTIONS: ['ACTION2']
+RESULTS:
+  ACTION2: BLOCKED
+NOTES: Changes: 2 cells
+Symbolic Diff:
+  dark_gray: size 10->12
+  yellow: size 74->72
+Objects:
+  white (size 3, irregular) at (31, 21)
+  blue (size 4, square) at (59, 7)
+  red (size 4, square) at (61, 56)
+  red (size 4, square) at (61, 59)
+  red (size 4, square) at (61, 62)
+  blue (size 5, irregular) at (11, 36)
+  orange (size 10, rectangle) at (45, 46)
+  dark_gray (size 12, rectangle) at (61, 15)
+  blue (size 15, rectangle) at (48, 46)
+  blue (size 20, irregular) at (56, 4)
+  black (size 43, irregular) at (12, 35)
+  yellow (size 72, rectangle) at (61, 36)
+  black (size 76, irregular) at (57, 5)
+  black (size 112, irregular) at (61, 38)
+  black (size 208, rectangle) at (25, 1)
+  dark_gray (size 892, irregular) at (34, 34)
+
+=== END TURN 47 ===
+
+=== TURN 48 | ACTIONS=48 | SCORE=0 | MODE=QUEUE ===
+GOAL: (none)
+STEP: 2/5
+OBSERVATION: ACTION2: BLOCKED
+ACTIONS: ['ACTION2']
+RESULTS:
+  ACTION2: BLOCKED
+NOTES: Changes: 2 cells
+Symbolic Diff:
+  dark_gray: center {'row': 61, 'col': 15}->{'row': 61, 'col': 16}, size 12->14
+  yellow: center {'row': 61, 'col': 36}->{'row': 61, 'col': 37}, size 72->70
+Objects:
+  white (size 3, irregular) at (31, 21)
+  blue (size 4, square) at (59, 7)
+  red (size 4, square) at (61, 56)
+  red (size 4, square) at (61, 59)
+  red (size 4, square) at (61, 62)
+  blue (size 5, irregular) at (11, 36)
+  orange (size 10, rectangle) at (45, 46)
+  dark_gray (size 14, rectangle) at (61, 16)
+  blue (size 15, rectangle) at (48, 46)
+  blue (size 20, irregular) at (56, 4)
+  black (size 43, irregular) at (12, 35)
+  yellow (size 70, rectangle) at (61, 37)
+  black (size 76, irregular) at (57, 5)
+  black (size 112, irregular) at (61, 38)
+  black (size 208, rectangle) at (25, 1)
+  dark_gray (size 892, irregular) at (34, 34)
+
+=== END TURN 48 ===
+
+=== TURN 49 | ACTIONS=49 | SCORE=0 | MODE=QUEUE ===
+GOAL: (none)
+STEP: 3/5
+OBSERVATION: ACTION2: BLOCKED
+ACTIONS: ['ACTION2']
+RESULTS:
+  ACTION2: BLOCKED
+NOTES: Changes: 2 cells
+Symbolic Diff:
+  dark_gray: size 14->16
+  yellow: size 70->68
+Objects:
+  white (size 3, irregular) at (31, 21)
+  blue (size 4, square) at (59, 7)
+  red (size 4, square) at (61, 56)
+  red (size 4, square) at (61, 59)
+  red (size 4, square) at (61, 62)
+  blue (size 5, irregular) at (11, 36)
+  orange (size 10, rectangle) at (45, 46)
+  blue (size 15, rectangle) at (48, 46)
+  dark_gray (size 16, rectangle) at (61, 16)
+  blue (size 20, irregular) at (56, 4)
+  black (size 43, irregular) at (12, 35)
+  yellow (size 68, rectangle) at (61, 37)
+  black (size 76, irregular) at (57, 5)
+  black (size 112, irregular) at (61, 38)
+  black (size 208, rectangle) at (25, 1)
+  dark_gray (size 892, irregular) at (34, 34)
+
+=== END TURN 49 ===
+
+=== TURN 50 | ACTIONS=50 | SCORE=0 | MODE=QUEUE ===
+GOAL: (none)
+STEP: 4/5
+OBSERVATION: ACTION4: 52 cells changed
+ACTIONS: ['ACTION4']
+RESULTS:
+  ACTION4: 52 cells changed
+NOTES: Changes: 52 cells
+Symbolic Diff:
+  orange: center {'row': 45, 'col': 46}->{'row': 45, 'col': 51}
+  blue: center {'row': 48, 'col': 46}->{'row': 48, 'col': 51}
+  dark_gray: center {'row': 61, 'col': 16}->{'row': 61, 'col': 17}, size 16->18
+  yellow: center {'row': 61, 'col': 37}->{'row': 61, 'col': 38}, size 68->66
+  dark_gray: 
+Objects:
+  white (size 3, irregular) at (31, 21)
+  blue (size 4, square) at (59, 7)
+  red (size 4, square) at (61, 56)
+  red (size 4, square) at (61, 59)
+  red (size 4, square) at (61, 62)
+  blue (size 5, irregular) at (11, 36)
+  orange (size 10, rectangle) at (45, 51)
+  blue (size 15, rectangle) at (48, 51)
+  dark_gray (size 18, rectangle) at (61, 17)
+  blue (size 20, irregular) at (56, 4)
+  black (size 43, irregular) at (12, 35)
+  yellow (size 66, rectangle) at (61, 38)
+  black (size 76, irregular) at (57, 5)
+  black (size 112, irregular) at (61, 38)
+  black (size 208, rectangle) at (25, 1)
+  dark_gray (size 892, irregular) at (34, 34)
+
+=== END TURN 50 ===
+
+=== TURN 51 | ACTIONS=51 | SCORE=0 | MODE=QUEUE ===
+GOAL: (none)
+STEP: 5/5
+OBSERVATION: ACTION4: BLOCKED
+ACTIONS: ['ACTION4']
+RESULTS:
+  ACTION4: BLOCKED
+NOTES: Changes: 2 cells
+Symbolic Diff:
+  dark_gray: size 18->20
+  yellow: size 66->64
+Objects:
+  white (size 3, irregular) at (31, 21)
+  blue (size 4, square) at (59, 7)
+  red (size 4, square) at (61, 56)
+  red (size 4, square) at (61, 59)
+  red (size 4, square) at (61, 62)
+  blue (size 5, irregular) at (11, 36)
+  orange (size 10, rectangle) at (45, 51)
+  blue (size 15, rectangle) at (48, 51)
+  blue (size 20, irregular) at (56, 4)
+  dark_gray (size 20, rectangle) at (61, 17)
+  black (size 43, irregular) at (12, 35)
+  yellow (size 64, rectangle) at (61, 38)
+  black (size 76, irregular) at (57, 5)
+  black (size 112, irregular) at (61, 38)
+  black (size 208, rectangle) at (25, 1)
+  dark_gray (size 892, irregular) at (34, 34)
+
+=== END TURN 51 ===
+
+*** STATE_SNAPSHOT: Score=0 | Actions=51/200 | Deaths=0
+Objects:
+  white (size 3, irregular) at (31, 21)
+  blue (size 4, square) at (59, 7)
+  red (size 4, square) at (61, 56)
+  red (size 4, square) at (61, 59)
+  red (size 4, square) at (61, 62)
+  blue (size 5, irregular) at (11, 36)
+  orange (size 10, rectangle) at (45, 51)
+  blue (size 15, rectangle) at (48, 51)
+  blue (size 20, irregular) at (56, 4)
+  dark_gray (size 20, rectangle) at (61, 17)
+  black (size 43, irregular) at (12, 35)
+  yellow (size 64, rectangle) at (61, 38)
+  black (size 76, irregular) at (57, 5)
+  black (size 112, irregular) at (61, 38)
+  black (size 208, rectangle) at (25, 1)
+  dark_gray (size 892, irregular) at (34, 34)
+ ***
+
+*** ANALYZER: Call #21 at action 51 (29 chars response) ***
+
+*** ANALYZER: Call #22 at action 51 (29 chars response) ***
+
+*** ANALYZER: Call #23 at action 51 (29 chars response) ***
+
+*** ANALYZER: Call #24 at action 51 (29 chars response) ***
+
+*** ANALYZER: Call #25 at action 51 (29 chars response) ***
+

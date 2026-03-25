@@ -1,0 +1,176 @@
+=== GAME: ls20 | MAX_ACTIONS=200 ===
+
+=== PROBE RESULTS ===
+  ACTION1: 52 cells changed
+    orange: center {'row': 45, 'col': 36}->{'row': 40, 'col': 36}
+    blue: center {'row': 48, 'col': 36}->{'row': 43, 'col': 36}
+    yellow: center {'row': 61, 'col': 33}->{'row': 61, 'col': 34}, size 84->82
+    dark_gray: 
+  ACTION2: 52 cells changed
+    dark_gray: size 2->4
+    orange: center {'row': 40, 'col': 36}->{'row': 45, 'col': 36}
+    blue: center {'row': 43, 'col': 36}->{'row': 48, 'col': 36}
+    yellow: size 82->80
+    dark_gray: 
+  ACTION3: 52 cells changed
+    dark_gray: center {'row': 61, 'col': 13}->{'row': 61, 'col': 14}, size 4->6
+    orange: center {'row': 45, 'col': 36}->{'row': 45, 'col': 31}
+    blue: center {'row': 48, 'col': 36}->{'row': 48, 'col': 31}
+    yellow: center {'row': 61, 'col': 34}->{'row': 61, 'col': 35}, size 80->78
+    dark_gray: 
+  ACTION4: 52 cells changed
+    dark_gray: size 6->8
+    orange: center {'row': 45, 'col': 31}->{'row': 45, 'col': 36}
+    blue: center {'row': 48, 'col': 31}->{'row': 48, 'col': 36}
+    yellow: size 78->76
+    dark_gray:
+=== END PROBE ===
+
+*** STATE_SNAPSHOT: Score=0 | Actions=4/200 | Deaths=0
+Objects:
+  white (size 3, irregular) at (31, 21)
+  blue (size 4, square) at (59, 7)
+  red (size 4, square) at (61, 56)
+  red (size 4, square) at (61, 59)
+  red (size 4, square) at (61, 62)
+  blue (size 5, irregular) at (11, 36)
+  dark_gray (size 8, rectangle) at (61, 14)
+  orange (size 10, rectangle) at (45, 36)
+  blue (size 15, rectangle) at (48, 36)
+  blue (size 20, irregular) at (56, 4)
+  black (size 43, irregular) at (12, 35)
+  black (size 76, irregular) at (57, 5)
+  yellow (size 76, rectangle) at (61, 35)
+  black (size 112, irregular) at (61, 38)
+  black (size 208, rectangle) at (25, 1)
+  dark_gray (size 892, irregular) at (34, 35)
+ ***
+
+*** ANALYZER: Call #1 at action 4 (2685 chars response) ***
+
+*** PLAN: Move northwest toward the white object at (row 31, col 21). Take 3 actions: UP, UP, LEFT to approach efficiently while conserving energy. After these 3 moves, reassess the game state to see if any new ***
+
+=== TURN 5 | ACTIONS=5 | SCORE=0 | MODE=QUEUE ===
+GOAL: (none)
+STEP: 1/3
+OBSERVATION: ACTION1: 52 cells changed
+ACTIONS: ['ACTION1']
+RESULTS:
+  ACTION1: 52 cells changed
+NOTES: Changes: 52 cells
+Symbolic Diff:
+Objects:
+  white (size 3, irregular) at (31, 21)
+  blue (size 4, square) at (59, 7)
+  red (size 4, square) at (61, 56)
+  red (size 4, square) at (61, 59)
+  red (size 4, square) at (61, 62)
+  blue (size 5, irregular) at (11, 36)
+  orange (size 10, rectangle) at (40, 36)
+  dark_gray (size 10, rectangle) at (61, 15)
+  blue (size 15, rectangle) at (43, 36)
+  blue (size 20, irregular) at (56, 4)
+  black (size 43, irregular) at (12, 35)
+  yellow (size 74, rectangle) at (61, 36)
+  black (size 76, irregular) at (57, 5)
+  black (size 112, irregular) at (61, 38)
+  black (size 208, rectangle) at (25, 1)
+  dark_gray (size 892, irregular) at (34, 35)
+
+=== END TURN 5 ===
+
+=== TURN 6 | ACTIONS=6 | SCORE=0 | MODE=QUEUE ===
+GOAL: (none)
+STEP: 2/3
+OBSERVATION: ACTION1: 52 cells changed
+ACTIONS: ['ACTION1']
+RESULTS:
+  ACTION1: 52 cells changed
+NOTES: Changes: 52 cells
+Symbolic Diff:
+  orange: center {'row': 40, 'col': 36}->{'row': 35, 'col': 36}
+  dark_gray: size 10->12
+  blue: center {'row': 43, 'col': 36}->{'row': 38, 'col': 36}
+  yellow: size 74->72
+  dark_gray: 
+Objects:
+  white (size 3, irregular) at (31, 21)
+  blue (size 4, square) at (59, 7)
+  red (size 4, square) at (61, 56)
+  red (size 4, square) at (61, 59)
+  red (size 4, square) at (61, 62)
+  blue (size 5, irregular) at (11, 36)
+  orange (size 10, rectangle) at (35, 36)
+  dark_gray (size 12, rectangle) at (61, 15)
+  blue (size 15, rectangle) at (38, 36)
+  blue (size 20, irregular) at (56, 4)
+  black (size 43, irregular) at (12, 35)
+  yellow (size 72, rectangle) at (61, 36)
+  black (size 76, irregular) at (57, 5)
+  black (size 112, irregular) at (61, 38)
+  black (size 208, rectangle) at (25, 1)
+  dark_gray (size 892, irregular) at (34, 35)
+
+=== END TURN 6 ===
+
+=== TURN 7 | ACTIONS=7 | SCORE=0 | MODE=QUEUE ===
+GOAL: (none)
+STEP: 3/3
+OBSERVATION: ACTION3: BLOCKED
+ACTIONS: ['ACTION3']
+RESULTS:
+  ACTION3: BLOCKED
+NOTES: Changes: 2 cells
+Symbolic Diff:
+  dark_gray: center {'row': 61, 'col': 15}->{'row': 61, 'col': 16}, size 12->14
+  yellow: center {'row': 61, 'col': 36}->{'row': 61, 'col': 37}, size 72->70
+Objects:
+  white (size 3, irregular) at (31, 21)
+  blue (size 4, square) at (59, 7)
+  red (size 4, square) at (61, 56)
+  red (size 4, square) at (61, 59)
+  red (size 4, square) at (61, 62)
+  blue (size 5, irregular) at (11, 36)
+  orange (size 10, rectangle) at (35, 36)
+  dark_gray (size 14, rectangle) at (61, 16)
+  blue (size 15, rectangle) at (38, 36)
+  blue (size 20, irregular) at (56, 4)
+  black (size 43, irregular) at (12, 35)
+  yellow (size 70, rectangle) at (61, 37)
+  black (size 76, irregular) at (57, 5)
+  black (size 112, irregular) at (61, 38)
+  black (size 208, rectangle) at (25, 1)
+  dark_gray (size 892, irregular) at (34, 35)
+
+=== END TURN 7 ===
+
+*** STATE_SNAPSHOT: Score=0 | Actions=7/200 | Deaths=0
+Objects:
+  white (size 3, irregular) at (31, 21)
+  blue (size 4, square) at (59, 7)
+  red (size 4, square) at (61, 56)
+  red (size 4, square) at (61, 59)
+  red (size 4, square) at (61, 62)
+  blue (size 5, irregular) at (11, 36)
+  orange (size 10, rectangle) at (35, 36)
+  dark_gray (size 14, rectangle) at (61, 16)
+  blue (size 15, rectangle) at (38, 36)
+  blue (size 20, irregular) at (56, 4)
+  black (size 43, irregular) at (12, 35)
+  yellow (size 70, rectangle) at (61, 37)
+  black (size 76, irregular) at (57, 5)
+  black (size 112, irregular) at (61, 38)
+  black (size 208, rectangle) at (25, 1)
+  dark_gray (size 892, irregular) at (34, 35)
+ ***
+
+*** ANALYZER: Call #2 at action 7 (28 chars response) ***
+
+*** ANALYZER: Call #3 at action 7 (28 chars response) ***
+
+*** ANALYZER: Call #4 at action 7 (28 chars response) ***
+
+*** ANALYZER: Call #5 at action 7 (28 chars response) ***
+
+*** ANALYZER: Call #6 at action 7 (28 chars response) ***
+
