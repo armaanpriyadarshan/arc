@@ -90,9 +90,29 @@ The most effective approach so far: **observe-then-act with auto-probe, symbolic
 - Energy/timer depletion is noticed but not acted on with urgency
 - Inconsistent across runs — initial interpretation can vary
 
+## Game-Agnostic Principle
+
+**The competition evaluates on unknown games. The agent must discover everything through observation. NEVER introduce game-specific knowledge into prompts, code, comments, variable names, or experiment configs.**
+
+Any assumption that happens to be true for one game will break on another. The agent's entire value comes from its ability to generalize. If you find yourself writing something that only makes sense for a specific game, stop — you're leaking knowledge the agent should discover on its own.
+
+### Violations to avoid
+
+- **Color semantics.** Don't assume what colors represent. No "color 1 = wall", "the green cells are safe", "red means danger". Colors are just integers 0–15 with no inherent meaning across games.
+- **Avatar / player assumptions.** Don't assume there is a player-controlled avatar, what it looks like, how big it is, or which object it is. Some games may have no avatar at all — the player might click cells or control the whole grid.
+- **Entity labels.** Don't label objects as "enemies", "items", "doors", "keys", "coins", "health pickups" in prompts or code. Use neutral terms like "object at (x,y)" or "color-3 region".
+- **Mechanic assumptions.** Don't assume the game has health, energy, score, lives, timers, gravity, collision, or any specific mechanic. Don't tell the model "avoid enemies" or "collect items".
+- **Goal assumptions.** Don't assume the win condition. Don't say "reach the exit" or "clear all enemies". The agent must figure out what winning means.
+- **Spatial assumptions.** Don't assume top-down vs side-scrolling, grid-based vs free movement, or that actions map to specific directions consistently across games.
+
+### What to do instead
+
+- Let the LLM **form and test its own hypotheses** about game semantics.
+- Use **neutral, observation-based language** in prompts: "observe changes", "describe what you see", "what happened after that action".
+
 ## Design Principles
 
-- **NEVER hardcode game-specific knowledge** into agent code, prompts, or comments. The agent must discover everything through observation. No "player", "wall", "floor", "energy" labels — only what the model infers.
+- **Game-agnostic — see dedicated section above.** No game-specific knowledge anywhere.
 - **Don't hardcode position tracking or entity detection.** The model decides what info it needs. Only raw diffs and symbolic state are computed by code.
 - **Action budget is sacred.** Every action must either gather information or make progress.
 - **LLM calls are expensive.** Use hypothesis-driven action sequences, not LLM-per-action.

@@ -1,0 +1,2276 @@
+2026-03-25 02:38:42,714 | === ACTION #5: ACTION3 ===
+Result: 52 cells changed
+Score: 0 | State: NOT_FINISHED | Actions used: 5/150
+  Changes centered around (47, 32), spanning rows 45-62, cols 17-38. Colors involved: gray(3) +27/-25 cells; blue(9) 15 cells shifted; yellow(B) -2 cells (disappeared); orange(C) 10 cells shifted
+
+LLM OBSERVATION: Board read confirms the lower orange-over-blue stack sits in the gray room around rows 45-49, cols 34-38, with a central black shaft above-left and open gray floor to the left. The white/off-white cluster at [31-33,21-22] is distinct and appears reachable through the left side of the room. Prior four actions all changed the orange/blue stack and nearby gray/yellow cells, strongly suggesting directional movement of a controllable avatar/object rather than global toggles.
+
+VISION SUMMARY (Looker output to Brain):
+{
+  "objects": [
+    {
+      "description": "main room and corridors",
+      "color": "gray",
+      "color_hex": "3",
+      "position": [
+        8,
+        32
+      ],
+      "size": 634,
+      "shape": "irregular",
+      "notes": "Large connected walkable region: top small chamber, vertical corridor, central hall, left spur, lower chamber, and bottom horizontal passage."
+    },
+    {
+      "description": "top black chamber interior",
+      "color": "black",
+      "color_hex": "5",
+      "position": [
+        9,
+        33
+      ],
+      "size": 28,
+      "shape": "rectangle",
+      "notes": "Enclosed dark interior inside the small top room."
+    },
+    {
+      "description": "blue marker in top chamber",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        11,
+        35
+      ],
+      "size": 4,
+      "shape": "L-shape",
+      "notes": "Cells at [11,35],[11,36],[11,37],[12,36]; small blue icon near top center."
+    },
+    {
+      "description": "white marker",
+      "color": "white",
+      "color_hex": "0",
+      "position": [
+        31,
+        22
+      ],
+      "size": 1,
+      "shape": "square",
+      "notes": "Single white cell in the left side of the main room."
+    },
+    {
+      "description": "off-white marker",
+      "color": "off-white",
+      "color_hex": "1",
+      "position": [
+        32,
+        21
+      ],
+      "size": 1,
+      "shape": "square",
+      "notes": "Single off-white cell just down-left of the white marker."
+    },
+    {
+      "description": "off-white marker",
+      "color": "off-white",
+      "color_hex": "1",
+      "position": [
+        32,
+        22
+      ],
+      "size": 1,
+      "shape": "square",
+      "notes": "Single off-white cell directly below the white marker."
+    },
+    {
+      "description": "off-white marker",
+      "color": "off-white",
+      "color_hex": "1",
+      "position": [
+        33,
+        22
+      ],
+      "size": 1,
+      "shape": "square",
+      "notes": "Single off-white cell below [32,22]; together with the other light cells forms a tiny cluster."
+    },
+    {
+      "description": "orange bar",
+      "color": "orange",
+      "color_hex": "C",
+      "position": [
+        45,
+        36
+      ],
+      "size": 10,
+      "shape": "rectangle",
+      "notes": "2x5 orange block centered near the lower middle of the main room."
+    },
+    {
+      "description": "blue bar below orange",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        47,
+        36
+      ],
+      "size": 15,
+      "shape": "rectangle",
+      "notes": "3x5 blue block directly below the orange bar."
+    },
+    {
+      "description": "bottom-left black chamber interior",
+      "color": "black",
+      "color_hex": "5",
+      "position": [
+        53,
+        1
+      ],
+      "size": 52,
+      "shape": "rectangle",
+      "notes": "Dark enclosed area in the lower-left corner."
+    },
+    {
+      "description": "blue marker in bottom-left chamber",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        55,
+        3
+      ],
+      "size": 16,
+      "shape": "irregular",
+      "notes": "Cluster inside the lower-left black chamber; resembles a blocky hooked shape."
+    },
+    {
+      "description": "yellow platform",
+      "color": "yellow",
+      "color_hex": "B",
+      "position": [
+        61,
+        17
+      ],
+      "size": 38,
+      "shape": "line",
+      "notes": "Long horizontal 2-cell-high yellow strip from columns 17-54 on rows 61-62."
+    },
+    {
+      "description": "red markers at lower right",
+      "color": "red",
+      "color_hex": "8",
+      "position": [
+        61,
+        57
+      ],
+      "size": 9,
+      "shape": "irregular",
+      "notes": "Three separated vertical red pairs at cols 57,60,63 across rows 61-62."
+    }
+  ],
+  "spatial_relations": [
+    "The top blue L-shape is inside the small top black chamber and above the main gray room.",
+    "The tiny white/off-white cluster is left of the central vertical black shaft inside the main room.",
+    "The orange bar is directly above the lower blue bar near the bottom center of the main room.",
+    "The bottom-left blue marker is inside the lower-left black chamber and far left of the yellow platform.",
+    "The yellow platform runs along the bottom and is left of the small red markers at the lower right."
+  ],
+  "background": "Dark-gray outer background with black void regions and a large connected gray interior structure.",
+  "changes": [],
+  "scene_summary": "This is a single-frame scene showing a large gray navigable structure with a small top chamber, a central room, and lower passages. Notable interactive-looking elements are the blue icon in the top chamber, a tiny white/off-white cluster in the left interior, an orange-over-blue block near the lower center, a blue shape in the bottom-left chamber, a long yellow platform at the bottom, and small red markers at the lower right."
+}
+
+2026-03-25 02:38:42,894 | === ACTION #6: ACTION3 ===
+Result: 52 cells changed
+Score: 0 | State: NOT_FINISHED | Actions used: 6/150
+  Changes centered around (47, 28), spanning rows 45-62, cols 18-33. Colors involved: gray(3) +27/-25 cells; blue(9) 15 cells shifted; yellow(B) -2 cells (disappeared); orange(C) 10 cells shifted
+
+VISION SUMMARY (Looker output to Brain):
+{
+  "objects": [
+    {
+      "description": "main room and corridors",
+      "color": "gray",
+      "color_hex": "3",
+      "position": [
+        8,
+        32
+      ],
+      "size": 634,
+      "shape": "irregular",
+      "notes": "Large connected walkable region: top small chamber, vertical corridor, central hall, left spur, lower chamber, and bottom horizontal passage."
+    },
+    {
+      "description": "top black chamber interior",
+      "color": "black",
+      "color_hex": "5",
+      "position": [
+        9,
+        33
+      ],
+      "size": 28,
+      "shape": "rectangle",
+      "notes": "Enclosed dark interior inside the small top room."
+    },
+    {
+      "description": "blue marker in top chamber",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        11,
+        35
+      ],
+      "size": 4,
+      "shape": "L-shape",
+      "notes": "Cells at [11,35],[11,36],[11,37],[12,36]; small blue icon near top center."
+    },
+    {
+      "description": "white marker",
+      "color": "white",
+      "color_hex": "0",
+      "position": [
+        31,
+        22
+      ],
+      "size": 1,
+      "shape": "square",
+      "notes": "Single white cell in the left side of the main room."
+    },
+    {
+      "description": "off-white marker",
+      "color": "off-white",
+      "color_hex": "1",
+      "position": [
+        32,
+        21
+      ],
+      "size": 1,
+      "shape": "square",
+      "notes": "Single off-white cell just down-left of the white marker."
+    },
+    {
+      "description": "off-white marker",
+      "color": "off-white",
+      "color_hex": "1",
+      "position": [
+        32,
+        22
+      ],
+      "size": 1,
+      "shape": "square",
+      "notes": "Single off-white cell directly below the white marker."
+    },
+    {
+      "description": "off-white marker",
+      "color": "off-white",
+      "color_hex": "1",
+      "position": [
+        33,
+        22
+      ],
+      "size": 1,
+      "shape": "square",
+      "notes": "Single off-white cell below [32,22]; together with the other light cells forms a tiny cluster."
+    },
+    {
+      "description": "orange bar",
+      "color": "orange",
+      "color_hex": "C",
+      "position": [
+        45,
+        36
+      ],
+      "size": 10,
+      "shape": "rectangle",
+      "notes": "2x5 orange block centered near the lower middle of the main room."
+    },
+    {
+      "description": "blue bar below orange",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        47,
+        36
+      ],
+      "size": 15,
+      "shape": "rectangle",
+      "notes": "3x5 blue block directly below the orange bar."
+    },
+    {
+      "description": "bottom-left black chamber interior",
+      "color": "black",
+      "color_hex": "5",
+      "position": [
+        53,
+        1
+      ],
+      "size": 52,
+      "shape": "rectangle",
+      "notes": "Dark enclosed area in the lower-left corner."
+    },
+    {
+      "description": "blue marker in bottom-left chamber",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        55,
+        3
+      ],
+      "size": 16,
+      "shape": "irregular",
+      "notes": "Cluster inside the lower-left black chamber; resembles a blocky hooked shape."
+    },
+    {
+      "description": "yellow platform",
+      "color": "yellow",
+      "color_hex": "B",
+      "position": [
+        61,
+        17
+      ],
+      "size": 38,
+      "shape": "line",
+      "notes": "Long horizontal 2-cell-high yellow strip from columns 17-54 on rows 61-62."
+    },
+    {
+      "description": "red markers at lower right",
+      "color": "red",
+      "color_hex": "8",
+      "position": [
+        61,
+        57
+      ],
+      "size": 9,
+      "shape": "irregular",
+      "notes": "Three separated vertical red pairs at cols 57,60,63 across rows 61-62."
+    }
+  ],
+  "spatial_relations": [
+    "The top blue L-shape is inside the small top black chamber and above the main gray room.",
+    "The tiny white/off-white cluster is left of the central vertical black shaft inside the main room.",
+    "The orange bar is directly above the lower blue bar near the bottom center of the main room.",
+    "The bottom-left blue marker is inside the lower-left black chamber and far left of the yellow platform.",
+    "The yellow platform runs along the bottom and is left of the small red markers at the lower right."
+  ],
+  "background": "Dark-gray outer background with black void regions and a large connected gray interior structure.",
+  "changes": [],
+  "scene_summary": "This is a single-frame scene showing a large gray navigable structure with a small top chamber, a central room, and lower passages. Notable interactive-looking elements are the blue icon in the top chamber, a tiny white/off-white cluster in the left interior, an orange-over-blue block near the lower center, a blue shape in the bottom-left chamber, a long yellow platform at the bottom, and small red markers at the lower right."
+}
+
+2026-03-25 02:38:43,072 | === ACTION #7: ACTION3 ===
+Result: 52 cells changed
+Score: 0 | State: NOT_FINISHED | Actions used: 7/150
+  Changes centered around (47, 23), spanning rows 45-62, cols 19-28. Colors involved: gray(3) +27/-25 cells; blue(9) 15 cells shifted; yellow(B) -2 cells (disappeared); orange(C) 10 cells shifted
+
+VISION SUMMARY (Looker output to Brain):
+{
+  "objects": [
+    {
+      "description": "main room and corridors",
+      "color": "gray",
+      "color_hex": "3",
+      "position": [
+        8,
+        32
+      ],
+      "size": 634,
+      "shape": "irregular",
+      "notes": "Large connected walkable region: top small chamber, vertical corridor, central hall, left spur, lower chamber, and bottom horizontal passage."
+    },
+    {
+      "description": "top black chamber interior",
+      "color": "black",
+      "color_hex": "5",
+      "position": [
+        9,
+        33
+      ],
+      "size": 28,
+      "shape": "rectangle",
+      "notes": "Enclosed dark interior inside the small top room."
+    },
+    {
+      "description": "blue marker in top chamber",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        11,
+        35
+      ],
+      "size": 4,
+      "shape": "L-shape",
+      "notes": "Cells at [11,35],[11,36],[11,37],[12,36]; small blue icon near top center."
+    },
+    {
+      "description": "white marker",
+      "color": "white",
+      "color_hex": "0",
+      "position": [
+        31,
+        22
+      ],
+      "size": 1,
+      "shape": "square",
+      "notes": "Single white cell in the left side of the main room."
+    },
+    {
+      "description": "off-white marker",
+      "color": "off-white",
+      "color_hex": "1",
+      "position": [
+        32,
+        21
+      ],
+      "size": 1,
+      "shape": "square",
+      "notes": "Single off-white cell just down-left of the white marker."
+    },
+    {
+      "description": "off-white marker",
+      "color": "off-white",
+      "color_hex": "1",
+      "position": [
+        32,
+        22
+      ],
+      "size": 1,
+      "shape": "square",
+      "notes": "Single off-white cell directly below the white marker."
+    },
+    {
+      "description": "off-white marker",
+      "color": "off-white",
+      "color_hex": "1",
+      "position": [
+        33,
+        22
+      ],
+      "size": 1,
+      "shape": "square",
+      "notes": "Single off-white cell below [32,22]; together with the other light cells forms a tiny cluster."
+    },
+    {
+      "description": "orange bar",
+      "color": "orange",
+      "color_hex": "C",
+      "position": [
+        45,
+        36
+      ],
+      "size": 10,
+      "shape": "rectangle",
+      "notes": "2x5 orange block centered near the lower middle of the main room."
+    },
+    {
+      "description": "blue bar below orange",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        47,
+        36
+      ],
+      "size": 15,
+      "shape": "rectangle",
+      "notes": "3x5 blue block directly below the orange bar."
+    },
+    {
+      "description": "bottom-left black chamber interior",
+      "color": "black",
+      "color_hex": "5",
+      "position": [
+        53,
+        1
+      ],
+      "size": 52,
+      "shape": "rectangle",
+      "notes": "Dark enclosed area in the lower-left corner."
+    },
+    {
+      "description": "blue marker in bottom-left chamber",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        55,
+        3
+      ],
+      "size": 16,
+      "shape": "irregular",
+      "notes": "Cluster inside the lower-left black chamber; resembles a blocky hooked shape."
+    },
+    {
+      "description": "yellow platform",
+      "color": "yellow",
+      "color_hex": "B",
+      "position": [
+        61,
+        17
+      ],
+      "size": 38,
+      "shape": "line",
+      "notes": "Long horizontal 2-cell-high yellow strip from columns 17-54 on rows 61-62."
+    },
+    {
+      "description": "red markers at lower right",
+      "color": "red",
+      "color_hex": "8",
+      "position": [
+        61,
+        57
+      ],
+      "size": 9,
+      "shape": "irregular",
+      "notes": "Three separated vertical red pairs at cols 57,60,63 across rows 61-62."
+    }
+  ],
+  "spatial_relations": [
+    "The top blue L-shape is inside the small top black chamber and above the main gray room.",
+    "The tiny white/off-white cluster is left of the central vertical black shaft inside the main room.",
+    "The orange bar is directly above the lower blue bar near the bottom center of the main room.",
+    "The bottom-left blue marker is inside the lower-left black chamber and far left of the yellow platform.",
+    "The yellow platform runs along the bottom and is left of the small red markers at the lower right."
+  ],
+  "background": "Dark-gray outer background with black void regions and a large connected gray interior structure.",
+  "changes": [],
+  "scene_summary": "This is a single-frame scene showing a large gray navigable structure with a small top chamber, a central room, and lower passages. Notable interactive-looking elements are the blue icon in the top chamber, a tiny white/off-white cluster in the left interior, an orange-over-blue block near the lower center, a blue shape in the bottom-left chamber, a long yellow platform at the bottom, and small red markers at the lower right."
+}
+
+2026-03-25 02:39:36,130 | === ACTION #8: ACTION3 ===
+Result: BLOCKED
+Score: 0 | State: NOT_FINISHED | Actions used: 8/150
+  Changes centered around (61, 20), spanning rows 61-62, cols 20-20. Colors involved: gray(3) +2 cells (appeared); yellow(B) -2 cells (disappeared)
+
+LLM OBSERVATION: Board read confirms the orange 2x5 over blue 3x5 stack is now at rows 45-49, cols 19-23 inside gray traversable space. The white/off-white marker remains at [31-33,21-23]. The central vertical dark region around cols 28-33 blocks direct upward travel from the stack’s current lane, so continuing left is still the best route before turning upward.
+
+VISION SUMMARY (Looker output to Brain):
+{
+  "objects": [
+    {
+      "description": "main gray room-and-corridor structure",
+      "color": "gray",
+      "color_hex": "3",
+      "position": [
+        8,
+        32
+      ],
+      "size": 613,
+      "shape": "irregular",
+      "notes": "Large connected gray walkable structure with a top chamber, vertical neck, broad central room, lower-left extension, and a long bottom yellow platform attached near the base."
+    },
+    {
+      "description": "top black chamber",
+      "color": "black",
+      "color_hex": "5",
+      "position": [
+        9,
+        33
+      ],
+      "size": 35,
+      "shape": "rectangle",
+      "notes": "7x5 black interior enclosed by gray border at the top of the structure."
+    },
+    {
+      "description": "blue symbol in top chamber",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        11,
+        36
+      ],
+      "size": 8,
+      "shape": "irregular",
+      "notes": "Small 8-cell blue glyph inside the top black chamber."
+    },
+    {
+      "description": "white cross marker",
+      "color": "white",
+      "color_hex": "0",
+      "position": [
+        31,
+        22
+      ],
+      "size": 3,
+      "shape": "irregular",
+      "notes": "Three-cell white plus-like marker in the left interior of the main room."
+    },
+    {
+      "description": "off-white marker below white cross",
+      "color": "off-white",
+      "color_hex": "1",
+      "position": [
+        33,
+        23
+      ],
+      "size": 1,
+      "shape": "single",
+      "notes": "Single off-white cell directly below the white cross cluster."
+    },
+    {
+      "description": "orange pad",
+      "color": "orange",
+      "color_hex": "C",
+      "position": [
+        45,
+        19
+      ],
+      "size": 10,
+      "shape": "rectangle",
+      "notes": "2x5 orange block on the lower-left side of the structure."
+    },
+    {
+      "description": "blue pad below orange pad",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        47,
+        19
+      ],
+      "size": 15,
+      "shape": "rectangle",
+      "notes": "3x5 blue block directly beneath the orange pad."
+    },
+    {
+      "description": "bottom-left black chamber",
+      "color": "black",
+      "color_hex": "5",
+      "position": [
+        53,
+        1
+      ],
+      "size": 35,
+      "shape": "rectangle",
+      "notes": "7x5 black interior enclosed by dark-gray border near the bottom-left corner."
+    },
+    {
+      "description": "blue symbol in bottom-left chamber",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        55,
+        3
+      ],
+      "size": 16,
+      "shape": "irregular",
+      "notes": "Blue glyph inside the bottom-left black chamber."
+    },
+    {
+      "description": "yellow horizontal bar",
+      "color": "yellow",
+      "color_hex": "B",
+      "position": [
+        61,
+        20
+      ],
+      "size": 35,
+      "shape": "rectangle",
+      "notes": "2x35 horizontal yellow strip across the lower part of the board."
+    },
+    {
+      "description": "red indicators at bottom-right",
+      "color": "red",
+      "color_hex": "8",
+      "position": [
+        61,
+        56
+      ],
+      "size": 9,
+      "shape": "irregular",
+      "notes": "Three separated vertical 2-cell red indicator pairs at columns 56,59,62."
+    }
+  ],
+  "spatial_relations": [
+    "The top black chamber is above the main gray room-and-corridor structure and connected by a narrow gray neck.",
+    "The blue symbol in the top chamber is centered inside that black chamber.",
+    "The white cross marker is left of the central vertical shaft inside the main gray structure.",
+    "The orange pad is below the left side of the main room.",
+    "The blue pad is directly below the orange pad.",
+    "The bottom-left black chamber is far below and left of the main gray structure.",
+    "The yellow horizontal bar runs along the bottom, to the right of the bottom-left chamber.",
+    "The red indicators are to the right of the yellow horizontal bar."
+  ],
+  "background": "Mostly dark-gray background with black regions at the upper-left border and along the lower edge; the scene is dominated by a large connected gray structure.",
+  "changes": [
+    {
+      "what": "A 2x5 orange pad appeared at [45,19] through [46,23]",
+      "type": "appeared"
+    },
+    {
+      "what": "A 2x5 blue section at [47,19] through [48,23] expanded downward to a 3x5 blue pad ending at row 49",
+      "type": "changed_size"
+    }
+  ],
+  "scene_summary": "The board shows a large connected gray room/corridor structure with a small blue glyph in a black top chamber, a white cross-like marker inside the left room, and colored pads near the lower-left. The notable update is the appearance of an orange 2x5 pad above the lower blue pad, with the blue pad extending one row downward."
+}
+
+2026-03-25 02:40:34,163 | === ACTION #9: ACTION1 ===
+Result: 52 cells changed
+Score: 0 | State: NOT_FINISHED | Actions used: 9/150
+  Changes centered around (45, 21), spanning rows 40-62, cols 19-23. Colors involved: gray(3) +27/-25 cells; blue(9) 15 cells shifted; yellow(B) -2 cells (disappeared); orange(C) 10 cells shifted
+
+LLM OBSERVATION: The last ACTION3 was blocked, confirming the stack is at or near the left boundary of the lower corridor. Despite no local movement, both blue glyphs gained one blue cell, implying some remote state can change independently of successful horizontal movement or is updated by attempted actions. Board text shows the stack at rows 45-49, cols 19-23 with open gray cells immediately above at cols 19-23, so trying up is the most direct novel test.
+
+VISION SUMMARY (Looker output to Brain):
+{
+  "objects": [
+    {
+      "description": "main gray room-and-corridor structure",
+      "color": "gray",
+      "color_hex": "3",
+      "position": [
+        8,
+        32
+      ],
+      "size": 743,
+      "shape": "irregular",
+      "notes": "Large connected walkable-looking area with a top chamber, central vertical shaft, broad middle/lower room, and a long bottom yellow-bar platform attached near the bottom edge."
+    },
+    {
+      "description": "top black chamber",
+      "color": "black",
+      "color_hex": "5",
+      "position": [
+        9,
+        33
+      ],
+      "size": 40,
+      "shape": "rectangle",
+      "notes": "Enclosed dark interior inside the small top gray chamber."
+    },
+    {
+      "description": "blue symbol in top chamber",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        11,
+        36
+      ],
+      "size": 7,
+      "shape": "irregular",
+      "notes": "Small 3x3-like blue glyph inside the top black chamber."
+    },
+    {
+      "description": "white cross marker",
+      "color": "white",
+      "color_hex": "0",
+      "position": [
+        31,
+        21
+      ],
+      "size": 1,
+      "shape": "single-cell",
+      "notes": "Center of a small white plus-like marker embedded in the left-middle gray area; surrounding plus arms are off-white/gray-adjacent in the image but only one pure white cell appears in the board text."
+    },
+    {
+      "description": "off-white marker cell",
+      "color": "off-white",
+      "color_hex": "1",
+      "position": [
+        33,
+        23
+      ],
+      "size": 1,
+      "shape": "single-cell",
+      "notes": "Small off-white cell just below-right of the white marker, part of the tiny marker detail."
+    },
+    {
+      "description": "orange pad",
+      "color": "orange",
+      "color_hex": "C",
+      "position": [
+        45,
+        19
+      ],
+      "size": 10,
+      "shape": "rectangle",
+      "notes": "2x5 orange block at the lower-left edge of the main gray structure."
+    },
+    {
+      "description": "blue pad below orange pad",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        47,
+        19
+      ],
+      "size": 15,
+      "shape": "rectangle",
+      "notes": "3x5 blue block directly below the orange pad."
+    },
+    {
+      "description": "bottom-left black chamber",
+      "color": "black",
+      "color_hex": "5",
+      "position": [
+        53,
+        1
+      ],
+      "size": 31,
+      "shape": "rectangle",
+      "notes": "Large black boxed area in the lower-left corner."
+    },
+    {
+      "description": "blue symbol in bottom-left chamber",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        55,
+        3
+      ],
+      "size": 16,
+      "shape": "irregular",
+      "notes": "Blue glyph-like shape inside the bottom-left black chamber."
+    },
+    {
+      "description": "yellow horizontal bar",
+      "color": "yellow",
+      "color_hex": "B",
+      "position": [
+        61,
+        21
+      ],
+      "size": 34,
+      "shape": "line",
+      "notes": "Long 2-row horizontal yellow strip spanning columns 21-54 on rows 61-62."
+    },
+    {
+      "description": "red indicator 1",
+      "color": "red",
+      "color_hex": "8",
+      "position": [
+        61,
+        56
+      ],
+      "size": 2,
+      "shape": "line",
+      "notes": "Vertical 2-cell red indicator at the right end of the yellow bar area."
+    },
+    {
+      "description": "red indicator 2",
+      "color": "red",
+      "color_hex": "8",
+      "position": [
+        61,
+        59
+      ],
+      "size": 2,
+      "shape": "line",
+      "notes": "Vertical 2-cell red indicator at the right end of the yellow bar area."
+    },
+    {
+      "description": "red indicator 3",
+      "color": "red",
+      "color_hex": "8",
+      "position": [
+        61,
+        62
+      ],
+      "size": 2,
+      "shape": "line",
+      "notes": "Vertical 2-cell red indicator at the far right end of the yellow bar area."
+    }
+  ],
+  "spatial_relations": [
+    "The top black chamber is above the main gray room-and-corridor structure and connected by a narrow gray shaft.",
+    "The blue symbol in the top chamber is centered inside the top black chamber.",
+    "The white cross marker is left of the central vertical shaft within the main gray structure.",
+    "The orange pad is directly above the blue pad at the lower-left edge of the main gray structure.",
+    "The bottom-left black chamber is far below and left of the main gray structure.",
+    "The blue symbol in the bottom-left chamber is centered within that black chamber.",
+    "The yellow horizontal bar runs along the bottom of the scene, to the right of the bottom-left black chamber.",
+    "The three red indicators are aligned to the right of the yellow horizontal bar."
+  ],
+  "background": "Mostly dark-gray background with black border regions on the far left/top-left and along the bottom edge; the main play structures are embedded in this dark field.",
+  "changes": [
+    {
+      "what": "A new blue cell appeared at [12,36] inside the top chamber symbol, changing the top blue glyph from 6 cells to 7 cells.",
+      "type": "changed_shape"
+    },
+    {
+      "what": "A new blue cell appeared at [59,7] inside the bottom-left chamber symbol, changing the lower blue glyph from 15 cells to 16 cells.",
+      "type": "changed_shape"
+    }
+  ],
+  "scene_summary": "The scene shows a large connected gray room/corridor complex with a small top chamber containing a blue glyph, a lower-left orange-over-blue pad pair, and a separate bottom-left black chamber with another blue glyph. Along the bottom is a long yellow status-like bar with three red indicators, and the only visible changes are two small additions to the blue glyphs in the top and bottom-left chambers."
+}
+
+2026-03-25 02:41:31,263 | === ACTION #10: ACTION1 ===
+Result: 52 cells changed
+Score: 0 | State: NOT_FINISHED | Actions used: 10/150
+  Changes centered around (40, 21), spanning rows 35-62, cols 19-23. Colors involved: gray(3) +27/-25 cells; blue(9) 15 cells shifted; yellow(B) -2 cells (disappeared); orange(C) 10 cells shifted
+
+LLM OBSERVATION: The last ACTION1 successfully moved the controllable orange/blue stack upward from rows 45-49 to rows 40-44 at cols 19-23, confirming the left interior opening is traversable. A new red segment appeared at the left edge of the yellow bottom bar, suggesting movement or state changes may also update a remote progress indicator.
+
+VISION SUMMARY (Looker output to Brain):
+{
+  "objects": [
+    {
+      "description": "main gray room-and-corridor structure",
+      "color": "gray",
+      "color_hex": "3",
+      "position": [
+        8,
+        32
+      ],
+      "size": 537,
+      "shape": "irregular",
+      "notes": "Large connected walkable structure including top chamber, vertical neck, central shaft, broad middle/lower rooms, and long bottom-right hall; spans roughly rows 8-49 and cols 12-55."
+    },
+    {
+      "description": "small black chamber interior",
+      "color": "black",
+      "color_hex": "5",
+      "position": [
+        9,
+        33
+      ],
+      "size": 40,
+      "shape": "rectangle",
+      "notes": "Enclosed dark interior inside the top gray chamber at rows 9-15, cols 33-38."
+    },
+    {
+      "description": "blue symbol in top chamber",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        11,
+        35
+      ],
+      "size": 7,
+      "shape": "irregular",
+      "notes": "Small 7-cell glyph inside the black chamber; occupies rows 11-13 and cols 35-37."
+    },
+    {
+      "description": "white/off-white marker",
+      "color": "off-white",
+      "color_hex": "1",
+      "position": [
+        31,
+        22
+      ],
+      "size": 4,
+      "shape": "irregular",
+      "notes": "Tiny 4-cell marker shaped like a small cross/diamond in the left-middle room at rows 31-33, cols 21-23."
+    },
+    {
+      "description": "orange platform",
+      "color": "orange",
+      "color_hex": "C",
+      "position": [
+        40,
+        19
+      ],
+      "size": 10,
+      "shape": "rectangle",
+      "notes": "2x5 orange block at rows 40-41, cols 19-23, above the blue block."
+    },
+    {
+      "description": "blue platform",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        42,
+        19
+      ],
+      "size": 15,
+      "shape": "rectangle",
+      "notes": "3x5 blue block at rows 42-44, cols 19-23, directly below the orange platform."
+    },
+    {
+      "description": "bottom-left black chamber",
+      "color": "black",
+      "color_hex": "5",
+      "position": [
+        53,
+        1
+      ],
+      "size": 72,
+      "shape": "rectangle",
+      "notes": "Large black rectangular area at rows 53-62, cols 1-9."
+    },
+    {
+      "description": "blue symbol in bottom-left chamber",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        55,
+        3
+      ],
+      "size": 20,
+      "shape": "irregular",
+      "notes": "Blue 20-cell glyph inside the bottom-left black chamber; spans rows 55-60, cols 3-8."
+    },
+    {
+      "description": "yellow horizontal bar",
+      "color": "yellow",
+      "color_hex": "B",
+      "position": [
+        61,
+        22
+      ],
+      "size": 66,
+      "shape": "rectangle",
+      "notes": "2x33 horizontal bar across rows 61-62, cols 22-54 near the bottom."
+    },
+    {
+      "description": "red indicators at bottom-right",
+      "color": "red",
+      "color_hex": "8",
+      "position": [
+        61,
+        56
+      ],
+      "size": 9,
+      "shape": "irregular",
+      "notes": "Three separated 2x1 red vertical pairs at cols 56, 59, and 62 across rows 61-62, with black gaps between them."
+    }
+  ],
+  "spatial_relations": [
+    "The top black chamber is enclosed within the upper part of the main gray structure.",
+    "The blue symbol in the top chamber is centered inside that black chamber.",
+    "The white/off-white marker is in the left-middle section of the main gray structure, below-left of the top chamber.",
+    "The orange platform is directly above the blue platform in the lower-left part of the main gray structure.",
+    "The bottom-left black chamber is far below and left of the main gray structure.",
+    "The blue symbol in the bottom-left chamber is centered within that black chamber.",
+    "The yellow horizontal bar runs along the bottom, to the right of the bottom-left chamber.",
+    "The red indicators are to the right of the yellow bar near the bottom-right edge."
+  ],
+  "background": "Mostly dark-gray background with black regions at the far upper-left edge, lower border areas, and inside two chamber interiors.",
+  "changes": [
+    {
+      "what": "The lower-left platform inside the main gray structure changed shape/color distribution: previous orange-blue horizontal strip at [40,19]-[41,23] became a stacked orange block at [40,19]-[41,23] with a blue block expanded downward to [42,19]-[44,23].",
+      "type": "changed_shape"
+    },
+    {
+      "what": "A small red indicator segment appeared at [61,22] and [62,22] at the left edge of the yellow bottom bar.",
+      "type": "appeared"
+    }
+  ],
+  "scene_summary": "A large gray connected room structure dominates the center, containing a top black chamber with a small blue glyph, a tiny white marker in the left-middle room, and an orange-over-blue platform in the lower-left interior. Separate from it, a bottom-left black chamber contains another blue glyph, while a long yellow bar and three red indicators stretch across the lower edge."
+}
+
+2026-03-25 02:42:24,355 | === ACTION #11: ACTION1 ===
+Result: 58 cells changed
+Score: 0 | State: NOT_FINISHED | Actions used: 11/150
+  Changes centered around (37, 18), spanning rows 30-58, cols 3-23. Colors involved: white(0) -3 cells (disappeared); off-white(1) -2 cells (disappeared); gray(3) +25/-20 cells; black(5) 4 cells shifted; blue(9) 19 cells shifted; orange(C) 10 cells shifted
+
+LLM OBSERVATION: Board rows 28-40 confirm the off-white marker is still at [31,21-22] and [33,21], while the orange/blue stack is now at rows 35-39, cols 19-23 with open gray space above it up to the marker room. The recent change means the stack advanced upward again and is now only a few moves below the marker; no score yet, and no new obstruction is visible in this corridor slice.
+
+VISION SUMMARY (Looker output to Brain):
+{
+  "objects": [
+    {
+      "description": "main gray room-and-corridor structure",
+      "color": "gray",
+      "color_hex": "3",
+      "position": [
+        8,
+        32
+      ],
+      "size": 622,
+      "shape": "irregular",
+      "notes": "Large connected walkable area with top chamber, vertical neck, central hall, left alcove, lower loop, and long bottom corridor extending to the right."
+    },
+    {
+      "description": "dark-gray wall/background field",
+      "color": "dark-gray",
+      "color_hex": "4",
+      "position": [
+        0,
+        4
+      ],
+      "size": 3280,
+      "shape": "irregular",
+      "notes": "Dominant surrounding background/walls enclosing the gray paths and rooms."
+    },
+    {
+      "description": "black border block at top-left",
+      "color": "black",
+      "color_hex": "5",
+      "position": [
+        0,
+        0
+      ],
+      "size": 24,
+      "shape": "rectangle",
+      "notes": "3x8 black area in the upper-left corner."
+    },
+    {
+      "description": "small blue marker in top chamber",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        11,
+        35
+      ],
+      "size": 5,
+      "shape": "irregular",
+      "notes": "Tiny 3x3-like glyph inside the black square at the top of the structure."
+    },
+    {
+      "description": "white/gray plus marker",
+      "color": "white",
+      "color_hex": "0",
+      "position": [
+        31,
+        22
+      ],
+      "size": 3,
+      "shape": "irregular",
+      "notes": "Three-cell marker forming a small cross/plus in the left room: cells at [31,22], [32,21], [32,22]."
+    },
+    {
+      "description": "orange horizontal bar",
+      "color": "orange",
+      "color_hex": "C",
+      "position": [
+        35,
+        19
+      ],
+      "size": 10,
+      "shape": "rectangle",
+      "notes": "2x5 orange block in the lower-left interior corridor."
+    },
+    {
+      "description": "blue rectangular block below orange bar",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        37,
+        19
+      ],
+      "size": 12,
+      "shape": "rectangle",
+      "notes": "3x4 blue block directly below the orange block."
+    },
+    {
+      "description": "bottom-left black chamber",
+      "color": "black",
+      "color_hex": "5",
+      "position": [
+        53,
+        1
+      ],
+      "size": 52,
+      "shape": "rectangle",
+      "notes": "Enclosed black area near the lower-left corner, surrounding a blue glyph."
+    },
+    {
+      "description": "bottom-left blue glyph",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        55,
+        3
+      ],
+      "size": 18,
+      "shape": "irregular",
+      "notes": "Small blue symbol inside the bottom-left black chamber."
+    },
+    {
+      "description": "yellow horizontal platform/bar",
+      "color": "yellow",
+      "color_hex": "B",
+      "position": [
+        61,
+        23
+      ],
+      "size": 64,
+      "shape": "rectangle",
+      "notes": "2x32 yellow strip across the lower-right area."
+    },
+    {
+      "description": "red terminal blocks at far lower-right",
+      "color": "red",
+      "color_hex": "8",
+      "position": [
+        61,
+        55
+      ],
+      "size": 9,
+      "shape": "irregular",
+      "notes": "Three separated vertical red 2x1 columns at cols 55, 58, and 61 on rows 61-62."
+    }
+  ],
+  "spatial_relations": [
+    "The small blue marker in the top chamber is inside the black square near the top of the main gray structure.",
+    "The white plus marker is in the left interior room of the main gray structure.",
+    "The orange bar is directly above the blue rectangular block in the lower-left interior corridor.",
+    "The bottom-left black chamber is far below and left of the main gray structure.",
+    "The yellow horizontal platform runs along the bottom-right and is far right of the bottom-left black chamber.",
+    "The red terminal blocks are immediately to the right of the yellow platform."
+  ],
+  "background": "Mostly dark-gray background/walls with black regions at the extreme top-left, lower-left chamber, and bottom border areas.",
+  "changes": [
+    {
+      "what": "The orange horizontal bar at [35,19] changed into blue cells at [35,19]-[36,22], effectively adding/expanding the blue block upward from the previous frame.",
+      "type": "changed_shape"
+    }
+  ],
+  "scene_summary": "A large gray navigable structure occupies the center, containing a top black chamber with a tiny blue glyph, a left room with a small white plus marker, and a lower-left orange-over-blue feature. Along the bottom are a separate black chamber with another blue glyph, a long yellow platform, and three small red terminal blocks at the far right; the notable recent change is the blue expansion where the orange/blue lower-left feature was altered."
+}
+
+2026-03-25 02:43:20,935 | === ACTION #12: ACTION1 ===
+Result: 52 cells changed
+Score: 0 | State: NOT_FINISHED | Actions used: 12/150
+  Changes centered around (30, 21), spanning rows 25-62, cols 19-23. Colors involved: white(0) +3 cells (appeared); off-white(1) +2 cells (appeared); gray(3) +22/-25 cells; blue(9) 15 cells shifted; yellow(B) -2 cells (disappeared); orange(C) 10 cells shifted
+
+LLM OBSERVATION: The board confirms the white marker is gone and the controllable piece is now a vertical orange-over-blue stack at rows 30-34, cols 19-23. This strongly suggests the last upward move reached and consumed/activated the nearby marker, while also changing the bottom-left blue glyph. The path above row 30 still appears gray/open around the stack, so continuing upward is the novel follow-up after the significant change.
+
+VISION SUMMARY (Looker output to Brain):
+{
+  "objects": [
+    {
+      "description": "main gray room-and-corridor structure",
+      "color": "gray",
+      "color_hex": "3",
+      "position": [
+        8,
+        32
+      ],
+      "size": 554,
+      "shape": "irregular",
+      "notes": "Large connected walkable-looking gray structure with top chamber, vertical neck, broad central room, lower-left loop, and long bottom corridor extending to the right."
+    },
+    {
+      "description": "top black chamber",
+      "color": "black",
+      "color_hex": "5",
+      "position": [
+        9,
+        33
+      ],
+      "size": 42,
+      "shape": "rectangle",
+      "notes": "Enclosed black interior inside the small top gray chamber."
+    },
+    {
+      "description": "small blue marker in top chamber",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        11,
+        36
+      ],
+      "size": 7,
+      "shape": "irregular",
+      "notes": "Tiny blue symbol inside the top black chamber; cells at rows 11-13, cols 35-37."
+    },
+    {
+      "description": "orange block",
+      "color": "orange",
+      "color_hex": "C",
+      "position": [
+        30,
+        19
+      ],
+      "size": 10,
+      "shape": "rectangle",
+      "notes": "2x5 orange rectangle embedded in the left side of the main gray room."
+    },
+    {
+      "description": "blue block below orange",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        32,
+        19
+      ],
+      "size": 12,
+      "shape": "rectangle",
+      "notes": "3x4 blue rectangle directly below the orange block in the left side of the main room."
+    },
+    {
+      "description": "bottom-left black chamber",
+      "color": "black",
+      "color_hex": "5",
+      "position": [
+        53,
+        1
+      ],
+      "size": 58,
+      "shape": "rectangle",
+      "notes": "Black enclosed area near bottom-left corner."
+    },
+    {
+      "description": "blue marker in bottom-left chamber",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        55,
+        3
+      ],
+      "size": 20,
+      "shape": "irregular",
+      "notes": "Blue symbol inside bottom-left black chamber; includes a 2x6 top bar and lower right leg-like cells."
+    },
+    {
+      "description": "small yellow bar",
+      "color": "yellow",
+      "color_hex": "B",
+      "position": [
+        61,
+        23
+      ],
+      "size": 32,
+      "shape": "line",
+      "notes": "Horizontal 2x16 yellow bar near bottom center-right."
+    },
+    {
+      "description": "red indicators at bottom-right",
+      "color": "red",
+      "color_hex": "8",
+      "position": [
+        61,
+        56
+      ],
+      "size": 9,
+      "shape": "irregular",
+      "notes": "Three separated vertical red pairs at cols 56,59,62 across rows 61-62."
+    }
+  ],
+  "spatial_relations": [
+    "The top black chamber is enclosed within the upper part of the main gray structure.",
+    "The small blue marker in the top chamber is centered inside that black chamber.",
+    "The orange block is directly above the blue block within the left interior of the main gray room.",
+    "The bottom-left black chamber is far below and left of the main gray structure.",
+    "The blue marker in the bottom-left chamber is centered within that chamber.",
+    "The yellow bar is below the main gray structure and to the right of the bottom-left chamber.",
+    "The red indicators are immediately to the right of the yellow bar along the bottom edge."
+  ],
+  "background": "Dark-gray background dominates, with black void-like regions used as enclosed chamber interiors and border strips.",
+  "changes": [
+    {
+      "what": "The left-interior block in the main gray room changed from a mixed orange/blue arrangement with a small white marker in the previous frame to a taller orange-over-blue rectangular stack at [30,19]-[34,23].",
+      "type": "changed_shape"
+    },
+    {
+      "what": "The small white marker previously visible near the left-interior block disappeared.",
+      "type": "disappeared"
+    },
+    {
+      "what": "The blue marker inside the bottom-left black chamber changed shape, with cells altered around [59,3]-[60,6].",
+      "type": "changed_shape"
+    }
+  ],
+  "scene_summary": "A large gray connected room structure occupies the center, containing a small top black chamber with a blue symbol and a left-side orange-over-blue block. Separate from it, a bottom-left black chamber contains another blue symbol, while a yellow horizontal bar and three small red indicators run along the lower edge."
+}
+
+2026-03-25 02:44:18,279 | === ACTION #13: ACTION1 ===
+Result: BLOCKED
+Score: 0 | State: NOT_FINISHED | Actions used: 13/150
+  Changes centered around (61, 24), spanning rows 61-62, cols 24-24. Colors involved: gray(3) +2 cells (appeared); yellow(B) -2 cells (disappeared)
+
+LLM OBSERVATION: Board rows 22-35 confirm the controllable piece is now a larger orange-over-blue block at rows 25-29, cols 19-23/22 inside open gray space. The off-white marker cluster still exists just below it at rows 31-33 around cols 21-23, so the recent change was stack growth upward rather than marker removal in the current state. Upward space above the stack appears open within the gray chamber, so continuing ACTION1 is still the best execution step.
+
+VISION SUMMARY (Looker output to Brain):
+{
+  "objects": [
+    {
+      "description": "main gray room-and-corridor structure",
+      "color": "gray",
+      "color_hex": "3",
+      "position": [
+        8,
+        32
+      ],
+      "size": 651,
+      "shape": "irregular",
+      "notes": "Large connected walkable-looking area with a top chamber, left alcove, central vertical shaft, and broad right room; includes long bottom corridor from row 61 col 13 to col 55"
+    },
+    {
+      "description": "orange horizontal bar",
+      "color": "orange",
+      "color_hex": "C",
+      "position": [
+        25,
+        19
+      ],
+      "size": 10,
+      "shape": "rectangle",
+      "notes": "2x5 block in the upper part of the left alcove"
+    },
+    {
+      "description": "blue rectangular block in left alcove",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        27,
+        19
+      ],
+      "size": 12,
+      "shape": "rectangle",
+      "notes": "3x4 block directly below the orange bar"
+    },
+    {
+      "description": "small white/off-white marker cluster",
+      "color": "white",
+      "color_hex": "0/1",
+      "position": [
+        31,
+        23
+      ],
+      "size": 4,
+      "shape": "irregular",
+      "notes": "Tiny 2x2 mixed marker inside the gray area: 0 at [31,23], 1 at [32,22] and [32,23], 1 at [33,23]"
+    },
+    {
+      "description": "blue symbol in top chamber",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        11,
+        35
+      ],
+      "size": 5,
+      "shape": "irregular",
+      "notes": "Small glyph-like cluster inside the black top chamber"
+    },
+    {
+      "description": "black top chamber interior",
+      "color": "black",
+      "color_hex": "5",
+      "position": [
+        9,
+        33
+      ],
+      "size": 40,
+      "shape": "rectangle",
+      "notes": "Enclosed 8x5 black area inside gray border near top center"
+    },
+    {
+      "description": "bottom-left black chamber",
+      "color": "black",
+      "color_hex": "5",
+      "position": [
+        53,
+        1
+      ],
+      "size": 76,
+      "shape": "rectangle",
+      "notes": "Large black block at lower left with blue symbol embedded inside"
+    },
+    {
+      "description": "blue symbol in bottom-left chamber",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        55,
+        3
+      ],
+      "size": 20,
+      "shape": "irregular",
+      "notes": "Glyph-like blue cluster inside the lower-left black chamber"
+    },
+    {
+      "description": "yellow horizontal platform/bar",
+      "color": "yellow",
+      "color_hex": "B",
+      "position": [
+        61,
+        24
+      ],
+      "size": 64,
+      "shape": "rectangle",
+      "notes": "2x32 horizontal strip along the lower middle-right"
+    },
+    {
+      "description": "red bottom-right indicators",
+      "color": "red",
+      "color_hex": "8",
+      "position": [
+        61,
+        56
+      ],
+      "size": 9,
+      "shape": "irregular",
+      "notes": "Three separate 2x1 red vertical pairs at cols 56,59,62 across rows 61-62"
+    }
+  ],
+  "spatial_relations": [
+    "The orange bar is directly above the blue rectangular block in the left alcove of the main gray structure.",
+    "The top blue symbol is inside the black chamber above the main gray structure, connected by a narrow gray neck.",
+    "The tiny white/off-white marker cluster is near the center-left interior of the main gray structure, below the orange and blue alcove objects.",
+    "The bottom-left black chamber is far below and left of the main gray structure.",
+    "The yellow platform runs along the bottom and is to the right of the bottom-left black chamber.",
+    "The red indicators are to the right of the yellow platform at the lower-right edge."
+  ],
+  "background": "Dark-gray field dominates the board, with black border regions at the top-left edge and along the bottom edge.",
+  "changes": [
+    {
+      "what": "The left-alcove object changed from a small orange-over-blue 2-cell-wide stack to a larger orange-over-blue block occupying rows 25-29 and cols 19-23",
+      "type": "changed_size"
+    },
+    {
+      "what": "New orange cells appeared at [25,19]-[26,23]",
+      "type": "appeared"
+    },
+    {
+      "what": "Blue cells expanded in the left alcove to fill [27,19]-[29,22]",
+      "type": "changed_size"
+    }
+  ],
+  "scene_summary": "A large gray maze-like structure occupies the center, containing a top black chamber with a small blue symbol, a left alcove with orange and blue blocks, and a tiny white/off-white marker near the middle. Along the bottom are a separate black chamber with another blue symbol, a long yellow bar, and three small red indicators; the main visible change is the enlargement of the orange/blue block in the left alcove."
+}
+
+2026-03-25 02:45:13,627 | === ACTION #14: ACTION4 ===
+Result: 52 cells changed
+Score: 0 | State: NOT_FINISHED | Actions used: 14/150
+  Changes centered around (28, 23), spanning rows 25-62, cols 19-28. Colors involved: gray(3) +27/-25 cells; blue(9) 15 cells shifted; yellow(B) -2 cells (disappeared); orange(C) 10 cells shifted
+
+LLM OBSERVATION: Board rows 25-29 confirm the orange/blue stack still occupies cols 19-23, with orange at rows 25-26 and blue at 27-29. The off-white marker is present again below it at [31,22],[32,21],[32,22],[33,22], so the last blocked ACTION1 did not move the stack and the marker appears persistent/reappearing rather than permanently collected. From the current stack position, left and right are open gray cells, while upward is likely blocked by the alcove ceiling immediately above row 25.
+
+VISION SUMMARY (Looker output to Brain):
+{
+  "objects": [
+    {
+      "description": "main gray room-and-corridor structure",
+      "color": "gray",
+      "color_hex": "3",
+      "position": [
+        8,
+        32
+      ],
+      "size": 635,
+      "shape": "irregular",
+      "notes": "Large connected walkable area spanning central map, with upper chamber, left alcove, central vertical shaft, and long lower-right hall."
+    },
+    {
+      "description": "black void block at top-left",
+      "color": "black",
+      "color_hex": "5",
+      "position": [
+        0,
+        0
+      ],
+      "size": 24,
+      "shape": "rectangle",
+      "notes": "3x8 black area in the top-left corner."
+    },
+    {
+      "description": "upper black chamber interior",
+      "color": "black",
+      "color_hex": "5",
+      "position": [
+        9,
+        33
+      ],
+      "size": 30,
+      "shape": "rectangle",
+      "notes": "6x5 black interior enclosed by gray border near top-center."
+    },
+    {
+      "description": "blue marker in upper chamber",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        11,
+        36
+      ],
+      "size": 5,
+      "shape": "irregular",
+      "notes": "Small 5-cell blue symbol inside the upper black chamber."
+    },
+    {
+      "description": "orange bar in left alcove",
+      "color": "orange",
+      "color_hex": "C",
+      "position": [
+        25,
+        19
+      ],
+      "size": 10,
+      "shape": "rectangle",
+      "notes": "2x5 orange block at top of left-side alcove."
+    },
+    {
+      "description": "blue block below orange bar",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        27,
+        19
+      ],
+      "size": 15,
+      "shape": "rectangle",
+      "notes": "3x5 blue block directly below the orange bar."
+    },
+    {
+      "description": "white/off-white plus-like marker",
+      "color": "white",
+      "color_hex": "0/1",
+      "position": [
+        31,
+        22
+      ],
+      "size": 4,
+      "shape": "irregular",
+      "notes": "Tiny 2x2 marker: cells [31,22]=0, [32,21]=1, [32,22]=0, [33,22]=1; appears as a small cross/plus in the left alcove."
+    },
+    {
+      "description": "lower-left black chamber",
+      "color": "black",
+      "color_hex": "5",
+      "position": [
+        53,
+        1
+      ],
+      "size": 90,
+      "shape": "rectangle",
+      "notes": "9x10 black room in lower-left corner."
+    },
+    {
+      "description": "blue marker in lower-left chamber",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        55,
+        3
+      ],
+      "size": 24,
+      "shape": "irregular",
+      "notes": "Blue 6x4-ish symbol inside lower-left black chamber."
+    },
+    {
+      "description": "bottom yellow platform",
+      "color": "yellow",
+      "color_hex": "B",
+      "position": [
+        61,
+        25
+      ],
+      "size": 60,
+      "shape": "rectangle",
+      "notes": "2x30 horizontal yellow strip near bottom-right."
+    },
+    {
+      "description": "red indicators at far bottom-right",
+      "color": "red",
+      "color_hex": "8",
+      "position": [
+        61,
+        56
+      ],
+      "size": 9,
+      "shape": "irregular",
+      "notes": "Three separated vertical red 2-cell bars at cols 56,59,62 across rows 61-62."
+    }
+  ],
+  "spatial_relations": [
+    "The upper black chamber is above the main gray structure's central shaft.",
+    "The blue marker in the upper chamber is enclosed by the upper black chamber near the top-center.",
+    "The orange bar is directly above the blue block in the left alcove of the main gray structure.",
+    "The white/off-white plus-like marker is below the blue block in the left alcove.",
+    "The lower-left black chamber is far below and left of the main gray structure.",
+    "The blue marker in the lower-left chamber is enclosed within that black chamber.",
+    "The yellow platform runs horizontally near the bottom-right, to the right of the lower-left chamber.",
+    "The red indicators are immediately to the right of the yellow platform at the far bottom-right."
+  ],
+  "background": "Dark-gray background dominates most of the board, with black void regions and a large central gray navigable structure.",
+  "changes": [
+    {
+      "what": "The small white/off-white plus-like marker appeared in the left alcove at cells [31,22], [32,21], [32,22], [33,22]",
+      "type": "appeared"
+    }
+  ],
+  "scene_summary": "A large gray connected room/corridor structure occupies the center, containing a top black chamber with a small blue symbol and a left alcove holding an orange bar over a blue block plus a newly appeared tiny white/off-white marker. Separate from it, a lower-left black chamber contains another blue symbol, while a long yellow platform and three red indicator bars sit along the bottom-right edge."
+}
+
+2026-03-25 02:46:13,584 | === ACTION #15: ACTION4 ===
+Result: 52 cells changed
+Score: 0 | State: NOT_FINISHED | Actions used: 15/150
+  Changes centered around (28, 28), spanning rows 25-62, cols 24-33. Colors involved: gray(3) +27/-25 cells; blue(9) 15 cells shifted; yellow(B) -2 cells (disappeared); orange(C) 10 cells shifted
+
+LLM OBSERVATION: Board text confirms the stack is now a 5-wide orange-over-blue block at rows 25-29, cols 24-28. The marker cluster remains below-left at [31,21],[32,20-21],[33,21]. Up from the current position is blocked by non-gray space, while right is open gray corridor, so the last ACTION4 appears to have expanded/repositioned the controllable piece rightward rather than advancing upward.
+
+VISION SUMMARY (Looker output to Brain):
+{
+  "objects": [
+    {
+      "description": "main gray room-and-corridor structure",
+      "color": "gray",
+      "color_hex": "3",
+      "position": [
+        8,
+        32
+      ],
+      "size": 560,
+      "shape": "irregular",
+      "notes": "Large connected walkable area with top chamber, left alcove, central vertical shaft, and broad lower-right room; includes long yellow floor strip at bottom rows 61-62 from cols 26-54 as attached feature region boundary-adjacent."
+    },
+    {
+      "description": "top black chamber",
+      "color": "black",
+      "color_hex": "5",
+      "position": [
+        9,
+        33
+      ],
+      "size": 40,
+      "shape": "rectangle",
+      "notes": "Enclosed 8x5 dark interior inside the top gray room."
+    },
+    {
+      "description": "blue icon in top chamber",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        11,
+        36
+      ],
+      "size": 6,
+      "shape": "irregular",
+      "notes": "Small 3x2 symbol inside the top black chamber."
+    },
+    {
+      "description": "orange bar in left alcove",
+      "color": "orange",
+      "color_hex": "C",
+      "position": [
+        25,
+        24
+      ],
+      "size": 10,
+      "shape": "rectangle",
+      "notes": "2 rows by 5 cols horizontal orange strip at rows 25-26, cols 24-28."
+    },
+    {
+      "description": "blue block below orange bar",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        27,
+        24
+      ],
+      "size": 15,
+      "shape": "rectangle",
+      "notes": "3 rows by 5 cols blue rectangle directly beneath the orange strip at rows 27-29, cols 24-28."
+    },
+    {
+      "description": "small white marker",
+      "color": "white",
+      "color_hex": "0",
+      "position": [
+        31,
+        21
+      ],
+      "size": 2,
+      "shape": "diagonal",
+      "notes": "Two-cell white marker at [31,21] and [32,22]."
+    },
+    {
+      "description": "small off-white marker",
+      "color": "off-white",
+      "color_hex": "1",
+      "position": [
+        32,
+        21
+      ],
+      "size": 1,
+      "shape": "single",
+      "notes": "Single off-white cell at [32,21], adjacent to the white marker."
+    },
+    {
+      "description": "small off-white marker",
+      "color": "off-white",
+      "color_hex": "1",
+      "position": [
+        33,
+        22
+      ],
+      "size": 1,
+      "shape": "single",
+      "notes": "Single off-white cell at [33,22], adjacent to the white marker."
+    },
+    {
+      "description": "bottom-left black chamber",
+      "color": "black",
+      "color_hex": "5",
+      "position": [
+        53,
+        1
+      ],
+      "size": 40,
+      "shape": "rectangle",
+      "notes": "10x4 dark room in lower-left corner area."
+    },
+    {
+      "description": "blue icon in bottom-left chamber",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        55,
+        3
+      ],
+      "size": 18,
+      "shape": "irregular",
+      "notes": "Symbol-like blue cluster inside lower-left black chamber."
+    },
+    {
+      "description": "bottom border black strip",
+      "color": "black",
+      "color_hex": "5",
+      "position": [
+        60,
+        12
+      ],
+      "size": 52,
+      "shape": "line",
+      "notes": "Long horizontal black strip from row 60 cols 12-63, plus row 61-62 cols 55 and row 63 cols 12-63; forms lower boundary."
+    },
+    {
+      "description": "yellow horizontal bar",
+      "color": "yellow",
+      "color_hex": "B",
+      "position": [
+        61,
+        26
+      ],
+      "size": 58,
+      "shape": "rectangle",
+      "notes": "2 rows by 29 cols horizontal yellow strip at rows 61-62, cols 26-54."
+    },
+    {
+      "description": "red indicators at lower right",
+      "color": "red",
+      "color_hex": "8",
+      "position": [
+        61,
+        56
+      ],
+      "size": 9,
+      "shape": "irregular",
+      "notes": "Three 1x2 vertical red pairs at cols 56,59,62 across rows 61-62."
+    }
+  ],
+  "spatial_relations": [
+    "The top black chamber is centered above the main gray structure and connected by a narrow gray corridor.",
+    "The blue icon in the top chamber is inside the top black chamber.",
+    "The orange bar is directly above the blue block in the left alcove of the main gray structure.",
+    "The small white and off-white marker cluster is below and left of the orange/blue stacked bars inside the left side of the main gray structure.",
+    "The bottom-left black chamber is far below and left of the main gray structure.",
+    "The yellow horizontal bar runs along the lower part of the board, to the right of the bottom-left chamber.",
+    "The red indicators are to the right of the yellow horizontal bar near the lower-right edge."
+  ],
+  "background": "Mostly dark-gray background with black border regions and a large connected gray play structure in the middle.",
+  "changes": [
+    {
+      "what": "The orange-and-blue stacked block in the left alcove expanded rightward: orange now occupies [25,24]-[26,28] and blue now occupies [27,24]-[29,28]",
+      "type": "changed_size"
+    }
+  ],
+  "scene_summary": "A large gray room-and-corridor layout dominates the center, with a small blue symbol in a black top chamber and a stacked orange-over-blue block in the left alcove. The only visible change is that this orange/blue block has grown horizontally to the right in the current frame."
+}
+
+2026-03-25 02:47:20,566 | === ACTION #16: ACTION4 ===
+Result: 52 cells changed
+Score: 0 | State: NOT_FINISHED | Actions used: 16/150
+  Changes centered around (28, 33), spanning rows 25-62, cols 27-38. Colors involved: gray(3) +27/-25 cells; blue(9) 15 cells shifted; yellow(B) -2 cells (disappeared); orange(C) 10 cells shifted
+
+LLM OBSERVATION: Board text confirms the orange bar is at rows 25-26 cols 29-33 and the blue block at rows 27-29 cols 29-32, with open gray corridor immediately to the right and a dark vertical shaft below around cols 30-33. The white/off-white marker cluster remains behind and below-left at [31,21]-[33,23] area, so the last ACTION4 was local rightward extension/repositioning rather than a scoring event.
+
+VISION SUMMARY (Looker output to Brain):
+{
+  "objects": [
+    {
+      "description": "large gray room/platform",
+      "color": "gray",
+      "color_hex": "3",
+      "position": [
+        25,
+        12
+      ],
+      "size": 662,
+      "shape": "irregular",
+      "notes": "Main traversable structure spanning most of the center; includes large rectangular room, top chamber, vertical shaft, lower-left extension, and long bottom corridor. Gray cells also form the border of the top chamber and the long yellow platform support at row 61 cols 12-26."
+    },
+    {
+      "description": "orange horizontal bar",
+      "color": "orange",
+      "color_hex": "C",
+      "position": [
+        25,
+        29
+      ],
+      "size": 10,
+      "shape": "rectangle",
+      "notes": "2x5 orange strip at rows 25-26, cols 29-33, attached near the upper-left side of the main gray structure."
+    },
+    {
+      "description": "blue horizontal block",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        27,
+        29
+      ],
+      "size": 12,
+      "shape": "rectangle",
+      "notes": "3x4 blue block at rows 27-29, cols 29-32, directly below the orange bar."
+    },
+    {
+      "description": "small white marker",
+      "color": "white",
+      "color_hex": "0",
+      "position": [
+        31,
+        22
+      ],
+      "size": 2,
+      "shape": "diagonal pair",
+      "notes": "Two white cells at [31,22] and [32,21], inside the left interior of the gray room."
+    },
+    {
+      "description": "small off-white marker",
+      "color": "off-white",
+      "color_hex": "1",
+      "position": [
+        32,
+        22
+      ],
+      "size": 1,
+      "shape": "single",
+      "notes": "Single off-white cell at [32,22], adjacent to the white pair; together they form a tiny 3-cell indicator cluster."
+    },
+    {
+      "description": "top black chamber",
+      "color": "black",
+      "color_hex": "5",
+      "position": [
+        9,
+        33
+      ],
+      "size": 40,
+      "shape": "rectangle",
+      "notes": "Enclosed 8x5 black area at rows 9-15, cols 33-40, inside the top gray-framed chamber."
+    },
+    {
+      "description": "blue symbol in top chamber",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        11,
+        36
+      ],
+      "size": 7,
+      "shape": "irregular",
+      "notes": "Small blue glyph-like cluster inside the black chamber at cells [11,36-38], [12,37], [13,36], [13,38], [14,38]."
+    },
+    {
+      "description": "bottom-left black chamber",
+      "color": "black",
+      "color_hex": "5",
+      "position": [
+        53,
+        1
+      ],
+      "size": 82,
+      "shape": "rectangle",
+      "notes": "10x8 black area at rows 53-62, cols 1-10, enclosed by dark-gray/gray border except where blue symbol occupies cells."
+    },
+    {
+      "description": "blue symbol in bottom-left chamber",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        55,
+        3
+      ],
+      "size": 20,
+      "shape": "irregular",
+      "notes": "Blue glyph-like cluster inside the bottom-left black chamber spanning rows 55-60, cols 3-8."
+    },
+    {
+      "description": "yellow floor/platform",
+      "color": "yellow",
+      "color_hex": "B",
+      "position": [
+        61,
+        27
+      ],
+      "size": 56,
+      "shape": "rectangle",
+      "notes": "Long 2x28 yellow strip at rows 61-62, cols 27-54, along the bottom center-right."
+    },
+    {
+      "description": "red bottom-right markers",
+      "color": "red",
+      "color_hex": "8",
+      "position": [
+        61,
+        56
+      ],
+      "size": 9,
+      "shape": "scattered blocks",
+      "notes": "Three vertical 2-cell red pairs at cols 56, 59, and 62 on rows 61-62, plus single red cells at [60,56], [60,59], [60,62]. Likely status indicators or hazards."
+    },
+    {
+      "description": "dark-gray background/walls",
+      "color": "dark-gray",
+      "color_hex": "4",
+      "position": [
+        0,
+        4
+      ],
+      "size": 3265,
+      "shape": "irregular",
+      "notes": "Dominant background filling most of the board outside structures; also forms borders around black chambers and edges of the map."
+    },
+    {
+      "description": "black top-left border block",
+      "color": "black",
+      "color_hex": "5",
+      "position": [
+        0,
+        0
+      ],
+      "size": 128,
+      "shape": "rectangle",
+      "notes": "Solid 52-cell block at rows 0-51, cols 0-3, plus lower black regions along bottom edges; acts as outer void/border."
+    },
+    {
+      "description": "black bottom band",
+      "color": "black",
+      "color_hex": "5",
+      "position": [
+        60,
+        12
+      ],
+      "size": 111,
+      "shape": "line/irregular",
+      "notes": "Bottom black band from row 60 col 12 through row 60 col 63, plus row 61 cols 11 and 55, row 62 cols 11 and 55, and row 63 cols 12-63."
+    }
+  ],
+  "spatial_relations": [
+    "The orange horizontal bar is directly above the blue horizontal block near the upper-left side of the main gray structure.",
+    "The top black chamber is above the main gray room and connected to it by a narrow gray vertical shaft.",
+    "The blue symbol in the top chamber is centered inside the top black chamber.",
+    "The small white/off-white marker cluster is inside the left side of the main gray room, left of the central vertical dark gap.",
+    "The yellow floor/platform runs along the bottom center-right, far below the main gray structure.",
+    "The bottom-left black chamber with a blue symbol is far below and left of the main gray room.",
+    "The red bottom-right markers are to the right of the yellow platform near the lower-right edge."
+  ],
+  "background": "Mostly dark-gray background with black void/border regions around the outer edges and beneath some bottom structures.",
+  "changes": [
+    {
+      "what": "The orange bar expanded rightward from [25,29]-[26,30] to [25,29]-[26,33]",
+      "type": "changed_size"
+    },
+    {
+      "what": "The blue horizontal block expanded rightward from [27,29]-[29,30] to [27,29]-[29,32]",
+      "type": "changed_size"
+    }
+  ],
+  "scene_summary": "A large gray connected structure occupies the center, with a small top black chamber containing a blue glyph, an orange-over-blue horizontal feature on the upper-left side, and a tiny white/off-white marker inside the left room. Along the bottom are a separate black chamber with another blue glyph, a long yellow platform, and small red indicator blocks at the far right; the main visible change is that the orange and blue horizontal feature became longer to the right."
+}
+
+2026-03-25 02:48:25,369 | === ACTION #17: ACTION3 ===
+Result: 52 cells changed
+Score: 0 | State: NOT_FINISHED | Actions used: 17/150
+  Changes centered around (28, 33), spanning rows 25-62, cols 28-38. Colors involved: gray(3) +27/-25 cells; blue(9) 15 cells shifted; yellow(B) -2 cells (disappeared); orange(C) 10 cells shifted
+
+LLM OBSERVATION: Board text shows the controllable orange/blue stack currently occupies rows 25-29, cols 34-38, with open gray on both sides in the top corridor. The white/off-white marker cluster still exists below-left at rows 31-33 around cols 20-21, while the top blue chamber icon and bottom-left blue icon remain visually similar remote displays. Repeated rightward movement has not produced score or a new object contact, so the old execute step should be abandoned in favor of a novel approach.
+
+VISION SUMMARY (Looker output to Brain):
+{
+  "objects": [
+    {
+      "description": "large central room/platform",
+      "color": "gray",
+      "color_hex": "3",
+      "position": [
+        25,
+        12
+      ],
+      "size": 700,
+      "shape": "irregular",
+      "notes": "Main connected walkable area spanning most of the middle and lower map, with corridors and chambers."
+    },
+    {
+      "description": "top-left black border block",
+      "color": "black",
+      "color_hex": "5",
+      "position": [
+        0,
+        0
+      ],
+      "size": 24,
+      "shape": "rectangle",
+      "notes": "3x8 black area in the upper-left corner."
+    },
+    {
+      "description": "top chamber border",
+      "color": "gray",
+      "color_hex": "3",
+      "position": [
+        8,
+        32
+      ],
+      "size": 40,
+      "shape": "rectangle",
+      "notes": "8x5 gray ring-like chamber outline around a black interior."
+    },
+    {
+      "description": "top chamber interior",
+      "color": "black",
+      "color_hex": "5",
+      "position": [
+        9,
+        33
+      ],
+      "size": 24,
+      "shape": "rectangle",
+      "notes": "6x4 black interior inside the top chamber."
+    },
+    {
+      "description": "small blue icon in top chamber",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        11,
+        36
+      ],
+      "size": 6,
+      "shape": "irregular",
+      "notes": "Small 3-cell top row plus vertical extension and single lower-left cell; resembles a tiny bent/L-like symbol inside the chamber."
+    },
+    {
+      "description": "orange bar/bridge",
+      "color": "orange",
+      "color_hex": "C",
+      "position": [
+        25,
+        36
+      ],
+      "size": 10,
+      "shape": "rectangle",
+      "notes": "2x5 horizontal orange strip near the top of the main room."
+    },
+    {
+      "description": "blue block under orange bar",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        27,
+        36
+      ],
+      "size": 15,
+      "shape": "rectangle",
+      "notes": "3x5 blue rectangle directly below the orange strip."
+    },
+    {
+      "description": "small white marker",
+      "color": "white",
+      "color_hex": "0",
+      "position": [
+        31,
+        21
+      ],
+      "size": 3,
+      "shape": "irregular",
+      "notes": "Tiny 3-cell marker in the left-middle room; cells at [31,21], [32,20], [32,21]."
+    },
+    {
+      "description": "small off-white marker",
+      "color": "off-white",
+      "color_hex": "1",
+      "position": [
+        33,
+        21
+      ],
+      "size": 1,
+      "shape": "square",
+      "notes": "Single off-white cell directly below the white marker."
+    },
+    {
+      "description": "bottom-left black chamber",
+      "color": "black",
+      "color_hex": "5",
+      "position": [
+        53,
+        1
+      ],
+      "size": 58,
+      "shape": "rectangle",
+      "notes": "Enclosed 10x8 black area in the lower-left."
+    },
+    {
+      "description": "bottom-left blue icon",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        55,
+        3
+      ],
+      "size": 18,
+      "shape": "irregular",
+      "notes": "Blue symbol inside the lower-left black chamber; 2x6 block at rows 55-56 plus additional cells forming a bent shape down to row 60."
+    },
+    {
+      "description": "bottom horizontal black strip",
+      "color": "black",
+      "color_hex": "5",
+      "position": [
+        60,
+        12
+      ],
+      "size": 52,
+      "shape": "line",
+      "notes": "Long black floor strip from columns 12-63 on row 60, continuing around the bottom edge."
+    },
+    {
+      "description": "bottom corridor left segment",
+      "color": "gray",
+      "color_hex": "3",
+      "position": [
+        61,
+        13
+      ],
+      "size": 14,
+      "shape": "rectangle",
+      "notes": "1x14 gray corridor segment before the yellow bar."
+    },
+    {
+      "description": "long yellow bar",
+      "color": "yellow",
+      "color_hex": "B",
+      "position": [
+        61,
+        27
+      ],
+      "size": 54,
+      "shape": "rectangle",
+      "notes": "2x27 horizontal yellow strip across rows 61-62."
+    },
+    {
+      "description": "red indicators at bottom-right",
+      "color": "red",
+      "color_hex": "8",
+      "position": [
+        61,
+        55
+      ],
+      "size": 9,
+      "shape": "irregular",
+      "notes": "Three separated 2-cell vertical red pairs at columns 55,58,61 across rows 61-62."
+    }
+  ],
+  "spatial_relations": [
+    "The top chamber border is above the orange bar and blue block.",
+    "The small blue icon in the top chamber is enclosed by the top chamber interior.",
+    "The orange bar is directly above the blue block under it.",
+    "The small white marker and off-white marker are left of the orange/blue bridge area inside the main gray room.",
+    "The bottom-left black chamber is far below and left of the main central room.",
+    "The bottom-left blue icon is enclosed within the bottom-left black chamber.",
+    "The long yellow bar is to the right of the bottom corridor left segment.",
+    "The red indicators are to the right of the long yellow bar."
+  ],
+  "background": "Dark-gray background (4) dominates most of the map, with large black regions/borders and a broad connected gray walkable structure through the center.",
+  "changes": [
+    {
+      "what": "The orange bar expanded/moved rightward from [25,36]-[26,40] to [25,36]-[26,40] while the changed cells are concentrated around its left edge and overlap with the blue block below; exact previous positions are not fully recoverable from the current board text alone.",
+      "type": "changed_shape"
+    },
+    {
+      "what": "The blue block beneath the orange bar changed in the bridge area around rows 27-29, cols 36-40, as indicated by the diff markers.",
+      "type": "changed_shape"
+    }
+  ],
+  "scene_summary": "A large gray connected room network fills the center, featuring a small enclosed top chamber with a blue icon, a central orange-over-blue bridge-like structure, and tiny white/off-white markers in the left-middle room. At the bottom, there is a separate black chamber with another blue icon, plus a long yellow status/bar element and three red indicator pairs on the lower right."
+}
+
