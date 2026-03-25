@@ -13,3 +13,4 @@ wheels/
 .env
 experiments/006-adaptive-explorer/experiment_run6.log
 RGB-Agent/
+ARC-AGI-3-ClaudeCode-SDK/
