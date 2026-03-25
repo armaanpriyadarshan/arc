@@ -235,6 +235,7 @@ class WorldModelAgent:
         """Phase 2: Goal-directed play using the induced model."""
         actions_since_llm = 0
         prev_grid = self.current_grid
+        prev_score = frame.levels_completed
 
         while self.action_counter < self.MAX_ACTIONS:
             if frame.state == GameState.WIN:
@@ -292,9 +293,25 @@ class WorldModelAgent:
             prev_grid = grid_before
 
             # Trigger model refinement on significant events
-            if frame.levels_completed > 0 and actions_since_llm > 1:
-                self.model.add_observation(f"Score increased to {frame.levels_completed} after {action.name}")
-                self._refine_model(frame, f"Score increased to {frame.levels_completed}! What worked?")
+            if frame.levels_completed > prev_score:
+                prev_score = frame.levels_completed
+                self.model.add_observation(
+                    f"LEVEL COMPLETED! Score {frame.levels_completed} after {action.name}"
+                )
+                logger.info(f"[level-up] Level {frame.levels_completed}! Reflecting then re-probing.")
+                self._reflect_on_level(frame)
+                # Re-probe: grid layout has changed
+                self.transitions.clear()
+                self.prev_symbolic = None
+                available = frame.available_actions or [1, 2, 3, 4]
+                frame = self._probe_actions(frame, available)
+                self.current_grid = frame.frame[-1] if frame.frame else self.current_grid
+                ctrl_color, ctrl_evidence = identify_controllable(self.transitions)
+                if ctrl_color is not None:
+                    self.model.object_roles.append(ObjectRole(
+                        color=ctrl_color, role="controllable",
+                        evidence=ctrl_evidence, confidence=0.9,
+                    ))
                 actions_since_llm = 0
 
             elif changes > 200:
@@ -421,6 +438,81 @@ class WorldModelAgent:
 
         logger.info(f"[refine] {trigger}")
         logger.info(f"[model] {self.model.to_dsl_text()[:300]}")
+
+    def _reflect_on_level(self, frame: FrameData) -> None:
+        """Reflect on a just-completed level. Ask GPT what worked and what to carry forward."""
+        self.llm_calls += 1
+
+        recent_trans = self.transitions[-15:]
+        trans_text = []
+        for t in recent_trans:
+            trans_text.append("{}: {}".format(
+                t['action'], 'BLOCKED' if t['blocked'] else f"{t['changes']}ch"
+            ))
+
+        content = [
+            input_text(
+                f"LEVEL {frame.levels_completed} COMPLETED!\n\n"
+                f"You just completed a level in this unknown game. Reflect on what "
+                f"succeeded so you can apply the same strategy to the next level.\n\n"
+                f"CURRENT WORLD MODEL:\n{self.model.to_dsl_text()}\n\n"
+                f"RECENT ACTION SEQUENCE (leading to completion):\n"
+                + "\n".join(trans_text) + "\n\n"
+                f"Score: {frame.levels_completed} | Deaths: {self.total_deaths} | "
+                f"Actions: {self.action_counter}/{self.MAX_ACTIONS}\n\n"
+                "Answer these questions:\n"
+                "1. WINNING STRATEGY: What sequence of actions or approach led to completing this level?\n"
+                "2. GAME MECHANICS: What universal rules about this game did you confirm? "
+                "(e.g., action effects, object interactions, win conditions)\n"
+                "3. CARRY FORWARD: What knowledge should be applied to the next level? "
+                "The layout will change but the game mechanics stay the same.\n\n"
+                "Respond with JSON:\n"
+                '{"winning_strategy": "what you did to win this level",\n'
+                ' "confirmed_mechanics": ["universal game rule 1", "universal game rule 2"],\n'
+                ' "carry_forward": ["knowledge to apply to next level"],\n'
+                ' "goal_for_next_level": {"description": "what to try first", '
+                '"type": "contact/collect/clear/pattern", "confidence": 0.6}}'
+            ),
+            input_text("Final frame of completed level:"),
+            input_image_b64(grid_b64(self.current_grid)),
+        ]
+
+        try:
+            response = self.client.responses.create(
+                model="gpt-5.4",
+                input=[{"role": "user", "content": content}],
+                max_output_tokens=1500,
+                temperature=0.2,
+            )
+            raw = response.output_text or "{}"
+        except Exception as e:
+            logger.warning(f"Level reflection API error: {e}")
+            return
+
+        data = self._parse_json(raw)
+
+        strategy = data.get("winning_strategy", "")
+        if strategy:
+            self.model.add_observation(f"LEVEL {frame.levels_completed} WON: {strategy}")
+
+        for mechanic in data.get("confirmed_mechanics", []):
+            self.model.add_observation(f"CONFIRMED: {mechanic}")
+
+        for knowledge in data.get("carry_forward", []):
+            self.model.add_observation(f"CARRY FORWARD: {knowledge}")
+
+        next_goal = data.get("goal_for_next_level", {})
+        if next_goal and next_goal.get("description"):
+            self.model.goal_hypotheses = [GoalHypothesis(
+                description=next_goal["description"],
+                type=next_goal.get("type", "unknown"),
+                target=next_goal.get("target", ""),
+                confidence=next_goal.get("confidence", 0.5),
+                evidence=f"Inferred from level {frame.levels_completed} success",
+            )]
+
+        logger.info(f"[level-reflect] Level {frame.levels_completed}: {strategy}")
+        logger.info(f"[level-reflect] Carry forward: {data.get('carry_forward', [])}")
 
     def _parse_json(self, raw: str) -> dict:
         try:

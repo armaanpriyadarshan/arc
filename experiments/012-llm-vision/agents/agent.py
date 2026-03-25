@@ -498,6 +498,7 @@ class ToolUseAgent:
         self.interaction_journal: list[dict] = []  # accumulated across the entire game
         self.journal_by_object: dict[str, list[dict]] = {}  # indexed by object for quick lookup
         self._pending_journal_prompt: str | None = None
+        self._level_carry_forward_notes: str = ""
 
         # v4: novelty bias after large changes
         self._novelty_boost_active = False
@@ -733,8 +734,10 @@ class ToolUseAgent:
                     break
                 if frame.levels_completed > score_before:
                     batch_clean = False
-                    logger.info(f"[level-up] Level {frame.levels_completed}! Re-probing new layout.")
+                    logger.info(f"[level-up] Level {frame.levels_completed}! Reflecting then re-probing.")
                     self.run_log.write_event("LEVEL_UP", f"Level {frame.levels_completed}")
+                    # Reflect BEFORE clearing state (LLM can see hypotheses/notes/plan)
+                    self._reflect_on_level_completion(frame, score_before)
                     self._promote_high_probability_hypotheses()
                     avail = frame.available_actions or [1, 2, 3, 4]
                     self.probe_facts = self._auto_probe(frame, avail)
@@ -770,6 +773,11 @@ class ToolUseAgent:
                             entry["level"] = score_before
                     if self.verified_rules:
                         logger.info(f"[rules] {self.verified_rules}")
+                    # Seed carry-forward notes from reflection
+                    if self._level_carry_forward_notes:
+                        self.notes = f"CARRY-FORWARD FROM LEVEL {score_before}: {self._level_carry_forward_notes}"
+                        self._level_carry_forward_notes = ""
+                        logger.info(f"[carry-forward] Seeded notes: {self.notes}")
                     break
                 if changes > 100:
                     batch_clean = False
@@ -985,6 +993,102 @@ class ToolUseAgent:
                         rule = rule[:rule.rfind("(")].strip()
                     if rule:
                         self._add_rule(rule)
+
+    def _reflect_on_level_completion(self, frame: FrameData, prev_level: int) -> None:
+        """Reflect on a just-completed level before clearing state.
+
+        Called BEFORE state is wiped, so we have access to hypotheses, notes,
+        journal, and plan that led to success.
+        """
+        self.llm_calls += 1
+
+        # Build context from current state (all still intact at this point)
+        journal_text = ""
+        useful_entries = [e for e in self.interaction_journal if e.get("useful")]
+        if useful_entries:
+            journal_text = "KEY DISCOVERIES THIS LEVEL:\n"
+            for entry in useful_entries[-10:]:
+                journal_text += (
+                    f"  Turn {entry.get('turn', '?')}: {entry.get('action', '?')}\n"
+                    f"    -> {entry.get('observed', '?')}\n"
+                )
+
+        img_b64 = grid_b64(self.current_grid)
+
+        content = [
+            input_text(
+                f"LEVEL {frame.levels_completed} COMPLETED! (Previous score: {prev_level})\n\n"
+                f"You just solved a level in this unknown game. Before moving to the next level, "
+                f"reflect on what you learned.\n\n"
+                f"YOUR HYPOTHESES AT TIME OF COMPLETION:\n{self.hypothesis}\n\n"
+                f"YOUR NOTES:\n{self.notes}\n\n"
+                + (f"YOUR PLAN:\n{json.dumps(self.current_plan, indent=2)}\n\n"
+                   if self.current_plan else "")
+                + (journal_text + "\n" if journal_text else "")
+                + f"EXISTING VERIFIED RULES:\n"
+                + ("\n".join(f"- {r}" for r in self.verified_rules) if self.verified_rules
+                   else "(none)") + "\n\n"
+                f"RECENT ACTIONS:\n" + "\n".join(self.recent_actions[-15:]) + "\n\n"
+                f"Score: {frame.levels_completed} | Deaths: {self.total_deaths} | "
+                f"Actions: {self.action_counter}/{self.MAX_ACTIONS}\n\n"
+                "Answer these questions:\n"
+                "1. WINNING STRATEGY: What specific approach/sequence solved this level?\n"
+                "2. VERIFIED RULES: What universal game mechanics are now confirmed? "
+                "(NOT position-specific, NOT layout-specific — only rules about HOW the game works)\n"
+                "3. CARRY FORWARD NOTES: What should you remember for the next level? "
+                "The layout will change but game mechanics stay the same.\n\n"
+                "Respond with COMPACT JSON:\n"
+                '{"winning_strategy": "brief description of what solved this level",\n'
+                ' "verified_rules": ["universal game mechanic 1", "universal game mechanic 2"],\n'
+                ' "carry_forward_notes": "notes to remember for next level",\n'
+                ' "key_insight": "the single most important thing you learned"}'
+            ),
+            input_text("Final frame of completed level:"),
+            input_image_b64(img_b64),
+        ]
+
+        try:
+            response = self.client.responses.create(
+                model="gpt-5.4",
+                input=[{"role": "user", "content": content}],
+                max_output_tokens=1000,
+                temperature=0.2,
+            )
+            raw = response.output_text or "{}"
+        except Exception as e:
+            logger.warning(f"Level reflection API error: {e}")
+            return
+
+        data = self._parse_json(raw)
+
+        for rule in data.get("verified_rules", []):
+            if isinstance(rule, str) and rule:
+                self._add_rule(rule)
+
+        carry_notes = data.get("carry_forward_notes", "")
+        strategy = data.get("winning_strategy", "")
+        insight = data.get("key_insight", "")
+
+        logger.info(f"[level-reflect] Level {frame.levels_completed}: {strategy}")
+        logger.info(f"[level-reflect] Key insight: {insight}")
+        logger.info(f"[level-reflect] Carry-forward: {carry_notes}")
+
+        self.run_log.write_event(
+            "LEVEL_REFLECTION",
+            f"Level {frame.levels_completed} | Strategy: {strategy} | Insight: {insight}"
+        )
+
+        self.interaction_journal.append({
+            "turn": self.action_counter,
+            "level": prev_level,
+            "action": f"COMPLETED LEVEL {frame.levels_completed}",
+            "observed": f"Strategy: {strategy}. Insight: {insight}",
+            "objects_involved": [],
+            "reversible": "no",
+            "useful": True,
+        })
+
+        self._level_carry_forward_notes = carry_notes
 
     def _auto_probe(self, frame: FrameData, available: list[int]) -> str:
         """Take one of each action, plus expanded ACTION6 probing at diverse coordinates.
