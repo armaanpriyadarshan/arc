@@ -1,0 +1,5 @@
+[project]
+name = "experiment-010"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = ["arc-agi", "openai>=1.72.0", "pillow>=11.0"]
