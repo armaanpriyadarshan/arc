@@ -1037,6 +1037,13 @@ class ToolUseAgent:
 
         change_desc = self._describe_cell_changes(grid_before, self.current_grid)
 
+        # Save PNG diff for this probe action
+        if hasattr(self, "_vision_frames_dir") and changes > 0:
+            img = side_by_side(grid_before, self.current_grid)
+            filename = f"action_{self.action_counter:03d}_{action.name}_probe.png"
+            filepath = os.path.join(self._vision_frames_dir, filename)
+            img.save(filepath, format="PNG", optimize=True)
+
         status = "BLOCKED" if blocked else f"{changes} cells changed"
         fact = f"{action.name}: {status}"
         if change_desc:
@@ -1102,6 +1109,13 @@ class ToolUseAgent:
             blocked = 0 < changes < 10
 
             change_desc = self._describe_cell_changes(grid_before, self.current_grid)
+
+            # Save PNG diff for this probe action
+            if hasattr(self, "_vision_frames_dir") and changes > 0:
+                img = side_by_side(grid_before, self.current_grid)
+                filename = f"action_{self.action_counter:03d}_ACTION6_{x}_{y}_probe.png"
+                filepath = os.path.join(self._vision_frames_dir, filename)
+                img.save(filepath, format="PNG", optimize=True)
 
             status = "BLOCKED" if blocked else f"{changes} cells changed"
             fact = f"ACTION6 at ({x},{y}) [{desc}]: {status}"
@@ -1207,26 +1221,32 @@ class ToolUseAgent:
     def _dispatch_tool(self, name: str, args: dict) -> str:
         """Execute a log/board tool call and return the result string."""
         if name == "read_log":
-            return self.run_log.read_lines(
+            result = self.run_log.read_lines(
                 offset=args.get("offset", 1),
                 limit=min(args.get("limit", 100), 200),
             )
         elif name == "grep_log":
-            return self.run_log.grep(
+            result = self.run_log.grep(
                 pattern=args["pattern"],
                 context_lines=args.get("context_lines", 2),
             )
         elif name == "read_board":
-            return self.board_log.get_rows(
+            result = self.board_log.get_rows(
                 row_start=args.get("row_start", 0),
                 row_end=args.get("row_end", 63),
             )
         elif name == "grep_board":
-            return self.board_log.grep(
+            result = self.board_log.grep(
                 pattern=args["pattern"],
                 context_lines=args.get("context_lines", 2),
             )
-        return f"Unknown tool: {name}"
+        else:
+            result = f"Unknown tool: {name}"
+
+        # Log the full tool call with truncated result
+        truncated = result[:500] + "..." if len(result) > 500 else result
+        logger.info(f"[tool-call] {name}({json.dumps(args)}) -> {len(result)} chars:\n{truncated}")
+        return result
 
     def _call_with_tools(self, content: list[dict], model: str,
                          is_large_change: bool) -> str:
