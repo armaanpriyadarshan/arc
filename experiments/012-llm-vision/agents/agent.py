@@ -85,11 +85,15 @@ OBJECTS AND PHYSICS:
   wall color? If the target is enclosed by wall-colored objects with no gap, you CANNOT
   reach it until those walls are removed by a trigger.
 
-AGENTS AND ENTITIES:
-- You control one entity. To identify it, look at the ESTABLISHED FACTS from probing:
-  the colors that APPEARED and DISAPPEARED when you pressed movement actions (ACTION1-4)
-  are the colors of YOUR avatar. The object made of those colors is what you control.
-  Do NOT assume the avatar is the smallest object — it could be any size.
+CAUSE AND EFFECT:
+- You do NOT know what your actions do until you observe the results. Do NOT assume
+  you control an avatar, a cursor, or any specific object. Some games have avatars,
+  some have cursors, some have entirely different mechanics.
+- The ONLY way to know what your actions do is to look at the ESTABLISHED FACTS from
+  probing. Those facts tell you exactly which cells changed, where, and what colors
+  were involved. Trust the probe data over assumptions.
+- If nothing moves when you act, your actions may be toggling state, rotating objects,
+  or doing something non-spatial. Do not force a "movement" interpretation.
 - Environment objects don't move on their own unless a timer/automation is running.
   If something changes without your action, track it as a mechanic with a cycle.
 
