@@ -1998,7 +1998,3 @@ class ToolUseAgent:
             logger.info("--- SCORECARD ---")
             logger.info(json.dumps(scorecard.model_dump(), indent=2))
         self.scorecard_id = None
-
-
-# Alias for visual_agent_play.py runner
-RGBToolCallerAgent = ToolUseAgent
