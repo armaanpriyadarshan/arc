@@ -19,7 +19,7 @@ from openai import OpenAI
 from .run_log import RunLog, RESPONSES_TOOLS, CHAT_TOOLS
 from .symbolic import grid_to_symbolic, diff_symbolic
 from .vision import (grid_b64, diff_b64, input_text, input_image_b64,
-                     grid_to_image, side_by_side)
+                     grid_to_image, side_by_side, image_to_b64)
 
 logger = logging.getLogger(__name__)
 vision_logger = logging.getLogger("agents.vision")
@@ -487,6 +487,9 @@ class ToolUseAgent:
         # Vision log: LLM observation carried from _think_and_act to action loop
         self._last_llm_observation: str = ""
 
+        # LLM View: optional per-action GPT-5.4 scene description (toggled via --llm-view)
+        self.llm_view_enabled: bool = False
+
         # File handlers added by _setup_logging, cleaned up in _close
         self._log_handlers: list[logging.Handler] = []
 
@@ -807,6 +810,30 @@ class ToolUseAgent:
             return f"({c['row']//10*10},{c['col']//10*10})"
         return "(?,?)"
 
+    def _get_llm_view(self, img_b64: str) -> str:
+        """Make a GPT-5.4 call to get a concise scene description."""
+        try:
+            response = self.client.responses.create(
+                model="gpt-5.4",
+                input=[{
+                    "role": "user",
+                    "content": [
+                        input_text(
+                            "You are observing a 64x64 grid game. "
+                            "Concisely describe what you see and what you think "
+                            "needs to be done to progress. 2-3 sentences max."
+                        ),
+                        input_image_b64(img_b64),
+                    ],
+                }],
+                max_output_tokens=150,
+                temperature=0.2,
+            )
+            return response.output_text or ""
+        except Exception as e:
+            logger.warning(f"[llm-view] Failed: {e}")
+            return ""
+
     def _log_vision(self, action_label: str, grid_before: list[list[int]],
                     changes: int, blocked: bool, frame: FrameData,
                     llm_observation: str = "") -> None:
@@ -873,19 +900,29 @@ class ToolUseAgent:
             lines.append("")
             lines.append(f"LLM OBSERVATION: {llm_observation}")
 
-        lines.append("")
-        vision_logger.info("\n".join(lines))
+        # Generate frame image (used for PNG save and optional LLM view)
+        if changes > 0:
+            img = side_by_side(grid_before, self.current_grid)
+        else:
+            img = grid_to_image(self.current_grid)
 
         # Save diff PNG to frames subfolder
         if hasattr(self, "_vision_frames_dir"):
             safe_label = action_label.replace("(", "_").replace(")", "").replace(",", "_")
             filename = f"action_{self.action_counter:03d}_{safe_label}.png"
             filepath = os.path.join(self._vision_frames_dir, filename)
-            if changes > 0:
-                img = side_by_side(grid_before, self.current_grid)
-            else:
-                img = grid_to_image(self.current_grid)
             img.save(filepath, format="PNG", optimize=True)
+
+        # LLM View: optional per-action scene description
+        if self.llm_view_enabled:
+            img_b64 = image_to_b64(img)
+            llm_view = self._get_llm_view(img_b64)
+            if llm_view:
+                lines.append("")
+                lines.append(f"LLM VIEW: {llm_view}")
+
+        lines.append("")
+        vision_logger.info("\n".join(lines))
 
     def _add_rule(self, rule: str) -> None:
         import re

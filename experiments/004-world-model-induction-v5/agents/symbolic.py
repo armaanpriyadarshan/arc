@@ -527,7 +527,7 @@ def _grid_to_symbolic_impl(grid: Grid, min_size: int = 2) -> dict:
     objects.sort(key=lambda o: (o["shape"] == "background", o["size"]))
 
     # Compute relations between non-background objects
-    fg_objects = [o for o in objects if o["shape"] != "background"][:15]
+    fg_objects = [o for o in objects if o["shape"] != "background"]
     relations = []
     for i, a in enumerate(fg_objects):
         for b in fg_objects[i+1:]:
@@ -570,7 +570,7 @@ def _grid_to_symbolic_impl(grid: Grid, min_size: int = 2) -> dict:
         "grid_size": [h, w],
         "num_objects": len(fg_objects),
         "num_backgrounds": len(bg_objects),
-        "objects": fg_objects[:15],
+        "objects": fg_objects,
         "backgrounds": [{"color": o["color"], "size": o["size"]} for o in bg_objects],
         "relations": relations[:20],
     }

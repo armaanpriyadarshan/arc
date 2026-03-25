@@ -209,6 +209,10 @@ def _run_standalone(args, pygame):
     else:
         agent = agent_cls(args.game)
 
+    # Toggle per-action LLM scene descriptions in vision.log
+    if args.llm_view:
+        agent.llm_view_enabled = True
+
     # Queue of (action_name: str, frame: FrameData) produced by the agent
     frame_q = queue.Queue()
     agent_done = threading.Event()
@@ -361,6 +365,8 @@ def main():
                         help="Standalone mode: the agent owns its game loop (for experiment agents)")
     parser.add_argument("--delay", type=float, default=0.15,
                         help="Delay in seconds between rendered frames in standalone mode (default: 0.15)")
+    parser.add_argument("--llm-view", action="store_true",
+                        help="Enable per-action LLM scene descriptions in vision.log (standalone mode)")
     args = parser.parse_args()
 
     if args.list:

@@ -1,7 +1,10 @@
-"""Visually play a synthetic game in a window using pygame.
+"""Visually play an ARC game in a window using pygame.
+
+Supports both synthetic games and official preview games (from environment_files/).
 
 Usage:
     uv run python synthetic_games/visual_play.py --game courier
+    uv run python synthetic_games/visual_play.py --game ft09
     uv run python synthetic_games/visual_play.py --game wiring --seed 7
     uv run python synthetic_games/visual_play.py --list
 
@@ -59,6 +62,9 @@ GAME_REGISTRY = {}
 
 
 def _discover_games():
+    from arcengine import ARCBaseGame
+
+    # Synthetic games: synthetic_games/game_*.py
     for fname in sorted(os.listdir(_HERE)):
         if fname.startswith("game_") and fname.endswith(".py"):
             parts = fname[:-3].split("_", 2)
@@ -69,23 +75,57 @@ def _discover_games():
             mod = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(mod)
 
-            from arcengine import ARCBaseGame
             for attr_name in dir(mod):
                 attr = getattr(mod, attr_name)
                 if (isinstance(attr, type) and issubclass(attr, ARCBaseGame)
                         and attr is not ARCBaseGame):
-                    GAME_REGISTRY[short_name] = (module_path, attr_name)
+                    GAME_REGISTRY[short_name] = (module_path, attr_name, "synthetic")
                     break
+
+    # Official preview games: environment_files/{game_id}/{hash}/{game_id}.py
+    env_dir = os.path.join(_HERE, "..", "environment_files")
+    if os.path.isdir(env_dir):
+        for game_id in sorted(os.listdir(env_dir)):
+            game_dir = os.path.join(env_dir, game_id)
+            if not os.path.isdir(game_dir):
+                continue
+            # Pick the latest version (last sorted hash dir)
+            hash_dirs = sorted(
+                d for d in os.listdir(game_dir)
+                if os.path.isdir(os.path.join(game_dir, d))
+            )
+            if not hash_dirs:
+                continue
+            latest = hash_dirs[-1]
+            py_file = os.path.join(game_dir, latest, f"{game_id}.py")
+            if not os.path.isfile(py_file):
+                continue
+            try:
+                spec = importlib.util.spec_from_file_location(
+                    f"env_{game_id}", py_file)
+                mod = importlib.util.module_from_spec(spec)
+                spec.loader.exec_module(mod)
+                for attr_name in dir(mod):
+                    attr = getattr(mod, attr_name)
+                    if (isinstance(attr, type) and issubclass(attr, ARCBaseGame)
+                            and attr is not ARCBaseGame):
+                        GAME_REGISTRY[game_id] = (py_file, attr_name, "official")
+                        break
+            except Exception:
+                pass  # skip games that fail to import
 
 
 def _load_game(name, seed):
     if name not in GAME_REGISTRY:
         raise ValueError(f"Unknown game '{name}'. Available: {', '.join(sorted(GAME_REGISTRY))}")
-    module_path, class_name = GAME_REGISTRY[name]
+    module_path, class_name, game_type = GAME_REGISTRY[name]
     spec = importlib.util.spec_from_file_location("game_mod", module_path)
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
-    return getattr(mod, class_name)(seed=seed)
+    cls = getattr(mod, class_name)
+    if game_type == "official":
+        return cls()  # official games take no args
+    return cls(seed=seed)
 
 
 # ---------------------------------------------------------------------------
@@ -106,7 +146,9 @@ def main():
     if args.list:
         print("Available games:")
         for name in sorted(GAME_REGISTRY):
-            print(f"  {name}")
+            game_type = GAME_REGISTRY[name][2]
+            tag = "[official]" if game_type == "official" else "[synthetic]"
+            print(f"  {name:20s} {tag}")
         return
 
     if args.game is None:
@@ -127,11 +169,13 @@ def main():
     available = game._available_actions if hasattr(game, '_available_actions') else [1,2,3,4,5]
 
     # Init pygame
+    game_type = GAME_REGISTRY[args.game][2]
+    game_label = f"{args.game}" if game_type == "official" else f"{args.game} (seed={args.seed})"
     scale = args.scale
     win_size = 64 * scale
     pygame.init()
     screen = pygame.display.set_mode((win_size, win_size))
-    pygame.display.set_caption(f"ARC Synthetic: {args.game} (seed={args.seed})")
+    pygame.display.set_caption(f"ARC: {game_label}")
     clock = pygame.time.Clock()
 
     # Key mappings (R and Shift+R handled separately for level/full reset)
@@ -201,7 +245,7 @@ def main():
                         state=game._state,
                         levels_completed=game._score,
                     )
-                    pygame.display.set_caption(f"ARC Synthetic: {args.game} (seed={args.seed})")
+                    pygame.display.set_caption(f"ARC: {game_label}")
                     render_frame(frame)
 
                 elif event.key in key_to_action:
