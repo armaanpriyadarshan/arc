@@ -1,0 +1,10 @@
+[project]
+name = "experiment-011"
+version = "0.1.0"
+requires-python = ">=3.14"
+dependencies = [
+    "arc-agi>=0.9.4",
+    "pydantic>=2.0.0",
+    "python-dotenv>=1.2.2",
+    "pillow>=11.0.0",
+]
