@@ -1254,19 +1254,20 @@ class ToolUseAgent:
 
     def _describe_cell_changes(self, grid_before: list[list[int]],
                                grid_after: list[list[int]]) -> str:
-        """Produce a spatial + color description of cell changes between two grids."""
+        """Produce a spatial + color-transition description of cell changes.
+
+        Reports transitions like 'gray->orange x10, gray->blue x15' which makes
+        clear what moved onto what (vs. the old approach that just counted colors).
+        """
         from .run_log import COLOR_NAMES
         changed_cells = []
-        colors_appeared: dict[int, int] = {}   # color_id -> count (new color in after)
-        colors_disappeared: dict[int, int] = {}  # color_id -> count (old color in before)
+        transitions: dict[tuple[int, int], int] = {}  # (old_color, new_color) -> count
         for r in range(min(64, len(grid_before), len(grid_after))):
             for c in range(min(64, len(grid_before[r]), len(grid_after[r]))):
                 if grid_before[r][c] != grid_after[r][c]:
                     changed_cells.append((r, c))
-                    old_color = grid_before[r][c]
-                    new_color = grid_after[r][c]
-                    colors_appeared[new_color] = colors_appeared.get(new_color, 0) + 1
-                    colors_disappeared[old_color] = colors_disappeared.get(old_color, 0) + 1
+                    key = (grid_before[r][c], grid_after[r][c])
+                    transitions[key] = transitions.get(key, 0) + 1
         if not changed_cells:
             return ""
         rows = [r for r, c in changed_cells]
@@ -1274,28 +1275,18 @@ class ToolUseAgent:
         center_r = sum(rows) // len(rows)
         center_c = sum(cols) // len(cols)
 
-        # Build color summary: which colors appeared/disappeared in the changed cells
-        # Net colors = appeared but not disappeared (or vice versa) indicate movement
-        color_parts = []
-        all_colors = set(colors_appeared) | set(colors_disappeared)
-        for cid in sorted(all_colors):
-            appeared = colors_appeared.get(cid, 0)
-            disappeared = colors_disappeared.get(cid, 0)
-            name = COLOR_NAMES.get(cid, f"color_{cid}")
-            hex_id = f"{cid:X}"
-            if appeared > 0 and disappeared == 0:
-                color_parts.append(f"{name}({hex_id}) +{appeared} cells (appeared)")
-            elif disappeared > 0 and appeared == 0:
-                color_parts.append(f"{name}({hex_id}) -{disappeared} cells (disappeared)")
-            elif appeared != disappeared:
-                color_parts.append(f"{name}({hex_id}) +{appeared}/-{disappeared} cells")
-            else:
-                color_parts.append(f"{name}({hex_id}) {appeared} cells shifted")
-        color_desc = "; ".join(color_parts)
+        # Format transitions sorted by count (most common first)
+        sorted_trans = sorted(transitions.items(), key=lambda x: x[1], reverse=True)
+        trans_parts = []
+        for (old_c, new_c), count in sorted_trans:
+            old_name = f"{COLOR_NAMES.get(old_c, f'color_{old_c}')}({old_c:X})"
+            new_name = f"{COLOR_NAMES.get(new_c, f'color_{new_c}')}({new_c:X})"
+            trans_parts.append(f"{old_name}->{new_name} x{count}")
+        trans_desc = ", ".join(trans_parts)
 
         return (f"Changes centered around ({center_r}, {center_c}), "
                 f"spanning rows {min(rows)}-{max(rows)}, cols {min(cols)}-{max(cols)}. "
-                f"Colors involved: {color_desc}")
+                f"Cell transitions: {trans_desc}")
 
     def _call_vision_summarizer(self, img_b64: str, grid: list[list[int]],
                                is_diff: bool = True) -> dict:
