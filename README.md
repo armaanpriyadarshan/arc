@@ -97,22 +97,7 @@ uv run rgb-swarm --game ls20 --model openai/gpt-5.2 --max-actions 200
 
 ## Synthetic Games
 
-12 custom games in `synthetic_games/` for controlled testing. Same 64x64 grid, 16 colors, and ACTION1-7 interface as real ARC-AGI-3 games.
-
-| # | Game | Mechanics |
-|---|------|-----------|
-| 01 | Courier | Navigation, colored package delivery, locked doors, fuel management |
-| 02 | Wiring | Click-to-place wires, signal propagation, color mixing |
-| 03 | Alchemist | Ingredient collection, hidden recipe discovery, crafting |
-| 04 | Mirror Maze | Rotate mirrors to reflect colored beams to matching receptors |
-| 05 | Terraformer | Place terrain with chain reactions (lava+water=stone, grass spreads) |
-| 06 | Conductor | Toggle track switches to route trains to colored stations |
-| 07 | Architect | Place tetrominoes with gravity/rotation to fill a target silhouette |
-| 08 | Cipher | Deduce hidden transformation rules from input-output examples |
-| 09 | Ecosystem | Place species, simulate interactions to hit population targets |
-| 10 | Shapeshifter | Shift between forms with different abilities to solve gated puzzles |
-| 11 | Maze | Pure navigation (baseline) |
-| 12 | Maze2 | Navigation with dead-ends (baseline) |
+12 custom games in `synthetic_games/` for controlled testing. Same 64x64 grid, 16 colors, and ACTION1-7 interface as real ARC-AGI-3 games. Covers navigation, click-based puzzles, pattern matching, resource management, and more.
 
 ```bash
 # Watch an agent play visually
