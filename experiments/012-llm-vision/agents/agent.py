@@ -906,30 +906,6 @@ class ToolUseAgent:
         avg_c = sum(changed_cols) // len(changed_cols)
         return f"({avg_r // 10 * 10},{avg_c // 10 * 10})"
 
-    def _get_llm_view(self, img_b64: str) -> str:
-        """Make a GPT-5.4 call to get a concise scene description."""
-        try:
-            response = self.client.responses.create(
-                model="gpt-5.4",
-                input=[{
-                    "role": "user",
-                    "content": [
-                        input_text(
-                            "You are observing a 64x64 grid game. "
-                            "Concisely describe what you see and what you think "
-                            "needs to be done to progress. 2-3 sentences max."
-                        ),
-                        input_image_b64(img_b64),
-                    ],
-                }],
-                max_output_tokens=150,
-                temperature=0.2,
-            )
-            return response.output_text or ""
-        except Exception as e:
-            logger.warning(f"[llm-view] Failed: {e}")
-            return ""
-
     def _log_vision(self, action_label: str, grid_before: list[list[int]],
                     changes: int, blocked: bool, frame: FrameData,
                     llm_observation: str = "") -> None:
@@ -969,13 +945,11 @@ class ToolUseAgent:
             filepath = os.path.join(self._vision_frames_dir, filename)
             img.save(filepath, format="PNG", optimize=True)
 
-        # LLM View: optional per-action scene description
-        if self.llm_view_enabled:
-            img_b64 = image_to_b64(img)
-            llm_view = self._get_llm_view(img_b64)
-            if llm_view:
-                lines.append("")
-                lines.append(f"LLM VIEW: {llm_view}")
+        # LLM View: show the Looker's most recent vision summary
+        if self.llm_view_enabled and self.prev_vision_summary:
+            lines.append("")
+            lines.append(f"VISION SUMMARY (Looker output to Brain):")
+            lines.append(json.dumps(self.prev_vision_summary, indent=2))
 
         lines.append("")
         vision_logger.info("\n".join(lines))
