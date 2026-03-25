@@ -530,8 +530,9 @@ class ToolUseAgent:
 
         # v3: planning layer
         self.current_plan = None  # dict from model output, persisted across turns
-        self.plan_step_turns = 0  # how many turns we've been on the current step
-        self.last_plan_step = None  # to detect when we're stuck on a step
+
+        # Event-driven reflection: consecutive blocked actions
+        self._consecutive_blocked = 0
 
         # v3: interaction journal
         self.interaction_journal: list[dict] = []  # accumulated across the entire game
@@ -671,6 +672,7 @@ class ToolUseAgent:
                 self.current_grid = frame.frame[-1] if frame.frame else []
                 self.prev_image_grid = None
                 self.prev_vision_summary = None
+                self._consecutive_blocked = 0
                 # v5: clear caches on death
                 self._cached_frame_b64 = None
                 self._cached_frame_grid = None
@@ -718,6 +720,7 @@ class ToolUseAgent:
 
                 # Track blocked directions by region
                 if blocked:
+                    self._consecutive_blocked += 1
                     region = self._get_region()
                     key = f"{region}:{action.name}"
                     self.blocked_tracker[key] = self.blocked_tracker.get(key, 0) + 1
@@ -726,7 +729,9 @@ class ToolUseAgent:
                         if dead_end not in self.dead_ends:
                             self.dead_ends.append(dead_end)
                             logger.info(f"[dead-end] {dead_end} (blocked {self.blocked_tracker[key]}x)")
-                elif changes > 100:
+                else:
+                    self._consecutive_blocked = 0
+                if changes > 100:
                     self.blocked_tracker.clear()
                     self.dead_ends.clear()
                     self._large_change_pending = True
@@ -804,8 +809,7 @@ class ToolUseAgent:
                     self._recent_categories = []
                     self.current_goal = ""
                     self.current_plan = None
-                    self.plan_step_turns = 0
-                    self.last_plan_step = None
+                    self._consecutive_blocked = 0
                     # v3: carry journal across levels — tag entries with current level
                     for entry in self.interaction_journal:
                         if "level" not in entry:
@@ -1567,18 +1571,18 @@ class ToolUseAgent:
         if changes_list:
             changes_text = f"CHANGES SINCE LAST ACTION:\n{json.dumps(changes_list, indent=1)}\n\n"
 
-        # v3: build stuck-on-step warning for planning layer
+        # Event-driven stuck warning: consecutive blocked actions
         plan_stuck_warning = ""
-        if self.plan_step_turns >= 5:
+        if self._consecutive_blocked >= 3:
             plan_stuck_warning = (
-                f"\n\nWARNING: You've been on step {self.last_plan_step} of your plan "
-                f"for {self.plan_step_turns} turns with no progress. Either:\n"
-                "1. Break this step into smaller sub-steps\n"
-                "2. Try a completely different approach to this step\n"
-                "3. Abort the plan — your approach may be wrong\n"
-                "Do NOT just repeat the same actions.\n"
+                f"\n\nWARNING: You have been BLOCKED {self._consecutive_blocked} times in a row. "
+                "You are stuck — repeating the same movement will not work. Consider:\n"
+                "1. Try a DIFFERENT direction or action entirely\n"
+                "2. Interact with a nearby object (ACTION5, ACTION6) instead of moving\n"
+                "3. Abort your current plan and explore a new approach\n"
+                "Do NOT keep trying the same blocked direction.\n"
             )
-            logger.info(f"[plan-stuck] Step {self.last_plan_step} stuck for {self.plan_step_turns} turns")
+            logger.info(f"[blocked-stuck] {self._consecutive_blocked} consecutive blocks")
 
         # v3: build auto-transition nudge (explore -> execute)
         commit_nudge = ""
@@ -1631,12 +1635,16 @@ class ToolUseAgent:
                 )
                 logger.info(f"[diversity] Nudge injected — stuck in category: {stuck_cat}")
 
-        # v3: periodic forced reflection every 8 turns
+        # Event-driven reflection: triggers on repeated blocks or zero-change streaks
         reflection_prompt = ""
-        if self.action_counter > 0 and self.action_counter % 8 == 0:
+        should_reflect = (
+            self._consecutive_blocked >= 3
+            or self._zero_change_turns >= 3
+        )
+        if should_reflect:
             reflection_prompt = (
-                "\n\n=== FORCED REFLECTION (every 8 turns) ===\n"
-                "STOP and think about what you're MISSING.\n"
+                "\n\n=== REFLECTION (triggered by repeated stalls) ===\n"
+                "You are not making progress. STOP and think about what you're MISSING.\n"
                 "1. What directions have you NOT explored from positions you've visited?\n"
                 "2. What objects have you NOT interacted with?\n"
                 "3. What visual patterns or correspondences have you NOT investigated?\n"
@@ -1647,7 +1655,7 @@ class ToolUseAgent:
                 "This hypothesis should have test_actions so it gets executed.\n"
                 "=== END REFLECTION ===\n"
             )
-            logger.info(f"[reflection] Forced reflection injected at action {self.action_counter}")
+            logger.info(f"[reflection] Event-driven reflection (blocked={self._consecutive_blocked}, zero_change={self._zero_change_turns})")
 
         # --- Prompt caching: content is ordered static-first so the OpenAI API
         # can cache the longest possible prefix across turns.
@@ -1910,19 +1918,6 @@ class ToolUseAgent:
             # Inject top-level goal into plan for backward compat (mode_tag uses plan.goal)
             if self.current_goal and "goal" not in new_plan:
                 new_plan["goal"] = self.current_goal
-
-            # Detect if we're stuck on the same step
-            current_step = None
-            for step in new_plan.get("steps", []):
-                if step.get("status") == "current":
-                    current_step = step.get("step")
-                    break
-
-            if current_step == self.last_plan_step:
-                self.plan_step_turns += 1
-            else:
-                self.plan_step_turns = 0
-                self.last_plan_step = current_step
 
             self.current_plan = new_plan
 
