@@ -1,0 +1,2903 @@
+2026-03-26 04:39:34,722 | === ACTION #6: ACTION6(46,46) ===
+Result: 0 cells changed
+Score: 0 | State: NOT_FINISHED | Actions used: 6/150
+
+LLM OBSERVATION: Five sampled clicks on large top-row red/blue 6x6 squares caused 0 changes. That makes the repeated big squares less likely to be direct buttons and shifts priority to the unique mixed-color symbols and other untested coordinate classes.
+
+VISION SUMMARY (Looker output to Brain):
+{
+  "objects": [
+    {
+      "description": "upper-left blue square",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        2,
+        4
+      ],
+      "size": 36,
+      "shape": "square",
+      "notes": "6x6 block"
+    },
+    {
+      "description": "upper-left red square",
+      "color": "red",
+      "color_hex": "8",
+      "position": [
+        2,
+        12
+      ],
+      "size": 36,
+      "shape": "square",
+      "notes": "6x6 block"
+    },
+    {
+      "description": "upper-mid blue square",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        2,
+        20
+      ],
+      "size": 36,
+      "shape": "square",
+      "notes": "6x6 block"
+    },
+    {
+      "description": "upper-right-left blue square",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        2,
+        36
+      ],
+      "size": 36,
+      "shape": "square",
+      "notes": "6x6 block"
+    },
+    {
+      "description": "upper-right red square",
+      "color": "red",
+      "color_hex": "8",
+      "position": [
+        2,
+        44
+      ],
+      "size": 36,
+      "shape": "square",
+      "notes": "6x6 block"
+    },
+    {
+      "description": "upper-far-right blue square",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        2,
+        52
+      ],
+      "size": 36,
+      "shape": "square",
+      "notes": "6x6 block"
+    },
+    {
+      "description": "left-middle red square",
+      "color": "red",
+      "color_hex": "8",
+      "position": [
+        10,
+        4
+      ],
+      "size": 36,
+      "shape": "square",
+      "notes": "6x6 block"
+    },
+    {
+      "description": "left-icon light-gray square",
+      "color": "light-gray",
+      "color_hex": "2",
+      "position": [
+        10,
+        12
+      ],
+      "size": 4,
+      "shape": "square",
+      "notes": "top-left of left icon"
+    },
+    {
+      "description": "left-icon white square",
+      "color": "white",
+      "color_hex": "0",
+      "position": [
+        10,
+        14
+      ],
+      "size": 4,
+      "shape": "square",
+      "notes": "top of left icon"
+    },
+    {
+      "description": "left-icon light-gray vertical rect",
+      "color": "light-gray",
+      "color_hex": "2",
+      "position": [
+        10,
+        16
+      ],
+      "size": 8,
+      "shape": "rectangle",
+      "notes": "right side of left icon"
+    },
+    {
+      "description": "top-center blue square",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        10,
+        20
+      ],
+      "size": 36,
+      "shape": "square",
+      "notes": "6x6 block"
+    },
+    {
+      "description": "right-middle red square",
+      "color": "red",
+      "color_hex": "8",
+      "position": [
+        10,
+        36
+      ],
+      "size": 36,
+      "shape": "square",
+      "notes": "6x6 block"
+    },
+    {
+      "description": "right-icon light-gray TL",
+      "color": "light-gray",
+      "color_hex": "2",
+      "position": [
+        10,
+        44
+      ],
+      "size": 4,
+      "shape": "square",
+      "notes": "top-left of right icon"
+    },
+    {
+      "description": "right-icon white top",
+      "color": "white",
+      "color_hex": "0",
+      "position": [
+        10,
+        46
+      ],
+      "size": 4,
+      "shape": "square",
+      "notes": "top-center of right icon"
+    },
+    {
+      "description": "right-icon light-gray TR",
+      "color": "light-gray",
+      "color_hex": "2",
+      "position": [
+        10,
+        48
+      ],
+      "size": 4,
+      "shape": "square",
+      "notes": "top-right of right icon"
+    },
+    {
+      "description": "far-right red square",
+      "color": "red",
+      "color_hex": "8",
+      "position": [
+        10,
+        52
+      ],
+      "size": 36,
+      "shape": "square",
+      "notes": "6x6 block"
+    },
+    {
+      "description": "left-icon white mid-left",
+      "color": "white",
+      "color_hex": "0",
+      "position": [
+        12,
+        12
+      ],
+      "size": 4,
+      "shape": "square",
+      "notes": "middle-left of left icon"
+    },
+    {
+      "description": "left-icon red center",
+      "color": "red",
+      "color_hex": "8",
+      "position": [
+        12,
+        14
+      ],
+      "size": 4,
+      "shape": "square",
+      "notes": "center of left icon"
+    },
+    {
+      "description": "right-icon white mid-left",
+      "color": "white",
+      "color_hex": "0",
+      "position": [
+        12,
+        44
+      ],
+      "size": 4,
+      "shape": "square",
+      "notes": "middle-left of right icon"
+    },
+    {
+      "description": "right-icon red center",
+      "color": "red",
+      "color_hex": "8",
+      "position": [
+        12,
+        46
+      ],
+      "size": 4,
+      "shape": "square",
+      "notes": "center of right icon"
+    },
+    {
+      "description": "right-icon white mid-right",
+      "color": "white",
+      "color_hex": "0",
+      "position": [
+        12,
+        48
+      ],
+      "size": 4,
+      "shape": "square",
+      "notes": "middle-right of right icon"
+    },
+    {
+      "description": "left-icon light-gray bottom-left",
+      "color": "light-gray",
+      "color_hex": "2",
+      "position": [
+        14,
+        12
+      ],
+      "size": 4,
+      "shape": "square",
+      "notes": "bottom-left of left icon"
+    },
+    {
+      "description": "left-icon white bottom rect",
+      "color": "white",
+      "color_hex": "0",
+      "position": [
+        14,
+        14
+      ],
+      "size": 8,
+      "shape": "rectangle",
+      "notes": "bottom of left icon"
+    },
+    {
+      "description": "right-icon light-gray BL",
+      "color": "light-gray",
+      "color_hex": "2",
+      "position": [
+        14,
+        44
+      ],
+      "size": 4,
+      "shape": "square",
+      "notes": "bottom-left of right icon"
+    },
+    {
+      "description": "right-icon white bottom",
+      "color": "white",
+      "color_hex": "0",
+      "position": [
+        14,
+        46
+      ],
+      "size": 4,
+      "shape": "square",
+      "notes": "bottom-center of right icon"
+    },
+    {
+      "description": "right-icon light-gray BR",
+      "color": "light-gray",
+      "color_hex": "2",
+      "position": [
+        14,
+        48
+      ],
+      "size": 4,
+      "shape": "square",
+      "notes": "bottom-right of right icon"
+    },
+    {
+      "description": "mid-left blue square",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        18,
+        4
+      ],
+      "size": 36,
+      "shape": "square",
+      "notes": "6x6 block"
+    },
+    {
+      "description": "mid-left red square",
+      "color": "red",
+      "color_hex": "8",
+      "position": [
+        18,
+        12
+      ],
+      "size": 36,
+      "shape": "square",
+      "notes": "6x6 block"
+    },
+    {
+      "description": "mid red square",
+      "color": "red",
+      "color_hex": "8",
+      "position": [
+        18,
+        20
+      ],
+      "size": 36,
+      "shape": "square",
+      "notes": "6x6 block"
+    },
+    {
+      "description": "mid-right-left blue square",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        18,
+        36
+      ],
+      "size": 36,
+      "shape": "square",
+      "notes": "6x6 block"
+    },
+    {
+      "description": "mid-right red square",
+      "color": "red",
+      "color_hex": "8",
+      "position": [
+        18,
+        44
+      ],
+      "size": 36,
+      "shape": "square",
+      "notes": "6x6 block"
+    },
+    {
+      "description": "mid-far-right blue square",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        18,
+        52
+      ],
+      "size": 36,
+      "shape": "square",
+      "notes": "6x6 block"
+    },
+    {
+      "description": "chamber NW light-gray L",
+      "color": "light-gray",
+      "color_hex": "2",
+      "position": [
+        32,
+        30
+      ],
+      "size": 16,
+      "shape": "L-shape",
+      "notes": "outer top-left chamber corner"
+    },
+    {
+      "description": "large dark-gray chamber",
+      "color": "dark-gray",
+      "color_hex": "4",
+      "position": [
+        32,
+        36
+      ],
+      "size": 512,
+      "shape": "irregular",
+      "notes": "large connected room/frame in lower-right"
+    },
+    {
+      "description": "chamber NE light-gray L",
+      "color": "light-gray",
+      "color_hex": "2",
+      "position": [
+        32,
+        56
+      ],
+      "size": 16,
+      "shape": "L-shape",
+      "notes": "outer top-right chamber corner"
+    },
+    {
+      "description": "lower-left upper red square",
+      "color": "red",
+      "color_hex": "8",
+      "position": [
+        36,
+        4
+      ],
+      "size": 36,
+      "shape": "square",
+      "notes": "6x6 block"
+    },
+    {
+      "description": "lower-left upper blue square",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        36,
+        12
+      ],
+      "size": 36,
+      "shape": "square",
+      "notes": "6x6 block"
+    },
+    {
+      "description": "lower-left upper-right blue square",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        36,
+        20
+      ],
+      "size": 36,
+      "shape": "square",
+      "notes": "6x6 block"
+    },
+    {
+      "description": "chamber west upper nub",
+      "color": "light-gray",
+      "color_hex": "2",
+      "position": [
+        36,
+        32
+      ],
+      "size": 4,
+      "shape": "square",
+      "notes": "small outer chamber block"
+    },
+    {
+      "description": "chamber top-left blue square",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        36,
+        36
+      ],
+      "size": 36,
+      "shape": "square",
+      "notes": "inside chamber"
+    },
+    {
+      "description": "chamber top-center blue square",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        36,
+        44
+      ],
+      "size": 36,
+      "shape": "square",
+      "notes": "inside chamber"
+    },
+    {
+      "description": "chamber top-right blue square",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        36,
+        52
+      ],
+      "size": 36,
+      "shape": "square",
+      "notes": "inside chamber"
+    },
+    {
+      "description": "chamber east upper nub",
+      "color": "light-gray",
+      "color_hex": "2",
+      "position": [
+        36,
+        60
+      ],
+      "size": 4,
+      "shape": "square",
+      "notes": "small outer chamber block"
+    },
+    {
+      "description": "lower-left mid red square",
+      "color": "red",
+      "color_hex": "8",
+      "position": [
+        44,
+        4
+      ],
+      "size": 36,
+      "shape": "square",
+      "notes": "6x6 block"
+    },
+    {
+      "description": "lower-left icon white TL",
+      "color": "white",
+      "color_hex": "0",
+      "position": [
+        44,
+        12
+      ],
+      "size": 4,
+      "shape": "square",
+      "notes": "top-left of lower-left icon"
+    },
+    {
+      "description": "lower-left icon light-gray top",
+      "color": "light-gray",
+      "color_hex": "2",
+      "position": [
+        44,
+        14
+      ],
+      "size": 8,
+      "shape": "rectangle",
+      "notes": "top of lower-left icon"
+    },
+    {
+      "description": "lower-left right red square",
+      "color": "red",
+      "color_hex": "8",
+      "position": [
+        44,
+        20
+      ],
+      "size": 36,
+      "shape": "square",
+      "notes": "6x6 block"
+    },
+    {
+      "description": "chamber mid-left blue square",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        44,
+        36
+      ],
+      "size": 36,
+      "shape": "square",
+      "notes": "inside chamber"
+    },
+    {
+      "description": "chamber center-left white rect",
+      "color": "white",
+      "color_hex": "0",
+      "position": [
+        44,
+        44
+      ],
+      "size": 8,
+      "shape": "rectangle",
+      "notes": "vertical part of center symbol"
+    },
+    {
+      "description": "chamber center-top light-gray rect",
+      "color": "light-gray",
+      "color_hex": "2",
+      "position": [
+        44,
+        46
+      ],
+      "size": 8,
+      "shape": "rectangle",
+      "notes": "top part of center symbol"
+    },
+    {
+      "description": "chamber mid-right blue square",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        44,
+        52
+      ],
+      "size": 36,
+      "shape": "square",
+      "notes": "inside chamber"
+    },
+    {
+      "description": "lower-left icon white right rect",
+      "color": "white",
+      "color_hex": "0",
+      "position": [
+        46,
+        16
+      ],
+      "size": 8,
+      "shape": "rectangle",
+      "notes": "right side of lower-left icon"
+    },
+    {
+      "description": "chamber center red square",
+      "color": "red",
+      "color_hex": "8",
+      "position": [
+        46,
+        46
+      ],
+      "size": 4,
+      "shape": "square",
+      "notes": "center of chamber symbol"
+    },
+    {
+      "description": "chamber center-right white rect",
+      "color": "white",
+      "color_hex": "0",
+      "position": [
+        46,
+        48
+      ],
+      "size": 8,
+      "shape": "rectangle",
+      "notes": "right side of center symbol"
+    },
+    {
+      "description": "lower-left icon light-gray bottom",
+      "color": "light-gray",
+      "color_hex": "2",
+      "position": [
+        48,
+        12
+      ],
+      "size": 8,
+      "shape": "rectangle",
+      "notes": "bottom of lower-left icon"
+    },
+    {
+      "description": "chamber center-bottom light-gray rect",
+      "color": "light-gray",
+      "color_hex": "2",
+      "position": [
+        48,
+        44
+      ],
+      "size": 8,
+      "shape": "rectangle",
+      "notes": "bottom part of center symbol"
+    },
+    {
+      "description": "lower-left bottom-left blue square",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        52,
+        4
+      ],
+      "size": 36,
+      "shape": "square",
+      "notes": "6x6 block"
+    },
+    {
+      "description": "lower-left bottom-mid blue square",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        52,
+        12
+      ],
+      "size": 36,
+      "shape": "square",
+      "notes": "6x6 block"
+    },
+    {
+      "description": "lower-left bottom-right red square",
+      "color": "red",
+      "color_hex": "8",
+      "position": [
+        52,
+        20
+      ],
+      "size": 36,
+      "shape": "square",
+      "notes": "6x6 block"
+    },
+    {
+      "description": "chamber bottom-left blue square",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        52,
+        36
+      ],
+      "size": 36,
+      "shape": "square",
+      "notes": "inside chamber"
+    },
+    {
+      "description": "chamber bottom-center blue square",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        52,
+        44
+      ],
+      "size": 36,
+      "shape": "square",
+      "notes": "inside chamber"
+    },
+    {
+      "description": "chamber bottom-right blue square",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        52,
+        52
+      ],
+      "size": 36,
+      "shape": "square",
+      "notes": "inside chamber"
+    },
+    {
+      "description": "chamber west lower nub",
+      "color": "light-gray",
+      "color_hex": "2",
+      "position": [
+        56,
+        32
+      ],
+      "size": 4,
+      "shape": "square",
+      "notes": "small outer chamber block"
+    },
+    {
+      "description": "chamber east lower nub",
+      "color": "light-gray",
+      "color_hex": "2",
+      "position": [
+        56,
+        60
+      ],
+      "size": 4,
+      "shape": "square",
+      "notes": "small outer chamber block"
+    },
+    {
+      "description": "chamber SW light-gray L",
+      "color": "light-gray",
+      "color_hex": "2",
+      "position": [
+        58,
+        30
+      ],
+      "size": 16,
+      "shape": "L-shape",
+      "notes": "outer bottom-left chamber corner"
+    },
+    {
+      "description": "chamber SE light-gray L",
+      "color": "light-gray",
+      "color_hex": "2",
+      "position": [
+        58,
+        56
+      ],
+      "size": 16,
+      "shape": "L-shape",
+      "notes": "outer bottom-right chamber corner"
+    },
+    {
+      "description": "bottom orange line",
+      "color": "orange",
+      "color_hex": "C",
+      "position": [
+        63,
+        0
+      ],
+      "size": 64,
+      "shape": "line",
+      "notes": "full-width bottom border"
+    }
+  ],
+  "spatial_relations": [
+    "The large dark-gray chamber occupies the lower-right area and contains eight blue 6x6 squares around a small central red/white/light-gray symbol.",
+    "Three smaller object groups sit on the left side: top clusters around rows 2-23, a lower cluster around rows 36-57, and a mixed-color icon at rows 44-49.",
+    "A full-width orange line runs along row 63 below all other objects."
+  ],
+  "background": "Mostly black background with separated colored block clusters and one large dark-gray chamber in the lower-right.",
+  "changes": [],
+  "scene_summary": "The board is mostly black with many isolated red and blue 6x6 blocks, plus several tiny white and light-gray symbol pieces. The most important structure is the large dark-gray chamber in the lower-right surrounding blue blocks and a central mixed-color marker, with a solid orange strip across the bottom row."
+}
+
+2026-03-26 04:44:44,475 | === ACTION #7: ACTION6(14,12) ===
+Result: 0 cells changed
+Score: 0 | State: NOT_FINISHED | Actions used: 7/150
+
+LLM OBSERVATION: ACTION6(46,46) caused 0 visible changes. The chamber-center mixed-color marker is not an immediate clickable button. Across six tested coordinates, both large red/blue squares and the chamber-center symbol have been inert, so the next most informative targets are the other small mixed-color icons.
+
+VISION SUMMARY (Looker output to Brain):
+{
+  "objects": [
+    {
+      "description": "blue block upper-left A",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        2,
+        4
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "6x6"
+    },
+    {
+      "description": "red block upper-left B",
+      "color": "red",
+      "color_hex": "8",
+      "position": [
+        2,
+        12
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "6x6"
+    },
+    {
+      "description": "blue block upper-left C",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        2,
+        20
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "6x6"
+    },
+    {
+      "description": "blue block upper-right A",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        2,
+        38
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "6x6"
+    },
+    {
+      "description": "red block upper-right B",
+      "color": "red",
+      "color_hex": "8",
+      "position": [
+        2,
+        46
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "6x6"
+    },
+    {
+      "description": "blue block upper-right C",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        2,
+        54
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "6x6"
+    },
+    {
+      "description": "red block upper-mid-left A",
+      "color": "red",
+      "color_hex": "8",
+      "position": [
+        10,
+        4
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "6x6"
+    },
+    {
+      "description": "light-gray mini upper-mid-left",
+      "color": "light-gray",
+      "color_hex": "2",
+      "position": [
+        10,
+        12
+      ],
+      "size": 4,
+      "shape": "rectangle",
+      "notes": "2x2"
+    },
+    {
+      "description": "white mini upper-mid-left top",
+      "color": "white",
+      "color_hex": "0",
+      "position": [
+        10,
+        14
+      ],
+      "size": 4,
+      "shape": "rectangle",
+      "notes": "2x2"
+    },
+    {
+      "description": "light-gray vertical upper-mid-left",
+      "color": "light-gray",
+      "color_hex": "2",
+      "position": [
+        10,
+        16
+      ],
+      "size": 8,
+      "shape": "rectangle",
+      "notes": "4x2"
+    },
+    {
+      "description": "blue block upper-mid-left C",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        10,
+        20
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "6x6"
+    },
+    {
+      "description": "red block upper-mid-right A",
+      "color": "red",
+      "color_hex": "8",
+      "position": [
+        10,
+        38
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "6x6"
+    },
+    {
+      "description": "light-gray mini upper-mid-right TL",
+      "color": "light-gray",
+      "color_hex": "2",
+      "position": [
+        10,
+        46
+      ],
+      "size": 4,
+      "shape": "rectangle",
+      "notes": "2x2"
+    },
+    {
+      "description": "light-gray mini upper-mid-right TR",
+      "color": "light-gray",
+      "color_hex": "2",
+      "position": [
+        10,
+        50
+      ],
+      "size": 4,
+      "shape": "rectangle",
+      "notes": "2x2"
+    },
+    {
+      "description": "red block upper-mid-right C",
+      "color": "red",
+      "color_hex": "8",
+      "position": [
+        10,
+        54
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "6x6"
+    },
+    {
+      "description": "white mini upper-mid-left middle",
+      "color": "white",
+      "color_hex": "0",
+      "position": [
+        12,
+        12
+      ],
+      "size": 4,
+      "shape": "rectangle",
+      "notes": "2x2"
+    },
+    {
+      "description": "red mini upper-mid-left center",
+      "color": "red",
+      "color_hex": "8",
+      "position": [
+        12,
+        14
+      ],
+      "size": 4,
+      "shape": "rectangle",
+      "notes": "2x2"
+    },
+    {
+      "description": "white mini upper-mid-right left",
+      "color": "white",
+      "color_hex": "0",
+      "position": [
+        12,
+        46
+      ],
+      "size": 4,
+      "shape": "rectangle",
+      "notes": "2x2"
+    },
+    {
+      "description": "red mini upper-mid-right center",
+      "color": "red",
+      "color_hex": "8",
+      "position": [
+        12,
+        48
+      ],
+      "size": 4,
+      "shape": "rectangle",
+      "notes": "2x2"
+    },
+    {
+      "description": "white mini upper-mid-right right",
+      "color": "white",
+      "color_hex": "0",
+      "position": [
+        12,
+        50
+      ],
+      "size": 4,
+      "shape": "rectangle",
+      "notes": "2x2"
+    },
+    {
+      "description": "light-gray mini upper-mid-left bottom",
+      "color": "light-gray",
+      "color_hex": "2",
+      "position": [
+        14,
+        12
+      ],
+      "size": 4,
+      "shape": "rectangle",
+      "notes": "2x2"
+    },
+    {
+      "description": "white bar upper-mid-left bottom",
+      "color": "white",
+      "color_hex": "0",
+      "position": [
+        14,
+        14
+      ],
+      "size": 8,
+      "shape": "rectangle",
+      "notes": "2x4"
+    },
+    {
+      "description": "light-gray mini upper-mid-right BL",
+      "color": "light-gray",
+      "color_hex": "2",
+      "position": [
+        14,
+        46
+      ],
+      "size": 4,
+      "shape": "rectangle",
+      "notes": "2x2"
+    },
+    {
+      "description": "light-gray mini upper-mid-right BR",
+      "color": "light-gray",
+      "color_hex": "2",
+      "position": [
+        14,
+        50
+      ],
+      "size": 4,
+      "shape": "rectangle",
+      "notes": "2x2"
+    },
+    {
+      "description": "blue block upper-lower-left A",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        18,
+        4
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "6x6"
+    },
+    {
+      "description": "red block upper-lower-left B",
+      "color": "red",
+      "color_hex": "8",
+      "position": [
+        18,
+        12
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "6x6"
+    },
+    {
+      "description": "red block upper-lower-left C",
+      "color": "red",
+      "color_hex": "8",
+      "position": [
+        18,
+        20
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "6x6"
+    },
+    {
+      "description": "blue block upper-lower-right A",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        18,
+        38
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "6x6"
+    },
+    {
+      "description": "red block upper-lower-right B",
+      "color": "red",
+      "color_hex": "8",
+      "position": [
+        18,
+        46
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "6x6"
+    },
+    {
+      "description": "blue block upper-lower-right C",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        18,
+        54
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "6x6"
+    },
+    {
+      "description": "arena corner top-left",
+      "color": "light-gray",
+      "color_hex": "2",
+      "position": [
+        32,
+        32
+      ],
+      "size": 20,
+      "shape": "L-shape",
+      "notes": "outer chamber bracket"
+    },
+    {
+      "description": "arena body",
+      "color": "dark-gray",
+      "color_hex": "4",
+      "position": [
+        32,
+        38
+      ],
+      "size": 496,
+      "shape": "irregular",
+      "notes": "large connected chamber/wall mass"
+    },
+    {
+      "description": "arena corner top-right",
+      "color": "light-gray",
+      "color_hex": "2",
+      "position": [
+        32,
+        56
+      ],
+      "size": 20,
+      "shape": "L-shape",
+      "notes": "outer chamber bracket"
+    },
+    {
+      "description": "red block lower-left top A",
+      "color": "red",
+      "color_hex": "8",
+      "position": [
+        36,
+        4
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "6x6"
+    },
+    {
+      "description": "blue block lower-left top B",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        36,
+        12
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "6x6"
+    },
+    {
+      "description": "blue block lower-left top C",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        36,
+        20
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "6x6"
+    },
+    {
+      "description": "arena blue top-left",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        36,
+        36
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "6x6"
+    },
+    {
+      "description": "arena blue top-middle",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        36,
+        44
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "6x6"
+    },
+    {
+      "description": "arena blue top-right",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        36,
+        52
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "6x6"
+    },
+    {
+      "description": "red block lower-left middle A",
+      "color": "red",
+      "color_hex": "8",
+      "position": [
+        44,
+        4
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "6x6"
+    },
+    {
+      "description": "white bar lower-left center-left",
+      "color": "white",
+      "color_hex": "0",
+      "position": [
+        44,
+        12
+      ],
+      "size": 8,
+      "shape": "rectangle",
+      "notes": "4x2 vertical"
+    },
+    {
+      "description": "light-gray bar lower-left center-top",
+      "color": "light-gray",
+      "color_hex": "2",
+      "position": [
+        44,
+        14
+      ],
+      "size": 8,
+      "shape": "rectangle",
+      "notes": "2x4"
+    },
+    {
+      "description": "red block lower-left middle C",
+      "color": "red",
+      "color_hex": "8",
+      "position": [
+        44,
+        20
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "6x6"
+    },
+    {
+      "description": "arena blue middle-left",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        44,
+        36
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "6x6"
+    },
+    {
+      "description": "arena white center-left",
+      "color": "white",
+      "color_hex": "0",
+      "position": [
+        44,
+        44
+      ],
+      "size": 12,
+      "shape": "rectangle",
+      "notes": "6x2 vertical"
+    },
+    {
+      "description": "arena light-gray center-top-right",
+      "color": "light-gray",
+      "color_hex": "2",
+      "position": [
+        44,
+        46
+      ],
+      "size": 8,
+      "shape": "rectangle",
+      "notes": "2x4"
+    },
+    {
+      "description": "arena blue middle-right",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        44,
+        52
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "6x6"
+    },
+    {
+      "description": "red mini lower-left center",
+      "color": "red",
+      "color_hex": "8",
+      "position": [
+        46,
+        14
+      ],
+      "size": 4,
+      "shape": "rectangle",
+      "notes": "2x2"
+    },
+    {
+      "description": "white bar lower-left center-right",
+      "color": "white",
+      "color_hex": "0",
+      "position": [
+        46,
+        16
+      ],
+      "size": 8,
+      "shape": "rectangle",
+      "notes": "4x2 vertical"
+    },
+    {
+      "description": "arena red center",
+      "color": "red",
+      "color_hex": "8",
+      "position": [
+        46,
+        46
+      ],
+      "size": 4,
+      "shape": "rectangle",
+      "notes": "2x2"
+    },
+    {
+      "description": "arena white center-right",
+      "color": "white",
+      "color_hex": "0",
+      "position": [
+        46,
+        48
+      ],
+      "size": 4,
+      "shape": "rectangle",
+      "notes": "2x2"
+    },
+    {
+      "description": "light-gray bar lower-left center-bottom",
+      "color": "light-gray",
+      "color_hex": "2",
+      "position": [
+        48,
+        12
+      ],
+      "size": 8,
+      "shape": "rectangle",
+      "notes": "2x4"
+    },
+    {
+      "description": "arena light-gray center-bottom-right",
+      "color": "light-gray",
+      "color_hex": "2",
+      "position": [
+        48,
+        46
+      ],
+      "size": 8,
+      "shape": "rectangle",
+      "notes": "2x4"
+    },
+    {
+      "description": "blue block lower-left bottom A",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        52,
+        4
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "6x6"
+    },
+    {
+      "description": "blue block lower-left bottom B",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        52,
+        12
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "6x6"
+    },
+    {
+      "description": "red block lower-left bottom C",
+      "color": "red",
+      "color_hex": "8",
+      "position": [
+        52,
+        20
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "6x6"
+    },
+    {
+      "description": "arena blue bottom-left",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        52,
+        36
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "6x6"
+    },
+    {
+      "description": "arena blue bottom-middle",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        52,
+        44
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "6x6"
+    },
+    {
+      "description": "arena blue bottom-right",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        52,
+        52
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "6x6"
+    },
+    {
+      "description": "arena corner bottom-left",
+      "color": "light-gray",
+      "color_hex": "2",
+      "position": [
+        56,
+        32
+      ],
+      "size": 20,
+      "shape": "L-shape",
+      "notes": "outer chamber bracket"
+    },
+    {
+      "description": "arena corner bottom-right",
+      "color": "light-gray",
+      "color_hex": "2",
+      "position": [
+        56,
+        56
+      ],
+      "size": 20,
+      "shape": "L-shape",
+      "notes": "outer chamber bracket"
+    },
+    {
+      "description": "bottom strip",
+      "color": "orange",
+      "color_hex": "C",
+      "position": [
+        63,
+        0
+      ],
+      "size": 64,
+      "shape": "line",
+      "notes": "full-width bottom row"
+    }
+  ],
+  "spatial_relations": [
+    "Two mirrored 3-block clusters sit across the top, separated by a wide black gap.",
+    "A smaller block cluster occupies the lower-left quadrant.",
+    "A large dark-gray chamber with light-gray corner brackets fills the lower-right quadrant.",
+    "Inside the chamber, eight blue 6x6 blocks surround a small white/red/light-gray center marker."
+  ],
+  "background": "Mostly black background with isolated colored block groups and a full orange strip along the bottom edge.",
+  "changes": [],
+  "scene_summary": "The board shows several symmetric red and blue 6x6 block groups in the upper half and lower-left, plus multiple tiny white/light-gray/red marker pieces. The most prominent structure is a large dark-gray chamber in the lower-right with light-gray corner brackets, eight blue blocks, and a small multicolor center detail."
+}
+
+2026-03-26 04:48:40,945 | === ACTION #8: ACTION6(48,12) ===
+Result: 0 cells changed
+Score: 0 | State: NOT_FINISHED | Actions used: 8/150
+
+LLM OBSERVATION: ACTION6(14,12) caused 0 visible changes, so a second mixed-color core is inert. read_board confirms the mirrored upper-right core occupies rows 10-15, cols 46-51, with red cells at row 12-13, col 48-49; ACTION6 is still most informative on that untested matching target.
+
+VISION SUMMARY (Looker output to Brain):
+{
+  "objects": [
+    {
+      "description": "upper-left blue block",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        2,
+        4
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "6x6 block"
+    },
+    {
+      "description": "upper-left red block",
+      "color": "red",
+      "color_hex": "8",
+      "position": [
+        2,
+        12
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "6x6 block"
+    },
+    {
+      "description": "upper-left right blue block",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        2,
+        20
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "6x6 block"
+    },
+    {
+      "description": "upper-right left blue block",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        2,
+        38
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "6x6 block"
+    },
+    {
+      "description": "upper-right red block",
+      "color": "red",
+      "color_hex": "8",
+      "position": [
+        2,
+        46
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "6x6 block"
+    },
+    {
+      "description": "upper-right blue block",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        2,
+        54
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "6x6 block"
+    },
+    {
+      "description": "upper-left middle red block",
+      "color": "red",
+      "color_hex": "8",
+      "position": [
+        10,
+        4
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "6x6 block"
+    },
+    {
+      "description": "upper-left center core",
+      "color": "mixed",
+      "color_hex": "0/2/8",
+      "position": [
+        10,
+        12
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "6x6 white/light-gray/red composite"
+    },
+    {
+      "description": "upper-left middle-right blue block",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        10,
+        20
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "6x6 block"
+    },
+    {
+      "description": "upper-right middle-left red block",
+      "color": "red",
+      "color_hex": "8",
+      "position": [
+        10,
+        38
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "6x6 block"
+    },
+    {
+      "description": "upper-right center core",
+      "color": "mixed",
+      "color_hex": "0/2/8",
+      "position": [
+        10,
+        46
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "6x6 white/light-gray/red composite"
+    },
+    {
+      "description": "upper-right middle-right red block",
+      "color": "red",
+      "color_hex": "8",
+      "position": [
+        10,
+        54
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "6x6 block"
+    },
+    {
+      "description": "upper-left lower-left blue block",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        18,
+        4
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "6x6 block"
+    },
+    {
+      "description": "upper-left lower-center red block",
+      "color": "red",
+      "color_hex": "8",
+      "position": [
+        18,
+        12
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "6x6 block"
+    },
+    {
+      "description": "upper-left lower-right red block",
+      "color": "red",
+      "color_hex": "8",
+      "position": [
+        18,
+        20
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "6x6 block"
+    },
+    {
+      "description": "upper-right lower-left blue block",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        18,
+        38
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "6x6 block"
+    },
+    {
+      "description": "upper-right lower-center red block",
+      "color": "red",
+      "color_hex": "8",
+      "position": [
+        18,
+        46
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "6x6 block"
+    },
+    {
+      "description": "upper-right lower-right blue block",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        18,
+        54
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "6x6 block"
+    },
+    {
+      "description": "lower-left top-left red block",
+      "color": "red",
+      "color_hex": "8",
+      "position": [
+        36,
+        4
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "6x6 block"
+    },
+    {
+      "description": "lower-left top-center blue block",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        36,
+        12
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "6x6 block"
+    },
+    {
+      "description": "lower-left top-right blue block",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        36,
+        20
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "6x6 block"
+    },
+    {
+      "description": "chamber top-left pad",
+      "color": "light-gray",
+      "color_hex": "2",
+      "position": [
+        32,
+        32
+      ],
+      "size": 16,
+      "shape": "L-shape",
+      "notes": "outer corner pad"
+    },
+    {
+      "description": "chamber frame",
+      "color": "dark-gray",
+      "color_hex": "4",
+      "position": [
+        32,
+        38
+      ],
+      "size": 496,
+      "shape": "irregular",
+      "notes": "large hollow rectangular frame in lower-right"
+    },
+    {
+      "description": "chamber top-right pad",
+      "color": "light-gray",
+      "color_hex": "2",
+      "position": [
+        32,
+        56
+      ],
+      "size": 16,
+      "shape": "L-shape",
+      "notes": "outer corner pad"
+    },
+    {
+      "description": "chamber upper-left blue block",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        36,
+        36
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "inside chamber"
+    },
+    {
+      "description": "chamber upper-middle blue block",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        36,
+        44
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "inside chamber"
+    },
+    {
+      "description": "chamber upper-right blue block",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        36,
+        52
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "inside chamber"
+    },
+    {
+      "description": "lower-left middle-left red block",
+      "color": "red",
+      "color_hex": "8",
+      "position": [
+        44,
+        4
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "6x6 block"
+    },
+    {
+      "description": "lower-left center core",
+      "color": "mixed",
+      "color_hex": "0/2/8",
+      "position": [
+        44,
+        12
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "6x6 white/light-gray/red composite"
+    },
+    {
+      "description": "lower-left middle-right red block",
+      "color": "red",
+      "color_hex": "8",
+      "position": [
+        44,
+        20
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "6x6 block"
+    },
+    {
+      "description": "chamber middle-left blue block",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        44,
+        36
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "inside chamber"
+    },
+    {
+      "description": "chamber center core",
+      "color": "mixed",
+      "color_hex": "0/2/8",
+      "position": [
+        44,
+        44
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "6x6 white/light-gray/red composite"
+    },
+    {
+      "description": "chamber middle-right blue block",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        44,
+        52
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "inside chamber"
+    },
+    {
+      "description": "lower-left bottom-left blue block",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        52,
+        4
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "6x6 block"
+    },
+    {
+      "description": "lower-left bottom-center blue block",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        52,
+        12
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "6x6 block"
+    },
+    {
+      "description": "lower-left bottom-right red block",
+      "color": "red",
+      "color_hex": "8",
+      "position": [
+        52,
+        20
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "6x6 block"
+    },
+    {
+      "description": "chamber lower-left blue block",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        52,
+        36
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "inside chamber"
+    },
+    {
+      "description": "chamber lower-middle blue block",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        52,
+        44
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "inside chamber"
+    },
+    {
+      "description": "chamber lower-right blue block",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        52,
+        52
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "inside chamber"
+    },
+    {
+      "description": "chamber bottom-left pad",
+      "color": "light-gray",
+      "color_hex": "2",
+      "position": [
+        56,
+        32
+      ],
+      "size": 20,
+      "shape": "L-shape",
+      "notes": "outer corner pad"
+    },
+    {
+      "description": "chamber bottom-right pad",
+      "color": "light-gray",
+      "color_hex": "2",
+      "position": [
+        56,
+        56
+      ],
+      "size": 20,
+      "shape": "L-shape",
+      "notes": "outer corner pad"
+    },
+    {
+      "description": "bottom border",
+      "color": "orange",
+      "color_hex": "C",
+      "position": [
+        63,
+        0
+      ],
+      "size": 64,
+      "shape": "line",
+      "notes": "full-width bottom row"
+    }
+  ],
+  "spatial_relations": [
+    "Two 3x3-style block clusters sit in the upper-left and upper-right, separated by black space.",
+    "A similar smaller cluster sits in the lower-left quadrant.",
+    "The large dark-gray chamber occupies the lower-right quadrant and is right of the lower-left cluster.",
+    "The orange line spans the entire bottom edge below all other objects."
+  ],
+  "background": "Mostly black empty field (hex 5) with large gaps between object groups.",
+  "changes": [],
+  "scene_summary": "The board shows three separated block-pattern clusters on a black background plus one large framed chamber in the lower-right. A full orange strip covers the entire bottom row, and there is no previous-frame change data here."
+}
+
+2026-03-26 04:53:09,232 | === ACTION #9: ACTION6(32,63) ===
+Result: 0 cells changed
+Score: 0 | State: NOT_FINISHED | Actions used: 9/150
+
+LLM OBSERVATION: ACTION6(48,12) caused 0 visible changes. A third mixed-color symbol probe was inert, so repeating the same 'click obvious symbol' strategy is underperforming; the next informative probes should be different object classes.
+
+VISION SUMMARY (Looker output to Brain):
+{
+  "objects": [
+    {
+      "description": "top-left blue block",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        2,
+        4
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "6x6 block"
+    },
+    {
+      "description": "top-left red block",
+      "color": "red",
+      "color_hex": "8",
+      "position": [
+        2,
+        12
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "6x6 block"
+    },
+    {
+      "description": "top-center blue block",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        2,
+        20
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "6x6 block"
+    },
+    {
+      "description": "top-right-center blue block",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        2,
+        38
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "6x6 block"
+    },
+    {
+      "description": "top-right red block",
+      "color": "red",
+      "color_hex": "8",
+      "position": [
+        2,
+        46
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "6x6 block"
+    },
+    {
+      "description": "far-top-right blue block",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        2,
+        54
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "6x6 block"
+    },
+    {
+      "description": "upper-left red block",
+      "color": "red",
+      "color_hex": "8",
+      "position": [
+        10,
+        4
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "6x6 block"
+    },
+    {
+      "description": "upper-left inner gray",
+      "color": "light-gray",
+      "color_hex": "2",
+      "position": [
+        10,
+        12
+      ],
+      "size": 4,
+      "shape": "square",
+      "notes": "2x2"
+    },
+    {
+      "description": "upper-left inner white",
+      "color": "white",
+      "color_hex": "0",
+      "position": [
+        10,
+        14
+      ],
+      "size": 4,
+      "shape": "square",
+      "notes": "2x2"
+    },
+    {
+      "description": "upper-left right gray bar",
+      "color": "light-gray",
+      "color_hex": "2",
+      "position": [
+        10,
+        16
+      ],
+      "size": 8,
+      "shape": "rectangle",
+      "notes": "4x2 vertical bar"
+    },
+    {
+      "description": "upper-left blue block",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        10,
+        20
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "6x6 block"
+    },
+    {
+      "description": "upper-left mid white",
+      "color": "white",
+      "color_hex": "0",
+      "position": [
+        12,
+        12
+      ],
+      "size": 4,
+      "shape": "square",
+      "notes": "2x2"
+    },
+    {
+      "description": "upper-left center red",
+      "color": "red",
+      "color_hex": "8",
+      "position": [
+        12,
+        14
+      ],
+      "size": 4,
+      "shape": "square",
+      "notes": "2x2"
+    },
+    {
+      "description": "upper-left lower gray",
+      "color": "light-gray",
+      "color_hex": "2",
+      "position": [
+        14,
+        12
+      ],
+      "size": 4,
+      "shape": "square",
+      "notes": "2x2"
+    },
+    {
+      "description": "upper-left lower white bar",
+      "color": "white",
+      "color_hex": "0",
+      "position": [
+        14,
+        14
+      ],
+      "size": 8,
+      "shape": "rectangle",
+      "notes": "2x4"
+    },
+    {
+      "description": "upper-right red block",
+      "color": "red",
+      "color_hex": "8",
+      "position": [
+        10,
+        38
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "6x6 block"
+    },
+    {
+      "description": "upper-right top-left gray",
+      "color": "light-gray",
+      "color_hex": "2",
+      "position": [
+        10,
+        46
+      ],
+      "size": 4,
+      "shape": "square",
+      "notes": "2x2"
+    },
+    {
+      "description": "upper-right top white",
+      "color": "white",
+      "color_hex": "0",
+      "position": [
+        10,
+        48
+      ],
+      "size": 4,
+      "shape": "square",
+      "notes": "2x2"
+    },
+    {
+      "description": "upper-right top-right gray",
+      "color": "light-gray",
+      "color_hex": "2",
+      "position": [
+        10,
+        50
+      ],
+      "size": 4,
+      "shape": "square",
+      "notes": "2x2"
+    },
+    {
+      "description": "upper-right mid-left white",
+      "color": "white",
+      "color_hex": "0",
+      "position": [
+        12,
+        46
+      ],
+      "size": 4,
+      "shape": "square",
+      "notes": "2x2"
+    },
+    {
+      "description": "upper-right center red",
+      "color": "red",
+      "color_hex": "8",
+      "position": [
+        12,
+        48
+      ],
+      "size": 4,
+      "shape": "square",
+      "notes": "2x2"
+    },
+    {
+      "description": "upper-right mid-right white",
+      "color": "white",
+      "color_hex": "0",
+      "position": [
+        12,
+        50
+      ],
+      "size": 4,
+      "shape": "square",
+      "notes": "2x2"
+    },
+    {
+      "description": "upper-right bottom-left gray",
+      "color": "light-gray",
+      "color_hex": "2",
+      "position": [
+        14,
+        46
+      ],
+      "size": 4,
+      "shape": "square",
+      "notes": "2x2"
+    },
+    {
+      "description": "upper-right bottom white",
+      "color": "white",
+      "color_hex": "0",
+      "position": [
+        14,
+        48
+      ],
+      "size": 4,
+      "shape": "square",
+      "notes": "2x2"
+    },
+    {
+      "description": "upper-right bottom-right gray",
+      "color": "light-gray",
+      "color_hex": "2",
+      "position": [
+        14,
+        50
+      ],
+      "size": 4,
+      "shape": "square",
+      "notes": "2x2"
+    },
+    {
+      "description": "upper-far-right red block",
+      "color": "red",
+      "color_hex": "8",
+      "position": [
+        10,
+        54
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "6x6 block"
+    },
+    {
+      "description": "middle-left blue block",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        18,
+        4
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "6x6 block"
+    },
+    {
+      "description": "middle-left red block",
+      "color": "red",
+      "color_hex": "8",
+      "position": [
+        18,
+        12
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "6x6 block"
+    },
+    {
+      "description": "middle-center red block",
+      "color": "red",
+      "color_hex": "8",
+      "position": [
+        18,
+        20
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "6x6 block"
+    },
+    {
+      "description": "middle-right blue block",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        18,
+        38
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "6x6 block"
+    },
+    {
+      "description": "middle-right red block",
+      "color": "red",
+      "color_hex": "8",
+      "position": [
+        18,
+        46
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "6x6 block"
+    },
+    {
+      "description": "far-middle-right blue block",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        18,
+        54
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "6x6 block"
+    },
+    {
+      "description": "lower-left red block",
+      "color": "red",
+      "color_hex": "8",
+      "position": [
+        36,
+        4
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "6x6 block"
+    },
+    {
+      "description": "lower-left blue block",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        36,
+        12
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "6x6 block"
+    },
+    {
+      "description": "lower-center-left blue block",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        36,
+        20
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "6x6 block"
+    },
+    {
+      "description": "top-left corner frame",
+      "color": "light-gray",
+      "color_hex": "2",
+      "position": [
+        32,
+        32
+      ],
+      "size": 20,
+      "shape": "L-shape",
+      "notes": "part of large framed structure"
+    },
+    {
+      "description": "top-right corner frame",
+      "color": "light-gray",
+      "color_hex": "2",
+      "position": [
+        32,
+        56
+      ],
+      "size": 20,
+      "shape": "L-shape",
+      "notes": "part of large framed structure"
+    },
+    {
+      "description": "large dark-gray chamber",
+      "color": "dark-gray",
+      "color_hex": "4",
+      "position": [
+        32,
+        38
+      ],
+      "size": 496,
+      "shape": "irregular",
+      "notes": "large connected room/frame with many openings"
+    },
+    {
+      "description": "upper-left window",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        36,
+        36
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "inside large chamber"
+    },
+    {
+      "description": "upper-middle window",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        36,
+        44
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "inside large chamber"
+    },
+    {
+      "description": "upper-right window",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        36,
+        52
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "inside large chamber"
+    },
+    {
+      "description": "mid-lower-left red block",
+      "color": "red",
+      "color_hex": "8",
+      "position": [
+        44,
+        4
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "6x6 block"
+    },
+    {
+      "description": "mid-lower white bar",
+      "color": "white",
+      "color_hex": "0",
+      "position": [
+        44,
+        12
+      ],
+      "size": 8,
+      "shape": "rectangle",
+      "notes": "4x2 vertical bar"
+    },
+    {
+      "description": "mid-lower upper gray bar",
+      "color": "light-gray",
+      "color_hex": "2",
+      "position": [
+        44,
+        14
+      ],
+      "size": 8,
+      "shape": "rectangle",
+      "notes": "2x4"
+    },
+    {
+      "description": "left chamber middle window",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        44,
+        36
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "inside large chamber"
+    },
+    {
+      "description": "chamber center white bar",
+      "color": "white",
+      "color_hex": "0",
+      "position": [
+        44,
+        44
+      ],
+      "size": 12,
+      "shape": "rectangle",
+      "notes": "6x2 vertical bar"
+    },
+    {
+      "description": "chamber upper gray block",
+      "color": "light-gray",
+      "color_hex": "2",
+      "position": [
+        44,
+        46
+      ],
+      "size": 8,
+      "shape": "rectangle",
+      "notes": "2x4"
+    },
+    {
+      "description": "right chamber middle window",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        44,
+        52
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "inside large chamber"
+    },
+    {
+      "description": "mid-lower center red",
+      "color": "red",
+      "color_hex": "8",
+      "position": [
+        46,
+        14
+      ],
+      "size": 4,
+      "shape": "square",
+      "notes": "2x2"
+    },
+    {
+      "description": "mid-lower right white bar",
+      "color": "white",
+      "color_hex": "0",
+      "position": [
+        46,
+        16
+      ],
+      "size": 8,
+      "shape": "rectangle",
+      "notes": "4x2 vertical bar"
+    },
+    {
+      "description": "chamber center red",
+      "color": "red",
+      "color_hex": "8",
+      "position": [
+        46,
+        46
+      ],
+      "size": 4,
+      "shape": "square",
+      "notes": "2x2"
+    },
+    {
+      "description": "chamber center-right white",
+      "color": "white",
+      "color_hex": "0",
+      "position": [
+        46,
+        48
+      ],
+      "size": 4,
+      "shape": "square",
+      "notes": "2x2"
+    },
+    {
+      "description": "mid-lower lower gray bar",
+      "color": "light-gray",
+      "color_hex": "2",
+      "position": [
+        48,
+        12
+      ],
+      "size": 8,
+      "shape": "rectangle",
+      "notes": "2x4"
+    },
+    {
+      "description": "mid-lower-right red block",
+      "color": "red",
+      "color_hex": "8",
+      "position": [
+        44,
+        20
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "6x6 block"
+    },
+    {
+      "description": "chamber lower gray block",
+      "color": "light-gray",
+      "color_hex": "2",
+      "position": [
+        48,
+        46
+      ],
+      "size": 8,
+      "shape": "rectangle",
+      "notes": "2x4"
+    },
+    {
+      "description": "bottom-left blue block",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        52,
+        4
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "6x6 block"
+    },
+    {
+      "description": "bottom-center-left blue block",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        52,
+        12
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "6x6 block"
+    },
+    {
+      "description": "bottom-left red block",
+      "color": "red",
+      "color_hex": "8",
+      "position": [
+        52,
+        20
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "6x6 block"
+    },
+    {
+      "description": "lower-left window",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        52,
+        36
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "inside large chamber"
+    },
+    {
+      "description": "lower-middle window",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        52,
+        44
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "inside large chamber"
+    },
+    {
+      "description": "lower-right window",
+      "color": "blue",
+      "color_hex": "9",
+      "position": [
+        52,
+        52
+      ],
+      "size": 36,
+      "shape": "rectangle",
+      "notes": "inside large chamber"
+    },
+    {
+      "description": "bottom-left corner frame",
+      "color": "light-gray",
+      "color_hex": "2",
+      "position": [
+        56,
+        32
+      ],
+      "size": 20,
+      "shape": "L-shape",
+      "notes": "part of large framed structure"
+    },
+    {
+      "description": "bottom-right corner frame",
+      "color": "light-gray",
+      "color_hex": "2",
+      "position": [
+        56,
+        60
+      ],
+      "size": 20,
+      "shape": "L-shape",
+      "notes": "part of large framed structure"
+    },
+    {
+      "description": "bottom orange line",
+      "color": "orange",
+      "color_hex": "C",
+      "position": [
+        63,
+        0
+      ],
+      "size": 64,
+      "shape": "line",
+      "notes": "full-width floor/border"
+    }
+  ],
+  "spatial_relations": [
+    "The top half has three left-side blocks and three mirrored right-side blocks separated by black space.",
+    "The large dark-gray chamber occupies the lower-right quadrant, with blue window-like rectangles inside it.",
+    "A small red/white/light-gray composite symbol sits at rows 44-49, cols 12-17, left of the large chamber.",
+    "The orange line spans the entire bottom row below all other objects."
+  ],
+  "background": "Mostly black background with isolated colored blocks above and a large dark-gray framed chamber in the lower-right.",
+  "changes": [],
+  "scene_summary": "The scene is a mostly black board with multiple 6x6 red and blue blocks arranged in symmetric groups near the top and left side. The lower-right contains a large dark-gray chamber with light-gray corner framing, blue rectangular windows, a small central marker, and a full orange strip along the bottom edge."
+}
+

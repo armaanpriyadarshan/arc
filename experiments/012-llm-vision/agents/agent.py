@@ -66,6 +66,14 @@ Each turn you receive:
   * Each cell is 8x8 pixels. The grid is 64x64 cells = 512x512 pixels per side.
 - Your own notes from previous turns
 
+USING THE VISION SUMMARY:
+- The vision summary includes a "scene_summary" field that highlights the most
+  important or distinctive structures on the board. READ THIS FIRST — it often
+  identifies the key interactive element or puzzle focus before you look at
+  individual objects.
+- Use the "objects" list positions for exact click coordinates — these are more
+  accurate than estimating positions from the board text.
+
 CORE PRIORS — use these as your default assumptions about the game world:
 
 OBJECTS AND PHYSICS:
