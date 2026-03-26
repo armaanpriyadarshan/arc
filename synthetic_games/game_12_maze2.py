@@ -18,11 +18,11 @@ Actions:
 Win condition: Player reaches the goal marker.
 
 Color key:
-    0  = background (void / off-limits)
-    1  = wall
-    5  = floor (walkable path)
-    2  = player
-    3  = goal
+    1  = background (light grey)
+    4  = wall (dark grey)
+    3  = floor / walkable path (mid grey)
+    12 = player (orange)
+    14 = goal (green)
 """
 
 from arcengine import (
@@ -35,11 +35,11 @@ from arcengine import (
 GRID = 64
 CELL = 3          # player & objects occupy 3x3 pixels
 
-BG_COLOR = 0
-WALL_COLOR = 1
-PLAYER_COLOR = 2
-GOAL_COLOR = 3
-FLOOR_COLOR = 5
+BG_COLOR = 1       # light grey (204, 204, 204)
+WALL_COLOR = 4     # dark grey  (51, 51, 51)
+PLAYER_COLOR = 12  # orange     (255, 133, 27)
+GOAL_COLOR = 14    # green      (79, 204, 48)
+FLOOR_COLOR = 3    # mid grey   (102, 102, 102)
 
 # Layout in cell coordinates (each cell = 3 pixels).
 #

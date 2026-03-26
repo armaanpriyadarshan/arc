@@ -1191,7 +1191,7 @@ class ToolUseAgent:
 
         # Extract object positions from vision summary
         for obj in vision_summary.get("objects", []):
-            pos = obj.get("approximate_position")
+            pos = obj.get("position") or obj.get("approximate_position")
             if pos and isinstance(pos, (list, tuple)) and len(pos) >= 2:
                 row, col = int(pos[0]), int(pos[1])
                 if 0 <= row <= 63 and 0 <= col <= 63:
@@ -1339,11 +1339,27 @@ class ToolUseAgent:
             response = self.client.responses.create(
                 model="gpt-5.4",
                 input=[{"role": "user", "content": content}],
-                max_output_tokens=8000,
+                max_output_tokens=16000,
                 reasoning={"effort": "medium"},
                 text={"verbosity": "low"},
             )
             raw = response.output_text or "{}"
+
+            # Debug: log token usage and truncation status
+            usage = getattr(response, 'usage', None)
+            if usage:
+                reasoning_tok = 0
+                details = getattr(usage, 'output_tokens_details', None)
+                if details:
+                    reasoning_tok = getattr(details, 'reasoning_tokens', 0)
+                logger.info(
+                    f"[vision-summarizer] tokens: output={getattr(usage, 'output_tokens', 0)} "
+                    f"reasoning={reasoning_tok} text_len={len(raw)}"
+                )
+            # Check for truncation
+            status = getattr(response, 'status', None)
+            if status and status != 'completed':
+                logger.warning(f"[vision-summarizer] response status={status} (may be truncated)")
         except Exception as e:
             logger.warning(f"[vision-summarizer] Failed: {e}")
             return {}
@@ -1354,7 +1370,10 @@ class ToolUseAgent:
             n_changes = len(result.get("changes", []))
             logger.info(f"[vision-summarizer] {n_objects} objects, {n_changes} changes")
         else:
-            logger.warning(f"[vision-summarizer] Empty/unparseable response: {raw[:200]}")
+            logger.warning(
+                f"[vision-summarizer] Empty/unparseable response "
+                f"(len={len(raw)}, ends_with={raw[-50:]!r}): {raw[:300]}"
+            )
         return result
 
     def _choose_model(self, is_large_change: bool, reflection_prompt: str,
@@ -2138,11 +2157,64 @@ class ToolUseAgent:
                 return json.loads(raw[start:end + 1])
             except (json.JSONDecodeError, ValueError):
                 pass
+        # Attempt to repair truncated JSON (e.g. cut off by max_output_tokens)
+        if start >= 0:
+            fragment = raw[start:]
+            repaired = self._repair_truncated_json(fragment)
+            if repaired:
+                return repaired
+        return {}
+
+    @staticmethod
+    def _repair_truncated_json(fragment: str) -> dict:
+        """Try to close open brackets/braces in truncated JSON to salvage partial data."""
+        # Strip trailing incomplete value (e.g. cut mid-string or mid-number)
+        # Walk backwards to find last complete key-value or array element
+        text = fragment.rstrip()
+        # Remove trailing comma if present
+        if text.endswith(","):
+            text = text[:-1]
+        # Try progressively closing open brackets
+        open_braces = text.count("{") - text.count("}")
+        open_brackets = text.count("[") - text.count("]")
+        # Check if we're inside an unclosed string
+        in_string = False
+        escaped = False
+        for ch in text:
+            if escaped:
+                escaped = False
+                continue
+            if ch == "\\":
+                escaped = True
+                continue
+            if ch == '"':
+                in_string = not in_string
+        if in_string:
+            text += '"'
+        # Remove trailing comma after string closure
+        text = text.rstrip()
+        if text.endswith(","):
+            text = text[:-1]
+        # Close open brackets then braces
+        text += "]" * max(0, open_brackets - (1 if in_string else 0))
+        # Recount after bracket closure
+        open_braces = text.count("{") - text.count("}")
+        text += "}" * max(0, open_braces)
+        try:
+            result = json.loads(text)
+            if isinstance(result, dict):
+                return result
+        except (json.JSONDecodeError, ValueError):
+            pass
         return {}
 
     def _step(self, action: GameAction, reasoning: str = "") -> FrameData:
         try:
-            raw = self.env.step(action, reasoning=reasoning)
+            data = None
+            if action.is_complex() and hasattr(action, 'action_data'):
+                ad = action.action_data
+                data = {"x": ad.x, "y": ad.y}
+            raw = self.env.step(action, data=data, reasoning=reasoning)
         except Exception as e:
             logger.warning(f"env.step({action.name}) exception: {e}")
             raw = None

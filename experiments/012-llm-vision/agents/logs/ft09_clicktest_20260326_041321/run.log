@@ -1,0 +1,5 @@
+2026-03-26 04:13:21,835 | INFO | ============================================================
+2026-03-26 04:13:21,835 | INFO | Click Test Agent on ft09
+2026-03-26 04:13:21,835 | INFO | Run directory: /Users/Alphastar/Documents/Code/Winter_2026/mandarins/experiments/arc-agi-setup/arc_agi_repo_collab/arc/experiments/012-llm-vision/agents/logs/ft09_clicktest_20260326_041321
+2026-03-26 04:13:21,835 | INFO | Test clicks: [(36, 36, 'Looker exact position [36,36]'), (38, 38, 'Brain estimated center [38,38]'), (36, 27, 'y-inverted: col=36, y=63-36=27')]
+2026-03-26 04:13:21,835 | INFO | ============================================================

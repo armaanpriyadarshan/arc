@@ -16,3 +16,33 @@ Score: 0 | State: NOT_FINISHED | Actions used: 6/150
 
 LLM OBSERVATION: ACTION6(14,12) caused 0 changes. That is the second center-marker-style object to do nothing, so direct one-click interaction with center markers is less likely; the next novel high-information test is a large colored block.
 
+2026-03-26 02:50:49,248 | === ACTION #7: ACTION6(12,44) ===
+Result: 0 cells changed
+Score: 0 | State: NOT_FINISHED | Actions used: 7/150
+
+LLM OBSERVATION: The last probe ACTION6(14,4) on the upper-left large red block caused 0 cell changes. Large red blocks are now less likely to be direct controls; the puzzle still looks like a click-only pattern task.
+
+2026-03-26 02:55:04,642 | === ACTION #8: ACTION6(14,36) ===
+Result: 0 cells changed
+Score: 0 | State: NOT_FINISHED | Actions used: 8/150
+
+LLM OBSERVATION: ACTION6(12,44) on a white cell of the lower-left icon caused 0 changes, so the 'non-red icon cells are the hotspot' idea weakened. Board text also shows ACTION6(32,32) previously hit the lower-right chamber's light-gray frame corner, so both direct icon-cell clicks and a frame-corner click have failed.
+
+2026-03-26 02:58:47,406 | === ACTION #9: ACTION6(46,12) ===
+Result: 0 cells changed
+Score: 0 | State: NOT_FINISHED | Actions used: 9/150
+
+LLM OBSERVATION: ACTION6(14,36) caused 0 changes, so the lower-left large blue block is also inert. That aborts the previous blue-block plan and lowers confidence that saturated outer blocks are clickable.
+
+2026-03-26 03:03:14,091 | === ACTION #10: ACTION6(46,34) ===
+Result: 0 cells changed
+Score: 0 | State: NOT_FINISHED | Actions used: 10/150
+
+LLM OBSERVATION: The last action, ACTION6(46,12), caused 0 changes again. This falsifies the current-step version of the 'upper-right red center is the selector' idea and shifts attention to untried object classes: the chamber frame edge and the upper-right white/light-gray center.
+
+2026-03-26 03:06:50,166 | === ACTION #11: ACTION6(44,10) ===
+Result: 0 cells changed
+Score: 0 | State: NOT_FINISHED | Actions used: 11/150
+
+LLM OBSERVATION: ACTION6(46,34) caused 0 changes. The lower-right chamber top frame edge is inert, so the frame-control idea weakened and the best remaining novel target is the untouched upper-right neutral center-icon cell.
+

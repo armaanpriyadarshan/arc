@@ -163,9 +163,12 @@ class _SyntheticEnvAdapter:
     def __init__(self, game):
         self._game = game
 
-    def step(self, action, reasoning=""):
+    def step(self, action, reasoning="", data=None):
         from arcengine import ActionInput
-        action_input = ActionInput(id=action)
+        if data is None and hasattr(action, 'is_complex') and action.is_complex() and hasattr(action, 'action_data'):
+            ad = action.action_data
+            data = {"x": ad.x, "y": ad.y}
+        action_input = ActionInput(id=action, data=data or {})
         return self._game.perform_action(action_input)
 
 
