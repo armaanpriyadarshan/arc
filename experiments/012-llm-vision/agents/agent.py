@@ -1068,8 +1068,9 @@ class ToolUseAgent:
             response = self.client.responses.create(
                 model="gpt-5.4",
                 input=[{"role": "user", "content": content}],
-                max_output_tokens=1000,
-                temperature=0.2,
+                max_output_tokens=4000,
+                reasoning={"effort": "medium"},
+                text={"verbosity": "low"},
             )
             raw = response.output_text or "{}"
         except Exception as e:
@@ -1338,8 +1339,9 @@ class ToolUseAgent:
             response = self.client.responses.create(
                 model="gpt-5.4",
                 input=[{"role": "user", "content": content}],
-                max_output_tokens=2000,
-                temperature=0.1,
+                max_output_tokens=8000,
+                reasoning={"effort": "medium"},
+                text={"verbosity": "low"},
             )
             raw = response.output_text or "{}"
         except Exception as e:
@@ -1421,9 +1423,10 @@ class ToolUseAgent:
                 "model": "gpt-5.4",
                 "input": [{"role": "user", "content": content}],
                 "tools": RESPONSES_TOOLS,
-                "temperature": 0.2,
-                "max_output_tokens": 5000 if is_large_change else 4096,
+                "max_output_tokens": 16000 if is_large_change else 12000,
                 "prompt_cache_retention": "24h",
+                "reasoning": {"effort": "medium"},
+                "text": {"verbosity": "low"},
             }
             response = self.client.responses.create(**create_kwargs)
 
@@ -1466,8 +1469,9 @@ class ToolUseAgent:
                     previous_response_id=response.id,
                     input=tool_results,
                     tools=RESPONSES_TOOLS,
-                    temperature=0.2,
-                    max_output_tokens=5000 if is_large_change else 4096,
+                    reasoning={"effort": "medium"},
+                    text={"verbosity": "low"},
+                    max_output_tokens=16000 if is_large_change else 12000,
                 )
 
             raw = response.output_text or ""
@@ -1480,6 +1484,19 @@ class ToolUseAgent:
                                 break
                     if raw:
                         break
+
+            # Debug: log response structure when output is empty
+            if not raw or raw == "{}":
+                usage = getattr(response, 'usage', None)
+                if usage:
+                    reasoning_tok = getattr(usage, 'output_tokens_details', None)
+                    reasoning_count = getattr(reasoning_tok, 'reasoning_tokens', 0) if reasoning_tok else 0
+                    logger.warning(
+                        f"[debug-empty] output_tokens={getattr(usage, 'output_tokens', 0)} "
+                        f"reasoning_tokens={reasoning_count} "
+                        f"output_text={repr(response.output_text)[:200]} "
+                        f"output_types={[getattr(item, 'type', '?') for item in (response.output or [])]}"
+                    )
         else:
             # gpt-4o: Chat Completions API
             chat_content = self._convert_to_chat_format(content)

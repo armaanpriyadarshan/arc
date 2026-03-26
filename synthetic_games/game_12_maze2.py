@@ -1,13 +1,13 @@
 """
 Game 12: Maze2
 
-Mechanics: Pure navigation through a trident-shaped corridor.
+Mechanics: Pure navigation through a corridor grid.
 
-A shorter U-shaped path (half the length of Maze1) with an additional
-center prong that is a dead end. The overall shape resembles a trident:
-three vertical prongs connected by a horizontal bar at the bottom.
-The player starts at the top of the left prong; the goal is at the top
-of the right prong. The center prong is a dead-end distractor.
+A horizontal hallway with three vertical prongs jutting upward and three
+downward, connected in the middle. The shape looks like a horizontal line
+with three half-lines branching off on each side. The player starts at
+the top of the top-left prong; the goal is at the bottom of the
+bottom-right prong.
 
 Actions:
     ACTION1 = Move Up (W)
@@ -41,36 +41,45 @@ PLAYER_COLOR = 2
 GOAL_COLOR = 3
 FLOOR_COLOR = 5
 
-# Trident layout in cell coordinates (each cell = 3 pixels).
+# Layout in cell coordinates (each cell = 3 pixels).
 #
-#      4  5  6  7  8  9 10 11 12 13 14
-#  4:  W  W  W  W  W  W  W  W  W  W  W
-#  5:  W  P  W  W  W  .  W  W  W  G  W
-#  6:  W  |  W  W  W  |  W  W  W  |  W
-#  7:  W  |  W  W  W  |  W  W  W  |  W
-#  8:  W  |  W  W  W  |  W  W  W  |  W
-#  9:  W  |  W  W  W  |  W  W  W  |  W
-# 10:  W  |  W  W  W  |  W  W  W  |  W
-# 11:  W  |  W  W  W  |  W  W  W  |  W
-# 12:  W  |  W  W  W  |  W  W  W  |  W
-# 13:  W  +--+--+--+--+--+--+--+--+  W
-# 14:  W  W  W  W  W  W  W  W  W  W  W
-#
-# Left arm:      col  5, rows 5-13  (player starts here)
-# Bottom bar:    cols 5-13, row 13
-# Right arm:     col 13, rows 5-13  (goal here)
-# Center prong:  col  9, rows 5-12  (dead end)
+#      4  5  6  7  8  9 10 11 12 13 14 15 16 17 18
+#  1:     W  W  W           W  W  W           W  W  W
+#  2:     W  P  W           W  .  W           W  .  W
+#  3:     W  .  W           W  .  W           W  .  W
+#  4:     W  .  W           W  .  W           W  .  W
+#  5:     W  .  W           W  .  W           W  .  W
+#  6:     W  .  W           W  .  W           W  .  W
+#  7:     W  .  W           W  .  W           W  .  W
+#  8:     W  .  W           W  .  W           W  .  W
+#  9:  W  W  .  W  W  W  W  W  .  W  W  W  W  W  .  W  W
+# 10:  W  .  .  .  .  .  .  .  .  .  .  .  .  .  .  .  W
+# 11:  W  W  .  W  W  W  W  W  .  W  W  W  W  W  .  W  W
+# 12:     W  .  W           W  .  W           W  .  W
+# 13:     W  .  W           W  .  W           W  .  W
+# 14:     W  .  W           W  .  W           W  .  W
+# 15:     W  .  W           W  .  W           W  .  W
+# 16:     W  .  W           W  .  W           W  .  W
+# 17:     W  .  W           W  .  W           W  .  W
+# 18:     W  .  W           W  .  W           W  G  W
+# 19:     W  W  W           W  W  W           W  W  W
 
-PATH_LEFT_COL = 5
-PATH_RIGHT_COL = 13
-PATH_CENTER_COL = 9
-PATH_TOP_ROW = 5
-PATH_BOTTOM_ROW = 13
-PATH_CENTER_TOP = 5      # center prong goes up to here (dead end)
-PATH_CENTER_BOTTOM = 12  # center prong bottom (connects to bar at row 13)
+# Three prong columns
+PRONG_COLS = [6, 11, 16]
 
-PLAYER_START = (PATH_LEFT_COL, PATH_TOP_ROW)
-GOAL_POS = (PATH_RIGHT_COL, PATH_TOP_ROW)
+# Horizontal bar
+BAR_ROW = 10
+BAR_COL_START = 5
+BAR_COL_END = 17
+
+# Vertical prong ranges (exclusive of bar row)
+TOP_PRONG_ROW_START = 2
+TOP_PRONG_ROW_END = 9
+BOTTOM_PRONG_ROW_START = 11
+BOTTOM_PRONG_ROW_END = 18
+
+PLAYER_START = (PRONG_COLS[0], TOP_PRONG_ROW_START)    # (6, 2)
+GOAL_POS = (PRONG_COLS[2], BOTTOM_PRONG_ROW_END)       # (16, 18)
 
 
 def _cell_to_px(cx: int, cy: int) -> tuple[int, int]:
@@ -79,18 +88,15 @@ def _cell_to_px(cx: int, cy: int) -> tuple[int, int]:
 
 
 def _is_path_cell(cx: int, cy: int) -> bool:
-    """Return True if the cell coordinate is on the walkable trident path."""
-    # Left arm
-    if cx == PATH_LEFT_COL and PATH_TOP_ROW <= cy <= PATH_BOTTOM_ROW:
+    """Return True if the cell coordinate is on the walkable path."""
+    # Horizontal bar
+    if cy == BAR_ROW and BAR_COL_START <= cx <= BAR_COL_END:
         return True
-    # Bottom connector
-    if cy == PATH_BOTTOM_ROW and PATH_LEFT_COL <= cx <= PATH_RIGHT_COL:
+    # Top prongs
+    if cx in PRONG_COLS and TOP_PRONG_ROW_START <= cy <= TOP_PRONG_ROW_END:
         return True
-    # Right arm
-    if cx == PATH_RIGHT_COL and PATH_TOP_ROW <= cy <= PATH_BOTTOM_ROW:
-        return True
-    # Center prong (dead end)
-    if cx == PATH_CENTER_COL and PATH_CENTER_TOP <= cy <= PATH_CENTER_BOTTOM:
+    # Bottom prongs
+    if cx in PRONG_COLS and BOTTOM_PRONG_ROW_START <= cy <= BOTTOM_PRONG_ROW_END:
         return True
     return False
 
@@ -114,7 +120,7 @@ def _make_entity(color: int, name: str, tags: list[str] | None = None) -> Sprite
 
 
 class Maze2Game(ARCBaseGame):
-    """Game 12: Maze2 — navigate a trident-shaped corridor to reach the goal."""
+    """Game 12: Maze2 — navigate a corridor grid to reach the goal."""
 
     def __init__(self, seed: int = 0):
         self._seed = seed
@@ -134,57 +140,81 @@ class Maze2Game(ARCBaseGame):
         for s in list(level._sprites):
             level.remove_sprite(s)
 
-        # --- Outer walls ---
-        # Top border: cols 4-14, row 4  (11 wide)
-        s = _make_wall_sprite(11, 1, "wall_top")
-        s.set_position(*_cell_to_px(4, 4))
+        # --- Floor (walkable path) ---
+        # Horizontal bar: cols 5-17, row 10  (13 wide, 1 tall)
+        s = _make_floor_sprite(13, 1, "floor_bar")
+        s.set_position(*_cell_to_px(BAR_COL_START, BAR_ROW))
         level.add_sprite(s)
 
-        # Bottom border: cols 4-14, row 14
-        s = _make_wall_sprite(11, 1, "wall_bottom")
-        s.set_position(*_cell_to_px(4, 14))
+        # Top & bottom prongs
+        for i, c in enumerate(PRONG_COLS):
+            label = ["left", "center", "right"][i]
+            # Top prong: rows 2-9  (8 tall)
+            s = _make_floor_sprite(1, 8, f"floor_top_{label}")
+            s.set_position(*_cell_to_px(c, TOP_PRONG_ROW_START))
+            level.add_sprite(s)
+            # Bottom prong: rows 11-18  (8 tall)
+            s = _make_floor_sprite(1, 8, f"floor_bot_{label}")
+            s.set_position(*_cell_to_px(c, BOTTOM_PRONG_ROW_START))
+            level.add_sprite(s)
+
+        # --- Walls ---
+        # Walls around each top prong (col c, rows 1-9)
+        for i, c in enumerate(PRONG_COLS):
+            label = ["left", "center", "right"][i]
+            # Left wall: col c-1, rows 1-9  (9 tall)
+            s = _make_wall_sprite(1, 9, f"tw_l_{label}")
+            s.set_position(*_cell_to_px(c - 1, 1))
+            level.add_sprite(s)
+            # Right wall: col c+1, rows 1-9  (9 tall)
+            s = _make_wall_sprite(1, 9, f"tw_r_{label}")
+            s.set_position(*_cell_to_px(c + 1, 1))
+            level.add_sprite(s)
+            # Top cap: col c, row 1  (1x1)
+            s = _make_wall_sprite(1, 1, f"tw_cap_{label}")
+            s.set_position(*_cell_to_px(c, 1))
+            level.add_sprite(s)
+
+        # Walls around each bottom prong (col c, rows 11-19)
+        for i, c in enumerate(PRONG_COLS):
+            label = ["left", "center", "right"][i]
+            # Left wall: col c-1, rows 11-19  (9 tall)
+            s = _make_wall_sprite(1, 9, f"bw_l_{label}")
+            s.set_position(*_cell_to_px(c - 1, 11))
+            level.add_sprite(s)
+            # Right wall: col c+1, rows 11-19  (9 tall)
+            s = _make_wall_sprite(1, 9, f"bw_r_{label}")
+            s.set_position(*_cell_to_px(c + 1, 11))
+            level.add_sprite(s)
+            # Bottom cap: col c, row 19  (1x1)
+            s = _make_wall_sprite(1, 1, f"bw_cap_{label}")
+            s.set_position(*_cell_to_px(c, 19))
+            level.add_sprite(s)
+
+        # Bar end walls
+        # Left end: col 4, rows 9-11  (1 wide, 3 tall)
+        s = _make_wall_sprite(1, 3, "bar_end_left")
+        s.set_position(*_cell_to_px(4, 9))
+        level.add_sprite(s)
+        # Right end: col 18, rows 9-11  (1 wide, 3 tall)
+        s = _make_wall_sprite(1, 3, "bar_end_right")
+        s.set_position(*_cell_to_px(18, 9))
         level.add_sprite(s)
 
-        # Left border: col 4, rows 5-13  (1 wide, 9 tall)
-        s = _make_wall_sprite(1, 9, "wall_left")
-        s.set_position(*_cell_to_px(4, 5))
+        # Bar gap walls (fill between prong walls on rows 9 and 11)
+        # Row 9: cols 8-9 and cols 13-14
+        s = _make_wall_sprite(2, 1, "bar_gap_top_1")
+        s.set_position(*_cell_to_px(8, 9))
         level.add_sprite(s)
-
-        # Right border: col 14, rows 5-13
-        s = _make_wall_sprite(1, 9, "wall_right")
-        s.set_position(*_cell_to_px(14, 5))
+        s = _make_wall_sprite(2, 1, "bar_gap_top_2")
+        s.set_position(*_cell_to_px(13, 9))
         level.add_sprite(s)
-
-        # --- Interior walls (between prongs) ---
-        # Between left arm and center prong: cols 6-8, rows 5-12
-        s = _make_wall_sprite(3, 8, "wall_inner_left")
-        s.set_position(*_cell_to_px(6, 5))
+        # Row 11: cols 8-9 and cols 13-14
+        s = _make_wall_sprite(2, 1, "bar_gap_bot_1")
+        s.set_position(*_cell_to_px(8, 11))
         level.add_sprite(s)
-
-        # Between center prong and right arm: cols 10-12, rows 5-12
-        s = _make_wall_sprite(3, 8, "wall_inner_right")
-        s.set_position(*_cell_to_px(10, 5))
-        level.add_sprite(s)
-
-        # --- Floor (trident path) ---
-        # Left arm: col 5, rows 5-13
-        s = _make_floor_sprite(1, 9, "floor_left")
-        s.set_position(*_cell_to_px(PATH_LEFT_COL, PATH_TOP_ROW))
-        level.add_sprite(s)
-
-        # Right arm: col 13, rows 5-13
-        s = _make_floor_sprite(1, 9, "floor_right")
-        s.set_position(*_cell_to_px(PATH_RIGHT_COL, PATH_TOP_ROW))
-        level.add_sprite(s)
-
-        # Center prong: col 9, rows 5-12 (dead end)
-        s = _make_floor_sprite(1, 8, "floor_center")
-        s.set_position(*_cell_to_px(PATH_CENTER_COL, PATH_CENTER_TOP))
-        level.add_sprite(s)
-
-        # Bottom connector: cols 5-13, row 13
-        s = _make_floor_sprite(9, 1, "floor_bottom")
-        s.set_position(*_cell_to_px(PATH_LEFT_COL, PATH_BOTTOM_ROW))
+        s = _make_wall_sprite(2, 1, "bar_gap_bot_2")
+        s.set_position(*_cell_to_px(13, 11))
         level.add_sprite(s)
 
         # --- Goal ---

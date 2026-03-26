@@ -1,0 +1,5 @@
+game_id: wiri-00000001
+guid: 7d93778c-1311-420f-b469-f5572686c4d3
+replay_url: https://three.arcprize.org/replay/wiri-00000001/7d93778c-1311-420f-b469-f5572686c4d3
+scorecard_id: 5021ec59-7313-46b6-aecd-b90b440ae0ad
+command: run_claude.py --game wiring --visual

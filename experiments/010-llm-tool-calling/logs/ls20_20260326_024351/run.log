@@ -1,0 +1,14 @@
+2026-03-26 02:43:51,654 | INFO | Game: ls20 (ls20)
+2026-03-26 02:43:51,654 | INFO | Model: claude-opus-4-6
+2026-03-26 02:43:51,654 | INFO | Max actions: 500
+2026-03-26 02:43:51,655 | INFO | Max turns per analysis: 30
+2026-03-26 02:43:51,655 | INFO | Logs: /Users/Alphastar/Documents/Code/Winter_2026/mandarins/experiments/arc-agi-setup/arc_agi_repo_collab/arc/experiments/010-llm-tool-calling/logs/ls20_20260326_024351
+2026-03-26 02:43:51,845 | INFO | Scorecard: 63ecdfd4-f0f2-4503-b5f1-d0e9cb4cfbb8
+2026-03-26 02:43:51,845 | INFO | using Claude Code CLI (native, no Docker)
+2026-03-26 02:43:51,845 | INFO | Analyzer: ClaudeCodeAgent (model=claude-opus-4-6, plan_size=10)
+2026-03-26 02:43:52,549 | INFO | [ls20 Run 1] Replay URL: https://three.arcprize.org/replay/ls20/bea4540e-50d7-42bf-9b2a-f5c3fe943985
+2026-03-26 02:43:52,552 | INFO | queue empty — need new plan from analyzer
+2026-03-26 02:43:52,552 | INFO | queue exhausted at action 0 — firing analyzer
+2026-03-26 02:43:52,552 | INFO | analyzer attempt 1/5 action=0 nudge=False
+2026-03-26 02:43:52,553 | INFO | created workspace: /var/folders/qz/wpwrlrhs6zs9pgh2dgvchbxw0000gp/T/claude_workspace_hjebrsx8
+2026-03-26 02:43:52,554 | INFO | exec claude model=claude-opus-4-6 is_first=True resume=False action=0

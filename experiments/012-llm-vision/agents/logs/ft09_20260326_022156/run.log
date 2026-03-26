@@ -1,0 +1,16 @@
+2026-03-26 02:21:56,214 | INFO | ============================================================
+2026-03-26 02:21:56,405 | INFO | LLM Vision Agent on ft09
+2026-03-26 02:21:56,421 | INFO | Run directory: /Users/Alphastar/Documents/Code/Winter_2026/mandarins/experiments/arc-agi-setup/arc_agi_repo_collab/arc/experiments/012-llm-vision/agents/logs/ft09_20260326_022156
+2026-03-26 02:21:56,421 | INFO | ============================================================
+2026-03-26 02:21:57,329 | WARNING | [vision-summarizer] Failed: Error code: 400 - {'error': {'message': "Unsupported parameter: 'temperature' is not supported with this model.", 'type': 'invalid_request_error', 'param': 'temperature', 'code': None}}
+2026-03-26 02:21:57,815 | INFO | [probe] ACTION6 at (0,0) [grid corner (0,0)]: 0 cells changed
+ACTION6 at (32,32) [grid center]: 0 cells changed
+ACTION6 at (63,63) [grid corner (63,63)]: 0 cells changed
+2026-03-26 02:21:58,016 | WARNING | [vision-summarizer] Failed: Error code: 400 - {'error': {'message': "Unsupported parameter: 'temperature' is not supported with this model.", 'type': 'invalid_request_error', 'param': 'temperature', 'code': None}}
+2026-03-26 02:21:58,016 | INFO | [model] gpt-5.4
+2026-03-26 02:21:58,207 | WARNING | API error (gpt-5.4): Error code: 400 - {'error': {'message': "Unsupported parameter: 'temperature' is not supported with this model.", 'type': 'invalid_request_error', 'param': 'temperature', 'code': None}}
+2026-03-26 02:22:00,402 | INFO | #4 ACTION1: BLOCKED score=0
+2026-03-26 02:22:00,651 | WARNING | [vision-summarizer] Failed: Error code: 400 - {'error': {'message': "Unsupported parameter: 'temperature' is not supported with this model.", 'type': 'invalid_request_error', 'param': 'temperature', 'code': None}}
+2026-03-26 02:22:00,652 | INFO | [model] gpt-5.4
+2026-03-26 02:22:00,887 | WARNING | API error (gpt-5.4): Error code: 400 - {'error': {'message': "Unsupported parameter: 'temperature' is not supported with this model.", 'type': 'invalid_request_error', 'param': 'temperature', 'code': None}}
+2026-03-26 02:22:03,079 | INFO | #5 ACTION1: BLOCKED score=0
