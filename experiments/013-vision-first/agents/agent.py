@@ -34,7 +34,7 @@ AVAILABLE ACTIONS:
 - ACTION3: Simple action (typically mapped to LEFT)
 - ACTION4: Simple action (typically mapped to RIGHT)
 - ACTION5: Simple action (interact, select, rotate, attach/detach, etc.)
-- ACTION6: Complex action requiring x,y coordinates (0-63 range). This is usually a CLICK — different coordinates may have completely different effects. You must explore the coordinate space, not just test one spot.
+- ACTION6: Complex action requiring coordinates (0-63 range). This is usually a CLICK — different coordinates may have completely different effects. You must explore the coordinate space, not just test one spot. Provide coordinates as [row, col] matching the vision summary positions.
 - ACTION7: Simple action (undo)
 
 Not all actions may be available in every game. Check available_actions.
@@ -218,7 +218,7 @@ Output JSON:
   - Prioritize testing the hypothesis with the highest uncertainty (probability closest to 0.5) — that's where you gain the most information. If you already have a high-confidence hypothesis (>0.8), test something else.
   - For parameterized actions (ACTION6), evidence from one coordinate does NOT generalize. You must test diverse targets: click on different colored objects, empty cells, edges, corners. Track each coordinate tested in the `tests` list. You need at least 3-5 diverse coordinate tests before drawing any conclusion about ACTION6's behavior.
   - Re-evaluate old hypotheses when new evidence arrives. If you discover a new game mechanic, check whether it changes the probability of existing hypotheses.
-  - The `test_actions` field drives execution. For simple actions: ["ACTION3","ACTION3"]. For ACTION6 with coordinates: ["ACTION6", x, y] where x and y are integers 0-63. The first hypothesis (sorted by descending probability) that has `test_actions` will be executed.
+  - The `test_actions` field drives execution. For simple actions: ["ACTION3","ACTION3"]. For ACTION6 with coordinates: ["ACTION6", row, col] where row and col are integers 0-63 matching the vision summary [row, col] format. The code converts to game coordinates automatically. The first hypothesis (sorted by descending probability) that has `test_actions` will be executed.
 
   HYPOTHESIS DIVERSITY RULES:
 
@@ -598,6 +598,9 @@ class ToolUseAgent:
 
         # v5: parallel execution (optimization 8)
         self._thread_pool = ThreadPoolExecutor(max_workers=2)
+
+        # 013: coordinate calibration for ACTION6
+        self._coord_swap: bool = False  # True if game uses x=row,y=col instead of x=col,y=row
 
         # v5: tiered model routing
         self.model_calls: dict[str, int] = {"gpt-5.4": 0}
@@ -1305,6 +1308,45 @@ class ToolUseAgent:
                 reset_frame = self._step(GameAction.RESET)
                 self.action_counter += 1
                 self.current_grid = reset_frame.frame[-1] if reset_frame.frame else []
+
+        # Coordinate calibration: if ALL probes returned 0 changes, try swapped convention
+        all_zero = all("0 cells changed" in f for f in facts if "ACTION6" in f)
+        if all_zero and targets:
+            # Pick the first object target (skip grid landmarks)
+            obj_targets = [(x, y, d) for x, y, d in unique_targets
+                           if "grid corner" not in d and "grid center" not in d]
+            if obj_targets:
+                x, y, desc = obj_targets[0]
+                # Try swapped: send x=y (row), y=x (col) — opposite of standard
+                grid_before = self.current_grid
+                action = GameAction.from_id(6)
+                action.set_data({"x": int(y), "y": int(x)})  # swap x and y
+                frame_result = self._step(action)
+                self.action_counter += 1
+                self.current_grid = frame_result.frame[-1] if frame_result.frame else grid_before
+                changes = sum(1 for r in range(64) for c in range(64)
+                              if grid_before[r][c] != self.current_grid[r][c])
+
+                if changes > 0:
+                    # Swapped convention works! Record this and switch
+                    self._coord_swap = True
+                    fact = (f"ACTION6 CALIBRATION: Swapped coordinates work. "
+                            f"Clicked ({y},{x}) [swapped from ({x},{y})] on {desc}: "
+                            f"{changes} cells changed")
+                    facts.append(fact)
+                    logger.info(f"[calibration] Coordinate swap detected! Standard (x=col,y=row) failed, "
+                                f"swapped (x=row,y=col) produced {changes} changes")
+                else:
+                    fact = ("ACTION6 CALIBRATION: Neither standard nor swapped coordinates "
+                            "produced changes. ACTION6 may be inert on tested objects.")
+                    facts.append(fact)
+                    logger.info("[calibration] Both coordinate conventions produced 0 changes")
+
+                if frame_result.state == GameState.GAME_OVER:
+                    self.total_deaths += 1
+                    reset_frame = self._step(GameAction.RESET)
+                    self.action_counter += 1
+                    self.current_grid = reset_frame.frame[-1] if reset_frame.frame else []
 
         return facts
 
@@ -2139,8 +2181,10 @@ class ToolUseAgent:
 
         Handles two formats:
         - Simple actions: ["ACTION3", "ACTION3", "ACTION1"]
-        - ACTION6 with coordinates: ["ACTION6", x, y] where x, y are ints 0-63
-          The triplet ["ACTION6", x, y] is consumed as one action.
+        - ACTION6 with coordinates: ["ACTION6", row, col] where row, col are ints 0-63
+          The triplet ["ACTION6", row, col] is consumed as one action.
+          The LLM outputs [row, col] (matching vision summary positions).
+          We convert to game convention: set_data(x=col, y=row).
         """
         actions = []
         i = 0
@@ -2148,21 +2192,28 @@ class ToolUseAgent:
             item = raw_actions[i]
 
             if isinstance(item, str) and item.upper() == "ACTION6":
-                # Check if next two items are x, y coordinates
+                # Check if next two items are row, col coordinates
                 if i + 2 < len(raw_actions):
-                    x_val = raw_actions[i + 1]
-                    y_val = raw_actions[i + 2]
-                    if isinstance(x_val, (int, float)) and isinstance(y_val, (int, float)):
-                        x = int(x_val)
-                        y = int(y_val)
-                        if 0 <= x <= 63 and 0 <= y <= 63 and 6 in available_set:
+                    row_val = raw_actions[i + 1]
+                    col_val = raw_actions[i + 2]
+                    if isinstance(row_val, (int, float)) and isinstance(col_val, (int, float)):
+                        row = int(row_val)
+                        col = int(col_val)
+                        if 0 <= row <= 63 and 0 <= col <= 63 and 6 in available_set:
                             action = GameAction.from_id(6)
-                            action.set_data({"x": x, "y": y})
+                            if self._coord_swap:
+                                # Calibration detected swapped convention: x=row, y=col
+                                action.set_data({"x": row, "y": col})
+                                logger.info(f"[coord] ACTION6 LLM=[{row},{col}] -> game(x={row},y={col}) [SWAPPED]")
+                            else:
+                                # Standard convention: x=col, y=row
+                                action.set_data({"x": col, "y": row})
+                                logger.info(f"[coord] ACTION6 LLM=[{row},{col}] -> game(x={col},y={row})")
                             actions.append(action)
                             i += 3
                             continue
                         else:
-                            logger.warning(f"[filter] ACTION6({x},{y}) coords out of range or ACTION6 not available")
+                            logger.warning(f"[filter] ACTION6({row},{col}) coords out of range or ACTION6 not available")
                             i += 3
                             continue
                 # ACTION6 without valid coordinates — skip
