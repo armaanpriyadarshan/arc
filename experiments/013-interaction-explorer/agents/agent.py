@@ -402,3 +402,180 @@ class InteractionExplorer:
             ))
 
         logger.info(f"[induce] Model:\n{self.model.to_dsl_text()}")
+
+    def _play(self, frame: FrameData) -> FrameData:
+        """Phase 3: Goal-directed play using the induced model + interaction map."""
+        actions_since_llm = 0
+        prev_score = frame.levels_completed
+
+        while self.action_counter < self.MAX_ACTIONS:
+            if frame.state == GameState.WIN:
+                logger.info("WIN!")
+                break
+
+            if frame.state == GameState.GAME_OVER:
+                self.total_deaths += 1
+                self.model.add_observation(f"Died at action {self.action_counter}")
+                logger.info(f"DIED #{self.total_deaths}")
+                frame = self._step(GameAction.RESET)
+                self.action_counter += 1
+                self.current_grid = frame.frame[-1] if frame.frame else []
+                self._refine_model(frame, "Died. What went wrong? Revise the model.")
+                actions_since_llm = 0
+                continue
+
+            action_name = self._choose_action(frame)
+            try:
+                action = GameAction.from_name(action_name)
+            except (ValueError, KeyError):
+                action = GameAction.ACTION1
+
+            grid_before = self.current_grid
+            sym_before = grid_to_symbolic(grid_before)
+
+            frame = self._step(action, reasoning=self.model.to_dsl_text()[:80])
+            self.action_counter += 1
+            actions_since_llm += 1
+            self.current_grid = frame.frame[-1] if frame.frame else grid_before
+
+            sym_after = grid_to_symbolic(self.current_grid)
+            sym_changes = diff_symbolic(sym_before, sym_after)
+            changes = sum(1 for r in range(64) for c in range(64)
+                          if grid_before[r][c] != self.current_grid[r][c])
+            blocked = 0 < changes < 10
+
+            score_report = predict_and_score(self.model, action.name, sym_changes, blocked, changes)
+            score_delta = frame.levels_completed - prev_score
+
+            logger.info(
+                f"#{self.action_counter} {action.name}: "
+                f"{'BLOCKED' if blocked else f'{changes}ch'} "
+                f"score={frame.levels_completed} | {score_report}"
+            )
+
+            self.transitions.append({
+                "action": action.name, "changes": changes,
+                "blocked": blocked, "sym_changes": sym_changes,
+            })
+
+            prev_score = frame.levels_completed
+
+            # Trigger model refinement on significant events
+            if score_delta > 0 and actions_since_llm > 1:
+                self.model.add_observation(f"Score increased to {frame.levels_completed} after {action.name}")
+                self._refine_model(frame, f"Score increased to {frame.levels_completed}! What worked?")
+                actions_since_llm = 0
+            elif changes > 200:
+                self.model.add_observation(f"Large change ({changes} cells) after {action.name}")
+                self._refine_model(frame, f"Large change ({changes} cells). Level transition?")
+                actions_since_llm = 0
+            elif actions_since_llm >= 20:
+                self._refine_model(frame, "20 actions since last check. Am I making progress?")
+                actions_since_llm = 0
+
+        return frame
+
+    def _choose_action(self, frame: FrameData) -> str:
+        """Choose action using goal + interaction knowledge."""
+        goal = self.model.best_goal()
+        ctrl_color = self.model.controllable_color()
+        sym = grid_to_symbolic(self.current_grid)
+
+        # Avoid hazards: if we know an object is deadly, steer away
+        hazard_colors = set()
+        for ir in self.model.interaction_rules:
+            if ir.effect == "died" and ir.confidence > 0.3:
+                hazard_colors.add(ir.target_color)
+
+        # If we have a goal target, navigate toward it
+        if goal and goal.target and ctrl_color is not None:
+            action_name = self.planner.navigation_direction(
+                sym, ctrl_color, int(goal.target) if goal.target.isdigit() else -1,
+                self.model.action_rules
+            )
+            if action_name:
+                return action_name
+
+        # Seek collectibles if we know what they are
+        for ir in self.model.interaction_rules:
+            if ir.effect in ("collected", "score_up") and ir.confidence > 0.3:
+                action_name = self.planner.navigation_direction(
+                    sym, ctrl_color or 0, ir.target_color, self.model.action_rules
+                )
+                if action_name:
+                    return action_name
+
+        # Fallback: least-tested action
+        available = frame.available_actions or [1, 2, 3, 4]
+        action_names = [f"ACTION{i}" for i in available]
+        least_tested = min(action_names,
+                          key=lambda a: self.model.action_rules.get(a, ActionRule(action=a, effect="unknown")).test_count)
+        return least_tested
+
+    def _refine_model(self, frame: FrameData, trigger: str) -> None:
+        """Ask GPT to refine the world model based on new evidence."""
+        self.llm_calls += 1
+
+        recent_trans = self.transitions[-10:]
+        trans_text = []
+        for t in recent_trans:
+            trans_text.append("{}: {}".format(t['action'], 'BLOCKED' if t['blocked'] else f"{t['changes']}ch"))
+
+        interaction_text = self.planner.summary()
+
+        content = [
+            input_text(
+                f"TRIGGER: {trigger}\n\n"
+                f"CURRENT WORLD MODEL:\n{self.model.to_dsl_text()}\n\n"
+                f"INTERACTION MAP:\n{interaction_text}\n\n"
+                f"RECENT TRANSITIONS:\n" + "\n".join(trans_text) + "\n\n"
+                f"Score: {frame.levels_completed} | Deaths: {self.total_deaths} | "
+                f"Actions: {self.action_counter}/{self.MAX_ACTIONS}\n\n"
+                "Refine the world model. Use the interaction map to update object roles "
+                "and goal hypotheses. Focus on what's WRONG in the current model.\n\n"
+                "Respond with JSON:\n"
+                '{"action_rules": {...}, "object_roles": [...], "goal_hypotheses": [...], '
+                '"observations": ["key insight"]}'
+            ),
+            input_text("Current frame:"),
+            input_image_b64(grid_b64(self.current_grid)),
+        ]
+
+        try:
+            response = self.client.responses.create(
+                model="gpt-5.4",
+                input=[{"role": "user", "content": content}],
+                max_output_tokens=1500,
+                temperature=0.2,
+            )
+            raw = response.output_text or "{}"
+        except Exception as e:
+            logger.warning(f"Refine API error: {e}")
+            return
+
+        data = self._parse_json(raw)
+
+        for name, rule_data in data.get("action_rules", {}).items():
+            self.model.action_rules[name] = ActionRule(
+                action=name,
+                effect=rule_data.get("effect", "unknown"),
+                direction=rule_data.get("direction", ""),
+                distance=rule_data.get("distance", 0),
+                target=rule_data.get("target", ""),
+                precondition=rule_data.get("precondition", ""),
+                confidence=rule_data.get("confidence", 0.5),
+            )
+
+        for obs in data.get("observations", []):
+            self.model.add_observation(obs)
+
+        for g in data.get("goal_hypotheses", []):
+            self.model.goal_hypotheses.append(GoalHypothesis(
+                description=g.get("description", ""),
+                type=g.get("type", "unknown"),
+                target=g.get("target", ""),
+                confidence=g.get("confidence", 0.3),
+            ))
+
+        logger.info(f"[refine] {trigger}")
+        logger.info(f"[model] {self.model.to_dsl_text()[:300]}")
