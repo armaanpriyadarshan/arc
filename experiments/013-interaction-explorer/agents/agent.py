@@ -205,3 +205,119 @@ class InteractionExplorer:
                     return frame
 
         return frame
+
+    def _test_interactions(self, frame: FrameData) -> FrameData:
+        """Phase 2: Approach and test interactions with each object type."""
+        ctrl_color = self.model.controllable_color()
+        if ctrl_color is None:
+            logger.info("[interact] No controllable object — skipping phase 2")
+            return frame
+
+        interaction_end = self.PROBE_BUDGET + self.INTERACTION_BUDGET
+        prev_score = frame.levels_completed
+        stuck_count = 0
+
+        while self.action_counter < min(interaction_end, self.MAX_ACTIONS):
+            if frame.state == GameState.WIN:
+                return frame
+
+            if frame.state == GameState.GAME_OVER:
+                self.total_deaths += 1
+                logger.info(f"[interact] DIED #{self.total_deaths}")
+                frame = self._step(GameAction.RESET)
+                self.action_counter += 1
+                self.current_grid = frame.frame[-1] if frame.frame else []
+                continue
+
+            sym = grid_to_symbolic(self.current_grid)
+            target_color = self.planner.next_target(sym, ctrl_color)
+
+            if target_color is None:
+                logger.info("[interact] All reachable objects tested")
+                break
+
+            # Navigate toward target
+            action_name = self.planner.navigation_direction(
+                sym, ctrl_color, target_color, self.model.action_rules
+            )
+
+            if action_name is None:
+                # No clear direction — try cycling through actions
+                available = frame.available_actions or [1, 2, 3, 4]
+                idx = self.action_counter % len(available)
+                action_name = f"ACTION{available[idx]}"
+
+            try:
+                action = GameAction.from_name(action_name)
+            except (ValueError, KeyError):
+                action = GameAction.ACTION1
+
+            self.planner.record_approach(target_color)
+
+            grid_before = self.current_grid
+            sym_before = sym
+
+            frame = self._step(action, reasoning=f"approaching color {target_color}")
+            self.action_counter += 1
+            self.current_grid = frame.frame[-1] if frame.frame else grid_before
+
+            sym_after = grid_to_symbolic(self.current_grid)
+            sym_changes = diff_symbolic(sym_before, sym_after)
+            changes = sum(1 for r in range(64) for c in range(64)
+                          if grid_before[r][c] != self.current_grid[r][c])
+            blocked = 0 < changes < 10
+
+            self.transitions.append({
+                "action": action.name, "changes": changes,
+                "blocked": blocked, "sym_changes": sym_changes,
+            })
+
+            # Check if we made contact with the target
+            score_delta = frame.levels_completed - prev_score
+            died = frame.state == GameState.GAME_OVER
+
+            dist = None
+            from .symbolic import proximity_to
+            dist = proximity_to(sym_after, ctrl_color, target_color)
+
+            if dist is not None and dist <= 2 or died or score_delta > 0:
+                # Contact or near-contact — classify the interaction
+                effect = classify_interaction(
+                    sym_changes, blocked, changes, died, score_delta, ctrl_color
+                )
+                self.planner.record_test(target_color, effect)
+                self.model.interaction_rules.append(InteractionRule(
+                    target_color=target_color,
+                    target_role="unknown",
+                    effect=effect,
+                    evidence=f"contact at action #{self.action_counter}",
+                    test_count=1,
+                    confidence=0.7,
+                ))
+                logger.info(
+                    f"[interact] #{self.action_counter} CONTACT color={target_color}: "
+                    f"effect={effect} score_delta={score_delta}"
+                )
+                prev_score = frame.levels_completed
+                stuck_count = 0
+            else:
+                logger.info(
+                    f"[interact] #{self.action_counter} {action.name} -> "
+                    f"{'BLOCKED' if blocked else f'{changes}ch'} "
+                    f"dist_to_{target_color}={dist}"
+                )
+                if blocked:
+                    stuck_count += 1
+                else:
+                    stuck_count = 0
+
+            # If stuck, try a different direction
+            if stuck_count >= 3:
+                stuck_count = 0
+                self.planner.record_approach(target_color)
+                self.planner.record_approach(target_color)
+                self.planner.record_approach(target_color)
+                logger.info(f"[interact] Stuck approaching color={target_color}, moving on")
+
+        logger.info(f"[interact] Phase 2 done: {self.planner.summary()}")
+        return frame
