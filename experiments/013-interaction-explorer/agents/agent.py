@@ -321,3 +321,84 @@ class InteractionExplorer:
 
         logger.info(f"[interact] Phase 2 done: {self.planner.summary()}")
         return frame
+
+    def _induce_model(self, frame: FrameData) -> None:
+        """Ask GPT to propose action rules and goal hypotheses from probe data."""
+        self.llm_calls += 1
+
+        trans_text = []
+        for t in self.transitions:
+            changes_summary = []
+            for c in t["sym_changes"][:5]:
+                changes_summary.append(json.dumps(c))
+            trans_text.append(
+                "{}: {}".format(t['action'], 'BLOCKED' if t['blocked'] else f"{t['changes']}ch")
+                + (f"\n  changes: {'; '.join(changes_summary)}" if changes_summary else "")
+            )
+
+        ctrl = self.model.controllable_color()
+        ctrl_text = f"Operationally identified controllable object: color={ctrl}" if ctrl else "Controllable object not yet identified"
+
+        content = [
+            input_text(
+                "You are analyzing an unknown game. Below are the results of systematically "
+                "testing each available action 2-3 times from the initial state.\n\n"
+                f"PROBE RESULTS:\n" + "\n".join(trans_text) + "\n\n"
+                f"{ctrl_text}\n\n"
+                "Based on these transitions, propose:\n"
+                "1. ACTION RULES: what does each action do? (move, push, toggle, etc.)\n"
+                "2. OBJECT ROLES: which objects are controllable, blocking, goal-like?\n"
+                "3. GOAL HYPOTHESES: what might the objective be?\n\n"
+                "Respond with JSON:\n"
+                '{"action_rules": {"ACTION1": {"effect": "move", "direction": "up", "distance": 5, '
+                '"target": "controllable", "precondition": "path_clear"}, ...},\n'
+                ' "object_roles": [{"color": 9, "role": "controllable", "evidence": "..."}],\n'
+                ' "goal_hypotheses": [{"type": "contact", "description": "reach the white cross", '
+                '"target": "color_0", "confidence": 0.5}]}'
+            ),
+            input_text("Current game frame:"),
+            input_image_b64(grid_b64(self.current_grid)),
+        ]
+
+        try:
+            response = self.client.responses.create(
+                model="gpt-5.4",
+                input=[{"role": "user", "content": content}],
+                max_output_tokens=2000,
+                temperature=0.2,
+            )
+            raw = response.output_text or "{}"
+        except Exception as e:
+            logger.warning(f"Induction API error: {e}")
+            return
+
+        data = self._parse_json(raw)
+
+        for name, rule_data in data.get("action_rules", {}).items():
+            self.model.action_rules[name] = ActionRule(
+                action=name,
+                effect=rule_data.get("effect", "unknown"),
+                direction=rule_data.get("direction", ""),
+                distance=rule_data.get("distance", 0),
+                target=rule_data.get("target", ""),
+                precondition=rule_data.get("precondition", ""),
+                confidence=0.5,
+            )
+
+        for role_data in data.get("object_roles", []):
+            self.model.object_roles.append(ObjectRole(
+                color=role_data.get("color", -1),
+                role=role_data.get("role", "unknown"),
+                evidence=role_data.get("evidence", ""),
+                confidence=role_data.get("confidence", 0.5),
+            ))
+
+        for goal_data in data.get("goal_hypotheses", []):
+            self.model.goal_hypotheses.append(GoalHypothesis(
+                description=goal_data.get("description", ""),
+                type=goal_data.get("type", "unknown"),
+                target=goal_data.get("target", ""),
+                confidence=goal_data.get("confidence", 0.3),
+            ))
+
+        logger.info(f"[induce] Model:\n{self.model.to_dsl_text()}")
