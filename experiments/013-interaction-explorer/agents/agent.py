@@ -159,3 +159,49 @@ class InteractionExplorer:
         logger.info(f"Interactions:\n{self.planner.summary()}")
         logger.info("=" * 60)
         self._close()
+
+    def _probe_actions(self, frame: FrameData, available: list[int]) -> FrameData:
+        """Phase 1: Take each action 2-3 times systematically."""
+        actions = [GameAction.from_id(a) for a in available if a <= 7]
+
+        for action in actions:
+            for trial in range(3):
+                if self.action_counter >= self.PROBE_BUDGET:
+                    break
+
+                grid_before = self.current_grid
+                sym_before = grid_to_symbolic(grid_before)
+
+                frame = self._step(action)
+                self.action_counter += 1
+                self.current_grid = frame.frame[-1] if frame.frame else grid_before
+
+                sym_after = grid_to_symbolic(self.current_grid)
+                sym_changes = diff_symbolic(sym_before, sym_after)
+                changes = sum(1 for r in range(64) for c in range(64)
+                              if grid_before[r][c] != self.current_grid[r][c])
+                blocked = 0 < changes < 10
+
+                self.transitions.append({
+                    "action": action.name,
+                    "changes": changes,
+                    "blocked": blocked,
+                    "sym_changes": sym_changes,
+                })
+
+                logger.info(
+                    f"[probe] #{self.action_counter} {action.name}: "
+                    f"{'BLOCKED' if blocked else f'{changes}ch'}"
+                )
+
+                if frame.state == GameState.GAME_OVER:
+                    self.total_deaths += 1
+                    frame = self._step(GameAction.RESET)
+                    self.action_counter += 1
+                    self.current_grid = frame.frame[-1] if frame.frame else []
+                    break
+
+                if frame.state == GameState.WIN:
+                    return frame
+
+        return frame
