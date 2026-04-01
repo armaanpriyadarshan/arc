@@ -602,6 +602,12 @@ class ToolUseAgent:
         # 013: coordinate calibration for ACTION6
         self._coord_swap: bool = False  # True if game uses x=row,y=col instead of x=col,y=row
 
+        # 013: vision call scheduling
+        self._turns_since_vision: int = 0
+        self._vision_calls_this_level: int = 0
+        self._max_vision_calls_per_level: int = 8
+        self._last_action_had_changes: bool = False
+
         # v5: tiered model routing
         self.model_calls: dict[str, int] = {"gpt-5.4": 0}
 
@@ -720,6 +726,8 @@ class ToolUseAgent:
                 self.prev_image_grid = None
                 self.prev_vision_summary = None
                 self._consecutive_blocked = 0
+                self._vision_calls_this_level = 0
+                self._turns_since_vision = 0
                 # v5: clear caches on death
                 self._cached_frame_b64 = None
                 self._cached_frame_grid = None
@@ -754,6 +762,7 @@ class ToolUseAgent:
                 changes = sum(1 for r in range(64) for c in range(64)
                               if grid_before[r][c] != self.current_grid[r][c])
                 blocked = 0 < changes < 10
+                self._last_action_had_changes = changes > 0
 
                 label = _action_label(action)
                 result = f"{label}: {'BLOCKED' if blocked else f'{changes} cells changed'}"
@@ -844,6 +853,8 @@ class ToolUseAgent:
                     self._pending_journal_prompt = None
                     self.prev_vision_summary = None
                     self.prev_image_grid = None
+                    self._vision_calls_this_level = 0
+                    self._turns_since_vision = 0
                     # v5: clear caches on level-up
                     self._cached_frame_b64 = None
                     self._cached_frame_grid = None
@@ -1660,6 +1671,38 @@ class ToolUseAgent:
         logger.debug(f"[raw-response] {raw[:500]}")
         return raw
 
+    def _should_call_vision(self, grid_unchanged: bool) -> bool:
+        """Decide whether to call the vision summarizer this turn.
+
+        Call on: initial frame, after large changes, after level-up, every 3 turns
+        if board is changing. Skip when board is static and we have a recent summary.
+        """
+        # Always call if we have no summary yet (first turn or after level-up/death)
+        if self.prev_vision_summary is None:
+            return True
+
+        # Cap per level
+        if self._vision_calls_this_level >= self._max_vision_calls_per_level:
+            return False
+
+        # Always call after large changes
+        if self._large_change_pending:
+            return True
+
+        # If board changed on last action, call every 3 turns
+        if self._last_action_had_changes and self._turns_since_vision >= 3:
+            return True
+
+        # If board is static (no changes last 2+ turns), skip
+        if grid_unchanged and self._turns_since_vision < 5:
+            return False
+
+        # Default: call every 5 turns even if static (catch slow changes)
+        if self._turns_since_vision >= 5:
+            return True
+
+        return False
+
     def _think_and_act(self, frame: FrameData) -> list[GameAction]:
         self.llm_calls += 1
 
@@ -1692,9 +1735,16 @@ class ToolUseAgent:
             self._cached_frame_b64 = grid_b64(self.current_grid)
             self._cached_frame_grid = self.current_grid
 
-        # Call vision summarizer (replaces symbolic.py analysis)
-        vision_summary = self._call_vision_summarizer(img_b64, self.current_grid, is_diff=is_diff_image)
-        self.prev_vision_summary = vision_summary
+        # Call vision summarizer (strategically scheduled)
+        self._turns_since_vision += 1
+        if self._should_call_vision(grid_unchanged):
+            vision_summary = self._call_vision_summarizer(img_b64, self.current_grid, is_diff=is_diff_image)
+            self.prev_vision_summary = vision_summary
+            self._turns_since_vision = 0
+            self._vision_calls_this_level += 1
+        else:
+            vision_summary = self.prev_vision_summary or {}
+            logger.info(f"[vision-skip] Reusing previous summary (turns_since={self._turns_since_vision})")
 
         changes_text = ""
         changes_list = vision_summary.get("changes", [])
