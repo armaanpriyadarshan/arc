@@ -117,3 +117,109 @@ def grid_to_symbolic(grid: Grid, min_size: int = 2) -> dict:
         "backgrounds": [{"color": o["color"], "size": o["size"]} for o in bg_objects],
         "relations": relations[:20],
     }
+
+
+def diff_symbolic(prev: dict, curr: dict) -> list[dict]:
+    """Compare two symbolic states. Report what changed — no interpretation.
+
+    Matches objects across frames by color + similar size, then reports
+    any differences in position, size, or existence.
+    """
+    if not prev or not curr:
+        return []
+
+    prev_objs = prev.get("objects", [])
+    curr_objs = curr.get("objects", [])
+
+    changes = []
+    matched_curr: set[int] = set()
+
+    for po in prev_objs:
+        best_match = None
+        best_dist = 999
+        for i, co in enumerate(curr_objs):
+            if i in matched_curr:
+                continue
+            if co["color_id"] != po["color_id"]:
+                continue
+            if abs(co["size"] - po["size"]) > max(po["size"], co["size"]) * 0.5:
+                continue
+            dist = abs(co["center"][0] - po["center"][0]) + abs(co["center"][1] - po["center"][1])
+            if dist < best_dist:
+                best_dist = dist
+                best_match = i
+
+        if best_match is not None:
+            matched_curr.add(best_match)
+            co = curr_objs[best_match]
+            diffs = {}
+            if po["center"] != co["center"]:
+                diffs["center"] = {"was": po["center"], "now": co["center"]}
+            if po["size"] != co["size"]:
+                diffs["size"] = {"was": po["size"], "now": co["size"]}
+            if po["bbox"] != co["bbox"]:
+                diffs["bbox"] = {"was": po["bbox"], "now": co["bbox"]}
+            if po["shape"] != co["shape"]:
+                diffs["shape"] = {"was": po["shape"], "now": co["shape"]}
+            if diffs:
+                changes.append({
+                    "color": po["color"],
+                    "color_id": po["color_id"],
+                    "type": "changed",
+                    **diffs,
+                })
+        else:
+            changes.append({
+                "color": po["color"],
+                "color_id": po["color_id"],
+                "type": "disappeared",
+                "was_at": po["center"],
+                "was_size": po["size"],
+            })
+
+    for i, co in enumerate(curr_objs):
+        if i not in matched_curr:
+            changes.append({
+                "color": co["color"],
+                "color_id": co["color_id"],
+                "type": "appeared",
+                "at": co["center"],
+                "size": co["size"],
+            })
+
+    # Background size changes
+    prev_bg = {b["color"]: b["size"] for b in prev.get("backgrounds", [])}
+    curr_bg = {b["color"]: b["size"] for b in curr.get("backgrounds", [])}
+    for color in set(prev_bg) | set(curr_bg):
+        ps = prev_bg.get(color, 0)
+        cs = curr_bg.get(color, 0)
+        if ps != cs:
+            changes.append({
+                "color": color,
+                "type": "background_size_changed",
+                "size": {"was": ps, "now": cs},
+            })
+
+    return changes
+
+
+def proximity_to(sym: dict, ctrl_color: int, target_color: int) -> float | None:
+    """Manhattan distance from controllable object to nearest target object."""
+    ctrl_pos = None
+    target_pos = None
+    min_dist = float("inf")
+
+    for obj in sym.get("objects", []):
+        if obj["color_id"] == ctrl_color:
+            ctrl_pos = obj["center"]
+        if obj["color_id"] == target_color:
+            if ctrl_pos:
+                d = abs(obj["center"][0] - ctrl_pos[0]) + abs(obj["center"][1] - ctrl_pos[1])
+                min_dist = min(min_dist, d)
+            else:
+                target_pos = obj["center"]
+
+    if ctrl_pos and target_pos and min_dist == float("inf"):
+        min_dist = abs(target_pos[0] - ctrl_pos[0]) + abs(target_pos[1] - ctrl_pos[1])
+
+    return min_dist if min_dist != float("inf") else None
