@@ -67,12 +67,16 @@ Each turn you receive:
 - Your own notes from previous turns
 
 USING THE VISION SUMMARY:
-- The vision summary includes a "scene_summary" field that highlights the most
-  important or distinctive structures on the board. READ THIS FIRST — it often
-  identifies the key interactive element or puzzle focus before you look at
-  individual objects.
-- Use the "objects" list positions for exact click coordinates — these are more
-  accurate than estimating positions from the board text.
+- READ board_structure.regions FIRST. This tells you the global layout of the board:
+  how many distinct zones exist, what separates them, and which one is likely interactive.
+- CHECK walls_and_boundaries BEFORE planning any movement. If a color is listed as a
+  wall, do NOT try to move through cells of that color.
+- The region marked "interactive/puzzle area" is where you should focus your actions.
+  Do not waste actions on objects in "decorative/state display" regions until you've
+  exhausted the interactive region.
+- If a region has a unique visual property that appears NOWHERE ELSE on the board,
+  that region is almost certainly important. Investigate it FIRST.
+- Use key_objects (grouped) for click/interaction targets. Positions are [row, col].
 
 CORE PRIORS — use these as your default assumptions about the game world:
 
@@ -126,11 +130,31 @@ GEOMETRY AND SPACE:
   are solid — look for triggers/switches that might open the path, or choose a
   different reachable target.
 
+WALL AWARENESS (critical — saves actions):
+- The vision summary tells you where walls are (walls_and_boundaries). CHECK IT before
+  every movement decision.
+- If you get BLOCKED, the cell you tried to enter is a wall. That entire color is likely
+  impassable. Update your mental model: ALL cells of that color are probably walls.
+- BEFORE each move, verify: is the target direction open? If you already know a wall
+  color, do NOT attempt to move through any cell of that color. Try it ONCE if unknown,
+  but NEVER retry a confirmed wall direction from the same position.
+- If you have been BLOCKED moving in a direction, try a DIFFERENT direction immediately.
+  Do not keep trying the same blocked direction from adjacent positions unless you have
+  strong evidence that the wall has a gap.
+
+REGION PRIORITY:
+- When the vision summary identifies an "interactive/puzzle area" region, ALL your
+  exploration and interaction should happen WITHIN that region first.
+- Do not waste actions on objects in "decorative/state display" regions.
+- If a region has UNIQUE properties (only area with a certain color/shape), it is
+  almost certainly the interactive zone. Target it immediately.
+
 BEFORE generating hypotheses, you MUST fill in scene_inventory and untried.
 
 scene_inventory requires you to:
-- List EVERY distinct object visible in the vision summary and image. Include position, color, and whether you've interacted with it.
-- List which directions are currently open (no wall) and which are blocked from your current position.
+- List the REGIONS from the vision summary's board_structure. For each: name, role, and whether you've explored it.
+- List the key_objects from the vision summary. For each: description, position(s), and whether you've interacted with it.
+- List which directions are currently open (no wall) and which are blocked from your current position, using walls_and_boundaries from the vision summary.
 - Look for VISUAL CORRESPONDENCES: objects that share colors, shapes, or patterns with other objects. Two things that look similar probably have a gameplay relationship (lock/key, switch/door, pattern matching).
 
 untried requires you to:
