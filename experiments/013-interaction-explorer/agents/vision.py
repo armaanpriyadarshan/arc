@@ -50,8 +50,47 @@ def image_to_b64(img: Image.Image) -> str:
     return base64.b64encode(buf.getvalue()).decode("ascii")
 
 
+def diff_highlight_image(before: Grid, after: Grid) -> Image.Image:
+    """Render AFTER frame with changed cells outlined in red."""
+    img = grid_to_image(after)
+    draw = ImageDraw.Draw(img)
+    h, w = len(after), len(after[0])
+    for y in range(h):
+        for x in range(w):
+            if before[y][x] != after[y][x]:
+                x1, y1 = x * SCALE, y * SCALE
+                x2, y2 = x1 + SCALE - 1, y1 + SCALE - 1
+                draw.rectangle([x1, y1, x2, y2], outline=(255, 0, 0), width=2)
+    return img
+
+
+def side_by_side(before: Grid, after: Grid) -> Image.Image:
+    """Previous frame + current frame with diff highlights, side by side."""
+    img_before = grid_to_image(before)
+    img_after = diff_highlight_image(before, after)
+    gap = 20
+    label_h = 30
+    total_w = img_before.width + gap + img_after.width
+    total_h = max(img_before.height, img_after.height) + label_h
+    canvas = Image.new("RGB", (total_w, total_h), (40, 40, 40))
+    canvas.paste(img_before, (0, label_h))
+    canvas.paste(img_after, (img_before.width + gap, label_h))
+    draw = ImageDraw.Draw(canvas)
+    try:
+        font = ImageFont.load_default(size=18)
+    except TypeError:
+        font = ImageFont.load_default()
+    draw.text((img_before.width // 2 - 30, 6), "PREVIOUS", fill=(255, 255, 255), font=font)
+    draw.text((img_before.width + gap + img_after.width // 2 - 60, 6), "CURRENT (red=changed)", fill=(255, 100, 100), font=font)
+    return canvas
+
+
 def grid_b64(grid: Grid) -> str:
     return image_to_b64(grid_to_image(grid))
+
+
+def diff_b64(before: Grid, after: Grid) -> str:
+    return image_to_b64(side_by_side(before, after))
 
 
 # GPT-5.4 Responses API format
