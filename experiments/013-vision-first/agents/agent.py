@@ -445,42 +445,54 @@ RULES:
 - Each turn is marked with === TURN N === ... === END TURN N === for easy searching."""
 
 
-VISION_SUMMARIZER_PROMPT = """You are a visual scene analyst for a 64x64 grid game. Your job is to correlate what you see in the image with the raw board array text provided, and report EXACT positions of every object.
+VISION_SUMMARIZER_PROMPT = """You are a structural scene analyst for a 64x64 grid game. Your job is to analyze the GLOBAL STRUCTURE of the board — regions, walls, corridors, and interactive zones — not just list individual objects.
 
 IMAGE FORMAT:
-The image you receive is formatted as follows:
-- LEFT SIDE labeled "PREVIOUS": The game board BEFORE the last action was taken.
-- RIGHT SIDE labeled "CURRENT (red=changed)": The game board AFTER the last action.
-- RED OUTLINES on the right side: These are DIFF MARKERS showing which cells changed
-  between the previous and current frames. They are NOT part of the game — they are
-  overlaid by the visualization code to help you see what moved. Do NOT report red
-  outlines as game objects, colored pads, or structures. They only indicate which cells changed.
-- If you see only a SINGLE frame (no side-by-side), this is the initial board state
-  with no previous frame to compare against.
-- Each cell in the game is rendered as an 8x8 pixel block. The grid is 64x64 cells,
-  so the full image is 512x512 pixels per side.
+- LEFT SIDE labeled "PREVIOUS": The board BEFORE the last action.
+- RIGHT SIDE labeled "CURRENT (red=changed)": The board AFTER the last action.
+- RED OUTLINES on the right side are DIFF MARKERS (visualization overlay), NOT game objects.
+- Single frame = initial board state (no diff).
+- Each cell = 8x8 pixels. Grid is 64x64 cells = 512x512 pixels per side.
 
 BOARD TEXT:
 You also receive the raw game board as text. Each row is labeled with its row number (00-63).
-Each cell is a single hex digit (0-F) representing a color. A color legend is provided.
-Use this text to report EXACT positions — not estimates. Cross-reference the image with the
-board text to identify objects precisely. When you see a cluster of the same color in the text,
-that's an object. When you see it in the image, confirm the color matches.
+Each cell is a hex digit (0-F) representing a color. Use this for EXACT positions.
 
-Output COMPACT JSON (no pretty-printing) with this structure:
+ANALYSIS ORDER (follow this exactly):
+1. REGIONS: Identify the distinct zones of the board. Look for areas separated by walls,
+   empty space, or color boundaries. How many distinct zones exist? What separates them?
+2. UNIQUENESS: For each region, what visual properties appear ONLY in that region and
+   nowhere else on the board? Uniqueness = importance. If one region is the only area
+   with a certain color, shape, or internal structure, it is likely the interactive zone.
+3. INTERACTIVE vs DECORATIVE: Which region is most likely the puzzle/interactive area?
+   Look for: the most structurally complex region, the region with the most diverse
+   colors/shapes, enclosed spaces with internal structure, areas that stand out.
+4. WALLS & BOUNDARIES: Which colors form barriers? Where are openings/gaps?
+   For each wall color, what area does it enclose? Are there corridors (narrow passages)?
+5. KEY OBJECTS: List important objects GROUPED BY FUNCTION, not individually.
+   Four similar corner pieces = one "corner frame" entry. Eight similar panels = one entry.
+   Small distinct objects (1-5 cells) are often the most important game elements.
 
-{"objects": [{"description": "short label", "color": "green", "color_hex": "E", "position": [row, col], "size": 12, "shape": "square/rectangle/L-shape/line/irregular/cross/etc.", "notes": "any notable features"}], "spatial_relations": ["The green square is above and left of the blue L-shape"], "background": "Dominant background description", "changes": [{"what": "The small green square moved from [30,20] to [28,20]", "type": "moved/appeared/disappeared/changed_shape/changed_size"}], "scene_summary": "2-sentence description of what you see and what seems important"}
+DO NOT just list objects one by one — that produces noise. STRUCTURE FIRST, details second.
+
+Output COMPACT JSON with this structure:
+
+{"board_structure":{"regions":[{"name":"short region name","bounds":{"rows":[start_row,end_row],"cols":[start_col,end_col]},"unique_properties":["Only region with X","Contains the only Y"],"likely_role":"interactive/puzzle area OR decorative/state display OR navigation area OR unknown","contains":["summary of contents"]}],"walls_and_boundaries":[{"color":"dark-gray","color_hex":"4","role":"chamber walls","encloses":"lower-right region","has_openings":false}],"corridors":[{"description":"narrow passage between regions","position":[row,col],"width":2,"connects":["region A","region B"]}]},"key_objects":[{"description":"grouped label","color":"light-gray","color_hex":"2","positions":[[row1,col1],[row2,col2]],"count":4,"grouped":true,"notes":"functional description"}],"changes":[{"what":"description with exact positions","type":"moved/appeared/disappeared/changed_shape"}],"scene_summary":"2-3 sentences: which region is likely interactive, what makes it unique, where walls/boundaries are. Focus on STRUCTURE, not object inventory."}
 
 RULES:
-- List ALL visible objects, even very small ones (1-3 cells). Small distinct objects are often the most important game elements (player character, keys, switches, triggers).
-- "position" MUST be EXACT [row, col] from the board text, NOT an estimate from the image. Use the board text rows to find the exact row and column where each object starts or is centered. (0,0) is top-left, (63,63) is bottom-right.
-- "color_hex" is the hex digit (0-F) from the board text for that object's cells.
-- For changes, describe WHAT moved or changed with exact positions, not just "cells changed."
-- If you see corridors or paths, mention them — connectivity matters for navigation.
-- Focus on game-relevant patterns: objects that look like switches, gates, keys, goals, indicators.
-- Be precise about colors. Cross-reference the image colors with the hex values in the board text.
-- If objects look similar to each other, note this — visual similarity often means gameplay relationship.
-- NEVER report red outlines as game objects. They are diff markers only."""
+- All positions MUST be EXACT [row, col] from the board text, NOT image estimates.
+  (0,0) is top-left, (63,63) is bottom-right.
+- Limit regions to 2-4 entries. If the board is simple, 2 regions is fine.
+- Group similar objects. If you see 8 blue squares arranged in a pattern, that's ONE
+  entry with count=8 and all positions listed, not 8 separate entries.
+- Small distinct objects (1-5 cells with unique colors) should always be listed as
+  key_objects — they are often switches, triggers, or player characters.
+- For walls_and_boundaries, note whether the wall has OPENINGS. An enclosed region with
+  no openings is a trap or sealed chamber. One with openings has entry/exit points.
+- If a region contains something that appears NOWHERE else on the board (unique color,
+  unique shape, unique internal structure), explicitly state this in unique_properties.
+- NEVER report red outlines as game objects. They are diff markers only.
+- Focus scene_summary on actionable structural insight, not exhaustive description."""
 
 
 def _action_label(action: GameAction) -> str:
@@ -1197,9 +1209,16 @@ class ToolUseAgent:
 
         targets: list[tuple[int, int, str]] = []  # (x, y, description)
 
-        # Extract object positions from vision summary
-        for obj in vision_summary.get("objects", []):
-            pos = obj.get("position") or obj.get("approximate_position")
+        # Extract object positions from vision summary (supports both new and old format)
+        objects_list = vision_summary.get("key_objects", vision_summary.get("objects", []))
+        for obj in objects_list:
+            # New format: "positions" is a list of [row, col] pairs
+            positions = obj.get("positions", [])
+            if positions and isinstance(positions[0], (list, tuple)):
+                # Use first position from grouped object
+                pos = positions[0]
+            else:
+                pos = obj.get("position") or obj.get("approximate_position")
             if pos and isinstance(pos, (list, tuple)) and len(pos) >= 2:
                 row, col = int(pos[0]), int(pos[1])
                 if 0 <= row <= 63 and 0 <= col <= 63:
@@ -1374,9 +1393,10 @@ class ToolUseAgent:
 
         result = self._parse_json(raw)
         if result:
-            n_objects = len(result.get("objects", []))
+            n_regions = len(result.get("board_structure", {}).get("regions", []))
+            n_objects = len(result.get("key_objects", result.get("objects", [])))
             n_changes = len(result.get("changes", []))
-            logger.info(f"[vision-summarizer] {n_objects} objects, {n_changes} changes")
+            logger.info(f"[vision-summarizer] {n_regions} regions, {n_objects} key_objects, {n_changes} changes")
         else:
             logger.warning(
                 f"[vision-summarizer] Empty/unparseable response "
